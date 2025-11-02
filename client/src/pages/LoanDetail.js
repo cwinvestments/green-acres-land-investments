@@ -18,8 +18,8 @@ function LoanDetail() {
   const [showPaymentForm, setShowPaymentForm] = useState(false);
 
   useEffect(() => {
-    loadLoan();
-  }, [id]);
+  loadLoan();
+}, [id, loadLoan]);
 
   const loadLoan = async () => {
     try {

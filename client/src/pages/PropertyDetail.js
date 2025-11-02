@@ -23,14 +23,14 @@ function PropertyDetail() {
   const [cardInstance, setCardInstance] = useState(null);
 
   useEffect(() => {
-    loadProperty();
-  }, [id]);
+  loadProperty();
+}, [id, loadProperty]);
 
   useEffect(() => {
-    if (property) {
-      calculatePayment();
-    }
-  }, [property, downPaymentOption, termMonths]);
+  if (property) {
+    calculatePayment();
+  }
+}, [property, downPaymentOption, termMonths, calculatePayment]);
 
   const loadProperty = async () => {
     try {

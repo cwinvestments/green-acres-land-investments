@@ -12,8 +12,8 @@ function PaymentHistory() {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    loadData();
-  }, [id]);
+  loadData();
+}, [id, loadData]);
 
   const loadData = async () => {
     try {

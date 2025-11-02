@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getPaymentHistory, getLoan } from '../api';
 
@@ -11,11 +11,7 @@ function PaymentHistory() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  useEffect(() => {
-  loadData();
-}, [id, loadData]);
-
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     try {
       const [loanResponse, paymentsResponse] = await Promise.all([
         getLoan(id),
@@ -30,9 +26,14 @@ function PaymentHistory() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id]);
 
-  const formatDate = (dateString) => {
+
+  useEffect(() => {
+  loadData();
+}, [id, loadData]);
+
+    const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {
       year: 'numeric',

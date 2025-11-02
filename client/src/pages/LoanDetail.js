@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { getLoan, createPayment } from '../api';
 
@@ -17,11 +17,7 @@ function LoanDetail() {
   const [paymentError, setPaymentError] = useState('');
   const [showPaymentForm, setShowPaymentForm] = useState(false);
 
-  useEffect(() => {
-  loadLoan();
-}, [id, loadLoan]);
-
-  const loadLoan = async () => {
+  const loadLoan = useCallback(async () => {
     try {
       const response = await getLoan(id);
       setLoan(response.data);
@@ -32,9 +28,14 @@ function LoanDetail() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id]);
 
-  const initializeSquarePayment = async () => {
+
+  useEffect(() => {
+  loadLoan();
+}, [id, loadLoan]);
+
+    const initializeSquarePayment = async () => {
     if (!window.Square) {
       setPaymentError('Square payment system not loaded');
       return;

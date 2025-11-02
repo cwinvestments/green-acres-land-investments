@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getProperty, createLoan } from '../api';
 import { useAuth } from '../context/AuthContext';
@@ -22,17 +22,7 @@ function PropertyDetail() {
   const [purchaseError, setPurchaseError] = useState('');
   const [cardInstance, setCardInstance] = useState(null);
 
-  useEffect(() => {
-  loadProperty();
-}, [id, loadProperty]);
-
-  useEffect(() => {
-  if (property) {
-    calculatePayment();
-  }
-}, [property, downPaymentOption, termMonths, calculatePayment]);
-
-  const loadProperty = async () => {
+  const loadProperty = useCallback(async () => {
     try {
       const response = await getProperty(id);
       setProperty(response.data);
@@ -42,9 +32,13 @@ function PropertyDetail() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id]);
 
-  const calculatePayment = () => {
+  useEffect(() => {
+    loadProperty();
+  }, [id, loadProperty]);
+
+  const calculatePayment = useCallback(() => {
     const processingFee = 99;
     const price = property.price;
     
@@ -92,7 +86,13 @@ function PropertyDetail() {
       monthlyPayment: Math.round(monthlyPayment * 100) / 100,
       totalAmount: Math.round(totalAmount * 100) / 100
     });
-  };
+  }, [property, downPaymentOption, termMonths]);
+
+  useEffect(() => {
+    if (property) {
+      calculatePayment();
+    }
+  }, [property, downPaymentOption, termMonths, calculatePayment]);
 
   const initializeSquarePayment = async () => {
     if (!window.Square) {

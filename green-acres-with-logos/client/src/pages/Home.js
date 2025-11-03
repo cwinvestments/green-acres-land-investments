@@ -8,7 +8,7 @@ function Home() {
       <section className="hero">
         <div className="hero-content">
           <img 
-            src="/images/green-acres-full-512.png" 
+            src="/images/green-acres-full-logo.svg" 
             alt="Green Acres Land Investments" 
             className="hero-logo"
           />
@@ -93,7 +93,7 @@ function Home() {
       <section className="financing">
         <div className="container">
           <h2 className="section-title">Financing Options</h2>
-          <p className="section-subtitle">Multiple Payment Plans to Fit Your Budget</p>
+          <p className="section-subtitle">Choose the option that works best for you</p>
           
           <div className="financing-grid">
             <div className="financing-card featured">
@@ -104,7 +104,7 @@ function Home() {
                 <li>Available on all properties</li>
                 <li>Get started today</li>
                 <li>1-5 year terms</li>
-                <li>Payments as low as $50/month</li>
+                <li>$50 minimum payment</li>
               </ul>
             </div>
 

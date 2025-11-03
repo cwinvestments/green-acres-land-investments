@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { getProperties } from '../api';
+import { getProperties, formatCurrency } from '../api';
 
 function Properties() {
   const [properties, setProperties] = useState([]);
@@ -75,8 +75,8 @@ function Properties() {
                   {property.description.substring(0, 100)}...
                 </p>
                 <div className="property-price">
-                  ${property.price.toLocaleString()}
-                </div>
+  ${formatCurrency(property.price)}
+</div>
                 <button className="btn btn-secondary" style={{ marginTop: '1rem' }}>
                   View Details
                 </button>

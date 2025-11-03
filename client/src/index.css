@@ -1,149 +1,266 @@
-/* Global Styles */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
+:root {
+  --forest-green: #2c5f2d;
+  --dark-forest: #1e4620;
+  --sandy-gold: #f4a460;
+  --muted-gold: #d4873e;
+  --light-green: #f0f8f0;
+  --text-dark: #333;
+  --text-light: #666;
+  --border-color: #ddd;
+  --shadow: 0 2px 10px rgba(0,0,0,0.1);
+  --shadow-lg: 0 4px 20px rgba(0,0,0,0.15);
+}
+
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: #333;
+  color: var(--text-dark);
   line-height: 1.6;
+  background: var(--light-green);
 }
 
-/* Navbar */
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: var(--text-dark);
+  line-height: 1.6;
+  background: var(--light-green);
+}
+
+/* ===================
+   NAVBAR STYLES
+=================== */
 .navbar {
-  background: linear-gradient(135deg, #2e7d32 0%, #388e3c 100%);
-  color: white;
-  padding: 1rem 2rem;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  background: white;
+  box-shadow: var(--shadow);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
-.navbar-content {
+.nav-container {
   max-width: 1200px;
   margin: 0 auto;
+  padding: 1rem 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.navbar-logo {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: white;
+.nav-brand {
   text-decoration: none;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
 }
 
-.navbar-links {
+/* Desktop logo (horizontal) */
+.nav-logo-desktop {
+  height: 50px;
+  width: auto;
+  display: block;
+}
+
+/* Mobile logo (icon) - hidden by default */
+.nav-logo-mobile {
+  height: 50px;
+  width: auto;
+  display: none;
+}
+
+/* Show icon on mobile, hide horizontal logo */
+@media (max-width: 600px) {
+  .nav-logo-desktop {
+    display: none;
+  }
+  .nav-logo-mobile {
+    display: block;
+  }
+}
+
+.nav-links {
   display: flex;
   gap: 2rem;
   align-items: center;
-  list-style: none;
 }
 
-.navbar-links a, .navbar-links button {
-  color: white;
+.nav-link {
+  color: var(--text-dark);
   text-decoration: none;
-  transition: opacity 0.3s;
+  font-weight: 500;
+  transition: color 0.3s ease;
   background: none;
   border: none;
   cursor: pointer;
   font-size: 1rem;
-  font-family: inherit;
 }
 
-.navbar-links a:hover, .navbar-links button:hover {
-  opacity: 0.8;
+.nav-link:hover {
+  color: var(--forest-green);
+  text-shadow: 0 2px 8px rgba(44, 95, 45, 0.3);
+  transform: translateY(-1px);
+  transition: all 0.3s ease;
 }
 
-/* Hero Section */
-.hero {
-  background: linear-gradient(rgba(46, 125, 50, 0.8), rgba(46, 125, 50, 0.8)),
-    url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1200') center/cover;
+.btn-logout {
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  background: var(--light-green);
+  color: var(--forest-green);
+}
+
+.btn-logout:hover {
+  background: var(--forest-green);
   color: white;
-  padding: 6rem 2rem;
+}
+
+.btn-register {
+  padding: 0.5rem 1.5rem;
+  border-radius: 5px;
+  background: var(--forest-green);
+  color: white;
+}
+
+.btn-register:hover {
+  background: var(--dark-forest);
+  color: white;
+}
+
+@media (max-width: 768px) {
+  .nav-container {
+    padding: 1rem;
+  }
+  
+  .nav-links {
+    gap: 1rem;
+    font-size: 0.9rem;
+  }
+}
+
+/* ===================
+   HOME PAGE STYLES
+=================== */
+.home {
+  min-height: 100vh;
+}
+
+/* Hero Section with Logo */
+.hero {
+  background: linear-gradient(135deg, var(--dark-forest) 0%, var(--forest-green) 100%);
+  color: white;
+  padding: 4rem 2rem;
   text-align: center;
 }
 
-.hero h1 {
-  font-size: 3rem;
-  margin-bottom: 1rem;
+.hero-content {
+  max-width: 900px;
+  margin: 0 auto;
 }
 
-.hero p {
+.hero-logo {
+  max-width: 400px;
+  width: 100%;
+  height: auto;
+  margin-bottom: 2rem;
+  /* Filter removed - show logo in full color */
+}
+
+@media (max-width: 768px) {
+  .hero-logo {
+    max-width: 300px;
+  }
+}
+
+.hero-title {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  font-weight: 700;
+}
+
+.hero-subtitle {
   font-size: 1.3rem;
   margin-bottom: 2rem;
   opacity: 0.95;
 }
 
-.btn {
-  padding: 1rem 2rem;
-  font-size: 1.1rem;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: all 0.3s;
-  text-decoration: none;
-  display: inline-block;
+.hero-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
-.btn-primary {
-  background: white;
-  color: #2e7d32;
-  font-weight: bold;
-}
-
-.btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-}
-
-.btn-secondary {
-  background: #2e7d32;
-  color: white;
-}
-
-.btn-secondary:hover {
-  background: #1b5e20;
-}
-
-.btn-full-width {
-  width: 100%;
+@media (max-width: 768px) {
+  .hero {
+    padding: 3rem 1.5rem;
+  }
+  
+  .hero-title {
+    font-size: 2rem;
+  }
+  
+  .hero-subtitle {
+    font-size: 1.1rem;
+  }
 }
 
 /* Features Section */
 .features {
-  padding: 4rem 2rem;
-  background: #f5f5f5;
+  padding: 5rem 2rem;
+  background: white;
 }
 
-.features h2 {
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.section-title {
   text-align: center;
   font-size: 2.5rem;
-  margin-bottom: 3rem;
-  color: #2e7d32;
+  color: var(--forest-green);
+  margin-bottom: 1rem;
 }
 
-.feature-grid {
+.section-subtitle {
+  text-align: center;
+  font-size: 1.2rem;
+  color: var(--text-light);
+  margin-bottom: 3rem;
+}
+
+.features-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
+  margin-top: 3rem;
 }
 
 .feature-card {
   background: white;
   padding: 2rem;
   border-radius: 10px;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
   text-align: center;
+  border: 2px solid var(--border-color);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 8px 24px rgba(44, 95, 45, 0.2);
+  border-color: var(--forest-green);
 }
 
 .feature-icon {
@@ -152,191 +269,254 @@ body {
 }
 
 .feature-card h3 {
-  color: #2e7d32;
-  margin-bottom: 0.5rem;
+  color: var(--forest-green);
+  margin-bottom: 1rem;
 }
 
-/* Properties Grid */
-.properties-page {
-  padding: 3rem 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
+.feature-card p {
+  color: var(--text-light);
 }
 
-.properties-page h1 {
-  color: #2e7d32;
-  margin-bottom: 2rem;
+/* How It Works Section */
+.how-it-works {
+  padding: 5rem 2rem;
+  background: var(--light-green);
 }
 
-.properties-grid {
+.steps {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 2rem;
+  margin-top: 3rem;
 }
 
-.property-card {
+.step {
   background: white;
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-  transition: transform 0.3s;
-  cursor: pointer;
-  text-decoration: none;
-  color: inherit;
-}
-
-.property-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 5px 20px rgba(0,0,0,0.15);
-}
-
-.property-image {
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
-}
-
-.property-content {
-  padding: 1.5rem;
-}
-
-.property-content h3 {
-  color: #2e7d32;
-  margin-bottom: 0.5rem;
-}
-
-.property-info {
-  display: flex;
-  justify-content: space-between;
-  margin: 1rem 0;
-  font-size: 0.9rem;
-  color: #666;
-}
-
-.property-price {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #2e7d32;
-  margin-top: 1rem;
-}
-
-/* Property Detail Page */
-.property-detail {
-  max-width: 1200px;
-  margin: 2rem auto;
-  padding: 2rem;
-}
-
-.property-detail-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 3rem;
-  margin-top: 2rem;
-}
-
-.property-detail-image {
-  width: 100%;
-  border-radius: 10px;
-}
-
-.property-features {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin: 1rem 0;
-}
-
-.feature-tag {
-  background: #e8f5e9;
-  color: #2e7d32;
-  padding: 0.4rem 0.8rem;
-  border-radius: 5px;
-  font-size: 0.9rem;
-}
-
-/* Calculator */
-.calculator {
-  background: #f5f5f5;
   padding: 2rem;
   border-radius: 10px;
-  margin-top: 2rem;
+  text-align: center;
+  box-shadow: var(--shadow);
 }
 
-.calculator h3 {
-  color: #2e7d32;
-  margin-bottom: 1.5rem;
-}
-
-.calculator-options {
-  display: grid;
-  gap: 1rem;
-  margin-bottom: 2rem;
-}
-
-.calculator label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-weight: 500;
-}
-
-.calculator select {
-  width: 100%;
-  padding: 0.8rem;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  font-size: 1rem;
-}
-
-.calculator-results {
-  background: white;
-  padding: 1.5rem;
-  border-radius: 10px;
-  margin-bottom: 1.5rem;
-}
-
-.result-row {
-  display: flex;
-  justify-content: space-between;
-  padding: 0.8rem 0;
-  border-bottom: 1px solid #eee;
-}
-
-.result-row:last-child {
-  border-bottom: none;
-  font-weight: bold;
-  font-size: 1.2rem;
-  color: #2e7d32;
-}
-
-.result-label {
-  color: #666;
-}
-
-/* Auth Forms */
-.auth-page {
-  min-height: calc(100vh - 70px);
+.step-number {
+  width: 60px;
+  height: 60px;
+  background: var(--forest-green);
+  color: white;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f5f5f5;
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 0 auto 1rem;
+}
+
+.step h3 {
+  color: var(--forest-green);
+  margin-bottom: 1rem;
+}
+
+.step p {
+  color: var(--text-light);
+}
+
+/* Financing Section */
+.financing {
+  padding: 5rem 2rem;
+  background: white;
+}
+
+.financing-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  margin-top: 3rem;
+}
+
+.financing-card {
+  background: white;
+  border: 2px solid var(--border-color);
+  border-radius: 10px;
+  padding: 2rem;
+  text-align: center;
+  position: relative;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.financing-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--forest-green);
+}
+
+.financing-card.featured {
+  border-color: var(--sandy-gold);
+  border-width: 3px;
+  background: linear-gradient(to bottom, #fffbf5, white);
+}
+
+.financing-badge {
+  background: var(--sandy-gold);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  position: absolute;
+  top: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+.financing-card h3 {
+  color: var(--forest-green);
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+}
+
+.financing-rate {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: var(--forest-green);
+  margin-bottom: 1.5rem;
+}
+
+.financing-features {
+  list-style: none;
+  text-align: left;
+}
+
+.financing-features li {
+  padding: 0.5rem 0;
+  color: var(--text-light);
+  position: relative;
+  padding-left: 1.5rem;
+}
+
+.financing-features li:before {
+  content: "✓";
+  color: var(--forest-green);
+  font-weight: bold;
+  position: absolute;
+  left: 0;
+}
+
+/* CTA Section */
+.cta {
+  padding: 5rem 2rem;
+  background: linear-gradient(135deg, var(--forest-green) 0%, var(--dark-forest) 100%);
+  color: white;
+  text-align: center;
+}
+
+.cta-content h2 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.cta-content p {
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+  opacity: 0.95;
+}
+
+.btn-large {
+  padding: 18px 48px;
+  font-size: 1.2rem;
+  background: var(--sandy-gold);
+  color: var(--dark-forest);
+  font-weight: 600;
+  border: none;
+}
+
+/* ===================
+   AUTH PAGE STYLES
+=================== */
+.auth-page {
+  min-height: calc(100vh - 80px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: 2rem;
 }
 
 .auth-card {
   background: white;
   padding: 3rem;
-  border-radius: 10px;
-  box-shadow: 0 3px 20px rgba(0,0,0,0.1);
-  max-width: 400px;
+  border-radius: 15px;
+  box-shadow: var(--shadow-lg);
+  max-width: 500px;
   width: 100%;
+  border: 2px solid var(--border-color);
 }
 
 .auth-card h2 {
-  color: #2e7d32;
+  color: var(--forest-green);
+  font-size: 2rem;
   margin-bottom: 2rem;
   text-align: center;
 }
 
+.auth-card form {
+  margin-top: 0;
+}
+
+.auth-card .form-group {
+  margin-bottom: 1.5rem;
+}
+
+.auth-card .form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: var(--text-dark);
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.auth-card input {
+  width: 100%;
+  padding: 0.875rem;
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.auth-card input:focus {
+  outline: none;
+  border-color: var(--forest-green);
+  box-shadow: 0 0 0 3px rgba(44, 95, 45, 0.1);
+}
+
+.auth-card .btn-full-width {
+  margin-top: 1rem;
+  padding: 1rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.auth-links {
+  text-align: center;
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border-color);
+  color: var(--text-light);
+}
+
+.auth-links a {
+  color: var(--forest-green);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.auth-links a:hover {
+  color: var(--dark-forest);
+  text-decoration: underline;
+}
+
+/* Generic Form Group Styles */
 .form-group {
   margin-bottom: 1.5rem;
 }
@@ -344,28 +524,91 @@ body {
 .form-group label {
   display: block;
   margin-bottom: 0.5rem;
+  color: var(--text-dark);
   font-weight: 500;
 }
 
-.form-group input {
+.form-group input,
+.form-group select,
+.form-group textarea {
   width: 100%;
-  padding: 0.8rem;
-  border: 1px solid #ddd;
+  padding: 0.75rem;
+  border: 2px solid var(--border-color);
   border-radius: 5px;
   font-size: 1rem;
+  transition: border-color 0.3s ease;
 }
 
-.form-group input:focus {
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
   outline: none;
-  border-color: #2e7d32;
+  border-color: var(--forest-green);
 }
 
+/* ===================
+   BUTTON STYLES
+=================== */
+.btn {
+  padding: 0.75rem 2rem;
+  font-size: 1rem;
+  font-weight: 500;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  transition: all 0.3s ease;
+}
+
+.btn-primary {
+  background: var(--forest-green);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: var(--dark-forest);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+
+.btn-secondary {
+  background: white;
+  color: var(--forest-green);
+  border: 2px solid var(--forest-green);
+}
+
+.btn-secondary:hover {
+  background: var(--forest-green);
+  color: white;
+}
+
+.btn-large {
+  padding: 1rem 3rem;
+  font-size: 1.2rem;
+}
+
+.btn-block {
+  width: 100%;
+  display: block;
+}
+
+.btn:disabled {
+  background: var(--border-color);
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ===================
+   UTILITY CLASSES
+=================== */
 .error-message {
   background: #ffebee;
   color: #c62828;
   padding: 1rem;
   border-radius: 5px;
   margin-bottom: 1rem;
+  border-left: 4px solid #c62828;
 }
 
 .success-message {
@@ -374,304 +617,1180 @@ body {
   padding: 1rem;
   border-radius: 5px;
   margin-bottom: 1rem;
+  border-left: 4px solid #2e7d32;
 }
 
-.auth-links {
+.loading {
   text-align: center;
-  margin-top: 1.5rem;
+  padding: 3rem;
+  color: var(--text-light);
 }
 
-.auth-links a {
-  color: #2e7d32;
-  text-decoration: none;
-}
-
-.auth-links a:hover {
-  text-decoration: underline;
-}
-
-/* Dashboard */
+/* ===================
+   DASHBOARD STYLES
+=================== */
 .dashboard {
   max-width: 1200px;
-  margin: 2rem auto;
-  padding: 2rem;
+  margin: 0 auto;
+  padding: 3rem 2rem;
 }
 
 .dashboard h1 {
-  color: #2e7d32;
+  color: var(--forest-green);
+  font-size: 2.5rem;
   margin-bottom: 2rem;
 }
 
-.dashboard-welcome {
-  background: linear-gradient(135deg, #2e7d32 0%, #388e3c 100%);
-  color: white;
+.dashboard h2 {
+  color: var(--forest-green);
+  font-size: 2rem;
+  margin: 3rem 0 2rem 0;
+}
+
+/* Summary Cards at Top */
+.dashboard-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.summary-card {
+  background: white;
   padding: 2rem;
-  border-radius: 10px;
-  margin-bottom: 2rem;
+  border-radius: 12px;
+  text-align: center;
+  border: 2px solid var(--border-color);
+  box-shadow: var(--shadow);
+  transition: all 0.3s ease;
 }
 
+.summary-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--forest-green);
+}
+
+.summary-card h3 {
+  color: var(--text-light);
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.summary-number {
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--forest-green);
+  margin: 0;
+}
+
+/* Loan Cards Grid */
 .loans-grid {
   display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
   gap: 2rem;
 }
 
 .loan-card {
   background: white;
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-  display: grid;
-  grid-template-columns: 200px 1fr;
-  text-decoration: none;
-  color: inherit;
-  transition: transform 0.3s;
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: var(--shadow);
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
 }
 
 .loan-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--forest-green);
 }
 
-.loan-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+.loan-card h3 {
+  color: var(--forest-green);
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
 }
 
-.loan-details {
-  padding: 1.5rem;
-}
-
-.loan-status {
-  display: inline-block;
-  padding: 0.3rem 0.8rem;
-  border-radius: 5px;
-  font-size: 0.85rem;
-  margin-bottom: 1rem;
-}
-
-.loan-status.active {
-  background: #e8f5e9;
-  color: #2e7d32;
-}
-
-.loan-status.paid-off {
-  background: #e3f2fd;
-  color: #1976d2;
-}
-
-.loan-progress {
-  margin: 1rem 0;
-}
-
-.progress-bar-container {
-  background: #e0e0e0;
-  height: 20px;
-  border-radius: 10px;
-  overflow: hidden;
-  margin: 0.5rem 0;
-}
-
-.progress-bar {
-  height: 100%;
-  background: linear-gradient(90deg, #2e7d32 0%, #4caf50 100%);
-  transition: width 0.3s;
-}
-
-.loan-stats {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1rem;
-  margin-top: 1rem;
-}
-
-.stat {
-  text-align: center;
-}
-
-.stat-label {
-  font-size: 0.85rem;
-  color: #666;
-}
-
-.stat-value {
-  font-size: 1.1rem;
-  font-weight: bold;
-  color: #2e7d32;
-}
-
-/* Loan Detail Page */
-.loan-detail {
-  max-width: 900px;
-  margin: 2rem auto;
-  padding: 2rem;
-}
-
-.back-button {
-  background: #f5f5f5;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 5px;
-  cursor: pointer;
-  margin-bottom: 2rem;
+.loan-location {
+  color: var(--text-light);
+  font-size: 0.95rem;
+  margin-bottom: 1.5rem;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
 }
 
-.back-button:hover {
-  background: #e0e0e0;
+.loan-location:before {
+  content: "📍";
+  margin-right: 0.5rem;
 }
 
-.loan-header {
-  background: white;
-  padding: 2rem;
-  border-radius: 10px;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-  margin-bottom: 2rem;
+/* Loan Details Rows */
+.loan-details {
+  margin: 1.5rem 0;
+  flex-grow: 1;
 }
 
-.payment-section {
-  background: white;
-  padding: 2rem;
-  border-radius: 10px;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-  margin-bottom: 2rem;
-}
-
-.payment-form {
-  margin-top: 1.5rem;
-}
-
-.payment-amount-input {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 1rem;
-}
-
-.payment-amount-input input {
-  flex: 1;
-  padding: 0.8rem;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  font-size: 1rem;
-}
-
-.payment-amount-input button {
-  padding: 0.8rem 1.5rem;
-}
-
-#card-container {
-  margin: 1rem 0;
-  min-height: 100px;
-}
-
-/* Payment History */
-.payment-history {
-  max-width: 900px;
-  margin: 2rem auto;
-  padding: 2rem;
-}
-
-.payments-list {
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-  overflow: hidden;
-}
-
-.payment-item {
-  padding: 1.5rem;
-  border-bottom: 1px solid #eee;
+.loan-detail-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--border-color);
 }
 
-.payment-item:last-child {
+.loan-detail-row:last-child {
   border-bottom: none;
 }
 
-.payment-type {
-  display: inline-block;
-  padding: 0.3rem 0.8rem;
-  border-radius: 5px;
+.loan-detail-row span:first-child {
+  color: var(--text-light);
+  font-size: 0.95rem;
+}
+
+.loan-amount {
+  font-weight: 600;
+  color: var(--forest-green);
+  font-size: 1.1rem;
+}
+
+/* Status Badges */
+.status-badge {
+  padding: 0.4rem 1rem;
+  border-radius: 20px;
   font-size: 0.85rem;
-  margin-right: 1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-.payment-type.down-payment {
-  background: #e3f2fd;
-  color: #1976d2;
-}
-
-.payment-type.monthly {
+.status-badge.status-active {
   background: #e8f5e9;
   color: #2e7d32;
 }
 
-.payment-amount {
-  font-size: 1.2rem;
-  font-weight: bold;
-  color: #2e7d32;
+.status-badge.status-paid_off {
+  background: #fff3e0;
+  color: #f57c00;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-  .navbar-links {
-    gap: 1rem;
-  }
-
-  .hero h1 {
-    font-size: 2rem;
-  }
-
-  .property-detail-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .loan-card {
-    grid-template-columns: 1fr;
-  }
-
-  .loan-image {
-    height: 200px;
-  }
-
-  .loan-stats {
-    grid-template-columns: 1fr;
-  }
+/* Progress Bar */
+.progress-bar {
+  width: 100%;
+  height: 12px;
+  background: var(--border-color);
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 1.5rem 0 0.5rem 0;
 }
 
-/* Loading Spinner */
-.loading {
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--forest-green), var(--sandy-gold));
+  transition: width 0.5s ease;
+  border-radius: 10px;
+}
+
+.progress-text {
   text-align: center;
-  padding: 3rem;
-}
-
-.spinner {
-  border: 4px solid #f3f3f3;
-  border-top: 4px solid #2e7d32;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  animation: spin 1s linear infinite;
-  margin: 0 auto;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  color: var(--text-light);
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
 }
 
 /* Empty State */
 .empty-state {
   text-align: center;
-  padding: 3rem;
-  color: #666;
+  padding: 4rem 2rem;
+  background: white;
+  border-radius: 12px;
+  border: 2px dashed var(--border-color);
 }
 
-.empty-state h3 {
-  color: #2e7d32;
+.empty-state p {
+  color: var(--text-light);
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+}
+
+/* Button Full Width */
+.btn-full-width {
+  width: 100%;
+  text-align: center;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .loan-detail {
+    padding: 2rem 1rem;
+  }
+  
+  .loan-detail > .btn {
+    width: 100%;
+    margin-bottom: 0.5rem;
+    text-align: center;
+  }
+  
+  .dashboard h1 {
+    font-size: 2rem;
+  }
+  
+  .dashboard-summary {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .loans-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ===================
+   PROPERTIES PAGE STYLES
+=================== */
+.properties-page {
+  background: var(--light-green);
+  min-height: calc(100vh - 80px);
+  padding: 3rem 0;
+}
+
+.properties-page > h1,
+.properties-page > p,
+.properties-grid,
+.properties-page .empty-state {
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
+.properties-page h1 {
+  color: var(--forest-green);
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.properties-page > p {
+  color: var(--text-light);
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+/* Properties Grid */
+.properties-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 2.5rem;
+  justify-items: center;
+}
+
+/* Property Card */
+.property-card {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+}
+
+.property-card:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--forest-green);
+}
+
+/* Property Image */
+.property-image {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  display: block;
+}
+
+/* Property Content */
+.property-content {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.property-content h3 {
+  color: var(--forest-green);
+  font-size: 1.4rem;
   margin-bottom: 1rem;
+  line-height: 1.3;
+}
+
+/* Property Info Row */
+.property-info {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.property-info span {
+  color: var(--text-light);
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+/* Property Description */
+.property-content p {
+  color: var(--text-light);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin: 1rem 0;
+  flex-grow: 1;
+}
+
+/* Property Price */
+.property-price {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--forest-green);
+  margin: 1rem 0;
+  padding-top: 1rem;
+  border-top: 2px solid var(--border-color);
+}
+
+/* View Details Button in Card */
+.property-card .btn {
+  margin-top: auto;
+  width: 100%;
+  text-align: center;
+}
+
+.property-card:hover .btn {
+  background: var(--forest-green);
+  color: white;
+  transform: none;
+}
+
+/* Empty State for No Properties */
+.properties-page .empty-state {
+  text-align: center;
+  padding: 5rem 2rem;
+  background: white;
+  border-radius: 12px;
+  border: 2px dashed var(--border-color);
+}
+
+.properties-page .empty-state h3 {
+  color: var(--forest-green);
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+}
+
+.properties-page .empty-state p {
+  color: var(--text-light);
+  font-size: 1.1rem;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .properties-page {
+    padding: 2rem 1rem;
+  }
+  
+  .properties-page h1 {
+    font-size: 2rem;
+  }
+  
+  .properties-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .property-image {
+    height: 200px;
+  }
+  
+  .property-price {
+    font-size: 1.8rem;
+  }
+}
+
+/* ===================
+   PROPERTY DETAIL PAGE STYLES
+=================== */
+.property-detail {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 3rem 2rem;
+}
+
+.property-detail h1 {
+  color: var(--forest-green);
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+}
+
+.property-detail h2 {
+  color: var(--forest-green);
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+}
+
+/* Two Column Grid */
+.property-detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  margin-top: 2rem;
+}
+
+/* Property Image */
+.property-detail-image {
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+  box-shadow: var(--shadow-lg);
+}
+
+/* Property Details Section */
+.property-detail p {
+  line-height: 1.8;
+  color: var(--text-dark);
+  margin-top: 1rem;
+}
+
+.property-detail > div > div > div {
+  margin-top: 1.5rem;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.property-detail strong {
+  color: var(--forest-green);
+  font-weight: 600;
+}
+
+/* Feature Tags */
+.property-features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.feature-tag {
+  background: var(--light-green);
+  color: var(--forest-green);
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border: 1px solid var(--forest-green);
+}
+
+/* Price Box */
+.property-detail-grid > div > div:first-child {
+  background: #e8f5e9;
+  padding: 2rem;
+  border-radius: 12px;
+  margin-bottom: 2rem;
+  text-align: center;
+  border: 2px solid #2e7d32;
+}
+
+.property-detail-grid > div > div:first-child h2 {
+  color: #2e7d32;
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.property-detail-grid > div > div:first-child p {
+  color: var(--text-light);
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+/* Calculator Box */
+.calculator {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: var(--shadow-lg);
+  border: 2px solid var(--border-color);
+}
+
+.calculator h3 {
+  color: var(--forest-green);
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Calculator Options */
+.calculator-options {
+  display: grid;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.calculator-options label {
+  display: block;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin-bottom: 0.5rem;
+}
+
+.calculator-options select {
+  width: 100%;
+  padding: 0.75rem;
+  border: 2px solid var(--border-color);
+  border-radius: 5px;
+  font-size: 1rem;
+  background: white;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+}
+
+.calculator-options select:focus {
+  outline: none;
+  border-color: var(--forest-green);
+}
+
+/* Calculator Results */
+.calculator-results {
+  background: var(--light-green);
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.result-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.result-row:last-child {
+  border-bottom: none;
+  padding-top: 1rem;
+  margin-top: 0.5rem;
+  border-top: 2px solid var(--forest-green);
+}
+
+.result-label {
+  color: var(--text-light);
+  font-weight: 500;
+}
+
+.result-row span:last-child {
+  font-weight: 600;
+  color: var(--forest-green);
+}
+
+/* Total Cost Banner */
+.calculator > div > small {
+  display: block;
+  padding: 1rem;
+  background: #fff3cd;
+  border-radius: 5px;
+  color: #856404;
+  margin-top: 1rem;
+}
+
+/* Card Container */
+#card-container {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: white;
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+}
+
+/* Purchase Button */
+.calculator .btn-full-width {
+  margin-top: 1.5rem;
+  font-size: 1.1rem;
+  padding: 1rem;
+}
+
+/* Mobile Responsive */
+@media (max-width: 968px) {
+  .property-detail-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  
+  .property-detail h1 {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .property-detail {
+    padding: 2rem 1rem;
+  }
+  
+  .calculator {
+    padding: 1.5rem;
+  }
+}
+
+/* ===================
+   LOAN DETAIL PAGE STYLES
+=================== */
+.loan-detail {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 3rem 2rem;
+}
+
+.loan-detail h1 {
+  color: var(--forest-green);
+  font-size: 2.5rem;
+  margin: 2rem 0 0.5rem 0;
+}
+
+.loan-detail h2 {
+  color: var(--forest-green);
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Back Buttons */
+.loan-detail > .btn {
+  margin-bottom: 1rem;
+}
+
+/* Two Column Grid */
+.loan-detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+/* Info Card (Left Column) */
+.loan-info-card {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  border: 2px solid var(--border-color);
+  box-shadow: var(--shadow);
+}
+
+/* Payment Card (Right Column) */
+.payment-card {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  border: 2px solid var(--border-color);
+  box-shadow: var(--shadow);
+  height: fit-content;
+  position: sticky;
+  top: 100px;
+}
+
+/* Info Rows */
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.info-row:last-of-type {
+  border-bottom: none;
+}
+
+.info-row span:first-child {
+  color: var(--text-light);
+  font-weight: 500;
+}
+
+.info-row span:last-child {
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.info-row .highlight {
+  color: var(--forest-green);
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+/* Progress Section */
+.progress-section {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 2px solid var(--forest-green);
+}
+
+/* Payment Form */
+.payment-amount-section {
+  margin-bottom: 2rem;
+}
+
+.payment-amount-section label {
+  display: block;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin-bottom: 0.75rem;
+}
+
+/* Amount Input Group */
+.amount-input-group {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.currency-symbol {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--forest-green);
+}
+
+.amount-input-group input {
+  width: 100%;
+  padding: 1rem 1rem 1rem 2.5rem;
+  font-size: 1.2rem;
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  font-weight: 600;
+  transition: border-color 0.3s ease;
+}
+
+.amount-input-group input:focus {
+  outline: none;
+  border-color: var(--forest-green);
+}
+
+/* Quick Amount Buttons */
+.quick-amount-buttons {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.btn-small {
+  padding: 0.6rem 1.2rem;
+  font-size: 0.9rem;
+  flex: 1;
+}
+
+/* Payment Note */
+.payment-note {
+  font-size: 0.85rem;
+  color: var(--text-light);
+  padding: 0.75rem;
+  background: var(--light-green);
+  border-radius: 5px;
+  margin-top: 0.5rem;
+}
+
+/* Card Container for Square */
+#payment-card-container {
+  margin-top: 1rem;
+  padding: 1rem;
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  background: #fafafa;
+}
+
+/* Mobile Responsive */
+@media (max-width: 968px) {
+  .loan-detail-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .payment-card {
+    position: static;
+  }
+  
+  .quick-amount-buttons {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 768px) {
+  .loan-detail {
+    padding: 2rem 1rem;
+  }
+  
+  .loan-detail h1 {
+    font-size: 2rem;
+  }
+  
+  .loan-info-card,
+  .payment-card {
+    padding: 1.5rem;
+  }
+  
+  .info-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  
+  .loan-detail > .btn {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+}
+
+/* ===================
+   PAYMENT HISTORY PAGE STYLES
+=================== */
+.payment-history {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 3rem 2rem;
+}
+
+.payment-history h1 {
+  color: var(--forest-green);
+  font-size: 2.5rem;
+  margin: 2rem 0 1.5rem 0;
+}
+
+.payment-history h2 {
+  color: var(--forest-green);
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+}
+
+/* Back Button */
+.payment-history > .btn {
+  margin-bottom: 1rem;
+}
+
+/* Payment Summary Card */
+.payment-summary {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  border: 2px solid var(--border-color);
+  box-shadow: var(--shadow);
+  margin-bottom: 2rem;
+}
+
+.summary-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.summary-stats > div {
+  padding: 1rem;
+  background: var(--light-green);
+  border-radius: 8px;
+  border-left: 4px solid var(--forest-green);
+}
+
+.summary-stats strong {
+  display: block;
+  color: var(--text-light);
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.summary-stats div {
+  color: var(--forest-green);
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+/* Payments Table Container */
+.payments-table {
+  background: white;
+  border-radius: 12px;
+  border: 2px solid var(--border-color);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+/* Table Styles */
+.payments-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.payments-table thead {
+  background: var(--forest-green);
+  color: white;
+}
+
+.payments-table th {
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+  letter-spacing: 0.5px;
+}
+
+.payments-table tbody tr {
+  border-bottom: 1px solid var(--border-color);
+  transition: background-color 0.2s ease;
+}
+
+.payments-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.payments-table tbody tr:hover {
+  background: var(--light-green);
+}
+
+.payments-table td {
+  padding: 1rem;
+  color: var(--text-dark);
+}
+
+.payments-table td.amount {
+  font-weight: 600;
+  color: var(--forest-green);
+  font-size: 1.1rem;
+}
+
+/* Payments Total */
+.payments-total {
+  padding: 1.5rem;
+  background: var(--light-green);
+  border-top: 2px solid var(--forest-green);
+  text-align: right;
+  font-size: 1.2rem;
+}
+
+.payments-total strong {
+  color: var(--forest-green);
+  margin-right: 1rem;
+}
+
+/* Status Badges in Table */
+.payments-table .status-badge {
+  padding: 0.4rem 0.8rem;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.payments-table .status-badge.status-completed {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+/* Empty State */
+.payment-history .empty-state {
+  background: white;
+  padding: 4rem 2rem;
+  text-align: center;
+  border-radius: 12px;
+  border: 2px dashed var(--border-color);
+}
+
+.payment-history .empty-state p {
+  color: var(--text-light);
+  font-size: 1.1rem;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .payment-history {
+    padding: 2rem 1rem;
+  }
+  
+  .payment-history h1 {
+    font-size: 2rem;
+  }
+  
+  .payment-summary {
+    padding: 1.5rem;
+  }
+  
+  .summary-stats {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  /* Make table scrollable on mobile */
+  .payments-table {
+    overflow-x: auto;
+  }
+  
+  .payments-table table {
+    min-width: 600px;
+  }
+  
+  .payments-table th,
+  .payments-table td {
+    padding: 0.75rem 0.5rem;
+    font-size: 0.9rem;
+  }
+}
+
+/* ===================
+   RESPONSIVE DESIGN
+=================== */
+@media (max-width: 768px) {
+  .section-title {
+    font-size: 2rem;
+  }
+  
+  .auth-container {
+    padding: 2rem;
+  }
+  
+  .hero-buttons .btn {
+    width: 100%;
+  }
+}
+
+/* ==========================================
+   SOLD PROPERTIES PAGE
+   ========================================== */
+
+.sold-properties-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 3rem 2rem;
+}
+
+.sold-properties-page h1 {
+  color: var(--forest-green);
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.sold-properties-page .subtitle {
+  color: var(--text-light);
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+/* Filter Tabs */
+.filter-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.filter-tabs button {
+  padding: 0.75rem 1.5rem;
+  border: 2px solid var(--border-color);
+  background: white;
+  color: var(--text-color);
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.filter-tabs button:hover {
+  border-color: var(--forest-green);
+  background: var(--light-green);
+}
+
+.filter-tabs button.active {
+  background: var(--forest-green);
+  color: white;
+  border-color: var(--forest-green);
+}
+
+/* Sold Properties - Override grid for centering */
+.sold-properties-page .properties-grid {
+  grid-template-columns: repeat(auto-fit, minmax(320px, 400px));
+  justify-content: center;
+}
+
+/* Sold Property Cards */
+.sold-property-card {
+  position: relative;
+  opacity: 0.95;
+  width: 100%;
+  max-width: 400px;
+}
+
+.sold-property-card:hover {
+  opacity: 1;
+  transform: translateY(-2px);
+}
+
+.status-badge {
+  position: absolute;
+  top: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  z-index: 10;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  text-align: center;
+}
+
+.badge-sold {
+  background: var(--forest-green);
+  color: white;
+}
+
+.badge-contract {
+  background: var(--sandy-gold);
+  color: white;
+}
+
+.sale-date {
+  font-size: 0.9rem;
+  color: var(--text-light);
+  margin-top: 0.5rem;
+  font-style: italic;
+}
+
+.no-properties {
+  text-align: center;
+  padding: 3rem;
+  color: var(--text-light);
+  font-size: 1.1rem;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .sold-properties-page {
+    padding: 2rem 1rem;
+  }
+
+  .sold-properties-page h1 {
+    font-size: 2rem;
+  }
+
+  .filter-tabs button {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
 }

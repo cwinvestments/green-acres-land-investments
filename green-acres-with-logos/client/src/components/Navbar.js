@@ -30,7 +30,6 @@ function Navbar() {
         <div className="nav-links">
           <Link to="/" className="nav-link">Home</Link>
           <Link to="/properties" className="nav-link">Properties</Link>
-          <Link to="/sold-properties" className="nav-link">Recent Sales</Link>
           
           {user ? (
             <>

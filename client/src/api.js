@@ -33,4 +33,12 @@ export const createLoan = (loanData) => api.post('/loans', loanData);
 export const createPayment = (paymentData) => api.post('/payments', paymentData);
 export const getPaymentHistory = (loanId) => api.get(`/loans/${loanId}/payments`);
 
+// Currency formatting helper
+export const formatCurrency = (amount) => {
+  return parseFloat(amount).toLocaleString('en-US', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+};
+
 export default api;

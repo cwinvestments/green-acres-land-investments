@@ -10,6 +10,9 @@ const db = require('./database');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// Initialize database
+db.initDatabase().catch(console.error);
+
 // Initialize Square client
 const squareClient = new Client({
   accessToken: process.env.SQUARE_ACCESS_TOKEN,
@@ -52,20 +55,20 @@ function calculateFinancing(price, downPaymentPercentage, termMonths) {
   // Determine interest rate based on down payment percentage
   let interestRate;
   if (downPaymentPercentage === 99) {
-    interestRate = 18; // $99 down special rate
+    interestRate = 18;
   } else if (downPaymentPercentage === 20) {
     interestRate = 12;
   } else {
-    interestRate = 8; // 25%, 35%, 50% all get 8%
+    interestRate = 8;
   }
   
-  // Calculate principal (remaining amount after down payment + processing fee)
+  // Calculate principal
   const principal = (price - downPayment) + processingFee;
   
   // Calculate monthly interest rate
   const monthlyRate = interestRate / 100 / 12;
   
-  // Calculate monthly payment using amortization formula
+  // Calculate monthly payment
   let monthlyPayment;
   if (monthlyRate === 0) {
     monthlyPayment = principal / termMonths;
@@ -99,14 +102,13 @@ app.post('/api/register', async (req, res) => {
   try {
     const { email, password, firstName, lastName, phone } = req.body;
 
-    // Validate input
     if (!email || !password || !firstName || !lastName) {
       return res.status(400).json({ error: 'All fields are required' });
     }
 
     // Check if user exists
-    const existingUser = db.prepare('SELECT id FROM users WHERE email = ?').get(email);
-    if (existingUser) {
+    const existingUser = await db.pool.query('SELECT id FROM users WHERE email = $1', [email]);
+    if (existingUser.rows.length > 0) {
       return res.status(400).json({ error: 'Email already registered' });
     }
 
@@ -114,14 +116,16 @@ app.post('/api/register', async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Insert user
-    const result = db.prepare(`
-      INSERT INTO users (email, password, first_name, last_name, phone)
-      VALUES (?, ?, ?, ?, ?)
-    `).run(email, hashedPassword, firstName, lastName, phone || null);
+    const result = await db.pool.query(
+      'INSERT INTO users (email, password, first_name, last_name, phone) VALUES ($1, $2, $3, $4, $5) RETURNING id, email',
+      [email, hashedPassword, firstName, lastName, phone || null]
+    );
+
+    const user = result.rows[0];
 
     // Generate token
     const token = jwt.sign(
-      { id: result.lastInsertRowid, email },
+      { id: user.id, email: user.email },
       process.env.JWT_SECRET,
       { expiresIn: '7d' }
     );
@@ -130,8 +134,8 @@ app.post('/api/register', async (req, res) => {
       message: 'Registration successful',
       token,
       user: {
-        id: result.lastInsertRowid,
-        email,
+        id: user.id,
+        email: user.email,
         firstName,
         lastName
       }
@@ -148,10 +152,12 @@ app.post('/api/login', async (req, res) => {
     const { email, password } = req.body;
 
     // Find user
-    const user = db.prepare('SELECT * FROM users WHERE email = ?').get(email);
-    if (!user) {
+    const result = await db.pool.query('SELECT * FROM users WHERE email = $1', [email]);
+    if (result.rows.length === 0) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
+
+    const user = result.rows[0];
 
     // Check password
     const validPassword = await bcrypt.compare(password, user.password);
@@ -184,42 +190,44 @@ app.post('/api/login', async (req, res) => {
 
 // ==================== PROPERTY ROUTES ====================
 
-// Get all properties
-app.get('/api/properties', (req, res) => {
+// Get all properties (available only)
+app.get('/api/properties', async (req, res) => {
   try {
-    const properties = db.prepare(`
-      SELECT * FROM properties 
-      WHERE status = 'available'
-      ORDER BY created_at DESC
-    `).all();
+    const result = await db.pool.query(
+      "SELECT * FROM properties WHERE status = 'available' ORDER BY created_at DESC"
+    );
 
-    // Parse features JSON
-    const propertiesWithFeatures = properties.map(prop => ({
-      ...prop,
-      features: prop.features ? JSON.parse(prop.features) : []
-    }));
-
-    res.json(propertiesWithFeatures);
+    res.json(result.rows);
   } catch (error) {
     console.error('Get properties error:', error);
     res.status(500).json({ error: 'Failed to fetch properties' });
   }
 });
 
-// Get single property
-app.get('/api/properties/:id', (req, res) => {
+// Get sold/under contract properties for showcase
+app.get('/api/properties/sold', async (req, res) => {
   try {
-    const property = db.prepare('SELECT * FROM properties WHERE id = ?')
-      .get(req.params.id);
+    const result = await db.pool.query(
+      "SELECT * FROM properties WHERE status IN ('pending', 'under_contract', 'sold') ORDER BY created_at DESC"
+    );
 
-    if (!property) {
+    res.json(result.rows);
+  } catch (error) {
+    console.error('Get sold properties error:', error);
+    res.status(500).json({ error: 'Failed to fetch sold properties' });
+  }
+});
+
+// Get single property
+app.get('/api/properties/:id', async (req, res) => {
+  try {
+    const result = await db.pool.query('SELECT * FROM properties WHERE id = $1', [req.params.id]);
+
+    if (result.rows.length === 0) {
       return res.status(404).json({ error: 'Property not found' });
     }
 
-    // Parse features JSON
-    property.features = property.features ? JSON.parse(property.features) : [];
-
-    res.json(property);
+    res.json(result.rows[0]);
   } catch (error) {
     console.error('Get property error:', error);
     res.status(500).json({ error: 'Failed to fetch property' });
@@ -229,17 +237,17 @@ app.get('/api/properties/:id', (req, res) => {
 // ==================== LOAN ROUTES ====================
 
 // Get user's loans
-app.get('/api/loans', authenticateToken, (req, res) => {
+app.get('/api/loans', authenticateToken, async (req, res) => {
   try {
-    const loans = db.prepare(`
-      SELECT l.*, p.title as property_title, p.location, p.image_url
+    const result = await db.pool.query(`
+      SELECT l.*, p.title as property_title, p.location
       FROM loans l
       JOIN properties p ON l.property_id = p.id
-      WHERE l.user_id = ?
+      WHERE l.user_id = $1
       ORDER BY l.created_at DESC
-    `).all(req.user.id);
+    `, [req.user.id]);
 
-    res.json(loans);
+    res.json(result.rows);
   } catch (error) {
     console.error('Get loans error:', error);
     res.status(500).json({ error: 'Failed to fetch loans' });
@@ -247,20 +255,20 @@ app.get('/api/loans', authenticateToken, (req, res) => {
 });
 
 // Get single loan
-app.get('/api/loans/:id', authenticateToken, (req, res) => {
+app.get('/api/loans/:id', authenticateToken, async (req, res) => {
   try {
-    const loan = db.prepare(`
-      SELECT l.*, p.title as property_title, p.location, p.image_url, p.description
+    const result = await db.pool.query(`
+      SELECT l.*, p.title as property_title, p.location, p.description
       FROM loans l
       JOIN properties p ON l.property_id = p.id
-      WHERE l.id = ? AND l.user_id = ?
-    `).get(req.params.id, req.user.id);
+      WHERE l.id = $1 AND l.user_id = $2
+    `, [req.params.id, req.user.id]);
 
-    if (!loan) {
+    if (result.rows.length === 0) {
       return res.status(404).json({ error: 'Loan not found' });
     }
 
-    res.json(loan);
+    res.json(result.rows[0]);
   } catch (error) {
     console.error('Get loan error:', error);
     res.status(500).json({ error: 'Failed to fetch loan' });
@@ -272,41 +280,51 @@ app.post('/api/loans', authenticateToken, async (req, res) => {
   try {
     const { propertyId, downPaymentPercentage, termMonths, paymentNonce } = req.body;
 
-    // Get property
-    const property = db.prepare('SELECT * FROM properties WHERE id = ? AND status = ?')
-      .get(propertyId, 'available');
+    console.log('Purchase request:', { propertyId, downPaymentPercentage, termMonths });
 
-    if (!property) {
+    // Get property
+    const propertyResult = await db.pool.query(
+      'SELECT * FROM properties WHERE id = $1 AND status = $2',
+      [propertyId, 'available']
+    );
+
+    if (propertyResult.rows.length === 0) {
       return res.status(404).json({ error: 'Property not available' });
     }
 
+    const property = propertyResult.rows[0];
+    console.log('Property found:', property.title, 'Price:', property.price);
+
     // Calculate financing
     const financing = calculateFinancing(property.price, downPaymentPercentage, termMonths);
+    console.log('Financing calculated:', financing);
 
     // Process payment with Square
     const { result } = await squareClient.paymentsApi.createPayment({
       sourceId: paymentNonce,
       amountMoney: {
-        amount: Math.round(financing.downPayment * 100), // Convert to cents
+        amount: Math.round(financing.downPayment * 100),
         currency: 'USD',
       },
       locationId: process.env.SQUARE_LOCATION_ID,
       idempotencyKey: `${Date.now()}-${req.user.id}-${propertyId}`,
     });
 
+    console.log('Square payment successful:', result.payment.id);
+
     // Create loan
-    const loanResult = db.prepare(`
+    const loanResult = await db.pool.query(`
       INSERT INTO loans (
-        user_id, property_id, property_price, down_payment, down_payment_percentage,
-        processing_fee, principal, interest_rate, term_months, monthly_payment,
-        total_amount, balance, square_down_payment_id, status
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `).run(
+        user_id, property_id, purchase_price, down_payment, 
+        processing_fee, loan_amount, interest_rate, term_months, 
+        monthly_payment, total_amount, balance_remaining, status
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+      RETURNING id
+    `, [
       req.user.id,
       propertyId,
       property.price,
       financing.downPayment,
-      financing.downPaymentPercentage,
       financing.processingFee,
       financing.principal,
       financing.interestRate,
@@ -314,30 +332,31 @@ app.post('/api/loans', authenticateToken, async (req, res) => {
       financing.monthlyPayment,
       financing.totalAmount,
       financing.principal,
-      result.payment.id,
       'active'
-    );
+    ]);
+
+    const loanId = loanResult.rows[0].id;
+    console.log('Loan created:', loanId);
 
     // Record payment
-    db.prepare(`
+    await db.pool.query(`
       INSERT INTO payments (loan_id, user_id, amount, payment_type, square_payment_id, status)
-      VALUES (?, ?, ?, ?, ?, ?)
-    `).run(
-      loanResult.lastInsertRowid,
+      VALUES ($1, $2, $3, $4, $5, $6)
+    `, [
+      loanId,
       req.user.id,
       financing.downPayment,
       'down_payment',
       result.payment.id,
       'completed'
-    );
+    ]);
 
     // Update property status
-    db.prepare('UPDATE properties SET status = ? WHERE id = ?')
-      .run('sold', propertyId);
+    await db.pool.query('UPDATE properties SET status = $1 WHERE id = $2', ['pending', propertyId]);
 
     res.status(201).json({
       message: 'Purchase successful',
-      loanId: loanResult.lastInsertRowid,
+      loanId: loanId,
       loan: {
         ...financing,
         propertyId,
@@ -361,14 +380,18 @@ app.post('/api/payments', authenticateToken, async (req, res) => {
     const { loanId, amount, paymentNonce } = req.body;
 
     // Get loan
-    const loan = db.prepare('SELECT * FROM loans WHERE id = ? AND user_id = ?')
-      .get(loanId, req.user.id);
+    const loanResult = await db.pool.query(
+      'SELECT * FROM loans WHERE id = $1 AND user_id = $2',
+      [loanId, req.user.id]
+    );
 
-    if (!loan) {
+    if (loanResult.rows.length === 0) {
       return res.status(404).json({ error: 'Loan not found' });
     }
 
-    if (loan.balance <= 0) {
+    const loan = loanResult.rows[0];
+
+    if (loan.balance_remaining <= 0) {
       return res.status(400).json({ error: 'Loan already paid off' });
     }
 
@@ -376,7 +399,7 @@ app.post('/api/payments', authenticateToken, async (req, res) => {
     const { result } = await squareClient.paymentsApi.createPayment({
       sourceId: paymentNonce,
       amountMoney: {
-        amount: Math.round(amount * 100), // Convert to cents
+        amount: Math.round(amount * 100),
         currency: 'USD',
       },
       locationId: process.env.SQUARE_LOCATION_ID,
@@ -384,25 +407,27 @@ app.post('/api/payments', authenticateToken, async (req, res) => {
     });
 
     // Calculate new balance
-    const newBalance = Math.max(0, loan.balance - amount);
+    const newBalance = Math.max(0, loan.balance_remaining - amount);
+    const status = newBalance === 0 ? 'paid_off' : 'active';
 
     // Update loan balance
-    const status = newBalance === 0 ? 'paid_off' : 'active';
-    db.prepare('UPDATE loans SET balance = ?, status = ? WHERE id = ?')
-      .run(newBalance, status, loanId);
+    await db.pool.query(
+      'UPDATE loans SET balance_remaining = $1, status = $2 WHERE id = $3',
+      [newBalance, status, loanId]
+    );
 
     // Record payment
-    db.prepare(`
+    await db.pool.query(`
       INSERT INTO payments (loan_id, user_id, amount, payment_type, square_payment_id, status)
-      VALUES (?, ?, ?, ?, ?, ?)
-    `).run(
+      VALUES ($1, $2, $3, $4, $5, $6)
+    `, [
       loanId,
       req.user.id,
       amount,
       'monthly_payment',
       result.payment.id,
       'completed'
-    );
+    ]);
 
     res.json({
       message: 'Payment successful',
@@ -420,15 +445,15 @@ app.post('/api/payments', authenticateToken, async (req, res) => {
 });
 
 // Get payment history for a loan
-app.get('/api/loans/:id/payments', authenticateToken, (req, res) => {
+app.get('/api/loans/:id/payments', authenticateToken, async (req, res) => {
   try {
-    const payments = db.prepare(`
+    const result = await db.pool.query(`
       SELECT * FROM payments
-      WHERE loan_id = ? AND user_id = ?
+      WHERE loan_id = $1 AND user_id = $2
       ORDER BY payment_date DESC
-    `).all(req.params.id, req.user.id);
+    `, [req.params.id, req.user.id]);
 
-    res.json(payments);
+    res.json(result.rows);
   } catch (error) {
     console.error('Get payments error:', error);
     res.status(500).json({ error: 'Failed to fetch payments' });

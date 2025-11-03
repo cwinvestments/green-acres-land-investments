@@ -1,214 +1,174 @@
-const sqlite3 = require('sqlite3').verbose();
-const path = require('path');
-const fs = require('fs');
+const { Pool } = require('pg');
 
-const dbPath = process.env.DATABASE_PATH || './greenacres.db';
-const db = new sqlite3.Database(dbPath);
+// Create PostgreSQL connection pool
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false
+  }
+});
 
-// Enable foreign keys
-db.run('PRAGMA foreign_keys = ON');
+// Initialize database tables
+const initDatabase = async () => {
+  const client = await pool.connect();
+  
+  try {
+    console.log('📊 Initializing database...');
 
-// Create tables
-function initializeDatabase() {
-  console.log('📊 Initializing database...');
-
-  db.serialize(() => {
     // Users table
-    db.run(`
+    await client.query(`
       CREATE TABLE IF NOT EXISTS users (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        id SERIAL PRIMARY KEY,
         email TEXT UNIQUE NOT NULL,
         password TEXT NOT NULL,
         first_name TEXT NOT NULL,
         last_name TEXT NOT NULL,
         phone TEXT,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     `);
 
     // Properties table
-    db.run(`
+    await client.query(`
       CREATE TABLE IF NOT EXISTS properties (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        id SERIAL PRIMARY KEY,
         title TEXT NOT NULL,
-        description TEXT NOT NULL,
-        price REAL NOT NULL,
-        acres REAL NOT NULL,
+        description TEXT,
         location TEXT NOT NULL,
-        county TEXT NOT NULL,
         state TEXT NOT NULL,
-        zip TEXT NOT NULL,
-        latitude REAL,
-        longitude REAL,
-        image_url TEXT,
-        features TEXT,
+        county TEXT NOT NULL,
+        acres DECIMAL NOT NULL,
+        price DECIMAL NOT NULL,
+        images TEXT,
         status TEXT DEFAULT 'available',
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        apn TEXT,
+        coordinates TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     `);
 
     // Loans table
-    db.run(`
+    await client.query(`
       CREATE TABLE IF NOT EXISTS loans (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        user_id INTEGER NOT NULL,
-        property_id INTEGER NOT NULL,
-        property_price REAL NOT NULL,
-        down_payment REAL NOT NULL,
-        down_payment_percentage REAL NOT NULL,
-        processing_fee REAL NOT NULL,
-        principal REAL NOT NULL,
-        interest_rate REAL NOT NULL,
+        id SERIAL PRIMARY KEY,
+        user_id INTEGER NOT NULL REFERENCES users(id),
+        property_id INTEGER NOT NULL REFERENCES properties(id),
+        purchase_price DECIMAL NOT NULL,
+        down_payment DECIMAL NOT NULL,
+        processing_fee DECIMAL NOT NULL,
+        loan_amount DECIMAL NOT NULL,
+        interest_rate DECIMAL NOT NULL,
         term_months INTEGER NOT NULL,
-        monthly_payment REAL NOT NULL,
-        total_amount REAL NOT NULL,
-        balance REAL NOT NULL,
+        monthly_payment DECIMAL NOT NULL,
+        total_amount DECIMAL NOT NULL,
+        balance_remaining DECIMAL NOT NULL,
+        next_payment_date DATE,
         status TEXT DEFAULT 'active',
-        square_down_payment_id TEXT,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (user_id) REFERENCES users(id),
-        FOREIGN KEY (property_id) REFERENCES properties(id)
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     `);
 
     // Payments table
-    db.run(`
+    await client.query(`
       CREATE TABLE IF NOT EXISTS payments (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        loan_id INTEGER NOT NULL,
-        user_id INTEGER NOT NULL,
-        amount REAL NOT NULL,
+        id SERIAL PRIMARY KEY,
+        loan_id INTEGER NOT NULL REFERENCES loans(id),
+        user_id INTEGER NOT NULL REFERENCES users(id),
+        amount DECIMAL NOT NULL,
         payment_type TEXT NOT NULL,
         square_payment_id TEXT,
         status TEXT DEFAULT 'completed',
-        payment_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (loan_id) REFERENCES loans(id),
-        FOREIGN KEY (user_id) REFERENCES users(id)
+        payment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     `);
 
-    // Insert sample properties if none exist
-    db.get('SELECT COUNT(*) as count FROM properties', (err, row) => {
-      if (err) {
-        console.error('Error checking properties:', err);
-        return;
-      }
-      
-      if (row && row.count === 0) {
-        console.log('🏞️  Adding sample properties...');
-        
-        const sampleProperties = [
-          {
-            title: "Peaceful 5 Acre Retreat",
-            description: "Beautiful 5-acre parcel with mature trees and gentle rolling terrain. Perfect for building your dream home or weekend getaway. Easy access to county roads.",
-            price: 4500,
-            acres: 5.0,
-            location: "Near Lake City",
-            county: "Columbia",
-            state: "FL",
-            zip: "32055",
-            image_url: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800",
-            features: JSON.stringify(["Wooded", "Level terrain", "County road access", "Power nearby"]),
-            status: "available"
-          },
-          {
-            title: "10 Acre Investment Property",
-            description: "Prime 10-acre investment parcel with highway frontage. Great for commercial development or residential subdivision. Survey on file.",
-            price: 8900,
-            acres: 10.0,
-            location: "Near Jacksonville",
-            county: "Duval",
-            state: "FL",
-            zip: "32220",
-            image_url: "https://images.unsplash.com/photo-1464146072230-91cabc968266?w=800",
-            features: JSON.stringify(["Highway frontage", "Commercial potential", "Cleared", "Surveyed"]),
-            status: "available"
-          },
-          {
-            title: "2.5 Acre Homesite",
-            description: "Perfect 2.5-acre homesite in quiet rural area. Well-maintained county road access, electricity available at the street. Great views!",
-            price: 2200,
-            acres: 2.5,
-            location: "Near Gainesville",
-            county: "Alachua",
-            state: "FL",
-            zip: "32608",
-            image_url: "https://images.unsplash.com/photo-1501594907352-04cda38ebc29?w=800",
-            features: JSON.stringify(["Cleared", "Power available", "Rural setting", "Near town"]),
-            status: "available"
-          },
-          {
-            title: "20 Acre Ranch Land",
-            description: "Spacious 20-acre ranch property with mix of open pasture and wooded areas. Excellent for cattle, horses, or agricultural use. Pond on property.",
-            price: 15000,
-            acres: 20.0,
-            location: "Near Ocala",
-            county: "Marion",
-            state: "FL",
-            zip: "34470",
-            image_url: "https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=800",
-            features: JSON.stringify(["Pasture", "Wooded areas", "Pond", "Agricultural zoning"]),
-            status: "available"
-          },
-          {
-            title: "3 Acre Wooded Lot",
-            description: "Secluded 3-acre wooded lot offering privacy and natural beauty. Great for nature lovers or those seeking a quiet building site away from city noise.",
-            price: 3200,
-            acres: 3.0,
-            location: "Near Tallahassee",
-            county: "Leon",
-            state: "FL",
-            zip: "32310",
-            image_url: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800",
-            features: JSON.stringify(["Heavily wooded", "Private", "Wildlife", "Quiet location"]),
-            status: "available"
-          },
-          {
-            title: "7.5 Acre Corner Lot",
-            description: "Excellent 7.5-acre corner lot with dual road frontage. High visibility and easy access make this perfect for various uses. Utilities available.",
-            price: 6800,
-            acres: 7.5,
-            location: "Near Panama City",
-            county: "Bay",
-            state: "FL",
-            zip: "32401",
-            image_url: "https://images.unsplash.com/photo-1426604966848-d7adac402bff?w=800",
-            features: JSON.stringify(["Corner lot", "Dual road frontage", "Utilities available", "High visibility"]),
-            status: "available"
-          }
-        ];
+    // Add sample properties if none exist
+    const { rows } = await client.query('SELECT COUNT(*) FROM properties');
+    if (parseInt(rows[0].count) === 0) {
+      await addSampleProperties(client);
+    }
 
-        const stmt = db.prepare(`
-          INSERT INTO properties (title, description, price, acres, location, county, state, zip, image_url, features, status)
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        `);
+    console.log('✅ Database initialized successfully');
+  } catch (error) {
+    console.error('❌ Database initialization error:', error);
+    throw error;
+  } finally {
+    client.release();
+  }
+};
 
-        sampleProperties.forEach(property => {
-          stmt.run(
-            property.title,
-            property.description,
-            property.price,
-            property.acres,
-            property.location,
-            property.county,
-            property.state,
-            property.zip,
-            property.image_url,
-            property.features,
-            property.status
-          );
-        });
+// Add sample properties
+const addSampleProperties = async (client) => {
+  const properties = [
+    {
+      title: 'Peaceful 5 Acre Retreat',
+      description: 'Beautiful wooded 5-acre parcel perfect for your dream home or weekend getaway. Gently rolling terrain with mature trees.',
+      price: 4500,
+      acres: 5.0,
+      location: 'Smith County',
+      state: 'Texas',
+      county: 'Smith'
+    },
+    {
+      title: '10 Acre Investment Property',
+      description: 'Prime 10-acre tract with road frontage. Great investment opportunity in growing area.',
+      price: 8900,
+      acres: 10.0,
+      location: 'Henderson County',
+      state: 'Texas',
+      county: 'Henderson'
+    },
+    {
+      title: '2.5 Acre Homesite',
+      description: 'Perfect starter lot for building your first home. Level terrain, utilities nearby.',
+      price: 2200,
+      acres: 2.5,
+      location: 'Van Zandt County',
+      state: 'Texas',
+      county: 'Van Zandt'
+    },
+    {
+      title: '20 Acre Ranch Land',
+      description: 'Spacious 20-acre ranch land with creek running through property. Excellent for livestock or recreation.',
+      price: 15000,
+      acres: 20.0,
+      location: 'Cherokee County',
+      state: 'Texas',
+      county: 'Cherokee'
+    },
+    {
+      title: '3 Acre Wooded Lot',
+      description: 'Secluded 3-acre wooded lot with beautiful hardwood trees. Great for hunting or nature lovers.',
+      price: 3200,
+      acres: 3.0,
+      location: 'Anderson County',
+      state: 'Texas',
+      county: 'Anderson'
+    },
+    {
+      title: '7.5 Acre Corner Lot',
+      description: 'Corner lot with great visibility and access. Perfect for commercial or residential development.',
+      price: 6800,
+      acres: 7.5,
+      location: 'Rusk County',
+      state: 'Texas',
+      county: 'Rusk'
+    }
+  ];
 
-        stmt.finalize();
-        console.log(`✅ Added ${sampleProperties.length} sample properties`);
-      }
+  for (const prop of properties) {
+    await client.query(
+      `INSERT INTO properties (title, description, price, acres, location, state, county, status)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, 'available')`,
+      [prop.title, prop.description, prop.price, prop.acres, prop.location, prop.state, prop.county]
+    );
+  }
 
-      console.log('✅ Database initialized successfully\n');
-    });
-  });
-}
+  console.log('✅ Sample properties added');
+};
 
-// Initialize on import
-initializeDatabase();
-
-module.exports = db;
+// Export pool for queries
+module.exports = {
+  pool,
+  initDatabase
+};

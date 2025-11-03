@@ -1,0 +1,53 @@
+<svg width="700" height="200" viewBox="0 0 700 200" xmlns="http://www.w3.org/2000/svg">
+    <!-- Circular badge on left -->
+    <circle cx="100" cy="100" r="90" fill="#2c5f2d" stroke="#1e4620" stroke-width="4"/>
+    <circle cx="100" cy="100" r="80" fill="none" stroke="#f4a460" stroke-width="2"/>
+    
+    <!-- Sun and Mountains -->
+    <g transform="translate(100, 60)">
+        <!-- Sun rays -->
+        <line x1="0" y1="-15" x2="0" y2="-22" stroke="#f4a460" stroke-width="2" stroke-linecap="round"/>
+        <line x1="6" y1="-13" x2="10" y2="-20" stroke="#f4a460" stroke-width="2" stroke-linecap="round"/>
+        <line x1="-6" y1="-13" x2="-10" y2="-20" stroke="#f4a460" stroke-width="2" stroke-linecap="round"/>
+        <line x1="12" y1="-9" x2="17" y2="-16" stroke="#f4a460" stroke-width="2" stroke-linecap="round"/>
+        <line x1="-12" y1="-9" x2="-17" y2="-16" stroke="#f4a460" stroke-width="2" stroke-linecap="round"/>
+        
+        <!-- Sun -->
+        <circle cx="0" cy="0" r="13" fill="#f4a460" opacity="0.3"/>
+        <circle cx="0" cy="0" r="11" fill="#f4a460"/>
+        
+        <!-- Mountains -->
+        <g transform="translate(0, 12)">
+            <path d="M -35,15 L -18,-8 L -4,5" fill="#1e4620" stroke="#0d2310" stroke-width="1.5"/>
+            <path d="M -4,5 L 10,-10 L 22,3 L 35,15 L -35,15 Z" fill="#2c5f2d" stroke="#1e4620" stroke-width="1.5"/>
+        </g>
+    </g>
+    
+    <!-- Land horizon in badge -->
+    <line x1="40" y1="115" x2="160" y2="115" stroke="#f4a460" stroke-width="1.5" opacity="0.4"/>
+    
+    <!-- GREEN ACRES in badge -->
+    <text x="100" y="105" font-family="Georgia, serif" font-size="26" font-weight="bold" fill="#f4a460" text-anchor="middle">GREEN</text>
+    <text x="100" y="130" font-family="Georgia, serif" font-size="26" font-weight="bold" fill="#f4a460" text-anchor="middle">ACRES</text>
+    
+    <!-- Vertical divider -->
+    <line x1="210" y1="35" x2="210" y2="165" stroke="#f4a460" stroke-width="3"/>
+    
+    <!-- Text content on right -->
+    <g transform="translate(240, 0)">
+        <!-- GREEN ACRES -->
+        <text x="0" y="75" font-family="Georgia, serif" font-size="52" font-weight="bold" fill="#2c5f2d" text-anchor="start">GREEN ACRES</text>
+        
+        <!-- Divider line -->
+        <line x1="0" y1="95" x2="420" y2="95" stroke="#f4a460" stroke-width="3"/>
+        
+        <!-- LAND INVESTMENTS, LLC -->
+        <text x="0" y="122" font-family="Arial, sans-serif" font-size="20" font-weight="600" fill="#2c5f2d" text-anchor="start" letter-spacing="3">LAND INVESTMENTS, LLC</text>
+        
+        <!-- Tagline -->
+        <text x="0" y="148" font-family="Arial, sans-serif" font-size="16" font-weight="500" fill="#5a7c5b" text-anchor="start" font-style="italic">Your Land. Your Terms.</text>
+        
+        <!-- EST -->
+        <text x="0" y="168" font-family="Arial, sans-serif" font-size="12" fill="#888" text-anchor="start" letter-spacing="1.5">EST. 2024</text>
+    </g>
+</svg>

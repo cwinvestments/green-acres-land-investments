@@ -96,15 +96,16 @@ npm start
 
 ## 📚 Next Steps
 
-- Read the full README.md for detailed documentation
+- Read the full GREEN-ACRES-PROJECT-GUIDE.md for detailed documentation
 - Customize the property listings in server/database.js
 - Update styling in client/src/index.css
 - When ready for production, switch Square to production mode
 
 ## 🆘 Need Help?
 
-Check the README.md for:
-- Complete API documentation
+Check the GREEN-ACRES-PROJECT-GUIDE.md for:
+- Complete project status and architecture
+- API documentation and conventions
 - Deployment instructions
 - Detailed troubleshooting
 

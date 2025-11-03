@@ -1,0 +1,46 @@
+<svg width="380" height="380" viewBox="0 0 380 380" xmlns="http://www.w3.org/2000/svg">
+    <!-- Circular badge -->
+    <circle cx="190" cy="190" r="170" fill="#2c5f2d" stroke="#1e4620" stroke-width="6"/>
+    <circle cx="190" cy="190" r="152" fill="none" stroke="#f4a460" stroke-width="3"/>
+    
+    <!-- Sun and Mountains -->
+    <g transform="translate(190, 105)">
+        <!-- FIVE sun rays -->
+        <line x1="0" y1="-28" x2="0" y2="-42" stroke="#f4a460" stroke-width="3" stroke-linecap="round"/>
+        <line x1="12" y1="-25" x2="18" y2="-38" stroke="#f4a460" stroke-width="3" stroke-linecap="round"/>
+        <line x1="-12" y1="-25" x2="-18" y2="-38" stroke="#f4a460" stroke-width="3" stroke-linecap="round"/>
+        <line x1="22" y1="-18" x2="33" y2="-30" stroke="#f4a460" stroke-width="3" stroke-linecap="round"/>
+        <line x1="-22" y1="-18" x2="-33" y2="-30" stroke="#f4a460" stroke-width="3" stroke-linecap="round"/>
+        
+        <!-- Big sun with glow -->
+        <circle cx="0" cy="0" r="25" fill="#f4a460" opacity="0.3"/>
+        <circle cx="0" cy="0" r="22" fill="#f4a460"/>
+        
+        <!-- Two prominent peaks -->
+        <g transform="translate(0, 22)">
+            <!-- Left peak -->
+            <path d="M -65,28 L -35,-16 L -8,10" fill="#1e4620" stroke="#0d2310" stroke-width="2.5"/>
+            <!-- Right peak (taller) -->
+            <path d="M -8,10 L 18,-20 L 42,6 L 65,28 L -65,28 Z" fill="#2c5f2d" stroke="#1e4620" stroke-width="2.5"/>
+        </g>
+    </g>
+    
+    <!-- Land horizon -->
+    <line x1="75" y1="210" x2="305" y2="210" stroke="#f4a460" stroke-width="2" opacity="0.4"/>
+    
+    <!-- GREEN ACRES Text -->
+    <text x="190" y="165" font-family="Georgia, serif" font-size="44" font-weight="bold" fill="#f4a460" text-anchor="middle">GREEN</text>
+    <text x="190" y="209" font-family="Georgia, serif" font-size="44" font-weight="bold" fill="#f4a460" text-anchor="middle">ACRES</text>
+    
+    <!-- Divider -->
+    <line x1="115" y1="229" x2="265" y2="229" stroke="#f4a460" stroke-width="2.5"/>
+    
+    <!-- LAND INVESTMENTS, LLC -->
+    <text x="190" y="256" font-family="Arial, sans-serif" font-size="15" font-weight="600" fill="#f4a460" text-anchor="middle" letter-spacing="2.5">LAND INVESTMENTS, LLC</text>
+    
+    <!-- Tagline: Your Land. Your Terms. -->
+    <text x="190" y="282" font-family="Arial, sans-serif" font-size="13" font-weight="500" fill="#f4a460" text-anchor="middle" font-style="italic">Your Land. Your Terms.</text>
+    
+    <!-- EST. 2024 -->
+    <text x="190" y="304" font-family="Arial, sans-serif" font-size="10" fill="#f4a460" text-anchor="middle" letter-spacing="1.5">EST. 2024</text>
+</svg>

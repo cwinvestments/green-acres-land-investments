@@ -10,6 +10,7 @@ import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import LoanDetail from './pages/LoanDetail';
 import PaymentHistory from './pages/PaymentHistory';
+import SoldProperties from './pages/SoldProperties';
 
 // Protected route component
 function ProtectedRoute({ children }) {
@@ -26,6 +27,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/properties" element={<Properties />} />
+            <Route path="/sold-properties" element={<SoldProperties />} />
             <Route path="/properties/:id" element={<PropertyDetail />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />

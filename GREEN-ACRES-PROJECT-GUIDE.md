@@ -1,7 +1,7 @@
 # 🌿 Green Acres Land Investments - Complete Project Guide
 
 **Last Updated:** November 3, 2025  
-**Project Status:** Frontend Deployed | Backend Local | Database Connected (Supabase PostgreSQL) | Core Features Working
+**Project Status:** ✅ FULLY DEPLOYED TO PRODUCTION | Frontend: Netlify | Backend: Railway | Database: Supabase PostgreSQL
 
 ---
 
@@ -69,7 +69,8 @@ Financing options that traditional lenders don't offer:
 - **Authentication:** JWT (jsonwebtoken)
 - **Password Hashing:** bcrypt
 - **Payment Processing:** Square API
-- **Hosting:** Not yet deployed (runs locally)
+- **Hosting:** Railway (Production) - Auto-deploys from GitHub
+- **Live URL:** https://green-acres-land-investments-production.up.railway.app/api
 
 ### Future Integrations
 - **Mapping:** Google Maps API or Mapbox
@@ -350,15 +351,40 @@ Press **Ctrl+F**, search for:
    - ✅ 500+ lines of professional CSS added
    - ✅ All 7 customer-facing pages fully styled
 
+### ✅ Completed (November 3, 2025 - Production Deployment)
+
+10. **Backend Deployment to Railway** ✅
+   - Deployed to Railway production environment
+   - Connected to Supabase PostgreSQL database
+   - All environment variables configured
+   - Auto-deploys from GitHub main branch
+   - Live URL: https://green-acres-land-investments-production.up.railway.app/api
+   - SSL/HTTPS enabled by default
+
+11. **Frontend Connected to Production Backend** ✅
+   - Updated REACT_APP_API_URL in Netlify to Railway URL
+   - Frontend communicates with Railway backend
+   - End-to-end payment flow working in production
+   - React Router _redirects file added (fixes page refresh 404s)
+   - All API calls routing through production backend
+
+12. **Billing Information on All Payment Forms** ✅
+   - Added to monthly payment form (LoanDetail.js)
+   - Matches initial purchase form (PropertyDetail.js)
+   - Name, address, city, state, ZIP required
+   - Card fields properly positioned below billing info
+   - Form validation working correctly
+
+13. **Payment Amount Formatting Fixes** ✅
+   - Fixed decimal places on quick payment buttons
+   - Monthly Payment button shows .00
+   - Pay Off Balance button shows .00
+   - Input field properly formatted on load
+   - All currency displays consistent
+
 ### 🚧 In Progress
 
-1. **Backend Deployment** (Next Major Task)
-   - Need to deploy to hosting service
-   - Options: Railway, Render, or Heroku
-   - Environment variables configuration
-   - SSL/HTTPS setup
-
-2. **Admin Dashboard**
+1. **Admin Dashboard**
    - Property status management (toggle pending/contract/sold/available)
    - Property addition/editing
    - Loan oversight
@@ -1176,16 +1202,27 @@ REACT_APP_SQUARE_LOCATION_ID=L9A04D6JXFCJT
 REACT_APP_SQUARE_ENVIRONMENT=sandbox
 ```
 
-### Netlify Environment Variables (Frontend)
+### Netlify Environment Variables (Frontend - Production)
 ```
 REACT_APP_SQUARE_APPLICATION_ID=sandbox-sq0idb-0BG_cYjZ1Wl8c1shtmSkZw
 REACT_APP_SQUARE_LOCATION_ID=L9A04D6JXFCJT
-REACT_APP_API_URL=http://localhost:5000/api
+REACT_APP_API_URL=https://green-acres-land-investments-production.up.railway.app/api
 REACT_APP_SQUARE_ENVIRONMENT=sandbox
 NODE_VERSION=18
 ```
 
-**Note:** When backend is deployed, update `REACT_APP_API_URL` to production backend URL.
+**Note:** Backend is now deployed to Railway. Frontend points to production URL.
+
+### Railway Environment Variables (Backend - Production)
+```
+PORT=5000
+NODE_ENV=production
+JWT_SECRET=greenacres2024secret
+SQUARE_ACCESS_TOKEN=EAAAl-xyuDPWomRmbMCymBKObesnG-a21FhuUBpm2yuCwnqOmnrhFpxiIVtjkwlo
+SQUARE_LOCATION_ID=L9A04D6JXFCJT
+SQUARE_ENVIRONMENT=sandbox
+DATABASE_URL=postgresql://postgres:AlyssaMatthew0211%24%24%21%24%21@db.fywbavjylonrnaipxawn.supabase.co:5432/postgres
+```
 
 ---
 
@@ -1416,41 +1453,36 @@ Based on Excel loan tracker columns:
 - ✅ Environment variables configured
 - ✅ Field name mismatches fixed (balance vs balance_remaining)
 
-### Backend Deployment (Pending)
+### Backend Deployment (Railway - LIVE) ✅
 
-**Options:**
-1. **Railway** (recommended)
-   - Free tier available
-   - Easy PostgreSQL integration
-   - Auto-deploy from GitHub
-   - Buildpacks for Node.js
+**Deployed To:** Railway  
+**Live URL:** https://green-acres-land-investments-production.up.railway.app/api  
+**Health Check:** https://green-acres-land-investments-production.up.railway.app/api/health
 
-2. **Render**
-   - Free tier available
-   - Native PostgreSQL support
-   - GitHub integration
+**Configuration:**
+- **Project Name:** green-acres-backend
+- **Repository:** cwinvestments/green-acres-land-investments
+- **Branch:** main
+- **Auto-deploy:** Enabled (deploys on push to main)
+- **Root Directory:** `/server`
+- **Start Command:** `npm start`
 
-3. **Heroku**
-   - Paid ($7/month minimum)
-   - Most established
-   - Add-on ecosystem
+**Features:**
+- ✅ SSL/HTTPS enabled by default
+- ✅ PostgreSQL connection to Supabase working
+- ✅ All environment variables configured
+- ✅ Square payment processing functional
+- ✅ Auto-deploys from GitHub on every push
+- ✅ Build logs accessible in Railway dashboard
 
-**Requirements:**
-- Node.js environment
-- PostgreSQL database connection (already configured)
-- Environment variables
-- SSL/HTTPS support
+**Deployment Process:**
+1. Push code to GitHub main branch
+2. Railway auto-detects changes
+3. Builds server with correct settings
+4. Deploys to production
+5. Takes ~2-3 minutes
 
-**Deployment Steps (When Ready):**
-1. Choose hosting platform
-2. Connect GitHub repository
-3. Configure environment variables
-4. Set build/start commands
-5. Deploy backend
-6. Update frontend API URL
-7. Test end-to-end
-
----
+**Cost:** ~$5-10/month (pay as you go)
 
 ## 🎨 Logo & Branding
 
@@ -2141,6 +2173,50 @@ This is normal on Windows and can be ignored.
 ✅ Loan Detail  
 ✅ Payment History
 ✅ Login/Register
+
+**v1.7 - Production Deployment Complete (November 3, 2025)**
+
+**Backend Deployment:**
+- ✅ Deployed to Railway (https://green-acres-land-investments-production.up.railway.app)
+- ✅ Connected to Supabase PostgreSQL in production
+- ✅ All environment variables configured on Railway
+- ✅ Auto-deploy from GitHub enabled
+- ✅ SSL/HTTPS working by default
+- ✅ Health check endpoint verified
+
+**Frontend Updates:**
+- ✅ Updated REACT_APP_API_URL to Railway production URL
+- ✅ Added `_redirects` file for React Router (fixes refresh 404s)
+- ✅ All environment variables updated on Netlify
+- ✅ Full end-to-end testing completed
+
+**Payment Form Improvements:**
+- ✅ Billing information fields added to monthly payment form (LoanDetail.js)
+- ✅ Card fields properly positioned below billing info
+- ✅ Fixed decimal formatting on quick payment buttons (monthly/payoff)
+- ✅ Consistent billing flow across purchase and monthly payments
+- ✅ Form validation working correctly
+
+**Production Testing:**
+- ✅ User registration/login working
+- ✅ Property browsing functional
+- ✅ Purchase flow tested end-to-end
+- ✅ Monthly payments processing correctly
+- ✅ Payment history tracking verified
+- ✅ Balance updates confirmed
+- ✅ Square sandbox mode working on live site
+
+**Deployment Infrastructure:**
+- Both Railway and Netlify auto-deploy from GitHub
+- Complete CI/CD pipeline established
+- Production environment fully operational
+
+🎉 **MAJOR MILESTONE: FULLY DEPLOYED TO PRODUCTION!**
+
+**Production URLs:**
+- Frontend: https://[netlify-site].netlify.app
+- Backend API: https://green-acres-land-investments-production.up.railway.app/api
+- Health Check: https://green-acres-land-investments-production.up.railway.app/api/health
 
 **v2.0 - Target (To Be Determined)**
 - Backend deployed to production

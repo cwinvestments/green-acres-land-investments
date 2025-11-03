@@ -244,9 +244,9 @@ loadLoan();
   type="button"
   className={`btn btn-small ${selectedQuickAmount === 'monthly' ? 'btn-primary' : 'btn-secondary'}`}
   onClick={() => {
-    setPaymentAmount(loan.monthly_payment);
-    setSelectedQuickAmount('monthly');
-  }}
+  setPaymentAmount(parseFloat(loan.monthly_payment).toFixed(2));
+  setSelectedQuickAmount('monthly');
+}}
 >
   Monthly Payment
 </button>
@@ -254,9 +254,9 @@ loadLoan();
   type="button"
   className={`btn btn-small ${selectedQuickAmount === 'payoff' ? 'btn-primary' : 'btn-secondary'}`}
   onClick={() => {
-    setPaymentAmount(loan.balance_remaining.toString());
-    setSelectedQuickAmount('payoff');
-  }}
+  setPaymentAmount(parseFloat(loan.balance_remaining).toFixed(2));
+  setSelectedQuickAmount('payoff');
+}}
 >
   Pay Off Balance
 </button>
@@ -269,6 +269,7 @@ loadLoan();
 
               {!cardInstance ? (
   <>
+    <div id="payment-card-container" style={{ marginTop: '1rem', minHeight: '0px' }}></div>
     <button 
       type="button"
       className="btn btn-primary btn-full-width"

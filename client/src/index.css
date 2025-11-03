@@ -1415,6 +1415,20 @@ body {
   background: #fafafa;
 }
 
+/* Remove extra space from Square card wrapper */
+.sq-card-wrapper {
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+.sq-card-iframe-container {
+  margin-bottom: 0 !important;
+}
+
+.sq-card-message {
+  margin-bottom: 0 !important;
+}
+
 /* Mobile Responsive */
 @media (max-width: 968px) {
   .loan-detail-grid {

@@ -268,17 +268,16 @@ loadLoan();
               </div>
 
               {!cardInstance ? (
-                <>
-                  <div id="payment-card-container" style={{ display: 'none' }}></div>
-                  <button 
-                    type="button"
-                    className="btn btn-primary btn-full-width"
-                    onClick={initializeSquarePayment}
-                    disabled={processing}
-                  >
-                    Continue to Payment
-                  </button>
-                </>
+  <>
+    <button 
+      type="button"
+      className="btn btn-primary btn-full-width"
+      onClick={initializeSquarePayment}
+      disabled={processing}
+    >
+      Continue to Payment
+    </button>
+  </>
               ) : (
                 <>
                   <div className="billing-info-section" style={{ marginTop: '1.5rem' }}>

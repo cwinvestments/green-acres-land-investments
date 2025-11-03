@@ -100,7 +100,30 @@ function calculateFinancing(price, downPaymentPercentage, termMonths) {
 // Register
 app.post('/api/register', async (req, res) => {
   try {
-    const { email, password, firstName, lastName, phone } = req.body;
+    const { email, password, firstName, lastName, phone, recaptchaToken } = req.body;
+
+    // Verify reCAPTCHA token
+    if (!recaptchaToken) {
+      return res.status(400).json({ error: 'reCAPTCHA verification required' });
+    }
+
+    try {
+      const recaptchaResponse = await fetch('https://www.google.com/recaptcha/api/siteverify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${recaptchaToken}`
+      });
+
+      const recaptchaData = await recaptchaResponse.json();
+
+      if (!recaptchaData.success || recaptchaData.score < 0.5) {
+        console.log('reCAPTCHA failed:', recaptchaData);
+        return res.status(400).json({ error: 'reCAPTCHA verification failed' });
+      }
+    } catch (recaptchaError) {
+      console.error('reCAPTCHA verification error:', recaptchaError);
+      return res.status(500).json({ error: 'reCAPTCHA verification failed' });
+    }
 
     if (!email || !password || !firstName || !lastName) {
       return res.status(400).json({ error: 'All fields are required' });

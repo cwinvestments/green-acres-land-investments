@@ -1409,7 +1409,7 @@ body {
 /* Card Container for Square */
 #payment-card-container {
   margin-top: 1rem;
-  padding: 1rem;
+  padding: 1rem 1rem 0.5rem 1rem;
   border: 2px solid var(--border-color);
   border-radius: 8px;
   background: #fafafa;

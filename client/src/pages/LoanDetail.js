@@ -19,7 +19,7 @@ function LoanDetail() {
   try {
     const response = await getLoan(id);
     setLoan(response.data);
-    setPaymentAmount(response.data.monthly_payment);
+    setPaymentAmount(parseFloat(response.data.monthly_payment).toFixed(2));
   } catch (err) {
     setError('Failed to load loan details');
     console.error(err);

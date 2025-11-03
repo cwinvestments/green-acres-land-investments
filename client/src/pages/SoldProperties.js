@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { formatCurrency } from '../api';
 
 function SoldProperties() {
   const [properties, setProperties] = useState([]);

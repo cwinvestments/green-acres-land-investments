@@ -15,6 +15,11 @@ function LoanDetail() {
   const [paymentError, setPaymentError] = useState('');
   const [cardInstance, setCardInstance] = useState(null);
   const [selectedQuickAmount, setSelectedQuickAmount] = useState(null);
+  const [billingName, setBillingName] = useState('');
+const [billingAddress, setBillingAddress] = useState('');
+const [billingCity, setBillingCity] = useState('');
+const [billingState, setBillingState] = useState('');
+const [billingZip, setBillingZip] = useState('');
   const loadLoan = useCallback(async () => {
   try {
     const response = await getLoan(id);
@@ -276,11 +281,124 @@ loadLoan();
                 </>
               ) : (
                 <>
-                  <div id="payment-card-container" style={{ marginTop: '1rem' }}></div>
-                  {paymentError && (
-                    <div className="error-message" style={{ marginTop: '1rem' }}>
-                      {paymentError}
-                    </div>
+                  <div className="billing-info-section" style={{ marginTop: '1.5rem' }}>
+  <h3 style={{ fontSize: '1.1rem', marginBottom: '1rem', color: 'var(--forest-green)' }}>Billing Information</h3>
+  
+  <div className="form-group">
+    <label>Cardholder Name *</label>
+    <input
+      type="text"
+      value={billingName}
+      onChange={(e) => setBillingName(e.target.value)}
+      placeholder="John Doe"
+      required
+    />
+  </div>
+
+  <div className="form-group">
+    <label>Billing Address *</label>
+    <input
+      type="text"
+      value={billingAddress}
+      onChange={(e) => setBillingAddress(e.target.value)}
+      placeholder="123 Main St"
+      required
+    />
+  </div>
+
+  <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: '1rem' }}>
+    <div className="form-group">
+      <label>City *</label>
+      <input
+        type="text"
+        value={billingCity}
+        onChange={(e) => setBillingCity(e.target.value)}
+        placeholder="Appleton"
+        required
+      />
+    </div>
+
+    <div className="form-group">
+      <label>State *</label>
+      <select
+        value={billingState}
+        onChange={(e) => setBillingState(e.target.value)}
+        required
+      >
+        <option value="">Select</option>
+        <option value="WI">WI</option>
+        <option value="IL">IL</option>
+        <option value="MI">MI</option>
+        <option value="MN">MN</option>
+        <option value="IA">IA</option>
+        <option value="AZ">AZ</option>
+        <option value="AR">AR</option>
+        <option value="CO">CO</option>
+        <option value="AL">AL</option>
+        <option value="AK">AK</option>
+        <option value="CA">CA</option>
+        <option value="CT">CT</option>
+        <option value="DE">DE</option>
+        <option value="FL">FL</option>
+        <option value="GA">GA</option>
+        <option value="HI">HI</option>
+        <option value="ID">ID</option>
+        <option value="IN">IN</option>
+        <option value="KS">KS</option>
+        <option value="KY">KY</option>
+        <option value="LA">LA</option>
+        <option value="ME">ME</option>
+        <option value="MD">MD</option>
+        <option value="MA">MA</option>
+        <option value="MS">MS</option>
+        <option value="MO">MO</option>
+        <option value="MT">MT</option>
+        <option value="NE">NE</option>
+        <option value="NV">NV</option>
+        <option value="NH">NH</option>
+        <option value="NJ">NJ</option>
+        <option value="NM">NM</option>
+        <option value="NY">NY</option>
+        <option value="NC">NC</option>
+        <option value="ND">ND</option>
+        <option value="OH">OH</option>
+        <option value="OK">OK</option>
+        <option value="OR">OR</option>
+        <option value="PA">PA</option>
+        <option value="RI">RI</option>
+        <option value="SC">SC</option>
+        <option value="SD">SD</option>
+        <option value="TN">TN</option>
+        <option value="TX">TX</option>
+        <option value="UT">UT</option>
+        <option value="VT">VT</option>
+        <option value="VA">VA</option>
+        <option value="WA">WA</option>
+        <option value="WV">WV</option>
+        <option value="WY">WY</option>
+      </select>
+    </div>
+
+    <div className="form-group">
+      <label>ZIP *</label>
+      <input
+        type="text"
+        value={billingZip}
+        onChange={(e) => setBillingZip(e.target.value)}
+        placeholder="54911"
+        maxLength="5"
+        pattern="[0-9]{5}"
+        required
+      />
+    </div>
+  </div>
+</div>
+
+<div id="payment-card-container" style={{ marginTop: '1rem' }}></div>
+{paymentError && (
+  <div className="error-message" style={{ marginTop: '1rem' }}>
+    {paymentError}
+  </div>
                   )}
                   <button 
                     type="submit"

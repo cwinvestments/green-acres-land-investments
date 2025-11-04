@@ -11,6 +11,10 @@ import Dashboard from './pages/Dashboard';
 import LoanDetail from './pages/LoanDetail';
 import PaymentHistory from './pages/PaymentHistory';
 import SoldProperties from './pages/SoldProperties';
+import AdminLogin from './pages/AdminLogin';
+import AdminDashboard from './pages/AdminDashboard';
+import PropertyManagement from './pages/PropertyManagement';
+import CustomerManagement from './pages/CustomerManagement';
 
 // Protected route component
 function ProtectedRoute({ children }) {
@@ -25,6 +29,7 @@ function App() {
         <div className="App">
           <Navbar />
           <Routes>
+            {/* Customer Routes */}
             <Route path="/" element={<Home />} />
             <Route path="/properties" element={<Properties />} />
             <Route path="/sold-properties" element={<SoldProperties />} />
@@ -55,6 +60,12 @@ function App() {
                 </ProtectedRoute>
               } 
             />
+
+            {/* Admin Routes */}
+            <Route path="/admin/login" element={<AdminLogin />} />
+            <Route path="/admin/dashboard" element={<AdminDashboard />} />
+            <Route path="/admin/properties" element={<PropertyManagement />} />
+            <Route path="/admin/customers" element={<CustomerManagement />} />
           </Routes>
         </div>
       </AuthProvider>

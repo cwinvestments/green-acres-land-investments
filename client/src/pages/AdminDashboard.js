@@ -1,0 +1,143 @@
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+function AdminDashboard() {
+  const navigate = useNavigate();
+  const [admin, setAdmin] = useState(null);
+
+  useEffect(() => {
+    // Check if admin is logged in
+    const adminToken = localStorage.getItem('adminToken');
+    const adminUser = localStorage.getItem('adminUser');
+
+    if (!adminToken || !adminUser) {
+      // Not logged in, redirect to admin login
+      navigate('/admin/login');
+      return;
+    }
+
+    setAdmin(JSON.parse(adminUser));
+  }, [navigate]);
+
+  const handleLogout = () => {
+    localStorage.removeItem('adminToken');
+    localStorage.removeItem('adminUser');
+    navigate('/admin/login');
+  };
+
+  if (!admin) {
+    return <div>Loading...</div>;
+  }
+
+  return (
+    <div style={{ padding: '20px', maxWidth: '1200px', margin: '0 auto' }}>
+      {/* Admin Header */}
+      <div style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: '30px',
+        padding: '20px',
+        backgroundColor: 'var(--light-green)',
+        borderRadius: '8px'
+      }}>
+        <div>
+          <h1 style={{ margin: '0 0 5px 0' }}>🌿 Green Acres Admin</h1>
+          <p style={{ margin: 0, color: '#666' }}>
+            Welcome back, {admin.firstName} {admin.lastName}
+          </p>
+        </div>
+        <button
+          onClick={handleLogout}
+          className="btn"
+          style={{ backgroundColor: '#dc3545', color: 'white' }}
+        >
+          Logout
+        </button>
+      </div>
+
+      {/* Quick Stats */}
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+        gap: '20px',
+        marginBottom: '30px'
+      }}>
+        <div className="card" style={{ textAlign: 'center', padding: '30px' }}>
+          <h3 style={{ fontSize: '36px', margin: '0 0 10px 0', color: 'var(--forest-green)' }}>
+            -
+          </h3>
+          <p style={{ margin: 0, color: '#666' }}>Total Properties</p>
+        </div>
+        <div className="card" style={{ textAlign: 'center', padding: '30px' }}>
+          <h3 style={{ fontSize: '36px', margin: '0 0 10px 0', color: 'var(--forest-green)' }}>
+            -
+          </h3>
+          <p style={{ margin: 0, color: '#666' }}>Active Loans</p>
+        </div>
+        <div className="card" style={{ textAlign: 'center', padding: '30px' }}>
+          <h3 style={{ fontSize: '36px', margin: '0 0 10px 0', color: 'var(--forest-green)' }}>
+            -
+          </h3>
+          <p style={{ margin: 0, color: '#666' }}>Total Customers</p>
+        </div>
+      </div>
+
+      {/* Admin Menu */}
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+        gap: '20px'
+      }}>
+        <div className="card" style={{ padding: '30px', cursor: 'pointer' }} onClick={() => navigate('/admin/properties')}>
+          <h2 style={{ margin: '0 0 10px 0' }}>🏘️ Property Management</h2>
+          <p style={{ color: '#666', marginBottom: '15px' }}>
+            Add, edit, and manage property listings
+          </p>
+          <button className="btn btn-primary">Manage Properties</button>
+        </div>
+
+        <div className="card" style={{ padding: '30px', cursor: 'pointer' }} onClick={() => navigate('/admin/customers')}>
+          <h2 style={{ margin: '0 0 10px 0' }}>👥 Customer Management</h2>
+          <p style={{ color: '#666', marginBottom: '15px' }}>
+            View and manage customer accounts
+          </p>
+          <button className="btn btn-primary">Manage Customers</button>
+        </div>
+
+        <div className="card" style={{ padding: '30px', cursor: 'pointer' }}>
+          <h2 style={{ margin: '0 0 10px 0' }}>💰 Loan Management</h2>
+          <p style={{ color: '#666', marginBottom: '15px' }}>
+            Track loans, payments, and balances
+          </p>
+          <button className="btn btn-primary">Manage Loans</button>
+        </div>
+
+        <div className="card" style={{ padding: '30px', cursor: 'pointer' }}>
+          <h2 style={{ margin: '0 0 10px 0' }}>💳 Payment Tracking</h2>
+          <p style={{ color: '#666', marginBottom: '15px' }}>
+            View payment history and reports
+          </p>
+          <button className="btn btn-primary">View Payments</button>
+        </div>
+      </div>
+
+      {/* Coming Soon Notice */}
+      <div style={{
+        marginTop: '30px',
+        padding: '20px',
+        backgroundColor: '#fff3cd',
+        border: '1px solid #ffc107',
+        borderRadius: '8px',
+        textAlign: 'center'
+      }}>
+        <strong>🚧 Admin features are being built</strong>
+        <p style={{ margin: '10px 0 0 0' }}>
+          This is the admin dashboard shell. Management features coming next!
+        </p>
+      </div>
+    </div>
+  );
+}
+
+export default AdminDashboard;

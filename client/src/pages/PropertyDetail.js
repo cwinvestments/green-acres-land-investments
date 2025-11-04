@@ -19,6 +19,7 @@ function PropertyDetail() {
   const [desiredPayment, setDesiredPayment] = useState('');
   const [billingInfo, setBillingInfo] = useState({
   name: '',
+  phone: '',
   address: '',
   city: '',
   state: '',
@@ -176,7 +177,7 @@ const closestOption = findClosestOption();
     }
 
     // Validate billing info
-    if (!billingInfo.name || !billingInfo.address || !billingInfo.city || !billingInfo.state || !billingInfo.zip) {
+    if (!billingInfo.name || !billingInfo.phone || !billingInfo.address || !billingInfo.city || !billingInfo.state || !billingInfo.zip) {
       setPurchaseError('Please fill in all billing information fields.');
       return;
     }
@@ -199,7 +200,8 @@ const closestOption = findClosestOption();
           propertyId: property.id,
           downPaymentPercentage: parseFloat(downPaymentOption),
           termMonths: termMonths,
-          paymentNonce: result.token
+          paymentNonce: result.token,
+          phone: billingInfo.phone
         });
 
         alert('✅ Purchase Successful!\n\nYour property purchase has been completed and your loan has been created.\n\nRedirecting to your dashboard...');
@@ -244,17 +246,126 @@ navigate('/dashboard');
             className="property-detail-image"
           />
           
-          <div style={{ marginTop: '2rem' }}>
-            <h2>Property Details</h2>
-            <p style={{ marginTop: '1rem', lineHeight: '1.8' }}>{property.description}</p>
+          <div className="card" style={{ marginTop: '2rem' }}>
+            <h2 style={{ color: 'var(--forest-green)', marginTop: 0 }}>Property Details</h2>
+            <p style={{ marginTop: '1rem', lineHeight: '1.8', color: '#666' }}>{property.description}</p>
             
-            <div style={{ marginTop: '1.5rem', display: 'grid', gap: '0.5rem' }}>
-              <div><strong>Location:</strong> {property.location}</div>
-              <div><strong>County:</strong> {property.county}</div>
-              <div><strong>State:</strong> {property.state}</div>
-              <div><strong>ZIP:</strong> {property.zip}</div>
-              <div><strong>Acres:</strong> {property.acres}</div>
+            <div style={{ 
+              marginTop: '1.5rem', 
+              display: 'grid', 
+              gridTemplateColumns: '1fr 1fr',
+              gap: '1rem',
+              padding: '1rem',
+              background: 'var(--light-green)',
+              borderRadius: '8px'
+            }}>
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <span style={{ fontSize: '0.85rem', color: '#666', marginBottom: '0.25rem' }}>Location</span>
+                <strong style={{ color: 'var(--forest-green)' }}>{property.location}</strong>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <span style={{ fontSize: '0.85rem', color: '#666', marginBottom: '0.25rem' }}>County</span>
+                <strong style={{ color: 'var(--forest-green)' }}>{property.county}</strong>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <span style={{ fontSize: '0.85rem', color: '#666', marginBottom: '0.25rem' }}>State</span>
+                <strong style={{ color: 'var(--forest-green)' }}>{property.state}</strong>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <span style={{ fontSize: '0.85rem', color: '#666', marginBottom: '0.25rem' }}>Acres</span>
+                <strong style={{ color: 'var(--forest-green)' }}>{property.acres}</strong>
+              </div>
             </div>
+
+{/* GPS Coordinates Section */}
+            {property.coordinates && (() => {
+              try {
+                const coords = JSON.parse(property.coordinates);
+                const hasCoords = coords.ne_corner || coords.se_corner || coords.sw_corner || coords.nw_corner || coords.center;
+                
+                if (!hasCoords) return null;
+                
+                return (
+                  <div style={{ marginTop: '1.5rem', padding: '1rem', background: 'var(--light-green)', borderRadius: '8px' }}>
+                    <strong style={{ color: 'var(--forest-green)', fontSize: '1.1rem' }}>📍 GPS Coordinates</strong>
+                    <div style={{ marginTop: '0.75rem', display: 'grid', gap: '0.5rem', fontSize: '0.9rem' }}>
+                      {coords.ne_corner && (
+                        <div>
+                          <strong>NE Corner:</strong> {coords.ne_corner}
+                          {' '}
+                          <a 
+                            href={`https://www.google.com/maps?q=${coords.ne_corner}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{ color: 'var(--forest-green)', fontSize: '0.85rem' }}
+                          >
+                            [View on Map]
+                          </a>
+                        </div>
+                      )}
+                      {coords.se_corner && (
+                        <div>
+                          <strong>SE Corner:</strong> {coords.se_corner}
+                          {' '}
+                          <a 
+                            href={`https://www.google.com/maps?q=${coords.se_corner}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{ color: 'var(--forest-green)', fontSize: '0.85rem' }}
+                          >
+                            [View on Map]
+                          </a>
+                        </div>
+                      )}
+                      {coords.sw_corner && (
+                        <div>
+                          <strong>SW Corner:</strong> {coords.sw_corner}
+                          {' '}
+                          <a 
+                            href={`https://www.google.com/maps?q=${coords.sw_corner}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{ color: 'var(--forest-green)', fontSize: '0.85rem' }}
+                          >
+                            [View on Map]
+                          </a>
+                        </div>
+                      )}
+                      {coords.nw_corner && (
+                        <div>
+                          <strong>NW Corner:</strong> {coords.nw_corner}
+                          {' '}
+                          <a 
+                            href={`https://www.google.com/maps?q=${coords.nw_corner}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{ color: 'var(--forest-green)', fontSize: '0.85rem' }}
+                          >
+                            [View on Map]
+                          </a>
+                        </div>
+                      )}
+                      {coords.center && (
+                        <div>
+                          <strong>Center Point:</strong> {coords.center}
+                          {' '}
+                          <a 
+                            href={`https://www.google.com/maps?q=${coords.center}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{ color: 'var(--forest-green)', fontSize: '0.85rem' }}
+                          >
+                            [View on Map]
+                          </a>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              } catch {
+                return null;
+              }
+            })()}
 
             {property.features && property.features.length > 0 && (
               <div style={{ marginTop: '1.5rem' }}>
@@ -558,11 +669,34 @@ navigate('/dashboard');
 
         {cardInstance && (
           <div style={{ marginBottom: '1rem' }}>
-            <h5 style={{ marginBottom: '0.75rem', color: 'var(--forest-green)' }}>Billing Information</h5>
+            <h5 style={{ marginBottom: '0.5rem', color: 'var(--forest-green)' }}>Billing Information</h5>
+            <p style={{ fontSize: '0.85rem', color: '#666', marginBottom: '1rem' }}>
+              <span style={{ color: '#dc3545', fontWeight: 'bold' }}>*</span> Required fields
+            </p>
             
             <div style={{ marginBottom: '0.75rem' }}>
               <label style={{ display: 'block', marginBottom: '0.25rem', fontSize: '0.9rem', color: '#333' }}>
-                Cardholder Name *
+                Phone Number <span style={{ color: '#dc3545', fontWeight: 'bold' }}>*</span>
+              </label>
+              <input
+                type="tel"
+                value={billingInfo.phone}
+                onChange={(e) => setBillingInfo({...billingInfo, phone: e.target.value})}
+                placeholder="(555) 123-4567"
+                required
+                style={{
+                  width: '100%',
+                  padding: '0.75rem',
+                  border: '2px solid var(--border-color)',
+                  borderRadius: '5px',
+                  fontSize: '1rem'
+                }}
+              />
+            </div>
+
+            <div style={{ marginBottom: '0.75rem' }}>
+              <label style={{ display: 'block', marginBottom: '0.25rem', fontSize: '0.9rem', color: '#333' }}>
+                Cardholder Name <span style={{ color: '#dc3545', fontWeight: 'bold' }}>*</span>
               </label>
               <input
                 type="text"
@@ -582,7 +716,7 @@ navigate('/dashboard');
 
             <div style={{ marginBottom: '0.75rem' }}>
               <label style={{ display: 'block', marginBottom: '0.25rem', fontSize: '0.9rem', color: '#333' }}>
-                Billing Address *
+                Billing Address <span style={{ color: '#dc3545', fontWeight: 'bold' }}>*</span>
               </label>
               <input
                 type="text"
@@ -603,7 +737,7 @@ navigate('/dashboard');
             <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: '0.75rem', marginBottom: '0.75rem' }}>
               <div>
                 <label style={{ display: 'block', marginBottom: '0.25rem', fontSize: '0.9rem', color: '#333' }}>
-                  City *
+                  City <span style={{ color: '#dc3545', fontWeight: 'bold' }}>*</span>
                 </label>
                 <input
                   type="text"
@@ -623,7 +757,7 @@ navigate('/dashboard');
               
               <div>
                 <label style={{ display: 'block', marginBottom: '0.25rem', fontSize: '0.9rem', color: '#333' }}>
-                  State *
+                  State <span style={{ color: '#dc3545', fontWeight: 'bold' }}>*</span>
                 </label>
                 <select
                   value={billingInfo.state}
@@ -672,7 +806,7 @@ navigate('/dashboard');
               
               <div>
                 <label style={{ display: 'block', marginBottom: '0.25rem', fontSize: '0.9rem', color: '#333' }}>
-                  ZIP *
+                  ZIP <span style={{ color: '#dc3545', fontWeight: 'bold' }}>*</span>
                 </label>
                 <input
                   type="text"

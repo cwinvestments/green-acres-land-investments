@@ -547,6 +547,22 @@ body {
 }
 
 /* ===================
+   GENERIC CARD STYLES
+=================== */
+.card {
+  background: white;
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  border: 2px solid var(--border-color);
+  padding: 2rem;
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  box-shadow: var(--shadow-lg);
+}
+
+/* ===================
    BUTTON STYLES
 =================== */
 .btn {
@@ -1807,4 +1823,19 @@ body {
     padding: 0.5rem 1rem;
     font-size: 0.9rem;
   }
+}
+
+/* ===================
+   REQUIRED FIELD STYLING
+=================== */
+label .required-asterisk,
+label:has(.required-asterisk)::after {
+  color: #dc3545;
+  font-weight: bold;
+  margin-left: 2px;
+}
+
+/* For labels with * in text */
+label:contains('*') {
+  color: var(--text-dark);
 }

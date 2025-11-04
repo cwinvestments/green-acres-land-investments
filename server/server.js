@@ -43,6 +43,30 @@ function authenticateToken(req, res, next) {
   });
 }
 
+// Admin authentication middleware
+function authenticateAdmin(req, res, next) {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+
+  if (!token) {
+    return res.status(401).json({ error: 'Access token required' });
+  }
+
+  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    if (err) {
+      return res.status(403).json({ error: 'Invalid or expired token' });
+    }
+    
+    // Check if user has admin role
+    if (user.role !== 'admin') {
+      return res.status(403).json({ error: 'Admin access required' });
+    }
+    
+    req.admin = user;
+    next();
+  });
+}
+
 // Helper function to calculate financing
 function calculateFinancing(price, downPaymentPercentage, termMonths) {
   const processingFee = 99;
@@ -238,6 +262,49 @@ app.post('/api/login', async (req, res) => {
 
 // ==================== PROPERTY ROUTES ====================
 
+// Admin Login
+app.post('/api/admin/login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    // Find admin user
+    const result = await db.pool.query('SELECT * FROM admin_users WHERE email = $1', [email]);
+    if (result.rows.length === 0) {
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
+
+    const admin = result.rows[0];
+
+    // Check password
+    const validPassword = await bcrypt.compare(password, admin.password);
+    if (!validPassword) {
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
+
+    // Generate token with admin flag
+    const token = jwt.sign(
+      { id: admin.id, email: admin.email, role: 'admin' },
+      process.env.JWT_SECRET,
+      { expiresIn: '24h' }
+    );
+
+    res.json({
+      message: 'Admin login successful',
+      token,
+      admin: {
+        id: admin.id,
+        email: admin.email,
+        firstName: admin.first_name,
+        lastName: admin.last_name,
+        role: admin.role
+      }
+    });
+  } catch (error) {
+    console.error('Admin login error:', error);
+    res.status(500).json({ error: 'Login failed' });
+  }
+});
+
 // Get all properties (available only)
 app.get('/api/properties', async (req, res) => {
   try {
@@ -279,6 +346,242 @@ app.get('/api/properties/:id', async (req, res) => {
   } catch (error) {
     console.error('Get property error:', error);
     res.status(500).json({ error: 'Failed to fetch property' });
+  }
+});
+
+// ==================== ADMIN PROPERTY ROUTES ====================
+
+// Get all properties (admin - includes all statuses)
+app.get('/api/admin/properties', authenticateAdmin, async (req, res) => {
+  try {
+    const result = await db.pool.query(
+      'SELECT * FROM properties ORDER BY created_at DESC'
+    );
+    res.json(result.rows);
+  } catch (error) {
+    console.error('Get all properties error:', error);
+    res.status(500).json({ error: 'Failed to fetch properties' });
+  }
+});
+
+// Create new property
+app.post('/api/admin/properties', authenticateAdmin, async (req, res) => {
+  try {
+    const {
+      title,
+      description,
+      location,
+      state,
+      county,
+      acres,
+      price,
+      apn,
+      coordinates
+    } = req.body;
+
+    // Validate required fields
+    if (!title || !location || !state || !county || !acres || !price) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
+
+    const result = await db.pool.query(
+      `INSERT INTO properties 
+       (title, description, location, state, county, acres, price, apn, coordinates, status)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, 'available')
+       RETURNING *`,
+      [title, description, location, state, county, acres, price, apn || null, coordinates || null]
+    );
+
+    res.status(201).json({
+      message: 'Property created successfully',
+      property: result.rows[0]
+    });
+  } catch (error) {
+    console.error('Create property error:', error);
+    res.status(500).json({ error: 'Failed to create property' });
+  }
+});
+
+// Update property
+app.put('/api/admin/properties/:id', authenticateAdmin, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const {
+      title,
+      description,
+      location,
+      state,
+      county,
+      acres,
+      price,
+      apn,
+      coordinates,
+      status
+    } = req.body;
+
+    const result = await db.pool.query(
+      `UPDATE properties 
+       SET title = $1, description = $2, location = $3, state = $4, 
+           county = $5, acres = $6, price = $7, apn = $8, 
+           coordinates = $9, status = $10
+       WHERE id = $11
+       RETURNING *`,
+      [title, description, location, state, county, acres, price, apn, coordinates, status, id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Property not found' });
+    }
+
+    res.json({
+      message: 'Property updated successfully',
+      property: result.rows[0]
+    });
+  } catch (error) {
+    console.error('Update property error:', error);
+    res.status(500).json({ error: 'Failed to update property' });
+  }
+});
+
+// Update property status only
+app.patch('/api/admin/properties/:id/status', authenticateAdmin, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    // Validate status
+    const validStatuses = ['available', 'pending', 'under_contract', 'sold'];
+    if (!validStatuses.includes(status)) {
+      return res.status(400).json({ error: 'Invalid status' });
+    }
+
+    const result = await db.pool.query(
+      'UPDATE properties SET status = $1 WHERE id = $2 RETURNING *',
+      [status, id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Property not found' });
+    }
+
+    res.json({
+      message: 'Property status updated',
+      property: result.rows[0]
+    });
+  } catch (error) {
+    console.error('Update status error:', error);
+    res.status(500).json({ error: 'Failed to update status' });
+  }
+});
+
+// Delete property
+app.delete('/api/admin/properties/:id', authenticateAdmin, async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Check if property has any loans
+    const loanCheck = await db.pool.query(
+      'SELECT COUNT(*) FROM loans WHERE property_id = $1',
+      [id]
+    );
+
+    if (parseInt(loanCheck.rows[0].count) > 0) {
+      return res.status(400).json({ 
+        error: 'Cannot delete property with existing loans' 
+      });
+    }
+
+    const result = await db.pool.query(
+      'DELETE FROM properties WHERE id = $1 RETURNING *',
+      [id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Property not found' });
+    }
+
+    res.json({ message: 'Property deleted successfully' });
+  } catch (error) {
+    console.error('Delete property error:', error);
+    res.status(500).json({ error: 'Failed to delete property' });
+  }
+});
+
+// ==================== ADMIN CUSTOMER ROUTES ====================
+
+// Get all customers with loan summaries
+app.get('/api/admin/customers', authenticateAdmin, async (req, res) => {
+  try {
+    // Get all users
+    const usersResult = await db.pool.query(
+      'SELECT id, email, first_name, last_name, phone, created_at FROM users ORDER BY created_at DESC'
+    );
+    
+    // For each user, get loan summary
+    const customersWithLoans = await Promise.all(
+      usersResult.rows.map(async (user) => {
+        // Get loan count and total balance
+        const loanStats = await db.pool.query(
+          `SELECT 
+            COUNT(*) as loan_count,
+            SUM(CASE WHEN status = 'active' THEN 1 ELSE 0 END) as active_loans,
+            SUM(CASE WHEN status = 'active' THEN balance_remaining ELSE 0 END) as total_balance,
+            SUM(CASE WHEN status = 'active' THEN monthly_payment ELSE 0 END) as total_monthly_payment
+           FROM loans 
+           WHERE user_id = $1`,
+          [user.id]
+        );
+        
+        return {
+          ...user,
+          loan_count: parseInt(loanStats.rows[0].loan_count) || 0,
+          active_loans: parseInt(loanStats.rows[0].active_loans) || 0,
+          total_balance: parseFloat(loanStats.rows[0].total_balance) || 0,
+          total_monthly_payment: parseFloat(loanStats.rows[0].total_monthly_payment) || 0
+        };
+      })
+    );
+    
+    res.json(customersWithLoans);
+  } catch (error) {
+    console.error('Get customers error:', error);
+    res.status(500).json({ error: 'Failed to fetch customers' });
+  }
+});
+
+// Get single customer details
+app.get('/api/admin/customers/:id', authenticateAdmin, async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    // Get customer
+    const customerResult = await db.pool.query(
+      'SELECT id, email, first_name, last_name, phone, created_at FROM users WHERE id = $1',
+      [id]
+    );
+    
+    if (customerResult.rows.length === 0) {
+      return res.status(404).json({ error: 'Customer not found' });
+    }
+    
+    const customer = customerResult.rows[0];
+    
+    // Get customer's loans
+    const loansResult = await db.pool.query(
+      `SELECT l.*, p.title as property_title, p.location as property_location
+       FROM loans l
+       JOIN properties p ON l.property_id = p.id
+       WHERE l.user_id = $1
+       ORDER BY l.created_at DESC`,
+      [id]
+    );
+    
+    customer.loans = loansResult.rows;
+    
+    res.json(customer);
+  } catch (error) {
+    console.error('Get customer error:', error);
+    res.status(500).json({ error: 'Failed to fetch customer' });
   }
 });
 
@@ -361,6 +664,13 @@ app.post('/api/loans', authenticateToken, async (req, res) => {
     console.log('Square payment successful:', result.payment.id);
 
     // Create loan
+    // Update user's phone number if provided
+    if (req.body.phone) {
+      await db.pool.query(
+        'UPDATE users SET phone = $1 WHERE id = $2',
+        [req.body.phone, req.user.userId]
+      );
+    }
     const loanResult = await db.pool.query(`
       INSERT INTO loans (
         user_id, property_id, purchase_price, down_payment, 

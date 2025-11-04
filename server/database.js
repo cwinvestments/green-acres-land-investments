@@ -82,6 +82,25 @@ const initDatabase = async () => {
       )
     `);
 
+// Admin users table
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS admin_users (
+        id SERIAL PRIMARY KEY,
+        email TEXT UNIQUE NOT NULL,
+        password TEXT NOT NULL,
+        first_name TEXT NOT NULL,
+        last_name TEXT NOT NULL,
+        role TEXT DEFAULT 'admin',
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
+    // Add default admin user if none exist
+    const adminResult = await client.query('SELECT COUNT(*) FROM admin_users');
+    if (parseInt(adminResult.rows[0].count) === 0) {
+      await addDefaultAdmin(client);
+    }
+
     // Add sample properties if none exist
     const { rows } = await client.query('SELECT COUNT(*) FROM properties');
     if (parseInt(rows[0].count) === 0) {
@@ -165,6 +184,39 @@ const addSampleProperties = async (client) => {
   }
 
   console.log('✅ Sample properties added');
+};
+
+// Add default admin user
+const addDefaultAdmin = async (client) => {
+  const bcrypt = require('bcryptjs');
+  
+  // Admin credentials from environment variables
+  const defaultAdmin = {
+    email: process.env.ADMIN_EMAIL,
+    password: process.env.ADMIN_DEFAULT_PASSWORD,
+    firstName: process.env.ADMIN_FIRST_NAME || 'Admin',
+    lastName: process.env.ADMIN_LAST_NAME || 'User'
+  };
+
+  // Validate required environment variables
+  if (!defaultAdmin.email || !defaultAdmin.password) {
+    console.log('⚠️  Skipping default admin creation - ADMIN_EMAIL and ADMIN_DEFAULT_PASSWORD not set in environment');
+    return;
+  }
+
+  // Hash the password
+  const hashedPassword = await bcrypt.hash(defaultAdmin.password, 10);
+
+  // Insert default admin
+  await client.query(
+    `INSERT INTO admin_users (email, password, first_name, last_name, role)
+     VALUES ($1, $2, $3, $4, 'admin')`,
+    [defaultAdmin.email, hashedPassword, defaultAdmin.firstName, defaultAdmin.lastName]
+  );
+
+  console.log('✅ Default admin user created');
+  console.log('   Email:', defaultAdmin.email);
+  console.log('   ⚠️  Password set from environment variable (not displayed for security)');
 };
 
 // Export pool for queries

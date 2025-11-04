@@ -77,8 +77,6 @@ function Register() {
       <div className="auth-card">
         <h2>Create Your Account</h2>
         
-        {error && <div className="error-message">{error}</div>}
-        
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label>First Name:</label>
@@ -146,6 +144,8 @@ function Register() {
             />
           </div>
 
+          {error && <div className="error-message" style={{ marginBottom: '15px' }}>{error}</div>}
+          
           <button 
             type="submit" 
             className="btn btn-primary btn-full-width"

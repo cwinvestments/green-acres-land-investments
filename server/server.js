@@ -108,13 +108,36 @@ app.post('/api/register', async (req, res) => {
     }
 
     try {
-      const recaptchaResponse = await fetch('https://www.google.com/recaptcha/api/siteverify', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: `secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${recaptchaToken}`
+      const https = require('https');
+      const querystring = require('querystring');
+      
+      const postData = querystring.stringify({
+        secret: process.env.RECAPTCHA_SECRET_KEY,
+        response: recaptchaToken
       });
 
-      const recaptchaData = await recaptchaResponse.json();
+      const recaptchaData = await new Promise((resolve, reject) => {
+        const req = https.request({
+          hostname: 'www.google.com',
+          port: 443,
+          path: '/recaptcha/api/siteverify',
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Content-Length': postData.length
+          }
+        }, (res) => {
+          let data = '';
+          res.on('data', chunk => data += chunk);
+          res.on('end', () => resolve(JSON.parse(data)));
+        });
+
+        req.on('error', reject);
+        req.write(postData);
+        req.end();
+      });
+
+      console.log('reCAPTCHA verification result:', recaptchaData);
 
       if (!recaptchaData.success || recaptchaData.score < 0.5) {
         console.log('reCAPTCHA failed:', recaptchaData);

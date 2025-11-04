@@ -50,6 +50,8 @@ function Register() {
         process.env.REACT_APP_RECAPTCHA_SITE_KEY,
         { action: 'register' }
       );
+      
+      console.log('reCAPTCHA token generated:', recaptchaToken);
 
       // Send registration with reCAPTCHA token
       const response = await apiRegister({

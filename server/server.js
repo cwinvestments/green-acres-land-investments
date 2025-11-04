@@ -101,6 +101,8 @@ function calculateFinancing(price, downPaymentPercentage, termMonths) {
 app.post('/api/register', async (req, res) => {
   try {
     const { email, password, firstName, lastName, phone, recaptchaToken } = req.body;
+console.log('Received recaptchaToken:', recaptchaToken ? recaptchaToken.substring(0, 50) + '...' : 'MISSING');
+    console.log('Using secret key:', process.env.RECAPTCHA_SECRET_KEY ? 'Present' : 'MISSING');
 
     // Verify reCAPTCHA token
     if (!recaptchaToken) {

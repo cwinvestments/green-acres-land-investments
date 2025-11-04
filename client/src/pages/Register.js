@@ -38,6 +38,13 @@ function Register() {
     setLoading(true);
 
     try {
+      // Ensure grecaptcha is loaded
+      if (!window.grecaptcha) {
+        setError('reCAPTCHA not loaded. Please refresh the page and try again.');
+        setLoading(false);
+        return;
+      }
+
       // Get reCAPTCHA token
       const recaptchaToken = await window.grecaptcha.execute(
         process.env.REACT_APP_RECAPTCHA_SITE_KEY,

@@ -87,6 +87,8 @@ useEffect(() => {
                 <th>Date</th>
                 <th>Type</th>
                 <th>Amount</th>
+                <th>Principal</th>
+                <th>Interest</th>
                 <th>Method</th>
                 <th>Status</th>
               </tr>
@@ -102,6 +104,12 @@ useEffect(() => {
                   </td>
                   <td className="amount">
                     ${formatCurrency(payment.amount)}
+                  </td>
+                  <td style={{ color: 'var(--forest-green)' }}>
+                    {payment.principal_amount ? `$${formatCurrency(payment.principal_amount)}` : '—'}
+                  </td>
+                  <td style={{ color: '#f59e0b' }}>
+                    {payment.interest_amount ? `$${formatCurrency(payment.interest_amount)}` : '—'}
                   </td>
                   <td style={{ textTransform: 'capitalize' }}>
                     {payment.payment_method || 'Square'}

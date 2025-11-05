@@ -17,7 +17,8 @@ function AdminLoans() {
 
   useEffect(() => {
     filterLoans();
-  }, [loans, filter, searchTerm, filterLoans]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loans, filter, searchTerm]);
 
   const loadLoans = async () => {
     try {

@@ -139,8 +139,8 @@ function PropertyManagement() {
       )}
 
       {/* Properties Table */}
-      <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+      <div className="card" style={{ padding: 0, overflow: 'auto', maxWidth: '100%' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '900px' }}>
           <thead>
             <tr style={{ backgroundColor: 'var(--light-green)' }}>
               <th style={{ padding: '15px', textAlign: 'left', borderBottom: '2px solid var(--forest-green)' }}>Property</th>

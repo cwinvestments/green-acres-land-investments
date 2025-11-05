@@ -233,11 +233,11 @@ function AdminLoans() {
                     <div style={{ fontWeight: '600' }}>{loan.property_title}</div>
                     <div style={{ fontSize: '0.85rem', color: '#666' }}>{loan.property_location}</div>
                   </td>
-                  <td style={{ fontWeight: '600', color: 'var(--forest-green)' }}>
+                  <td style={{ fontWeight: '600', color: 'var(--forest-green)', textAlign: 'right' }}>
                     ${formatCurrency(loan.balance_remaining)}
                   </td>
-                  <td>${formatCurrency(loan.monthly_payment)}</td>
-                  <td>
+                  <td style={{ textAlign: 'right' }}>${formatCurrency(loan.monthly_payment)}</td>
+                  <td style={{ textAlign: 'center' }}>
                     {loan.next_payment_date && loan.status === 'active' ? (
                       <div>
                         <div>{new Date(loan.next_payment_date.split('T')[0].replace(/-/g, '/')).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</div>

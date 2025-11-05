@@ -205,15 +205,14 @@ function AdminLoans() {
         <table className="admin-table" style={{ width: '100%', minWidth: '1200px' }}>
           <thead>
             <tr>
-              <th>Customer</th>
-              <th>Property</th>
-              <th>Balance</th>
-              <th>Monthly</th>
-              <th>Due Date</th>
-              <th>Status</th>
-              <th>Profit</th>
-              <th>ROI</th>
-              <th>Alerts</th>
+              <th style={{ textAlign: 'left' }}>Customer</th>
+              <th style={{ textAlign: 'left' }}>Property</th>
+              <th style={{ textAlign: 'right' }}>Balance</th>
+              <th style={{ textAlign: 'right' }}>Monthly</th>
+              <th style={{ textAlign: 'center' }}>Due Date</th>
+              <th style={{ textAlign: 'right' }}>Profit</th>
+              <th style={{ textAlign: 'center' }}>ROI</th>
+              <th style={{ textAlign: 'center' }}>Alerts</th>
             </tr>
           </thead>
           <tbody>
@@ -249,11 +248,6 @@ function AdminLoans() {
                         )}
                       </div>
                     ) : '—'}
-                  </td>
-                  <td>
-                    <span className={`status-badge status-${loan.status}`}>
-                      {loan.status === 'active' ? 'Active' : 'Paid Off'}
-                    </span>
                   </td>
                   <td style={{ textAlign: 'right' }}>
                     {loan.property_acquisition_cost ? (

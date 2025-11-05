@@ -449,7 +449,7 @@ app.patch('/api/admin/properties/:id/status', authenticateAdmin, async (req, res
     const { status } = req.body;
 
     // Validate status
-    const validStatuses = ['available', 'pending', 'under_contract', 'sold'];
+    const validStatuses = ['available', 'coming_soon', 'pending', 'under_contract', 'sold'];
     if (!validStatuses.includes(status)) {
       return res.status(400).json({ error: 'Invalid status' });
     }

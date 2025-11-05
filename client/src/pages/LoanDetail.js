@@ -152,12 +152,14 @@ function LoanDetail() {
 
   return (
     <div className="loan-detail">
-      <button onClick={() => navigate('/dashboard')} className="btn btn-secondary">
-        ← Back to Dashboard
-      </button>
-      <button onClick={() => navigate(`/loans/${id}/payments`)} className="btn btn-secondary" style={{marginLeft: '1rem'}}>
-        View Payment History
-      </button>
+      <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', marginBottom: '20px' }}>
+        <button onClick={() => navigate('/dashboard')} className="btn btn-secondary" style={{ flex: '1 1 auto' }}>
+          ← Back to Dashboard
+        </button>
+        <button onClick={() => navigate(`/loans/${id}/payments`)} className="btn btn-secondary" style={{ flex: '1 1 auto' }}>
+          View Payment History
+        </button>
+      </div>
 
       <h1>{loan.property_title}</h1>
       <p className="loan-location">{loan.location}</p>

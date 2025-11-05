@@ -120,7 +120,7 @@ function AdminLoans() {
 
   if (error) {
     return (
-    <div style={{ padding: '20px', maxWidth: '1600px', margin: '0 auto' }}>
+    <div style={{ padding: '20px', maxWidth: '95%', margin: '0 auto' }}>
         <div className="error-message">{error}</div>
       </div>
     );
@@ -201,8 +201,8 @@ function AdminLoans() {
       </div>
 
       {/* Desktop Table View */}
-      <div className="desktop-only">
-        <table className="admin-table">
+      <div className="desktop-only" style={{ width: '100%', overflowX: 'auto' }}>
+        <table className="admin-table" style={{ width: '100%', minWidth: '1200px' }}>
           <thead>
             <tr>
               <th>Customer</th>

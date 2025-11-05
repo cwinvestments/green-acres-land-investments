@@ -60,11 +60,24 @@ function Properties() {
               key={property.id}
               className="property-card"
             >
-              <img
-                src={property.image_url}
-                alt={property.title}
-                className="property-image"
-              />
+              {property.images ? (
+                <img
+                  src={property.images}
+                  alt={property.title}
+                  className="property-image"
+                />
+              ) : (
+                <div className="property-image" style={{
+                  background: 'linear-gradient(135deg, var(--light-green) 0%, var(--forest-green) 100%)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: 'white',
+                  fontSize: '3rem'
+                }}>
+                  🏞️
+                </div>
+              )}
               <div className="property-content">
                 <h3>{property.title}</h3>
                 <div className="property-info">

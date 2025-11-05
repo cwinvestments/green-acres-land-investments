@@ -118,6 +118,65 @@ function PropertyManagement() {
         </div>
       </div>
 
+      {/* Profit Summary Cards */}
+      <div style={{ 
+        display: 'grid', 
+        gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', 
+        gap: '20px', 
+        marginBottom: '30px' 
+      }}>
+        {/* Total Profit Card */}
+        <div className="card" style={{ padding: '20px' }}>
+          <h3 style={{ margin: '0 0 10px 0', fontSize: '16px', color: '#666' }}>💰 Total Profit</h3>
+          <p style={{ margin: 0, fontSize: '28px', fontWeight: 'bold', color: 'var(--forest-green)' }}>
+            ${properties
+              .filter(p => p.acquisition_cost)
+              .reduce((sum, p) => sum + (p.price - p.acquisition_cost), 0)
+              .toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}
+          </p>
+          <small style={{ color: '#999' }}>
+            {properties.filter(p => p.acquisition_cost).length} properties with cost data
+          </small>
+        </div>
+
+        {/* Average ROI Card */}
+        <div className="card" style={{ padding: '20px' }}>
+          <h3 style={{ margin: '0 0 10px 0', fontSize: '16px', color: '#666' }}>📈 Average ROI</h3>
+          <p style={{ margin: 0, fontSize: '28px', fontWeight: 'bold', color: 'var(--sandy-gold)' }}>
+            {properties.filter(p => p.acquisition_cost).length > 0
+              ? (properties
+                  .filter(p => p.acquisition_cost)
+                  .reduce((sum, p) => sum + (((p.price - p.acquisition_cost) / p.acquisition_cost) * 100), 0) / 
+                  properties.filter(p => p.acquisition_cost).length
+                ).toFixed(1)
+              : '0.0'}%
+          </p>
+          <small style={{ color: '#999' }}>Across all properties</small>
+        </div>
+
+        {/* Most Profitable Property Card */}
+        <div className="card" style={{ padding: '20px' }}>
+          <h3 style={{ margin: '0 0 10px 0', fontSize: '16px', color: '#666' }}>🏆 Most Profitable</h3>
+          {properties.filter(p => p.acquisition_cost).length > 0 ? (
+            <>
+              <p style={{ margin: '0 0 5px 0', fontSize: '18px', fontWeight: 'bold' }}>
+                ${Math.max(...properties
+                  .filter(p => p.acquisition_cost)
+                  .map(p => p.price - p.acquisition_cost)
+                ).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}
+              </p>
+              <small style={{ color: '#999' }}>
+                {properties
+                  .filter(p => p.acquisition_cost)
+                  .sort((a, b) => (b.price - b.acquisition_cost) - (a.price - a.acquisition_cost))[0]?.title}
+              </small>
+            </>
+          ) : (
+            <p style={{ margin: 0, color: '#999' }}>No data yet</p>
+          )}
+        </div>
+      </div>
+
       {/* Add/Edit Property Form */}
       {showAddForm && <PropertyForm onSuccess={() => { setShowAddForm(false); loadProperties(); }} />}
       {editingProperty && (
@@ -164,12 +223,19 @@ function PropertyManagement() {
                 </td>
                 <td style={{ padding: '15px', textAlign: 'right' }}>
                   {property.acquisition_cost ? (
-                    <span style={{ 
-                      color: (property.price - property.acquisition_cost) >= 0 ? '#10b981' : '#ef4444',
-                      fontWeight: 'bold'
-                    }}>
-                      ${(property.price - property.acquisition_cost).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}
-                    </span>
+                    <div>
+                      <span style={{ 
+                        color: (property.price - property.acquisition_cost) >= 0 ? '#10b981' : '#ef4444',
+                        fontWeight: 'bold',
+                        fontSize: '16px'
+                      }}>
+                        ${(property.price - property.acquisition_cost).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}
+                      </span>
+                      <br />
+                      <small style={{ color: '#666', fontSize: '12px' }}>
+                        {(((property.price - property.acquisition_cost) / property.acquisition_cost) * 100).toFixed(1)}% ROI
+                      </small>
+                    </div>
                   ) : (
                     <span style={{ color: '#999' }}>—</span>
                   )}

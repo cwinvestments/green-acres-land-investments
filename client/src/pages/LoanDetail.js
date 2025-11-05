@@ -9,9 +9,7 @@ function LoanDetail() {
   const [loan, setLoan] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  
   const [paymentAmount, setPaymentAmount] = useState('');
-  const [paymentMethod, setPaymentMethod] = useState('square');
   const [processing, setProcessing] = useState(false);
   const [paymentError, setPaymentError] = useState('');
   const [cardInstance, setCardInstance] = useState(null);
@@ -21,7 +19,6 @@ function LoanDetail() {
   const [billingCity, setBillingCity] = useState('');
   const [billingState, setBillingState] = useState('');
   const [billingZip, setBillingZip] = useState('');
-
   const loadLoan = useCallback(async () => {
     try {
       const response = await getLoan(id);
@@ -92,7 +89,7 @@ function LoanDetail() {
           loanId: loan.id,
           amount: amount,
           paymentNonce: result.token,
-          paymentMethod: paymentMethod
+          paymentMethod: 'square'
         });
 
         // Redirect to dashboard with success message

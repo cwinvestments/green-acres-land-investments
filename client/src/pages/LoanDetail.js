@@ -95,9 +95,12 @@ function LoanDetail() {
           paymentMethod: paymentMethod
         });
 
-        alert('✅ Payment Successful!\n\nYour payment has been processed and your loan balance has been updated.\n\nThank you!');
-        loadLoan();
-        setCardInstance(null);
+        // Redirect to dashboard with success message
+        navigate('/dashboard', { 
+          state: { 
+            message: 'Payment Successful! Your payment has been processed and your loan balance has been updated.' 
+          } 
+        });
       } else {
         setPaymentError(result.errors?.[0]?.message || 'Payment failed');
       }

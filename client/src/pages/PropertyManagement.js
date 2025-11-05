@@ -42,16 +42,19 @@ function PropertyManagement() {
   const updateStatus = async (propertyId, newStatus) => {
     try {
       const token = localStorage.getItem('adminToken');
+      console.log('Updating property', propertyId, 'to status', newStatus);
+      console.log('API URL:', process.env.REACT_APP_API_URL);
       await axios.patch(
         `${process.env.REACT_APP_API_URL}/admin/properties/${propertyId}/status`,
         { status: newStatus },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-
       // Reload properties
       loadProperties();
     } catch (err) {
-      alert('Failed to update status');
+      console.error('Update status error:', err);
+      console.error('Error response:', err.response?.data);
+      alert('Failed to update status: ' + (err.response?.data?.error || err.message));
     }
   };
 

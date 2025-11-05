@@ -80,7 +80,9 @@ useEffect(() => {
           <p>No payments recorded yet.</p>
         </div>
       ) : (
-        <div className="payments-table">
+        <>
+        {/* Desktop Table View */}
+        <div className="payments-table desktop-only">
           <table>
             <thead>
               <tr>
@@ -128,6 +130,60 @@ useEffect(() => {
             <strong>Total Payments:</strong> ${formatCurrency(totalPaid)}
           </div>
         </div>
+
+        {/* Mobile Card View */}
+        <div className="payments-cards mobile-only">
+          {payments.map((payment) => (
+            <div key={payment.id} className="payment-card-mobile">
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px', borderBottom: '2px solid var(--forest-green)', paddingBottom: '10px' }}>
+                <div>
+                  <strong>{new Date(payment.payment_date).toLocaleDateString()}</strong>
+                  <br />
+                  <span style={{ fontSize: '14px', color: '#666' }}>
+                    {payment.payment_type === 'down_payment' ? 'Down Payment' : 'Monthly Payment'}
+                  </span>
+                </div>
+                <div style={{ textAlign: 'right' }}>
+                  <div style={{ fontSize: '20px', fontWeight: 'bold', color: 'var(--forest-green)' }}>
+                    ${formatCurrency(payment.amount)}
+                  </div>
+                  <span className={`status-badge status-${payment.status}`}>
+                    {payment.status === 'completed' ? 'Completed' : payment.status}
+                  </span>
+                </div>
+              </div>
+              
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', fontSize: '14px' }}>
+                <div>
+                  <strong>Principal:</strong>
+                  <br />
+                  <span style={{ color: 'var(--forest-green)' }}>
+                    {payment.principal_amount ? `$${formatCurrency(payment.principal_amount)}` : '—'}
+                  </span>
+                </div>
+                <div>
+                  <strong>Interest:</strong>
+                  <br />
+                  <span style={{ color: '#f59e0b' }}>
+                    {payment.interest_amount ? `$${formatCurrency(payment.interest_amount)}` : '—'}
+                  </span>
+                </div>
+                <div>
+                  <strong>Method:</strong>
+                  <br />
+                  <span style={{ textTransform: 'capitalize' }}>
+                    {payment.payment_method || 'Square'}
+                  </span>
+                </div>
+              </div>
+            </div>
+          ))}
+          
+          <div className="payments-total" style={{ marginTop: '20px' }}>
+            <strong>Total Payments:</strong> ${formatCurrency(totalPaid)}
+          </div>
+        </div>
+        </>
       )}
     </div>
   );

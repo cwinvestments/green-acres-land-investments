@@ -1838,3 +1838,35 @@ label:has(.required-asterisk)::after {
 label:contains('*') {
   color: var(--text-dark);
 }
+
+/* Mobile-friendly Payment History */
+.desktop-only {
+  display: block;
+}
+
+.mobile-only {
+  display: none;
+}
+
+.payment-card-mobile {
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 15px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+@media (max-width: 768px) {
+  .desktop-only {
+    display: none;
+  }
+  
+  .mobile-only {
+    display: block;
+  }
+  
+  .payments-table table {
+    min-width: 100%;
+  }
+}

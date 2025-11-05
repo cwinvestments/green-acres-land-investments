@@ -756,7 +756,7 @@ app.post('/api/loans', authenticateToken, async (req, res) => {
 // Make a payment
 app.post('/api/payments', authenticateToken, async (req, res) => {
   try {
-    const { loanId, amount, paymentNonce } = req.body;
+    const { loanId, amount, paymentNonce, paymentMethod = 'square' } = req.body;
 
     // Get loan
     const loanResult = await db.pool.query(
@@ -797,15 +797,16 @@ app.post('/api/payments', authenticateToken, async (req, res) => {
 
     // Record payment
     await db.pool.query(`
-      INSERT INTO payments (loan_id, user_id, amount, payment_type, square_payment_id, status)
-      VALUES ($1, $2, $3, $4, $5, $6)
+      INSERT INTO payments (loan_id, user_id, amount, payment_type, square_payment_id, status, payment_method)
+      VALUES ($1, $2, $3, $4, $5, $6, $7)
     `, [
       loanId,
       req.user.id,
       amount,
       'monthly_payment',
       result.payment.id,
-      'completed'
+      'completed',
+      paymentMethod
     ]);
 
     res.json({

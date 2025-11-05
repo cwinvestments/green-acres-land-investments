@@ -794,10 +794,14 @@ app.post('/api/payments', authenticateToken, async (req, res) => {
     const newBalance = Math.max(0, loan.balance_remaining - amount);
     const status = newBalance === 0 ? 'paid_off' : 'active';
 
-    // Update loan balance
+    // Calculate next payment due date (30 days from today)
+    const nextDueDate = new Date();
+    nextDueDate.setDate(nextDueDate.getDate() + 30);
+    
+    // Update loan balance and next payment due
     await db.pool.query(
-      'UPDATE loans SET balance_remaining = $1, status = $2 WHERE id = $3',
-      [newBalance, status, loanId]
+      'UPDATE loans SET balance_remaining = $1, status = $2, next_payment_due = $3 WHERE id = $4',
+      [newBalance, status, nextDueDate.toISOString().split('T')[0], loanId]
     );
 
     // Record payment

@@ -120,7 +120,7 @@ function AdminLoans() {
 
   if (error) {
     return (
-      <div className="admin-container">
+    <div style={{ padding: '20px', maxWidth: '1600px', margin: '0 auto' }}>
         <div className="error-message">{error}</div>
       </div>
     );
@@ -134,8 +134,8 @@ function AdminLoans() {
     <div className="admin-container">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
         <h1>Loan Management</h1>
-        <button onClick={() => navigate('/admin')} className="btn btn-secondary">
-          ← Back to Admin
+        <button onClick={() => navigate('/admin/dashboard')} className="btn btn-secondary">
+          ← Back to Dashboard
         </button>
       </div>
 

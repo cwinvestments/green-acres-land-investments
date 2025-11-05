@@ -253,15 +253,6 @@ function PropertyForm({ property, onSuccess, onCancel }) {
     coord_nw: existingCoords.nw || '',
     coord_center: existingCoords.center || ''
   });
-```
-
-**Save and close!** Now let's deploy everything:
-```
-cd C:\Projects\GreenAcres
-git add .
-git commit -m "Add property acquisition cost tracking (admin only)"
-git push origin main
-  
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 

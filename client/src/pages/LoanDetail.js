@@ -285,8 +285,15 @@ function LoanDetail() {
         </div>
 
         {loan.status === 'active' && parseFloat(loan.balance_remaining) > 0 && (
-          <div className="payment-card">
-            <h2>Make a Payment</h2>
+          <>
+            {/* Pay Extra Calculator */}
+            <div className="card" style={{ padding: '20px', marginBottom: '20px', backgroundColor: '#f0f8f0', border: '2px solid var(--forest-green)' }}>
+              <h2 style={{ color: 'var(--forest-green)', marginBottom: '15px' }}>💡 Pay Extra & Save!</h2>
+              <PayExtraCalculator loan={loan} />
+            </div>
+
+            <div className="payment-card">
+              <h2>Make a Payment</h2>
             
             <form onSubmit={handlePayment}>
               <div className="payment-amount-section">
@@ -478,12 +485,84 @@ function LoanDetail() {
               )}
             </form>
           </div>
+          </>
         )}
       </div>
 
       {loan.status === 'paid_off' && (
         <div className="success-message" style={{ marginTop: '2rem' }}>
           🎉 Congratulations! This loan has been paid off!
+        </div>
+      )}
+    </div>
+  );
+}
+
+// Pay Extra Calculator Component
+function PayExtraCalculator({ loan }) {
+  const [extraPayment, setExtraPayment] = useState('');
+  
+  const monthlyInterestRate = (parseFloat(loan.interest_rate) / 100) / 12;
+  const currentMonthly = parseFloat(loan.monthly_payment);
+  const balance = parseFloat(loan.balance_remaining);
+  
+  // Calculate current loan payoff
+  const currentMonths = Math.ceil(balance / currentMonthly);
+  const currentTotalPaid = currentMonthly * currentMonths;
+  const currentTotalInterest = currentTotalPaid - balance;
+  
+  // Calculate with extra payment
+  let newMonthly = currentMonthly;
+  let monthsSaved = 0;
+  let interestSaved = 0;
+  
+  if (extraPayment && parseFloat(extraPayment) > 0) {
+    newMonthly = currentMonthly + parseFloat(extraPayment);
+    const newMonths = Math.ceil(balance / newMonthly);
+    const newTotalPaid = newMonthly * newMonths;
+    const newTotalInterest = newTotalPaid - balance;
+    
+    monthsSaved = currentMonths - newMonths;
+    interestSaved = currentTotalInterest - newTotalInterest;
+  }
+  
+  return (
+    <div>
+      <div className="form-group">
+        <label>Extra Payment Amount (per month):</label>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <span style={{ fontSize: '20px', fontWeight: 'bold' }}>$</span>
+          <input
+            type="number"
+            value={extraPayment}
+            onChange={(e) => setExtraPayment(e.target.value)}
+            placeholder="50"
+            min="0"
+            step="10"
+            style={{ flex: 1 }}
+          />
+        </div>
+      </div>
+      
+      {extraPayment && parseFloat(extraPayment) > 0 && (
+        <div style={{ marginTop: '20px', padding: '15px', backgroundColor: 'white', borderRadius: '8px', border: '1px solid var(--forest-green)' }}>
+          <h3 style={{ fontSize: '16px', marginBottom: '15px', color: 'var(--forest-green)' }}>💰 Your Savings:</h3>
+          
+          <div style={{ marginBottom: '10px' }}>
+            <strong>New Monthly Payment:</strong> ${formatCurrency(newMonthly)}
+          </div>
+          
+          <div style={{ marginBottom: '10px', color: 'var(--forest-green)', fontWeight: 'bold', fontSize: '18px' }}>
+            ⏱️ Pay off {monthsSaved} months earlier!
+          </div>
+          
+          <div style={{ marginBottom: '10px', color: 'var(--forest-green)', fontWeight: 'bold', fontSize: '18px' }}>
+            💵 Save ${formatCurrency(interestSaved)} in interest!
+          </div>
+          
+          <div style={{ marginTop: '15px', padding: '10px', backgroundColor: '#f0f8f0', borderRadius: '4px', fontSize: '14px' }}>
+            <strong>Own your land by:</strong> {new Date(Date.now() + (currentMonths - monthsSaved) * 30 * 24 * 60 * 60 * 1000).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+          </div>
         </div>
       )}
     </div>

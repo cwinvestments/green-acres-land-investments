@@ -211,6 +211,8 @@ function AdminLoans() {
               <th>Monthly</th>
               <th>Due Date</th>
               <th>Status</th>
+              <th>Profit</th>
+              <th>ROI</th>
               <th>Alerts</th>
             </tr>
           </thead>
@@ -252,6 +254,23 @@ function AdminLoans() {
                     <span className={`status-badge status-${loan.status}`}>
                       {loan.status === 'active' ? 'Active' : 'Paid Off'}
                     </span>
+                  </td>
+                  <td style={{ textAlign: 'right' }}>
+                    {loan.property_acquisition_cost ? (
+                      <span style={{ 
+                        color: (loan.property_price - loan.property_acquisition_cost) >= 0 ? '#10b981' : '#ef4444',
+                        fontWeight: 'bold'
+                      }}>
+                        ${formatCurrency(loan.property_price - loan.property_acquisition_cost)}
+                      </span>
+                    ) : '—'}
+                  </td>
+                  <td style={{ textAlign: 'center' }}>
+                    {loan.property_acquisition_cost ? (
+                      <span style={{ fontWeight: '600', color: 'var(--sandy-gold)' }}>
+                        {(((loan.property_price - loan.property_acquisition_cost) / loan.property_acquisition_cost) * 100).toFixed(1)}%
+                      </span>
+                    ) : '—'}
                   </td>
                   <td>
                     {loan.status === 'active' && (
@@ -343,6 +362,25 @@ function AdminLoans() {
                       <span className={`status-badge status-${loan.status}`}>
                         {loan.status === 'active' ? 'Active' : 'Paid Off'}
                       </span>
+                    </div>
+                  </>
+                )}
+                {loan.property_acquisition_cost && (
+                  <>
+                    <div>
+                      <div style={{ fontSize: '12px', color: '#666' }}>Profit</div>
+                      <div style={{ 
+                        fontWeight: '600',
+                        color: (loan.property_price - loan.property_acquisition_cost) >= 0 ? '#10b981' : '#ef4444'
+                      }}>
+                        ${formatCurrency(loan.property_price - loan.property_acquisition_cost)}
+                      </div>
+                    </div>
+                    <div>
+                      <div style={{ fontSize: '12px', color: '#666' }}>ROI</div>
+                      <div style={{ fontWeight: '600', color: 'var(--sandy-gold)' }}>
+                        {(((loan.property_price - loan.property_acquisition_cost) / loan.property_acquisition_cost) * 100).toFixed(1)}%
+                      </div>
                     </div>
                   </>
                 )}

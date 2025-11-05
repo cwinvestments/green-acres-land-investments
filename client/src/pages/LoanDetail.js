@@ -149,6 +149,35 @@ function LoanDetail() {
   const monthlyInterestRate = (parseFloat(loan.interest_rate) / 100) / 12;
   const nextInterest = parseFloat(loan.balance_remaining) * monthlyInterestRate;
   const nextPrincipal = parseFloat(loan.monthly_payment) - nextInterest;
+  
+  // Calculate payment status alert
+  const getPaymentStatus = () => {
+    if (loan.status === 'paid_off' || !loan.next_payment_date || loan.alerts_disabled) return null;
+    
+    const today = new Date();
+    const dueDate = new Date(loan.next_payment_date);
+    const daysUntilDue = Math.ceil((dueDate - today) / (1000 * 60 * 60 * 24));
+    
+    if (daysUntilDue < 0) {
+      const daysOverdue = Math.abs(daysUntilDue);
+      if (daysOverdue >= 30) {
+        return { text: `${daysOverdue} Days Overdue - Urgent! Please contact us immediately.`, color: '#dc3545', icon: '🚨' };
+      } else if (daysOverdue >= 15) {
+        return { text: `${daysOverdue} Days Past Due - Please make your payment as soon as possible.`, color: '#fd7e14', icon: '⚠️' };
+      } else if (daysOverdue >= 5) {
+        return { text: `${daysOverdue} Days Late - Your payment is overdue.`, color: '#ffc107', icon: '⏰' };
+      } else {
+        return { text: `Payment is ${daysOverdue} day${daysOverdue > 1 ? 's' : ''} late.`, color: '#ffc107', icon: '⏰' };
+      }
+    } else if (daysUntilDue <= 5) {
+      return { text: `Payment Due in ${daysUntilDue} Day${daysUntilDue !== 1 ? 's' : ''}`, color: '#17a2b8', icon: '📅' };
+    }
+    return null;
+  };
+  
+  const paymentStatus = getPaymentStatus();
+
+  return (
 
   return (
     <div className="loan-detail">
@@ -163,6 +192,23 @@ function LoanDetail() {
 
       <h1>{loan.property_title}</h1>
       <p className="loan-location">{loan.location}</p>
+      
+      {paymentStatus && (
+        <div style={{
+          backgroundColor: paymentStatus.color,
+          color: 'white',
+          padding: '15px 20px',
+          borderRadius: '8px',
+          marginTop: '20px',
+          marginBottom: '20px',
+          fontWeight: 'bold',
+          textAlign: 'center',
+          fontSize: '16px',
+          boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
+        }}>
+          {paymentStatus.icon} {paymentStatus.text}
+        </div>
+      )}
       
       {loan.description && (
         <p style={{ marginTop: '1rem', color: '#666' }}>{loan.description}</p>

@@ -1,509 +1,1033 @@
-# 🌿 Green Acres Land Investments - Complete Project Summary
+# 🌿 Green Acres Land Investments - Complete Project Guide
 
-**Last Updated:** November 4, 2025 
-**Project Status:** ✅ FULLY DEPLOYED TO PRODUCTION  
-**Version:** 2.0 - Admin Dashboard Complete
-
-> **🔧 For Technical Details:** See [GREEN-ACRES-PROJECT-GUIDE.md](GREEN-ACRES-PROJECT-GUIDE.md) for:
-> - Code architecture and conventions (PostgreSQL patterns, field names)
-> - Database schema and setup instructions
-> - Environment configuration
-> - API function reference
-> - Square payment integration patterns
-> - Troubleshooting and development workflow
-> 
-> **This document** tracks project status, features completed, and session history.
+**Last Updated:** November 5, 2025  
+**Version:** 2.1  
+**Status:** Production Deployment Complete
 
 ---
 
-## 🎉 Project Complete & Deployed!
+## 📋 Table of Contents
 
-Your complete Green Acres Land Investments platform is now **fully operational in production** with comprehensive admin tools, customer management, and advanced property features.
+1. [Project Overview](#project-overview)
+2. [Current Status](#current-status)
+3. [Tech Stack](#tech-stack)
+4. [Project Structure](#project-structure)
+5. [Environment Setup](#environment-setup)
+6. [Database Schema](#database-schema)
+7. [API Endpoints](#api-endpoints)
+8. [Frontend Components](#frontend-components)
+9. [Authentication & Security](#authentication--security)
+10. [Payment Processing](#payment-processing)
+11. [Deployment](#deployment)
+12. [Development Workflow](#development-workflow)
+13. [Troubleshooting](#troubleshooting)
+14. [Future Enhancements](#future-enhancements)
 
 ---
 
-## 🌐 Live Production URLs
+## 📖 Project Overview
 
-**Customer Website:** [Deployed on Netlify]  
-**Admin Dashboard:** [Deployed on Netlify]/admin  
-**Backend API:** https://green-acres-land-investments-production.up.railway.app/api  
-**Database:** PostgreSQL via Supabase (production-ready)
+### Business Model
+Green Acres Land Investments, LLC is a land investment company that:
+- Purchases raw land at auctions
+- Resells with flexible owner financing
+- Targets properties $2,000-$10,000
+- Operates in Wisconsin (expanding to AZ, CO, AR)
+
+### Tagline
+**"Your Land. Your Terms."**
+
+### Financing Options
+- **$99 Down Special** - 18% APR (most popular)
+- **20% Down** - 12% APR
+- **25% Down** - 8% APR
+- **35% Down** - 8% APR
+- **50% Down** - 8% APR
+- Terms: 1-5 years
+- Processing Fee: $99
+- Minimum Monthly Payment: $50
+- Payment Due: 1st or 15th of month (customer choice)
 
 ---
 
-## 🗂️ Complete Tech Stack (Production)
+## ✅ Current Status
+
+### Version 2.1 Features (November 5, 2025)
+- ✅ Customer payment due day selection
+- ✅ Next payment date display
+- ✅ Admin Loan Management dashboard
+- ✅ Profit and ROI tracking
+- ✅ Payment alert toggles
+- ✅ Overdue loan highlighting
+
+### Production Environment
+- **Frontend:** Deployed on Netlify
+- **Backend:** Deployed on Railway
+- **Database:** PostgreSQL via Supabase
+- **Payment:** Square (Sandbox mode - production ready)
+- **Domains:** Ready for custom DNS
+
+### Completed Phases
+- ✅ Phase 1: Core Platform Development
+- ✅ Phase 2: Payment Integration
+- ✅ Phase 3: Admin Property Management
+- ✅ Phase 4: Admin Customer Management
+- ✅ Phase 5: Admin Loan Management
+- ✅ Phase 5.5: Payment Due Day Selection
+
+---
+
+## 🛠️ Tech Stack
 
 ### Frontend
-- **Framework:** React 18
-- **Routing:** React Router 6
-- **HTTP Client:** Axios
-- **Payment SDK:** Square Web SDK
-- **Styling:** Modern CSS with CSS Variables
-- **Hosting:** Netlify (auto-deploy from GitHub)
-- **Domain Ready:** greenacreslandinvestments.com, wefinancelandforyou.com
+```
+React 18.2.0
+React Router 6
+Axios
+Square Web Payments SDK
+Modern CSS with CSS Variables
+```
 
 ### Backend
-- **Runtime:** Node.js
-- **Framework:** Express
-- **Authentication:** JWT (24-hour expiry)
-- **Security:** bcrypt password hashing, reCAPTCHA v3
-- **Payment Processing:** Square API (PCI compliant)
-- **Hosting:** Railway (auto-deploy from GitHub)
-- **Live API:** Production-ready with HTTPS
+```
+Node.js
+Express 4.18
+JWT (jsonwebtoken)
+bcrypt
+Square SDK
+node-postgres (pg)
+dotenv
+cors
+```
 
 ### Database
-- **Production:** PostgreSQL via Supabase
-- **Connection:** IPv4-enabled with connection pooling
-- **Library:** node-postgres (pg)
-- **Status:** Fully operational with sample data
+```
+PostgreSQL 14+
+Supabase (hosted)
+Connection pooling enabled
+```
+
+### Development Tools
+```
+VS Code
+Git/GitHub
+Command Prompt (Windows)
+Chrome DevTools
+Postman (API testing)
+```
 
 ---
 
-## ✅ Features Completed - Customer Portal
-
-### Property Browsing & Discovery
-- Property listings with professional card design
-- Advanced filtering and search
-- Property status system (available, pending, under contract, sold, coming soon)
-- **GPS Coordinate System** - 5-point boundary system for raw land
-- Interactive Google Maps integration for each coordinate point
-- Responsive mobile-optimized design
-- Property image placeholders with gradient backgrounds
-
-### Advanced Financing Calculator
-- **Customer affordability-first design**
-- Real-time monthly payment calculations
-- 5 financing options displayed simultaneously:
-  - **$99 Down Special** - 18% APR (most popular)
-  - **20% Down** - 12% APR
-  - **25% Down** - 8% APR
-  - **35% Down** - 8% APR
-  - **50% Down** - 8% APR
-- **Smart payment matching** - green glow highlights closest option to desired payment
-- **Intelligent warnings** when desired payment is too low/high
-- **Term adjustment suggestions** (longer/shorter terms)
-- Visual "Your Cost Today" prominent display
-
-### Secure Checkout & Payment Processing
-- **Complete billing information collection** (required at checkout)
-- **Phone number collection** during payment (not registration)
-- Square payment integration with billing validation
-- Red asterisk indicators for required fields
-- "* Required fields" notation for clarity
-- Support for both down payments and monthly installments
-
-### Customer Dashboard & Loan Management
-- **Professional dashboard** with summary statistics
-- Active loan cards with progress bars and remaining payments
-- Detailed loan information with all financial details
-- **Monthly payment processing** with Square integration
-- Complete payment history tracking
-- Loan status badges and progress visualization
-
-### Security & User Experience
-- Secure user registration and login (JWT-based)
-- **24-hour JWT token expiry** for enhanced security
-- **reCAPTCHA v3 integration** on registration
-- Password hashing with bcrypt
-- Protected routes and authentication state management
-- Professional error handling and success messaging
-
----
-
-## ✅ Features Completed - Admin Dashboard
-
-### Admin Authentication & Security
-- **Secure admin login** with environment variable credentials
-- **Separate admin routes** with authentication middleware
-- **Protected admin sections** invisible to customers
-- **Session management** with admin tokens
-
-### Phase 3: Property Management (Complete)
-- **Full CRUD operations** - Create, Read, Update, Delete properties
-- **Property status management** with dropdown controls:
-  - Available (shows on public site)
-  - Pending (hidden from public)
-  - Under Contract (hidden from public)
-  - Sold (hidden from public)
-  - Coming Soon (shows but not purchasable)
-- **5-Point GPS Coordinate System:**
-  - NE Corner, SE Corner, SW Corner, NW Corner, Center Point
-  - Admin input with labeled fields
-  - Customer display with Google Maps links
-  - JSON storage with parsing/validation
-- **Acquisition cost tracking** (admin-only field)
-- **Edit existing properties** with pre-populated data
-- **Prevents double-selling** with automatic status updates
-- **Professional admin UI** with cards, tables, and form validation
-
-### Phase 4: Customer Management (Complete)
-- **Complete customer overview** with search functionality
-- **Summary statistics dashboard:**
-  - Total Customers
-  - Total Outstanding Balance
-  - Total Monthly Payments Expected
-- **Customer table with key metrics:**
-  - Customer name and contact information
-  - Active/total loan counts
-  - Monthly payment amount per customer
-  - Total balance per customer
-  - Quick access to customer details
-- **Customer detail modal** showing:
-  - Complete contact information
-  - All customer loans with property details
-  - Loan statuses and balances
-- **Phone number display** collected during checkout
-- **Search and filter** customers by name, email, or phone
-
-### Admin Dashboard Statistics
-- **Real-time statistics display:**
-  - Total Properties (all statuses)
-  - Active Loans (current customer loans)
-  - Total Customers (registered users)
-- **Live data** pulled from database
-- **Professional card layout** with icons
-
-### Property Status & Sales Tracking
-- **"Recent Sales" public showcase page**
-- **Status filtering** with professional badges
-- **Property count indicators** in navigation
-- **Automatic hiding** of sold properties from public listings
-- **Sale date tracking** for marketing purposes
+## 📁 Project Structure
+```
+green-acres-land/
+├── client/                    # React frontend
+│   ├── public/
+│   │   ├── logo/             # 20 logo variations
+│   │   ├── favicon.ico
+│   │   └── index.html
+│   ├── src/
+│   │   ├── components/
+│   │   │   └── Navbar.js
+│   │   ├── context/
+│   │   │   └── AuthContext.js
+│   │   ├── pages/
+│   │   │   ├── Home.js
+│   │   │   ├── Properties.js
+│   │   │   ├── PropertyDetail.js
+│   │   │   ├── Login.js
+│   │   │   ├── Register.js
+│   │   │   ├── Dashboard.js
+│   │   │   ├── LoanDetail.js
+│   │   │   ├── PaymentHistory.js
+│   │   │   ├── SoldProperties.js
+│   │   │   ├── AdminLogin.js
+│   │   │   ├── AdminDashboard.js
+│   │   │   ├── PropertyManagement.js
+│   │   │   ├── CustomerManagement.js
+│   │   │   └── AdminLoans.js       # NEW
+│   │   ├── api.js
+│   │   ├── App.js
+│   │   ├── index.js
+│   │   └── index.css
+│   ├── .env
+│   ├── .gitignore
+│   └── package.json
+│
+├── server/                    # Express backend
+│   ├── database.js
+│   ├── server.js
+│   ├── .env
+│   ├── .gitignore
+│   └── package.json
+│
+├── .gitignore
+├── README.md
+├── QUICKSTART.md
+├── PROJECT-SUMMARY.md
+├── UI-IMPROVEMENT-PLAN.md
+└── GREEN-ACRES-PROJECT-GUIDE.md (this file)
+```
 
 ---
 
-## 🎨 Branding & Design System
+## ⚙️ Environment Setup
 
-### Professional Logo Package (20 Files)
-- **Complete logo variations** - full, horizontal, icon, light versions
-- **Multiple formats** - SVG (scalable), PNG (raster), favicons
-- **Responsive logo display** - horizontal on desktop, icon on mobile
-- **Brand colors:**
-  - Forest Green (#2c5f2d) - Primary
-  - Sandy Gold (#f4a460) - Accent
-  - Light Green (#f0f8f0) - Background
-  - Professional color system with CSS variables
+### Prerequisites
+- Node.js 16+ installed
+- Git installed
+- Square Developer account
+- Supabase account (for database)
+- Railway account (for backend hosting)
+- Netlify account (for frontend hosting)
 
-### Modern UI/UX Design
-- **Professional card-based layouts** throughout
-- **Consistent styling** with CSS architecture (500+ lines of professional CSS)
-- **Hover effects and animations** for better user experience
-- **Mobile-responsive design** for all screen sizes
-- **Accessibility features** including proper color contrast
-- **Clean typography** with proper hierarchy and spacing
+### Local Development Setup
 
----
+#### 1. Clone Repository
+```bash
+git clone https://github.com/cwinvestments/green-acres-land.git
+cd green-acres-land
+```
 
-## 💰 Business Model Implementation
+#### 2. Server Setup
+```bash
+cd server
+npm install
+```
 
-### Financing Structure
-- **Loan terms:** 1-5 years maximum
-- **Processing fee:** $99 on all purchases
-- **Minimum monthly payment:** $50
-- **No early payoff penalties**
-- **Interest rate tiers** based on down payment amount
-- **Automatic payment calculations** with proper compounding
+Create `server/.env`:
+```env
+# Database
+DATABASE_URL=postgresql://user:password@host:5432/database
 
-### Payment Processing
-- **Square integration** - PCI compliant and secure
-- **Sandbox mode** for testing (production keys ready)
-- **Automatic balance updates** after payments
-- **Complete audit trail** with payment history
-- **Support for partial payments** and overpayments
+# JWT
+JWT_SECRET=your-super-secret-jwt-key-change-this
 
-### Customer Data Management
-- **Complete customer profiles** with contact information
-- **Phone number collection** for better customer service
-- **Loan tracking** with full financial details
-- **Payment history** for customer records
-- **Admin visibility** into all customer activities
+# Square (Sandbox)
+SQUARE_ACCESS_TOKEN=your-square-sandbox-access-token
+SQUARE_ENVIRONMENT=sandbox
+SQUARE_LOCATION_ID=your-square-location-id
 
----
+# Admin Credentials
+ADMIN_EMAIL=admin@greenacresland.com
+ADMIN_PASSWORD=your-secure-admin-password
 
-## 🚀 Production Deployment Status
+# reCAPTCHA
+RECAPTCHA_SECRET_KEY=your-recaptcha-secret-key
 
-### Frontend Deployment (Netlify)
-- **Status:** ✅ Live and operational
-- **Auto-deployment:** GitHub integration
-- **Custom domains:** Ready for greenacreslandinvestments.com
-- **SSL/HTTPS:** Enabled by default
-- **Build process:** Optimized for production
+# Server
+PORT=5000
+NODE_ENV=development
+```
 
-### Backend Deployment (Railway)
-- **Status:** ✅ Live and operational
-- **Live API:** https://green-acres-land-investments-production.up.railway.app/api
-- **Auto-deployment:** GitHub main branch
-- **Environment variables:** Production configured
-- **Health monitoring:** Available with health check endpoint
+#### 3. Client Setup
+```bash
+cd client
+npm install
+```
 
-### Database (Supabase PostgreSQL)
-- **Status:** ✅ Fully operational
-- **Connection:** IPv4-enabled for Railway connection
-- **Sample data:** 6 properties loaded and ready
-- **Backup:** Automatic Supabase backups
-- **Performance:** Connection pooling enabled
+Create `client/.env`:
+```env
+REACT_APP_API_URL=http://localhost:5000/api
+REACT_APP_SQUARE_APPLICATION_ID=your-square-application-id
+REACT_APP_SQUARE_LOCATION_ID=your-square-location-id
+REACT_APP_SQUARE_ENVIRONMENT=sandbox
+REACT_APP_RECAPTCHA_SITE_KEY=your-recaptcha-site-key
+```
 
----
+#### 4. Start Development Servers
 
-## 📊 Sample Data & Testing
+Terminal 1 (Server):
+```bash
+cd server
+npm start
+```
 
-### Properties Loaded
-1. **Peaceful 5 Acre Retreat** - $4,500 (Near Appleton, WI)
-2. **10 Acre Investment Property** - $8,900 (Waupaca County, WI)
-3. **2.5 Acre Homesite** - $2,200 (Perfect for Building)
-4. **20 Acre Ranch Land** - $15,000 (Open Pasture)
-5. **3 Acre Wooded Lot** - $3,200 (Natural Beauty)
-6. **7.5 Acre Corner Lot** - $6,800 (Road Frontage)
-
-### Testing Capabilities
-- **Square sandbox mode** with test credit cards
-- **Complete loan workflow** tested end-to-end
-- **Payment processing** verified in production environment
-- **Admin functionality** tested and operational
-- **Customer registration/login** working properly
+Terminal 2 (Client):
+```bash
+cd client
+npm start
+```
 
 ---
 
-## 🎯 Key Accomplishments by Session
+## 🗄️ Database Schema
 
-### Session: November 4, 2025 - Property Status & Cost Tracking
-- ✅ **"Coming Soon" status implementation**
-  - New purple status badge for properties in redemption period
-  - Hides financing calculator and purchase button on property detail page
-  - Shows friendly message about deed transfer completion
-  - Backend and frontend fully integrated
-- ✅ **Property acquisition cost tracking**
-  - New `acquisition_cost` field in database and admin forms
-  - Admin-only field (not visible to customers)
-  - Foundation for future profit/ROI calculations
-- ✅ **Admin dashboard statistics**
-  - Real-time display of Total Properties, Active Loans, Total Customers
-  - Backend endpoint provides live stats from database
-- ✅ **Bug fixes and improvements**
-  - Fixed contact email to greenacreslandinvestments@gmail.com throughout site
-  - Fixed property card width consistency on Properties page
-  - Added property image placeholders with gradient background and emoji
-  - Resolved multiple deployment and build issues
-  - Improved error handling in property management forms
+### Users Table
+```sql
+CREATE TABLE users (
+  id SERIAL PRIMARY KEY,
+  email VARCHAR(255) UNIQUE NOT NULL,
+  password VARCHAR(255) NOT NULL,
+  first_name VARCHAR(100) NOT NULL,
+  last_name VARCHAR(100) NOT NULL,
+  phone VARCHAR(20),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
 
-### Session: January 14, 2025 - Admin Dashboard & Production Launch
-- ✅ **Security enhancements:** 24-hour JWT expiry, reCAPTCHA v3
-- ✅ **DNS fixes** for all 4 domains
-- ✅ **Complete admin property management** with GPS coordinates
-- ✅ **Complete admin customer management** with statistics
-- ✅ **Phone number collection** during checkout
-- ✅ **Production deployment** to Railway and Netlify
-- ✅ **UI improvements** with red asterisks and better UX
-- ✅ **Property status system** for sales management
+### Admin Users Table
+```sql
+CREATE TABLE admin_users (
+  id SERIAL PRIMARY KEY,
+  email VARCHAR(255) UNIQUE NOT NULL,
+  password VARCHAR(255) NOT NULL,
+  first_name VARCHAR(100) NOT NULL,
+  last_name VARCHAR(100) NOT NULL,
+  role VARCHAR(50) DEFAULT 'admin',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
 
-### Previous Sessions
-- Initial full-stack application development
+### Properties Table
+```sql
+CREATE TABLE properties (
+  id SERIAL PRIMARY KEY,
+  title VARCHAR(255) NOT NULL,
+  description TEXT,
+  location VARCHAR(255) NOT NULL,
+  state VARCHAR(50) NOT NULL,
+  county VARCHAR(100) NOT NULL,
+  acres DECIMAL(10,2) NOT NULL,
+  price DECIMAL(10,2) NOT NULL,
+  acquisition_cost DECIMAL(10,2),        -- NEW: For profit tracking
+  image_url VARCHAR(500),
+  status VARCHAR(50) DEFAULT 'available',
+  apn VARCHAR(100),                       -- Assessor's Parcel Number
+  coordinates TEXT,                       -- JSON: GPS coordinates
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+**Status Values:**
+- `available` - Listed on public site
+- `coming_soon` - In redemption, not purchasable yet
+- `pending` - Purchase initiated
+- `under_contract` - Contract signed
+- `sold` - Sale complete
+
+### Loans Table
+```sql
+CREATE TABLE loans (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER REFERENCES users(id),
+  property_id INTEGER REFERENCES properties(id),
+  purchase_price DECIMAL(10,2) NOT NULL,
+  down_payment DECIMAL(10,2) NOT NULL,
+  processing_fee DECIMAL(10,2) DEFAULT 99.00,
+  loan_amount DECIMAL(10,2) NOT NULL,
+  interest_rate DECIMAL(5,2) NOT NULL,
+  term_months INTEGER NOT NULL,
+  monthly_payment DECIMAL(10,2) NOT NULL,
+  total_amount DECIMAL(10,2) NOT NULL,
+  balance_remaining DECIMAL(10,2) NOT NULL,
+  status VARCHAR(50) DEFAULT 'active',
+  next_payment_date DATE,                 -- NEW: Customer's chosen payment date
+  alerts_disabled BOOLEAN DEFAULT FALSE,  -- NEW: Admin can disable alerts
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+**Status Values:**
+- `active` - Loan in repayment
+- `paid_off` - Loan completed
+
+### Payments Table
+```sql
+CREATE TABLE payments (
+  id SERIAL PRIMARY KEY,
+  loan_id INTEGER REFERENCES loans(id),
+  user_id INTEGER REFERENCES users(id),
+  amount DECIMAL(10,2) NOT NULL,
+  payment_type VARCHAR(50) NOT NULL,
+  square_payment_id VARCHAR(255),
+  status VARCHAR(50) DEFAULT 'completed',
+  payment_method VARCHAR(50) DEFAULT 'square',
+  principal_amount DECIMAL(10,2),
+  interest_amount DECIMAL(10,2),
+  payment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+**Payment Types:**
+- `down_payment` - Initial down payment
+- `monthly_payment` - Regular installment
+
+---
+
+## 🔌 API Endpoints
+
+### Public Endpoints
+
+#### Authentication
+```
+POST /api/register
+Body: { email, password, firstName, lastName, recaptchaToken }
+Returns: { token, user }
+
+POST /api/login
+Body: { email, password }
+Returns: { token, user }
+
+POST /api/admin/login
+Body: { email, password }
+Returns: { token, admin }
+```
+
+#### Properties
+```
+GET /api/properties
+Returns: Array of available properties
+
+GET /api/properties/:id
+Returns: Single property details
+
+GET /api/properties/sold
+Returns: Array of sold/under contract properties
+```
+
+### Protected Customer Endpoints
+**Requires:** `Authorization: Bearer {token}`
+
+#### Loans
+```
+GET /api/loans
+Returns: User's loans
+
+GET /api/loans/:id
+Returns: Single loan details
+
+POST /api/loans
+Body: { 
+  propertyId, 
+  downPaymentPercentage, 
+  termMonths, 
+  paymentNonce,
+  phone,
+  paymentDueDay          # NEW: 1 or 15
+}
+Returns: Created loan
+```
+
+#### Payments
+```
+POST /api/payments
+Body: { loanId, amount, paymentNonce }
+Returns: Payment confirmation
+
+GET /api/loans/:id/payments
+Returns: Payment history for loan
+```
+
+### Protected Admin Endpoints
+**Requires:** `Authorization: Bearer {adminToken}`
+
+#### Admin Stats
+```
+GET /api/admin/stats
+Returns: { totalProperties, activeLoans, totalCustomers }
+```
+
+#### Property Management
+```
+GET /api/admin/properties
+Returns: All properties (all statuses)
+
+POST /api/admin/properties
+Body: { title, description, location, state, county, acres, price, acquisition_cost, apn, coordinates }
+Returns: Created property
+
+PUT /api/admin/properties/:id
+Body: Property data
+Returns: Updated property
+
+PATCH /api/admin/properties/:id/status
+Body: { status }
+Returns: Updated property
+
+DELETE /api/admin/properties/:id
+Returns: Success message
+```
+
+#### Customer Management
+```
+GET /api/admin/customers
+Returns: All customers with loan summaries
+
+GET /api/admin/customers/:id
+Returns: Customer details with loans
+```
+
+#### Loan Management (NEW)
+```
+GET /api/admin/loans
+Returns: All loans with property and customer data, including:
+  - property_price
+  - property_acquisition_cost
+  - Profit calculation ready
+  - ROI calculation ready
+
+PATCH /api/admin/loans/:id/toggle-alert
+Returns: Updated alert status
+```
+
+---
+
+## 🎨 Frontend Components
+
+### Key Components
+
+#### Navbar.js
+- Responsive navigation
+- Logo display (horizontal/icon based on screen size)
+- Auth-aware menu (logged in vs logged out)
+- Admin navigation when admin logged in
+
+#### AuthContext.js
+- Global authentication state
+- JWT token management
+- User session persistence
+- Protected route logic
+
+#### PropertyDetail.js
+- Advanced financing calculator
+- Payment due day selection (NEW)
 - Square payment integration
-- Customer portal with loan management
-- Database design and implementation
-- JWT authentication system
-- Professional UI/UX design
-- Logo package creation and integration
-- PostgreSQL migration from SQLite
-- Currency formatting improvements
-- Complete styling overhaul
+- Billing information collection
+- GPS coordinate display
+
+#### Dashboard.js
+- Customer loan overview
+- Next payment due date display (NEW)
+- Color-coded payment alerts (NEW)
+- Progress bars
+- Payment status warnings
+
+#### LoanDetail.js
+- Detailed loan information
+- Next payment due date (NEW)
+- Square payment form
+- Payment history link
+
+#### AdminLoans.js (NEW)
+- Complete loan management dashboard
+- Profit/ROI columns
+- Filter by status (Active, Overdue, Paid Off)
+- Search functionality
+- Alert toggle buttons
+- Overdue highlighting
+- Mobile-responsive
+
+### CSS Architecture
+
+**Variables:**
+```css
+--forest-green: #2c5f2d
+--dark-forest: #1e4620
+--sandy-gold: #f4a460
+--muted-gold: #d4873e
+--light-green: #f0f8f0
+```
+
+**Key Classes:**
+- `.btn`, `.btn-primary`, `.btn-secondary`
+- `.card` - Standard card container
+- `.status-badge` - Status indicators
+- `.progress-bar` - Loan progress visualization
+- `.dashboard-summary` - Summary cards grid
+- `.desktop-only`, `.mobile-only` - Responsive helpers
 
 ---
 
-## 🔧 Advanced Features Implemented
+## 🔒 Authentication & Security
 
-### GPS Coordinate System for Raw Land
-- **5-point boundary system** - NE, SE, SW, NW corners + center
-- **Admin input interface** with labeled fields and validation
-- **Customer display** with individual Google Maps links
-- **JSON storage** with proper parsing and error handling
-- **Mobile-responsive maps** for customer viewing
+### JWT Authentication
+- **Token Expiry:** 24 hours
+- **Storage:** localStorage
+- **Refresh:** Manual re-login required
+- **Admin Separate:** Different token for admin routes
 
-### Smart Financing Calculator
-- **Affordability-first approach** - customer enters desired payment
-- **Real-time highlighting** of closest payment option
-- **Smart suggestions** for term adjustments
-- **Visual feedback** with green glow for matches
-- **Complete cost breakdown** with "Your Cost Today" display
-- **Mobile-optimized** calculator interface
+### Password Security
+- **Hashing:** bcrypt with salt rounds
+- **Minimum Requirements:** None enforced (consider adding)
+- **Storage:** Never stored in plain text
 
-### Professional Admin Tools
-- **Property management** with full CRUD operations
-- **Customer management** with search and statistics
-- **Status management** for sales pipeline
-- **Data visualization** with cards and progress bars
-- **Confirmation dialogs** for critical operations
-- **Professional table layouts** with sorting and filtering
-- **Real-time statistics** dashboard
+### reCAPTCHA v3
+- **Implementation:** Registration form
+- **Score Threshold:** 0.5
+- **Fallback:** Server-side validation
 
----
+### Environment Variables
+- **Never committed:** .gitignore includes .env
+- **Production:** Set in Railway/Netlify dashboards
+- **Rotation:** Change periodically
 
-## 🔒 Security & Compliance
-
-### Authentication & Security
-- **JWT-based authentication** with 24-hour expiry
-- **Secure password hashing** with bcrypt
-- **Environment variable protection** for sensitive data
-- **CORS configuration** for production security
-- **SQL injection prevention** with parameterized queries
-- **reCAPTCHA v3** bot protection on registration
-
-### Payment Security
-- **PCI compliance** through Square API
-- **No card data storage** on your servers
-- **Secure tokenization** for all transactions
-- **SSL/HTTPS** for all communications
-- **Audit trail** for all financial transactions
-
-### Admin Security
-- **Separate admin authentication** system
-- **Protected admin routes** with middleware
-- **Environment variable admin credentials**
-- **Session management** with secure tokens
+### SQL Injection Prevention
+- **Parameterized Queries:** All database queries use `$1, $2` syntax
+- **Input Validation:** Server-side validation on all inputs
 
 ---
 
-## 🎯 Immediate Next Steps (Optional Enhancements)
+## 💳 Payment Processing
 
-### Phase 5: Profit/ROI Analysis (Partially Complete)
-- ✅ Property acquisition cost tracking implemented
-- ⌛ Profit calculation display (sale price - acquisition cost)
-- ⌛ ROI percentage for sold properties
-- ⌛ Business intelligence dashboard
+### Square Integration
 
-### Phase 6: Advanced Features
-- ⌛ **Photo upload system** - multiple images per property
-- ⌛ **Email notifications** for payments and reminders
-- ⌛ **Document management** for contracts and deeds
-- ⌛ **Advanced reporting** with financial analytics
+#### Sandbox Testing
+**Test Card:**
+```
+Card Number: 4111 1111 1111 1111
+CVV: 111
+Expiration: Any future date
+ZIP: Any 5 digits
+```
 
-### Phase 7: Search & Filtering
-- ⌛ **Property search bar** (search by location, price range)
-- ⌛ **Filter by price range, acreage, status**
-- ⌛ **Sort by price** (low to high, high to low)
-- ⌛ **Multi-state expansion** with dropdown navigation
+#### Payment Flow
+1. Customer selects financing option and payment due day
+2. Enters billing information (name, phone, address)
+3. Square tokenizes card (PCI compliant)
+4. Backend processes payment
+5. Loan created with next_payment_date calculated
+6. Property status updated
 
-### Phase 8: Business Intelligence
-- ⌛ **Sales dashboards** with charts and metrics
-- ⌛ **Customer analytics** and payment patterns
-- ⌛ **Property performance** tracking
-- ⌛ **Financial reporting** for business management
+#### Production Checklist
+- [ ] Switch to Production access token
+- [ ] Update SQUARE_ENVIRONMENT to 'production'
+- [ ] Test with small real payment
+- [ ] Monitor first transactions
+- [ ] Set up Square webhooks (optional)
 
----
-
-## 📚 Documentation & Support
-
-### Complete Documentation Package
-- **PROJECT-SUMMARY.md** (this file) - Complete project overview and status
-- **GREEN-ACRES-PROJECT-GUIDE.md** - Technical documentation and reference
-- **QUICKSTART.md** - 5-minute setup guide
-- **UI-IMPROVEMENT-PLAN.md** - UI/UX enhancement tracking
-- **README.md** - Setup and troubleshooting
-
-### Code Architecture
-- **Clean, commented codebase** with consistent patterns
-- **Modular React components** for easy maintenance
-- **RESTful API design** with proper error handling
-- **Database schema** designed for scalability
-- **Environment configuration** for easy deployment
+### Payment Due Day Logic
+```javascript
+// Customer chooses 1 or 15
+// If choosing 1st: First payment = 1st of next month
+// If choosing 15th:
+//   - If today < 15th: First payment = this month's 15th
+//   - If today >= 15th: First payment = next month's 15th
+```
 
 ---
 
-## 🎉 Business Ready Features
+## 🚀 Deployment
 
-### Customer Experience
-- **Professional website** that builds trust
-- **Easy property browsing** with clear information
-- **Transparent financing** with real-time calculations
-- **Secure checkout** with modern payment processing
-- **Customer dashboard** for loan management
-- **Mobile-friendly** for customers on the go
+### Frontend (Netlify)
 
-### Business Management
-- **Complete admin dashboard** for day-to-day operations
-- **Customer management** with full contact information
-- **Property management** with status tracking
-- **Payment processing** with automatic tracking
-- **Sales pipeline** management with status updates
-- **Financial oversight** with balance and payment tracking
-- **Real-time statistics** for business monitoring
+#### Build Settings
+```
+Build command: npm run build
+Publish directory: client/build
+Node version: 18
+```
 
-### Growth Ready
-- **Scalable architecture** for business expansion
-- **Multi-state property** support with GPS coordinates
-- **Professional branding** for marketing materials
-- **SEO-friendly** structure for online visibility
-- **Mobile optimization** for modern customers
-- **Foundation for ROI tracking** and business analytics
+#### Environment Variables
+```
+REACT_APP_API_URL=https://your-backend.railway.app/api
+REACT_APP_SQUARE_APPLICATION_ID=
+REACT_APP_SQUARE_LOCATION_ID=
+REACT_APP_SQUARE_ENVIRONMENT=sandbox
+REACT_APP_RECAPTCHA_SITE_KEY=
+```
 
----
+#### Custom Domain Setup
+1. Add custom domain in Netlify
+2. Update DNS records:
+   - A record: 75.2.60.5
+   - CNAME: your-site.netlify.app
+3. Enable HTTPS (automatic)
+4. Force HTTPS redirect
 
-## 🎯 Success Metrics
+### Backend (Railway)
 
-### Technical Achievements
-- ✅ **100% feature completion** for core business operations
-- ✅ **Production deployment** with zero downtime
-- ✅ **Mobile responsiveness** across all devices
-- ✅ **Security compliance** with industry standards
-- ✅ **Payment processing** tested and operational
-- ✅ **Admin tools** fully functional
+#### Deployment
+```
+1. Connect GitHub repository
+2. Select main branch
+3. Auto-deploy on push enabled
+4. Set environment variables
+5. Deploy
+```
 
-### Business Achievements
-- ✅ **Complete sales funnel** from browsing to payment
-- ✅ **Customer self-service** portal reducing support needs
-- ✅ **Admin efficiency** tools for business management
-- ✅ **Professional presentation** building customer trust
-- ✅ **Scalable foundation** for business growth
-- ✅ **Real-time insights** into business performance
+#### Environment Variables
+```
+DATABASE_URL=postgresql://...
+JWT_SECRET=...
+SQUARE_ACCESS_TOKEN=...
+SQUARE_ENVIRONMENT=sandbox
+SQUARE_LOCATION_ID=...
+ADMIN_EMAIL=...
+ADMIN_PASSWORD=...
+RECAPTCHA_SECRET_KEY=...
+PORT=5000
+NODE_ENV=production
+```
 
----
+#### Health Check
+```
+GET https://your-app.railway.app/api/health
+Returns: { status: 'ok', message: 'Green Acres API is running' }
+```
 
-## 💼 Ready for Business
+### Database (Supabase)
 
-Your Green Acres Land Investments platform is **production-ready** and includes everything needed to:
+#### Connection Setup
+1. Enable IPv4 address
+2. Copy connection string
+3. Add to Railway environment
+4. Enable connection pooling
+5. Set SSL mode to require
 
-- **Launch immediately** with professional website
-- **Process real customers** with secure payments
-- **Manage properties** with admin tools
-- **Track all business** operations efficiently
-- **Scale confidently** as your business grows
-- **Monitor performance** with real-time statistics
-
-The platform handles the complete customer journey from initial property browsing through loan payoff, while providing you with comprehensive admin tools to manage every aspect of your land financing business.
-
----
-
-## 📞 Implementation Notes
-
-### For Go-Live
-1. **Switch Square to production mode** (change environment variables)
-2. **Update domain DNS** to point to Netlify
-3. **Configure custom domain** on Netlify
-4. **Test payment processing** with small amounts
-5. **Load actual property inventory** through admin panel
-
-### For Ongoing Operations
-- **Use admin dashboard** for daily property and customer management
-- **Monitor payments** through customer management interface
-- **Update property statuses** as sales progress
-- **Add new properties** through property management
-- **Track customer communications** via collected phone numbers
-- **Review statistics** regularly for business insights
+#### Backup Strategy
+- Automatic daily backups (Supabase)
+- Manual export before major changes
+- Test restore procedure
 
 ---
 
-**🎉 Congratulations! Your complete land financing platform is ready for business!**
+## 🔧 Development Workflow
 
-**Built with ❤️ for Green Acres Land Investments, LLC**  
-*Making land ownership simple and accessible!* 🌿🏞️
+### Git Workflow
+```bash
+# Feature development
+git checkout -b feature/feature-name
+# ... make changes ...
+git add .
+git commit -m "feat: Description of feature"
+git push origin feature/feature-name
+
+# Production deployment
+git checkout main
+git merge feature/feature-name
+git push origin main
+# Auto-deploys to Netlify & Railway
+```
+
+### Commit Message Conventions
+```
+feat: New feature
+fix: Bug fix
+docs: Documentation update
+style: Formatting, missing semi-colons
+refactor: Code restructure
+test: Adding tests
+chore: Maintenance
+```
+
+### Testing Checklist
+- [ ] Local testing (both dev servers)
+- [ ] Mobile responsive check
+- [ ] Cross-browser testing
+- [ ] Payment flow test (sandbox)
+- [ ] Admin tools test
+- [ ] Error handling test
+
+### Code Style
+- **Indentation:** 2 spaces
+- **Quotes:** Single quotes for JS, double for JSX attributes
+- **Semicolons:** Used consistently
+- **Comments:** For complex logic only
+- **Variable names:** camelCase for JS, PascalCase for components
 
 ---
 
-**Total Development Time:** Multiple sessions over several weeks  
-**Lines of Code:** 3,000+ (frontend + backend + documentation)  
-**Features Delivered:** 30+ major features across customer and admin portals  
-**Status:** Production-ready and deployed ✅
+## 🐛 Troubleshooting
+
+### Common Issues
+
+#### Port Already in Use
+```bash
+# Windows
+netstat -ano | findstr :5000
+taskkill /PID <PID> /F
+```
+
+#### Database Connection Failed
+- Check DATABASE_URL format
+- Verify Supabase IPv4 enabled
+- Test connection with psql
+- Check firewall settings
+
+#### Square Payment Errors
+- Verify sandbox vs production mode matches
+- Check Application ID and Location ID
+- Ensure card number is test card for sandbox
+- Check browser console for detailed errors
+
+#### Build Failures (Netlify)
+- Check environment variables set
+- Verify Node version (18)
+- Check for console errors in build log
+- Clear cache and retry
+
+#### JWT Token Expired
+- Tokens expire after 24 hours
+- User must log in again
+- Consider implementing refresh tokens
+
+### Debugging Tips
+
+#### Backend Debugging
+```javascript
+// Add console.logs
+console.log('Request body:', req.body);
+console.log('User:', req.user);
+
+// Check environment variables
+console.log('DATABASE_URL:', process.env.DATABASE_URL ? 'Set' : 'Missing');
+```
+
+#### Frontend Debugging
+```javascript
+// Check API responses
+console.log('API Response:', response.data);
+
+// Check auth state
+console.log('Is Authenticated:', isAuthenticated);
+console.log('Token:', localStorage.getItem('token'));
+```
+
+#### Database Debugging
+```sql
+-- Check table contents
+SELECT * FROM users LIMIT 5;
+SELECT * FROM properties WHERE status = 'available';
+SELECT * FROM loans WHERE status = 'active';
+
+-- Check for orphaned records
+SELECT * FROM loans WHERE user_id NOT IN (SELECT id FROM users);
+```
 
 ---
 
-*For technical setup, code architecture, and troubleshooting, see [GREEN-ACRES-PROJECT-GUIDE.md](GREEN-ACRES-PROJECT-GUIDE.md)*
+## 🚀 Future Enhancements
+
+### Phase 6: Property Tax Tracking
+**Goal:** Track property taxes for each parcel
+
+**Database Changes:**
+```sql
+ALTER TABLE properties ADD COLUMN annual_tax_amount DECIMAL(10,2);
+ALTER TABLE properties ADD COLUMN tax_due_date DATE;
+ALTER TABLE properties ADD COLUMN tax_paid BOOLEAN DEFAULT FALSE;
+```
+
+**Features:**
+- Admin inputs tax amount and due date
+- Customer sees tax info on loan detail
+- Customer can pay tax through platform
+- Admin marks as paid
+- Tax calendar view
+
+### Phase 7: Selling Expenses Tracking
+**Goal:** Track all costs for true profit calculation
+
+**Database Changes:**
+```sql
+ALTER TABLE properties ADD COLUMN selling_expenses DECIMAL(10,2);
+-- Or for itemized:
+CREATE TABLE property_expenses (
+  id SERIAL PRIMARY KEY,
+  property_id INTEGER REFERENCES properties(id),
+  expense_type VARCHAR(100),
+  amount DECIMAL(10,2),
+  description TEXT,
+  date DATE
+);
+```
+
+**Features:**
+- Track postal fees, deed fees, title fees, etc.
+- Calculate true profit: price - acquisition - expenses
+- Update ROI calculation
+- Expense reports
+
+### Phase 8: Advanced Features
+- **Multiple Property Images** (up to 10 per property)
+- **Email Notifications** (payment reminders, receipts)
+- **SMS Reminders** (via Twilio)
+- **Document Storage** (contracts, deeds)
+- **Automated Payment Reminders**
+- **Late Fee Calculation**
+- **Early Payoff Calculations**
+
+### Phase 9: Business Intelligence
+- **Financial Dashboard** (revenue, profit trends)
+- **Customer Analytics** (payment patterns, demographics)
+- **Property Performance** (time to sell, ROI by state)
+- **Cash Flow Projections**
+- **Export Reports** (CSV, PDF)
+
+---
+
+## 📝 Code Conventions
+
+### Backend Conventions
+
+#### Route Organization
+```javascript
+// Group routes by category
+// ==================== AUTH ROUTES ====================
+// ==================== PROPERTY ROUTES ====================
+// ==================== LOAN ROUTES ====================
+```
+
+#### Error Handling
+```javascript
+try {
+  // ... operation ...
+  res.json({ success: true, data });
+} catch (error) {
+  console.error('Operation error:', error);
+  res.status(500).json({ error: 'Operation failed' });
+}
+```
+
+#### Database Queries
+```javascript
+// Always use parameterized queries
+const result = await db.pool.query(
+  'SELECT * FROM users WHERE email = $1',
+  [email]
+);
+```
+
+### Frontend Conventions
+
+#### Component Structure
+```javascript
+// 1. Imports
+import React, { useState, useEffect } from 'react';
+
+// 2. Component definition
+function ComponentName() {
+  // 3. State declarations
+  const [data, setData] = useState([]);
+  
+  // 4. Effects
+  useEffect(() => {
+    loadData();
+  }, []);
+  
+  // 5. Event handlers
+  const handleClick = () => {
+    // ...
+  };
+  
+  // 6. Render
+  return (
+    <div>
+      {/* JSX */}
+    </div>
+  );
+}
+
+// 7. Export
+export default ComponentName;
+```
+
+#### API Calls
+```javascript
+// Use try/catch
+try {
+  const response = await axios.get(`${API_URL}/endpoint`);
+  setData(response.data);
+} catch (error) {
+  setError('Failed to load');
+  console.error(error);
+}
+```
+
+---
+
+## 📊 Performance Optimization
+
+### Frontend Optimization
+- Lazy loading for routes (React.lazy)
+- Image optimization (compress before upload)
+- Minimize bundle size (tree shaking)
+- Cache API responses where appropriate
+- Use React.memo for expensive components
+
+### Backend Optimization
+- Database connection pooling (enabled)
+- Index frequently queried columns
+- Limit query results
+- Cache static data
+- Compress API responses (gzip)
+
+### Database Optimization
+```sql
+-- Add indexes for common queries
+CREATE INDEX idx_loans_user_id ON loans(user_id);
+CREATE INDEX idx_loans_status ON loans(status);
+CREATE INDEX idx_properties_status ON properties(status);
+CREATE INDEX idx_payments_loan_id ON payments(loan_id);
+```
+
+---
+
+## 🎨 Branding Guidelines
+
+### Logo Usage
+- **Full Logo:** Homepage hero, marketing materials
+- **Horizontal Logo:** Desktop navbar
+- **Icon Logo:** Mobile navbar, favicon
+- **Light Versions:** Dark backgrounds
+
+### Color Palette
+- **Forest Green (#2c5f2d):** Primary actions, headings
+- **Dark Forest (#1e4620):** Hover states, emphasis
+- **Sandy Gold (#f4a460):** Accents, "Most Popular" badges
+- **Light Green (#f0f8f0):** Backgrounds, subtle highlights
+
+### Typography
+- **Headings:** Bold, Forest Green
+- **Body:** Regular, #333
+- **Secondary:** Regular, #666
+- **Buttons:** Medium weight, uppercase for CTAs
+
+---
+
+## 🆘 Support & Maintenance
+
+### Regular Maintenance Tasks
+- [ ] Monitor error logs (Railway dashboard)
+- [ ] Review payment processing (Square dashboard)
+- [ ] Check database backups (weekly)
+- [ ] Update dependencies (monthly)
+- [ ] Review and respond to customer inquiries
+- [ ] Test payment processing (monthly)
+
+### Security Updates
+- [ ] Rotate JWT secret (quarterly)
+- [ ] Update admin password (quarterly)
+- [ ] Review and update dependencies
+- [ ] Check for Square SDK updates
+- [ ] Review access logs
+
+### Monitoring
+- **Railway:** Check deployment logs, errors
+- **Netlify:** Check build status, errors
+- **Supabase:** Monitor database performance
+- **Square:** Review transactions, disputes
+
+---
+
+## 📞 Key Resources
+
+### Documentation
+- [React Docs](https://react.dev)
+- [Express Docs](https://expressjs.com)
+- [Square Docs](https://developer.squareup.com/docs)
+- [PostgreSQL Docs](https://www.postgresql.org/docs)
+- [Supabase Docs](https://supabase.com/docs)
+
+### Support
+- **Square Support:** developer.squareup.com/support
+- **Railway Support:** railway.app/help
+- **Netlify Support:** netlify.com/support
+- **Supabase Support:** supabase.com/support
+
+---
+
+**Built with ❤️ for Green Acres Land Investments, LLC**
+
+*Last updated: November 5, 2025*

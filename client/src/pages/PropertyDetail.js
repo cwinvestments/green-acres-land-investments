@@ -420,7 +420,7 @@ navigate('/dashboard');
                   </div>
                 </div>
                 <p style={{ fontSize: '0.9rem', color: '#666' }}>
-                  💡 Check back soon or <a href="mailto:contact@greenacresland.com" style={{ color: 'var(--forest-green)' }}>contact us</a> to be notified when this property becomes available!
+                  💡 Check back soon or <a href="mailto:greenacreslandinvestments@gmail.com" style={{ color: 'var(--forest-green)' }}>contact us</a> to be notified when this property becomes available!
                 </p>
               </div>
             </div>

@@ -127,7 +127,7 @@ function AdminDashboard() {
           <button className="btn btn-primary">Manage Customers</button>
         </div>
 
-        <div className="card" style={{ padding: '30px', cursor: 'pointer' }}>
+        <div className="card" style={{ padding: '30px', cursor: 'pointer' }} onClick={() => navigate('/admin/loans')}>
           <h2 style={{ margin: '0 0 10px 0' }}>💰 Loan Management</h2>
           <p style={{ color: '#666', marginBottom: '15px' }}>
             Track loans, payments, and balances

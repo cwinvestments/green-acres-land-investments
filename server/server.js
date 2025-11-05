@@ -348,6 +348,32 @@ app.get('/api/properties/:id', async (req, res) => {
   }
 });
 
+// Get admin dashboard statistics
+app.get('/api/admin/stats', authenticateAdmin, async (req, res) => {
+  try {
+    // Total properties
+    const propertiesResult = await db.pool.query('SELECT COUNT(*) FROM properties');
+    const totalProperties = parseInt(propertiesResult.rows[0].count);
+
+    // Active loans
+    const activeLoansResult = await db.pool.query("SELECT COUNT(*) FROM loans WHERE status = 'active'");
+    const activeLoans = parseInt(activeLoansResult.rows[0].count);
+
+    // Total customers
+    const customersResult = await db.pool.query('SELECT COUNT(*) FROM users');
+    const totalCustomers = parseInt(customersResult.rows[0].count);
+
+    res.json({
+      totalProperties,
+      activeLoans,
+      totalCustomers
+    });
+  } catch (error) {
+    console.error('Get admin stats error:', error);
+    res.status(500).json({ error: 'Failed to fetch statistics' });
+  }
+});
+
 // ==================== ADMIN PROPERTY ROUTES ====================
 
 // Get all properties (admin - includes all statuses)

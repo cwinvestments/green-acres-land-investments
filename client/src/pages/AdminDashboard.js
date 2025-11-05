@@ -1,9 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 function AdminDashboard() {
   const navigate = useNavigate();
   const [admin, setAdmin] = useState(null);
+  const [stats, setStats] = useState({
+    totalProperties: 0,
+    activeLoans: 0,
+    totalCustomers: 0
+  });
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     // Check if admin is logged in
@@ -11,13 +18,28 @@ function AdminDashboard() {
     const adminUser = localStorage.getItem('adminUser');
 
     if (!adminToken || !adminUser) {
-      // Not logged in, redirect to admin login
       navigate('/admin/login');
       return;
     }
 
     setAdmin(JSON.parse(adminUser));
+    loadStats();
   }, [navigate]);
+
+  const loadStats = async () => {
+    try {
+      const token = localStorage.getItem('adminToken');
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/admin/stats`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setStats(response.data);
+    } catch (err) {
+      console.error('Failed to load stats:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleLogout = () => {
     localStorage.removeItem('adminToken');
@@ -65,19 +87,19 @@ function AdminDashboard() {
       }}>
         <div className="card" style={{ textAlign: 'center', padding: '30px' }}>
           <h3 style={{ fontSize: '36px', margin: '0 0 10px 0', color: 'var(--forest-green)' }}>
-            -
+            {loading ? '-' : stats.totalProperties}
           </h3>
           <p style={{ margin: 0, color: '#666' }}>Total Properties</p>
         </div>
         <div className="card" style={{ textAlign: 'center', padding: '30px' }}>
           <h3 style={{ fontSize: '36px', margin: '0 0 10px 0', color: 'var(--forest-green)' }}>
-            -
+            {loading ? '-' : stats.activeLoans}
           </h3>
           <p style={{ margin: 0, color: '#666' }}>Active Loans</p>
         </div>
         <div className="card" style={{ textAlign: 'center', padding: '30px' }}>
           <h3 style={{ fontSize: '36px', margin: '0 0 10px 0', color: 'var(--forest-green)' }}>
-            -
+            {loading ? '-' : stats.totalCustomers}
           </h3>
           <p style={{ margin: 0, color: '#666' }}>Total Customers</p>
         </div>

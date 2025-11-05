@@ -285,15 +285,14 @@ function LoanDetail() {
         </div>
 
         {loan.status === 'active' && parseFloat(loan.balance_remaining) > 0 && (
-          <>
+          <div className="payment-card">
+            <h2>Make a Payment</h2>
+            
             {/* Pay Extra Calculator */}
-            <div className="card" style={{ padding: '20px', marginBottom: '20px', backgroundColor: '#f0f8f0', border: '2px solid var(--forest-green)' }}>
-              <h2 style={{ color: 'var(--forest-green)', marginBottom: '15px' }}>💡 Pay Extra & Save!</h2>
+            <div style={{ padding: '15px', marginBottom: '20px', backgroundColor: '#f0f8f0', borderRadius: '8px', border: '2px solid var(--forest-green)' }}>
+              <h3 style={{ color: 'var(--forest-green)', marginBottom: '10px', fontSize: '18px' }}>💡 Pay Extra & Save!</h3>
               <PayExtraCalculator loan={loan} />
             </div>
-
-            <div className="payment-card">
-              <h2>Make a Payment</h2>
             
             <form onSubmit={handlePayment}>
               <div className="payment-amount-section">
@@ -485,7 +484,6 @@ function LoanDetail() {
               )}
             </form>
           </div>
-          </>
         )}
       </div>
 

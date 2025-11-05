@@ -11,6 +11,7 @@ function LoanDetail() {
   const [error, setError] = useState('');
   
   const [paymentAmount, setPaymentAmount] = useState('');
+  const [paymentMethod, setPaymentMethod] = useState('square');
   const [processing, setProcessing] = useState(false);
   const [paymentError, setPaymentError] = useState('');
   const [cardInstance, setCardInstance] = useState(null);
@@ -90,7 +91,8 @@ function LoanDetail() {
         await createPayment({
           loanId: loan.id,
           amount: amount,
-          paymentNonce: result.token
+          paymentNonce: result.token,
+          paymentMethod: paymentMethod
         });
 
         alert('✅ Payment Successful!\n\nYour payment has been processed and your loan balance has been updated.\n\nThank you!');

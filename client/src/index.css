@@ -906,7 +906,6 @@ body {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 2.5rem;
-  justify-items: center;
 }
 
 /* Property Card */
@@ -921,8 +920,8 @@ body {
   color: inherit;
   display: flex;
   flex-direction: column;
+  width: 100%;
 }
-
 .property-card:hover {
   transform: translateY(-8px);
   box-shadow: var(--shadow-lg);

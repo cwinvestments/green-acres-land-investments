@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { formatCurrency } from '../api';
 
@@ -17,7 +17,7 @@ function AdminLoans() {
 
   useEffect(() => {
     filterLoans();
-  }, [loans, filter, searchTerm]);
+  }, [loans, filter, searchTerm, filterLoans]);
 
   const loadLoans = async () => {
     try {
@@ -41,7 +41,7 @@ function AdminLoans() {
     }
   };
 
-  const filterLoans = () => {
+  const filterLoans = useCallback(() => {
     let filtered = [...loans];
 
     // Apply status filter
@@ -65,7 +65,7 @@ function AdminLoans() {
     }
 
     setFilteredLoans(filtered);
-  };
+  }, [loans, filter, searchTerm]);
 
   const isOverdue = (loan) => {
     if (!loan.next_payment_date || loan.status !== 'active') return false;

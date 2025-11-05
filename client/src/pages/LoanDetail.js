@@ -279,7 +279,7 @@ function LoanDetail() {
             <div className="info-row">
               <span>Next Payment Due:</span>
               <span style={{ fontWeight: '600', color: 'var(--forest-green)', fontSize: '1.1rem' }}>
-                {new Date(loan.next_payment_date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                {new Date(loan.next_payment_date.replace(/-/g, '/')).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
               </span>
             </div>
           )}

@@ -97,18 +97,30 @@ body {
 }
 
 @media (max-width: 768px) {
+  .nav-container {
+    flex-wrap: wrap;
+  }
+  
   .nav-links {
-    gap: 0.5rem;
-    font-size: 14px;
+    width: 100%;
+    justify-content: center;
+    gap: 0.3rem;
+    font-size: 12px;
+    margin-top: 10px;
   }
   
   .nav-link {
-    padding: 0.5rem 0.75rem;
+    padding: 0.4rem 0.6rem;
     white-space: nowrap;
   }
   
   .btn-register, .btn-logout {
-    padding: 0.5rem 0.75rem;
+    padding: 0.4rem 0.6rem;
+  }
+  
+  /* Hide Recent Sales on mobile to save space */
+  .nav-link:nth-child(3) {
+    display: none;
   }
 }
 

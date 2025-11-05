@@ -9,6 +9,7 @@ function LoanDetail() {
   const [loan, setLoan] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [payments, setPayments] = useState([]);
   const [paymentAmount, setPaymentAmount] = useState('');
   const [processing, setProcessing] = useState(false);
   const [paymentError, setPaymentError] = useState('');
@@ -24,6 +25,17 @@ function LoanDetail() {
       const response = await getLoan(id);
       setLoan(response.data);
       setPaymentAmount(parseFloat(response.data.monthly_payment).toFixed(2));
+      
+      // Load payment history for stats
+      const paymentsResponse = await fetch(`${process.env.REACT_APP_API_URL}/loans/${id}/payments`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+      if (paymentsResponse.ok) {
+        const paymentsData = await paymentsResponse.json();
+        setPayments(paymentsData);
+      }
     } catch (err) {
       setError('Failed to load loan details');
       console.error(err);
@@ -128,6 +140,15 @@ function LoanDetail() {
 
   const percentPaid = ((parseFloat(loan.loan_amount) - parseFloat(loan.balance_remaining)) / parseFloat(loan.loan_amount)) * 100;
   const remainingPayments = Math.ceil(parseFloat(loan.balance_remaining) / parseFloat(loan.monthly_payment));
+  
+  // Calculate payment stats
+  const totalPrincipalPaid = payments.reduce((sum, p) => sum + (parseFloat(p.principal_amount) || 0), 0);
+  const totalInterestPaid = payments.reduce((sum, p) => sum + (parseFloat(p.interest_amount) || 0), 0);
+  
+  // Calculate next payment breakdown
+  const monthlyInterestRate = (parseFloat(loan.interest_rate) / 100) / 12;
+  const nextInterest = parseFloat(loan.balance_remaining) * monthlyInterestRate;
+  const nextPrincipal = parseFloat(loan.monthly_payment) - nextInterest;
 
   return (
     <div className="loan-detail">
@@ -217,6 +238,50 @@ function LoanDetail() {
             </div>
             <p className="progress-text">{Math.round(percentPaid)}% Paid Off</p>
           </div>
+
+          {payments.length > 0 && (
+            <>
+              <hr style={{ margin: '20px 0', border: 'none', borderTop: '1px solid #e0e0e0' }} />
+              
+              <h3 style={{ fontSize: '18px', marginBottom: '15px', color: 'var(--forest-green)' }}>💰 Payment Breakdown</h3>
+              
+              <div className="info-row">
+                <span>Total Principal Paid:</span>
+                <span style={{ color: 'var(--forest-green)', fontWeight: 'bold' }}>
+                  ${formatCurrency(totalPrincipalPaid)}
+                </span>
+              </div>
+              
+              <div className="info-row">
+                <span>Total Interest Paid:</span>
+                <span style={{ color: '#f59e0b', fontWeight: 'bold' }}>
+                  ${formatCurrency(totalInterestPaid)}
+                </span>
+              </div>
+              
+              <hr style={{ margin: '20px 0', border: 'none', borderTop: '1px solid #e0e0e0' }} />
+              
+              <h3 style={{ fontSize: '18px', marginBottom: '15px', color: 'var(--forest-green)' }}>📊 Next Payment Breakdown</h3>
+              
+              <div className="info-row">
+                <span>Principal:</span>
+                <span style={{ color: 'var(--forest-green)' }}>
+                  ${formatCurrency(nextPrincipal)}
+                </span>
+              </div>
+              
+              <div className="info-row">
+                <span>Interest:</span>
+                <span style={{ color: '#f59e0b' }}>
+                  ${formatCurrency(nextInterest)}
+                </span>
+              </div>
+              
+              <p style={{ marginTop: '15px', fontSize: '14px', color: '#666', fontStyle: 'italic' }}>
+                💡 Tip: Pay extra to reduce interest and own your land faster!
+              </p>
+            </>
+          )}
         </div>
 
         {loan.status === 'active' && parseFloat(loan.balance_remaining) > 0 && (

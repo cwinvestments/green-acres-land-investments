@@ -785,6 +785,11 @@ app.post('/api/payments', authenticateToken, async (req, res) => {
       idempotencyKey: `${Date.now()}-${req.user.id}-${loanId}`,
     });
 
+    // Calculate principal and interest breakdown
+    const monthlyInterestRate = (loan.interest_rate / 100) / 12;
+    const interestAmount = loan.balance_remaining * monthlyInterestRate;
+    const principalAmount = amount - interestAmount;
+    
     // Calculate new balance
     const newBalance = Math.max(0, loan.balance_remaining - amount);
     const status = newBalance === 0 ? 'paid_off' : 'active';
@@ -797,8 +802,8 @@ app.post('/api/payments', authenticateToken, async (req, res) => {
 
     // Record payment
     await db.pool.query(`
-      INSERT INTO payments (loan_id, user_id, amount, payment_type, square_payment_id, status, payment_method)
-      VALUES ($1, $2, $3, $4, $5, $6, $7)
+      INSERT INTO payments (loan_id, user_id, amount, payment_type, square_payment_id, status, payment_method, principal_amount, interest_amount)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
     `, [
       loanId,
       req.user.id,
@@ -806,7 +811,9 @@ app.post('/api/payments', authenticateToken, async (req, res) => {
       'monthly_payment',
       result.payment.id,
       'completed',
-      paymentMethod
+      paymentMethod,
+      principalAmount,
+      interestAmount
     ]);
 
     res.json({

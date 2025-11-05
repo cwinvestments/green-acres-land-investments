@@ -616,6 +616,8 @@ app.get('/api/admin/loans', authenticateAdmin, async (req, res) => {
         l.*,
         p.title as property_title,
         p.location as property_location,
+        p.price as property_price,
+        p.acquisition_cost as property_acquisition_cost,
         u.first_name,
         u.last_name,
         u.email,

@@ -606,6 +606,58 @@ app.get('/api/admin/customers/:id', authenticateAdmin, async (req, res) => {
   }
 });
 
+// ==================== ADMIN LOAN ROUTES ====================
+
+// Get all loans across all customers
+app.get('/api/admin/loans', authenticateAdmin, async (req, res) => {
+  try {
+    const result = await db.pool.query(`
+      SELECT 
+        l.*,
+        p.title as property_title,
+        p.location as property_location,
+        u.first_name,
+        u.last_name,
+        u.email,
+        u.phone
+      FROM loans l
+      JOIN properties p ON l.property_id = p.id
+      JOIN users u ON l.user_id = u.id
+      ORDER BY l.created_at DESC
+    `);
+    
+    res.json(result.rows);
+  } catch (error) {
+    console.error('Get all loans error:', error);
+    res.status(500).json({ error: 'Failed to fetch loans' });
+  }
+});
+
+// Toggle alert status for a loan
+app.patch('/api/admin/loans/:id/toggle-alert', authenticateAdmin, async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    // Toggle the alerts_disabled field
+    const result = await db.pool.query(
+      'UPDATE loans SET alerts_disabled = NOT alerts_disabled WHERE id = $1 RETURNING alerts_disabled',
+      [id]
+    );
+    
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Loan not found' });
+    }
+    
+    res.json({
+      message: 'Alert status updated',
+      alerts_disabled: result.rows[0].alerts_disabled
+    });
+  } catch (error) {
+    console.error('Toggle alert error:', error);
+    res.status(500).json({ error: 'Failed to update alert status' });
+  }
+});
+
 // ==================== LOAN ROUTES ====================
 
 // Get user's loans

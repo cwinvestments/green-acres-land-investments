@@ -650,7 +650,7 @@ app.get('/api/loans/:id', authenticateToken, async (req, res) => {
 // Create loan (purchase property)
 app.post('/api/loans', authenticateToken, async (req, res) => {
   try {
-    const { propertyId, downPaymentPercentage, termMonths, paymentNonce } = req.body;
+    const { propertyId, downPaymentPercentage, termMonths, paymentNonce, phone, paymentDueDay } = req.body;
 
     console.log('Purchase request:', { propertyId, downPaymentPercentage, termMonths });
 
@@ -692,12 +692,36 @@ app.post('/api/loans', authenticateToken, async (req, res) => {
         [req.body.phone, req.user.userId]
       );
     }
+    
+    // Calculate first payment due date based on customer's choice
+    const today = new Date();
+    const currentMonth = today.getMonth();
+    const currentYear = today.getFullYear();
+    const currentDay = today.getDate();
+    
+    let firstPaymentDate;
+    if (paymentDueDay === 1) {
+      // Payment due on 1st of next month
+      firstPaymentDate = new Date(currentYear, currentMonth + 1, 1);
+    } else {
+      // Payment due on 15th
+      if (currentDay < 15) {
+        // This month's 15th
+        firstPaymentDate = new Date(currentYear, currentMonth, 15);
+      } else {
+        // Next month's 15th
+        firstPaymentDate = new Date(currentYear, currentMonth + 1, 15);
+      }
+    }
+    
+    const firstPaymentDateStr = firstPaymentDate.toISOString().split('T')[0];
+    
     const loanResult = await db.pool.query(`
       INSERT INTO loans (
         user_id, property_id, purchase_price, down_payment, 
         processing_fee, loan_amount, interest_rate, term_months, 
-        monthly_payment, total_amount, balance_remaining, status
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+        monthly_payment, total_amount, balance_remaining, status, next_payment_date
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
       RETURNING id
     `, [
       req.user.id,
@@ -711,7 +735,8 @@ app.post('/api/loans', authenticateToken, async (req, res) => {
       financing.monthlyPayment,
       financing.totalAmount,
       financing.principal,
-      'active'
+      'active',
+      firstPaymentDateStr
     ]);
 
     const loanId = loanResult.rows[0].id;

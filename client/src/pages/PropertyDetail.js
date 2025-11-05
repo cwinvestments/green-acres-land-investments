@@ -25,6 +25,7 @@ function PropertyDetail() {
   state: '',
   zip: ''
 });
+  const [paymentDueDay, setPaymentDueDay] = useState('1');
   // Find closest payment option to desired payment
 const findClosestOption = () => {
   if (!desiredPayment || desiredPayment < 50) return null;
@@ -201,7 +202,8 @@ const closestOption = findClosestOption();
           downPaymentPercentage: parseFloat(downPaymentOption),
           termMonths: termMonths,
           paymentNonce: result.token,
-          phone: billingInfo.phone
+          phone: billingInfo.phone,
+          paymentDueDay: parseInt(paymentDueDay)
         });
 
         alert('✅ Purchase Successful!\n\nYour property purchase has been completed and your loan has been created.\n\nRedirecting to your dashboard...');
@@ -710,6 +712,51 @@ navigate('/dashboard');
             <p style={{ fontSize: '0.85rem', color: '#666', marginBottom: '1rem' }}>
               <span style={{ color: '#dc3545', fontWeight: 'bold' }}>*</span> Required fields
             </p>
+            
+            <div style={{ marginBottom: '1rem', padding: '1rem', background: 'var(--light-green)', borderRadius: '8px', border: '2px solid var(--forest-green)' }}>
+              <label style={{ display: 'block', marginBottom: '0.75rem', fontSize: '1rem', fontWeight: '600', color: 'var(--forest-green)' }}>
+                📅 Choose Your Monthly Payment Date <span style={{ color: '#dc3545', fontWeight: 'bold' }}>*</span>
+              </label>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                <div
+                  onClick={() => setPaymentDueDay('1')}
+                  style={{
+                    padding: '1rem',
+                    border: '2px solid',
+                    borderColor: paymentDueDay === '1' ? 'var(--forest-green)' : '#ccc',
+                    borderRadius: '8px',
+                    cursor: 'pointer',
+                    background: paymentDueDay === '1' ? 'white' : '#f5f5f5',
+                    textAlign: 'center',
+                    fontWeight: paymentDueDay === '1' ? '600' : '400',
+                    transition: 'all 0.3s ease'
+                  }}
+                >
+                  <div style={{ fontSize: '1.5rem', marginBottom: '0.25rem' }}>1st</div>
+                  <div style={{ fontSize: '0.85rem', color: '#666' }}>of Each Month</div>
+                </div>
+                <div
+                  onClick={() => setPaymentDueDay('15')}
+                  style={{
+                    padding: '1rem',
+                    border: '2px solid',
+                    borderColor: paymentDueDay === '15' ? 'var(--forest-green)' : '#ccc',
+                    borderRadius: '8px',
+                    cursor: 'pointer',
+                    background: paymentDueDay === '15' ? 'white' : '#f5f5f5',
+                    textAlign: 'center',
+                    fontWeight: paymentDueDay === '15' ? '600' : '400',
+                    transition: 'all 0.3s ease'
+                  }}
+                >
+                  <div style={{ fontSize: '1.5rem', marginBottom: '0.25rem' }}>15th</div>
+                  <div style={{ fontSize: '0.85rem', color: '#666' }}>of Each Month</div>
+                </div>
+              </div>
+              <p style={{ fontSize: '0.85rem', color: '#666', marginTop: '0.75rem', textAlign: 'center' }}>
+                💡 Choose the date that works best with your budget
+              </p>
+            </div>
             
             <div style={{ marginBottom: '0.75rem' }}>
               <label style={{ display: 'block', marginBottom: '0.25rem', fontSize: '0.9rem', color: '#333' }}>

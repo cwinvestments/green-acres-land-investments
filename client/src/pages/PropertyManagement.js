@@ -137,8 +137,9 @@ function PropertyManagement() {
               <th style={{ padding: '15px', textAlign: 'left', borderBottom: '2px solid var(--forest-green)' }}>Location</th>
               <th style={{ padding: '15px', textAlign: 'right', borderBottom: '2px solid var(--forest-green)' }}>Price</th>
               <th style={{ padding: '15px', textAlign: 'right', borderBottom: '2px solid var(--forest-green)' }}>Acres</th>
-              <th style={{ padding: '15px', textAlign: 'center', borderBottom: '2px solid var(--forest-green)' }}>Status</th>
-              <th style={{ padding: '15px', textAlign: 'center', borderBottom: '2px solid var(--forest-green)' }}>Actions</th>
+              <th style={{ padding: '12px', textAlign: 'left', borderBottom: '2px solid #ddd', backgroundColor: '#f8f9fa' }}>Status</th>
+                  <th style={{ padding: '12px', textAlign: 'left', borderBottom: '2px solid #ddd', backgroundColor: '#f8f9fa' }}>Profit</th>
+                  <th style={{ padding: '12px', textAlign: 'left', borderBottom: '2px solid #ddd', backgroundColor: '#f8f9fa' }}>Actions</th>
             </tr>
           </thead>
           <tbody>

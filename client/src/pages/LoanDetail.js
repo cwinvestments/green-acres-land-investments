@@ -502,7 +502,6 @@ function LoanDetail() {
 function PayExtraCalculator({ loan }) {
   const [extraPayment, setExtraPayment] = useState('');
   
-  const monthlyInterestRate = (parseFloat(loan.interest_rate) / 100) / 12;
   const currentMonthly = parseFloat(loan.monthly_payment);
   const balance = parseFloat(loan.balance_remaining);
   

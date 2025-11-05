@@ -388,8 +388,45 @@ navigate('/dashboard');
             <p style={{ color: '#666' }}>{property.acres} acres</p>
           </div>
 
-          <div className="calculator">
-  <h3>💰 Find Your Perfect Payment Plan</h3>
+          {property.status === 'coming_soon' ? (
+            <div className="calculator">
+              <h3>🎉 Coming Soon!</h3>
+              <div style={{ 
+                padding: '2rem', 
+                background: 'var(--light-green)', 
+                borderRadius: '8px',
+                textAlign: 'center',
+                border: '3px solid var(--sandy-gold)'
+              }}>
+                <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📍</div>
+                <h4 style={{ color: 'var(--forest-green)', marginBottom: '1rem' }}>
+                  This Property is Coming Soon!
+                </h4>
+                <p style={{ color: '#666', marginBottom: '1.5rem', lineHeight: '1.6' }}>
+                  We've recently acquired this property and are currently waiting for the deed transfer to complete. 
+                  This property will be available for purchase soon!
+                </p>
+                <div style={{ 
+                  padding: '1rem', 
+                  background: 'white', 
+                  borderRadius: '8px',
+                  marginBottom: '1rem'
+                }}>
+                  <div style={{ fontSize: '0.9rem', color: '#666', marginBottom: '0.5rem' }}>
+                    Estimated Price
+                  </div>
+                  <div style={{ fontSize: '2rem', fontWeight: '700', color: 'var(--forest-green)' }}>
+                    ${formatCurrency(property.price)}
+                  </div>
+                </div>
+                <p style={{ fontSize: '0.9rem', color: '#666' }}>
+                  💡 Check back soon or <a href="mailto:contact@greenacresland.com" style={{ color: 'var(--forest-green)' }}>contact us</a> to be notified when this property becomes available!
+                </p>
+              </div>
+            </div>
+          ) : (
+            <div className="calculator">
+  <h3>💰 Find Your Perfect Payment Plan</h3>>
   
   {/* INPUTS AT TOP */}
   <div className="calculator-options">
@@ -859,6 +896,7 @@ navigate('/dashboard');
     </>
   )}
 </div>
+          )}
         </div>
       </div>
     </div>

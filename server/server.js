@@ -305,13 +305,12 @@ app.post('/api/admin/login', async (req, res) => {
   }
 });
 
-// Get all properties (available only)
+// Get all properties (available and coming soon)
 app.get('/api/properties', async (req, res) => {
   try {
     const result = await db.pool.query(
-      "SELECT * FROM properties WHERE status = 'available' ORDER BY created_at DESC"
+      "SELECT * FROM properties WHERE status IN ('available', 'coming_soon') ORDER BY created_at DESC"
     );
-
     res.json(result.rows);
   } catch (error) {
     console.error('Get properties error:', error);

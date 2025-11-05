@@ -75,8 +75,21 @@ function Properties() {
                   {property.description.substring(0, 100)}...
                 </p>
                 <div className="property-price">
-  ${formatCurrency(property.price)}
-</div>
+                  ${formatCurrency(property.price)}
+                  {property.status === 'coming_soon' && (
+                    <span style={{
+                      marginLeft: '10px',
+                      padding: '4px 12px',
+                      backgroundColor: '#8b5cf6',
+                      color: 'white',
+                      borderRadius: '12px',
+                      fontSize: '12px',
+                      fontWeight: '600'
+                    }}>
+                      COMING SOON
+                    </span>
+                  )}
+                </div>
                 <button className="btn btn-secondary" style={{ marginTop: '1rem' }}>
                   View Details
                 </button>

@@ -60,7 +60,8 @@ function PropertyManagement() {
       available: { backgroundColor: '#10b981', color: 'white' },
       pending: { backgroundColor: '#f59e0b', color: 'white' },
       under_contract: { backgroundColor: '#3b82f6', color: 'white' },
-      sold: { backgroundColor: '#6b7280', color: 'white' }
+      sold: { backgroundColor: '#6b7280', color: 'white' },
+      coming_soon: { backgroundColor: '#8b5cf6', color: 'white' }
     };
 
     return (
@@ -182,6 +183,7 @@ function PropertyManagement() {
                     }}
                   >
                     <option value="available">Available</option>
+                    <option value="coming_soon">Coming Soon</option>
                     <option value="pending">Pending</option>
                     <option value="under_contract">Under Contract</option>
                     <option value="sold">Sold</option>

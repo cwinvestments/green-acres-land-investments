@@ -39,6 +39,7 @@ const initDatabase = async () => {
         county TEXT NOT NULL,
         acres DECIMAL NOT NULL,
         price DECIMAL NOT NULL,
+        acquisition_cost DECIMAL,
         images TEXT,
         status TEXT DEFAULT 'available',
         apn TEXT,

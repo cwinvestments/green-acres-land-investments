@@ -245,6 +245,7 @@ function PropertyForm({ property, onSuccess, onCancel }) {
     county: property?.county || '',
     acres: property?.acres || '',
     price: property?.price || '',
+    acquisition_cost: property?.acquisition_cost || '',
     apn: property?.apn || '',
     coord_ne: existingCoords.ne || '',
     coord_se: existingCoords.se || '',
@@ -252,6 +253,14 @@ function PropertyForm({ property, onSuccess, onCancel }) {
     coord_nw: existingCoords.nw || '',
     coord_center: existingCoords.center || ''
   });
+```
+
+**Save and close!** Now let's deploy everything:
+```
+cd C:\Projects\GreenAcres
+git add .
+git commit -m "Add property acquisition cost tracking (admin only)"
+git push origin main
   
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -405,6 +414,21 @@ function PropertyForm({ property, onSuccess, onCancel }) {
               onChange={handleChange}
               required
             />
+          </div>
+
+          <div className="form-group">
+            <label>Acquisition Cost (Optional - Admin Only)</label>
+            <input
+              type="number"
+              step="0.01"
+              name="acquisition_cost"
+              value={formData.acquisition_cost}
+              onChange={handleChange}
+              placeholder="What you paid for this property"
+            />
+            <small style={{ color: '#666', fontSize: '12px', marginTop: '5px', display: 'block' }}>
+              Track your purchase cost for profit calculations (not visible to customers)
+            </small>
           </div>
 
           <div className="form-group">

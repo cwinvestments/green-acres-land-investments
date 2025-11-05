@@ -374,23 +374,21 @@ app.post('/api/admin/properties', authenticateAdmin, async (req, res) => {
       county,
       acres,
       price,
+      acquisition_cost,
       apn,
       coordinates
     } = req.body;
-
     // Validate required fields
     if (!title || !location || !state || !county || !acres || !price) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
-
     const result = await db.pool.query(
       `INSERT INTO properties 
-       (title, description, location, state, county, acres, price, apn, coordinates, status)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, 'available')
+       (title, description, location, state, county, acres, price, acquisition_cost, apn, coordinates, status)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, 'available')
        RETURNING *`,
-      [title, description, location, state, county, acres, price, apn || null, coordinates || null]
+      [title, description, location, state, county, acres, price, acquisition_cost || null, apn || null, coordinates || null]
     );
-
     res.status(201).json({
       message: 'Property created successfully',
       property: result.rows[0]
@@ -413,25 +411,23 @@ app.put('/api/admin/properties/:id', authenticateAdmin, async (req, res) => {
       county,
       acres,
       price,
+      acquisition_cost,
       apn,
       coordinates,
       status
     } = req.body;
-
     const result = await db.pool.query(
       `UPDATE properties 
        SET title = $1, description = $2, location = $3, state = $4, 
-           county = $5, acres = $6, price = $7, apn = $8, 
-           coordinates = $9, status = $10
-       WHERE id = $11
+           county = $5, acres = $6, price = $7, acquisition_cost = $8,
+           apn = $9, coordinates = $10, status = $11
+       WHERE id = $12
        RETURNING *`,
-      [title, description, location, state, county, acres, price, apn, coordinates, status, id]
+      [title, description, location, state, county, acres, price, acquisition_cost, apn, coordinates, status, id]
     );
-
     if (result.rows.length === 0) {
       return res.status(404).json({ error: 'Property not found' });
     }
-
     res.json({
       message: 'Property updated successfully',
       property: result.rows[0]

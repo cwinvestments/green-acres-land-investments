@@ -15,6 +15,7 @@ import AdminLogin from './pages/AdminLogin';
 import AdminDashboard from './pages/AdminDashboard';
 import PropertyManagement from './pages/PropertyManagement';
 import CustomerManagement from './pages/CustomerManagement';
+import AdminLoans from './pages/AdminLoans';
 
 // Protected route component
 function ProtectedRoute({ children }) {
@@ -66,6 +67,7 @@ function App() {
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
             <Route path="/admin/properties" element={<PropertyManagement />} />
             <Route path="/admin/customers" element={<CustomerManagement />} />
+            <Route path="/admin/loans" element={<AdminLoans />} />
           </Routes>
         </div>
       </AuthProvider>

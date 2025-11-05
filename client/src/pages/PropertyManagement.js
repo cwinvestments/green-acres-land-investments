@@ -8,7 +8,7 @@ function PropertyManagement() {
   const navigate = useNavigate();
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  // const [error, setError] = useState('');  // Commented: error handling moved to PropertyForm
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingProperty, setEditingProperty] = useState(null);
 
@@ -31,7 +31,7 @@ function PropertyManagement() {
       if (err.response?.status === 401 || err.response?.status === 403) {
         navigate('/admin/login');
       } else {
-        setError('Failed to load properties');
+        // setError('Failed to load properties');  // Commented: error handling moved to PropertyForm
         setLoading(false);
       }
     }
@@ -241,7 +241,10 @@ function PropertyForm({ property, onSuccess, onCancel }) {
     coord_nw: existingCoords.nw || '',
     coord_center: existingCoords.center || ''
   });
+  
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -307,18 +310,6 @@ function PropertyForm({ property, onSuccess, onCancel }) {
           </button>
         )}
       </div>
-      
-      {error && (
-        <div style={{
-          padding: '15px',
-          backgroundColor: '#fee',
-          color: '#c00',
-          borderRadius: '8px',
-          marginBottom: '20px'
-        }}>
-          {error}
-        </div>
-      )}
 
       <form onSubmit={handleSubmit}>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
@@ -492,7 +483,7 @@ function PropertyForm({ property, onSuccess, onCancel }) {
           />
         </div>
 
-{error && (
+        {error && (
           <div style={{
             padding: '15px',
             backgroundColor: '#fee',

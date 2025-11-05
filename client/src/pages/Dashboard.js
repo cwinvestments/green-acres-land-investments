@@ -124,11 +124,20 @@ function Dashboard() {
                 
                 <div className="loan-details">
                   <div className="loan-detail-row">
-                    <span>Monthly Payment:</span>
-                    <span className="loan-amount">
-                      ${formatCurrency(loan.monthly_payment)}
+                    <span>Status:</span>
+                    <span className={`status-badge status-${loan.status}`}>
+                      {loan.status === 'active' ? 'Active' : 'Paid Off'}
                     </span>
                   </div>
+                  
+                  {loan.next_payment_date && loan.status === 'active' && (
+                    <div className="loan-detail-row">
+                      <span>Next Payment Due:</span>
+                      <span style={{ fontWeight: '600', color: 'var(--forest-green)' }}>
+                        {new Date(loan.next_payment_date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                      </span>
+                    </div>
+                  )}
                   
                   <div className="loan-detail-row">
                     <span>Remaining Balance:</span>

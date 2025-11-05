@@ -274,6 +274,15 @@ function LoanDetail() {
               {loan.status === 'active' ? 'Active' : 'Paid Off'}
             </span>
           </div>
+          
+          {loan.next_payment_date && loan.status === 'active' && (
+            <div className="info-row">
+              <span>Next Payment Due:</span>
+              <span style={{ fontWeight: '600', color: 'var(--forest-green)', fontSize: '1.1rem' }}>
+                {new Date(loan.next_payment_date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+              </span>
+            </div>
+          )}
 
           <div className="progress-section">
             <div className="progress-bar">

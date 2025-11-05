@@ -242,8 +242,6 @@ function PropertyForm({ property, onSuccess, onCancel }) {
     coord_center: existingCoords.center || ''
   });
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-
   const handleChange = (e) => {
     setFormData({
       ...formData,

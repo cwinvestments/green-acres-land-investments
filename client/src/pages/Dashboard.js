@@ -78,10 +78,10 @@ function Dashboard() {
             
             // Calculate payment status
             const getPaymentStatus = () => {
-              if (loan.status === 'paid_off' || !loan.next_payment_due || loan.alerts_disabled) return null;
+              if (loan.status === 'paid_off' || !loan.next_payment_date || loan.alerts_disabled) return null;
               
               const today = new Date();
-              const dueDate = new Date(loan.next_payment_due);
+              const dueDate = new Date(loan.next_payment_date);
               const daysUntilDue = Math.ceil((dueDate - today) / (1000 * 60 * 60 * 24));
               
               if (daysUntilDue < 0) {

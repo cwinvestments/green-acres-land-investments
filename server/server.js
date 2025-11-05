@@ -800,7 +800,7 @@ app.post('/api/payments', authenticateToken, async (req, res) => {
     
     // Update loan balance and next payment due
     await db.pool.query(
-      'UPDATE loans SET balance_remaining = $1, status = $2, next_payment_due = $3 WHERE id = $4',
+      'UPDATE loans SET balance_remaining = $1, status = $2, next_payment_date = $3 WHERE id = $4',
       [newBalance, status, nextDueDate.toISOString().split('T')[0], loanId]
     );
 

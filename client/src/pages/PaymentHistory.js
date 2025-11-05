@@ -87,6 +87,7 @@ useEffect(() => {
                 <th>Date</th>
                 <th>Type</th>
                 <th>Amount</th>
+                <th>Method</th>
                 <th>Status</th>
               </tr>
             </thead>
@@ -101,6 +102,9 @@ useEffect(() => {
                   </td>
                   <td className="amount">
                     ${formatCurrency(payment.amount)}
+                  </td>
+                  <td style={{ textTransform: 'capitalize' }}>
+                    {payment.payment_method || 'Square'}
                   </td>
                   <td>
                     <span className={`status-badge status-${payment.status}`}>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
@@ -10,11 +10,7 @@ function PropertyManagement() {
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingProperty, setEditingProperty] = useState(null);
 
-  useEffect(() => {
-    loadProperties();
-  }, []);
-
-  const loadProperties = async () => {
+  const loadProperties = useCallback(async () => {
     try {
       const token = localStorage.getItem('adminToken');
       if (!token) {
@@ -37,7 +33,11 @@ function PropertyManagement() {
         setLoading(false);
       }
     }
-  };
+  }, [navigate]);
+
+  useEffect(() => {
+    loadProperties();
+  }, [loadProperties]);
 
   const updateStatus = async (propertyId, newStatus) => {
     try {

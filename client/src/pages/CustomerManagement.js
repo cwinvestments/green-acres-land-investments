@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
@@ -11,27 +11,7 @@ function CustomerManagement() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCustomer, setSelectedCustomer] = useState(null);
 
-  useEffect(() => {
-    loadCustomers();
-  }, []);
-
-  useEffect(() => {
-    // Filter customers based on search term
-    if (!searchTerm) {
-      setFilteredCustomers(customers);
-    } else {
-      const term = searchTerm.toLowerCase();
-      const filtered = customers.filter(customer => 
-        customer.first_name.toLowerCase().includes(term) ||
-        customer.last_name.toLowerCase().includes(term) ||
-        customer.email.toLowerCase().includes(term) ||
-        (customer.phone && customer.phone.includes(term))
-      );
-      setFilteredCustomers(filtered);
-    }
-  }, [searchTerm, customers]);
-
-  const loadCustomers = async () => {
+  const loadCustomers = useCallback(async () => {
     try {
       const token = localStorage.getItem('adminToken');
       if (!token) {
@@ -55,7 +35,27 @@ function CustomerManagement() {
         setLoading(false);
       }
     }
-  };
+  }, [navigate]);
+
+  useEffect(() => {
+    loadCustomers();
+  }, [loadCustomers]);
+
+  useEffect(() => {
+    // Filter customers based on search term
+    if (!searchTerm) {
+      setFilteredCustomers(customers);
+    } else {
+      const term = searchTerm.toLowerCase();
+      const filtered = customers.filter(customer => 
+        customer.first_name.toLowerCase().includes(term) ||
+        customer.last_name.toLowerCase().includes(term) ||
+        customer.email.toLowerCase().includes(term) ||
+        (customer.phone && customer.phone.includes(term))
+      );
+      setFilteredCustomers(filtered);
+    }
+  }, [searchTerm, customers]);
 
   const loadCustomerDetails = async (customerId) => {
     try {
@@ -133,23 +133,6 @@ function CustomerManagement() {
             </div>
           </div>
         </div>
-      </div>
-
-      {error && (
-        <div style={{
-          padding: '15px',
-          backgroundColor: '#fee',
-          color: '#c00',
-          borderRadius: '8px',
-          marginBottom: '20px'
-        }}>
-          {error}
-        </div>
-      )}
-
-      {/* Search Bar */}
-      <div style={{ marginBottom: '20px' }}>
-        
       </div>
 
       {error && (

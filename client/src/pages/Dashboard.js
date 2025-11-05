@@ -134,7 +134,7 @@ function Dashboard() {
                     <div className="loan-detail-row">
                       <span>Next Payment Due:</span>
                       <span style={{ fontWeight: '600', color: 'var(--forest-green)' }}>
-                        {new Date(loan.next_payment_date.replace(/-/g, '/')).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                        {new Date(loan.next_payment_date.split('T')[0].replace(/-/g, '/')).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
                       </span>
                     </div>
                   )}

@@ -191,14 +191,14 @@ function PropertyManagement() {
       <div className="card" style={{ padding: 0, overflow: 'auto', maxWidth: '100%' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '900px' }}>
           <thead>
-            <tr style={{ backgroundColor: 'var(--light-green)' }}>
-              <th style={{ padding: '15px', textAlign: 'left', borderBottom: '2px solid var(--forest-green)' }}>Property</th>
-              <th style={{ padding: '15px', textAlign: 'left', borderBottom: '2px solid var(--forest-green)' }}>Location</th>
-              <th style={{ padding: '15px', textAlign: 'right', borderBottom: '2px solid var(--forest-green)' }}>Price</th>
-              <th style={{ padding: '15px', textAlign: 'right', borderBottom: '2px solid var(--forest-green)' }}>Acres</th>
-              <th style={{ padding: '12px', textAlign: 'left', borderBottom: '2px solid #ddd', backgroundColor: '#f8f9fa' }}>Status</th>
-                  <th style={{ padding: '12px', textAlign: 'left', borderBottom: '2px solid #ddd', backgroundColor: '#f8f9fa' }}>Profit</th>
-                  <th style={{ padding: '12px', textAlign: 'left', borderBottom: '2px solid #ddd', backgroundColor: '#f8f9fa' }}>Actions</th>
+            <tr style={{ backgroundColor: 'var(--light-green)', borderBottom: '2px solid var(--forest-green)' }}>
+              <th style={{ padding: '15px', textAlign: 'left' }}>Property</th>
+              <th style={{ padding: '15px', textAlign: 'left' }}>Location</th>
+              <th style={{ padding: '15px', textAlign: 'center' }}>Price</th>
+              <th style={{ padding: '15px', textAlign: 'center' }}>Acres</th>
+              <th style={{ padding: '15px', textAlign: 'center' }}>Status</th>
+              <th style={{ padding: '15px', textAlign: 'center' }}>Profit</th>
+              <th style={{ padding: '15px', textAlign: 'center' }}>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -212,10 +212,10 @@ function PropertyManagement() {
                 <td style={{ padding: '15px' }}>
                   {property.county}, {property.state}
                 </td>
-                <td style={{ padding: '15px', textAlign: 'right' }}>
+                <td style={{ padding: '15px', textAlign: 'center' }}>
                   ${parseFloat(property.price).toLocaleString()}
                 </td>
-                <td style={{ padding: '15px', textAlign: 'right' }}>
+                <td style={{ padding: '15px', textAlign: 'center' }}>
                   {parseFloat(property.acres).toFixed(1)}
                 </td>
                 <td style={{ padding: '15px', textAlign: 'center' }}>

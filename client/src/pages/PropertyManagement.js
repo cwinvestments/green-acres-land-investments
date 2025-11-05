@@ -510,12 +510,6 @@ function PropertyForm({ property, onSuccess, onCancel }) {
           type="submit"
           className="btn btn-primary"
           disabled={loading}
-        >        
-
-<button
-          type="submit"
-          className="btn btn-primary"
-          disabled={loading}
         >
           {loading ? (isEditing ? 'Updating...' : 'Adding...') : (isEditing ? 'Update Property' : 'Add Property')}
         </button>

@@ -1,4 +1,4 @@
-// Production build timestamp: 2025-11-04
+// Production build - error handling improved
 // Force rebuild for production API
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -117,18 +117,6 @@ function PropertyManagement() {
           </button>
         </div>
       </div>
-
-      {error && (
-        <div style={{
-          padding: '15px',
-          backgroundColor: '#fee',
-          color: '#c00',
-          borderRadius: '8px',
-          marginBottom: '20px'
-        }}>
-          {error}
-        </div>
-      )}
 
       {/* Add/Edit Property Form */}
       {showAddForm && <PropertyForm onSuccess={() => { setShowAddForm(false); loadProperties(); }} />}
@@ -506,7 +494,25 @@ function PropertyForm({ property, onSuccess, onCancel }) {
           />
         </div>
 
+{error && (
+          <div style={{
+            padding: '15px',
+            backgroundColor: '#fee',
+            color: '#c00',
+            borderRadius: '8px',
+            marginBottom: '20px'
+          }}>
+            {error}
+          </div>
+        )}
+
         <button
+          type="submit"
+          className="btn btn-primary"
+          disabled={loading}
+        >        
+
+<button
           type="submit"
           className="btn btn-primary"
           disabled={loading}

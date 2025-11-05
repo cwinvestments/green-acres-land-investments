@@ -826,5 +826,6 @@ app.get('/api/health', (req, res) => {
 app.listen(PORT, () => {
   console.log(`\n🌿 Green Acres Server running on http://localhost:${PORT}`);
   console.log(`📊 Environment: ${process.env.NODE_ENV}`);
-  console.log(`💳 Square Environment: ${process.env.SQUARE_ENVIRONMENT}\n`);
+  console.log(`💳 Square Environment: ${process.env.SQUARE_ENVIRONMENT}`);
+  console.log(`✅ Coming Soon status enabled\n`);
 });

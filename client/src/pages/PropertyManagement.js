@@ -162,6 +162,18 @@ function PropertyManagement() {
                 <td style={{ padding: '15px', textAlign: 'center' }}>
                   {getStatusBadge(property.status)}
                 </td>
+                <td style={{ padding: '15px', textAlign: 'right' }}>
+                  {property.acquisition_cost ? (
+                    <span style={{ 
+                      color: (property.price - property.acquisition_cost) >= 0 ? '#10b981' : '#ef4444',
+                      fontWeight: 'bold'
+                    }}>
+                      ${(property.price - property.acquisition_cost).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}
+                    </span>
+                  ) : (
+                    <span style={{ color: '#999' }}>—</span>
+                  )}
+                </td>
                 <td style={{ padding: '15px', textAlign: 'center' }}>
                   <select
                     value={property.status}

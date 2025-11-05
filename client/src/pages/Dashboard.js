@@ -76,8 +76,49 @@ function Dashboard() {
             const percentPaid = ((parseFloat(loan.loan_amount) - parseFloat(loan.balance_remaining)) / parseFloat(loan.loan_amount)) * 100;
             const remainingPayments = Math.ceil(parseFloat(loan.balance_remaining) / parseFloat(loan.monthly_payment));
             
+            // Calculate payment status
+            const getPaymentStatus = () => {
+              if (loan.status === 'paid_off' || !loan.next_payment_due || loan.alerts_disabled) return null;
+              
+              const today = new Date();
+              const dueDate = new Date(loan.next_payment_due);
+              const daysUntilDue = Math.ceil((dueDate - today) / (1000 * 60 * 60 * 24));
+              
+              if (daysUntilDue < 0) {
+                const daysOverdue = Math.abs(daysUntilDue);
+                if (daysOverdue >= 30) {
+                  return { text: `${daysOverdue} Days Overdue - Urgent!`, color: '#dc3545', icon: '🚨' };
+                } else if (daysOverdue >= 15) {
+                  return { text: `${daysOverdue} Days Past Due`, color: '#fd7e14', icon: '⚠️' };
+                } else if (daysOverdue >= 5) {
+                  return { text: `${daysOverdue} Days Late`, color: '#ffc107', icon: '⏰' };
+                } else {
+                  return { text: `${daysOverdue} Days Late`, color: '#ffc107', icon: '⏰' };
+                }
+              } else if (daysUntilDue <= 5) {
+                return { text: `Payment Due in ${daysUntilDue} Days`, color: '#17a2b8', icon: '📅' };
+              }
+              return null;
+            };
+            
+            const paymentStatus = getPaymentStatus();
+            
             return (
               <div key={loan.id} className="loan-card">
+                {paymentStatus && (
+                  <div style={{
+                    backgroundColor: paymentStatus.color,
+                    color: 'white',
+                    padding: '10px 15px',
+                    borderRadius: '8px',
+                    marginBottom: '15px',
+                    fontWeight: 'bold',
+                    textAlign: 'center',
+                    fontSize: '14px'
+                  }}>
+                    {paymentStatus.icon} {paymentStatus.text}
+                  </div>
+                )}
                 <h3>{loan.property_title}</h3>
                 <p className="loan-location">{loan.location}</p>
                 

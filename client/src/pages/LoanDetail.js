@@ -177,9 +177,7 @@ function LoanDetail() {
   
   const paymentStatus = getPaymentStatus();
 
-  return (
-
-  return (
+ return (
     <div className="loan-detail">
       <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', marginBottom: '20px' }}>
         <button onClick={() => navigate('/dashboard')} className="btn btn-secondary" style={{ flex: '1 1 auto' }}>

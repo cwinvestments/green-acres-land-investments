@@ -351,7 +351,13 @@ function PropertyForm({ property, onSuccess, onCancel }) {
     coord_se: existingCoords.se || '',
     coord_sw: existingCoords.sw || '',
     coord_nw: existingCoords.nw || '',
-    coord_center: existingCoords.center || ''
+    coord_center: existingCoords.center || '',
+    annual_tax_amount: property?.annual_tax_amount || '',
+    tax_payment_1_date: property?.tax_payment_1_date || '',
+    tax_payment_1_amount: property?.tax_payment_1_amount || '',
+    tax_payment_2_date: property?.tax_payment_2_date || '',
+    tax_payment_2_amount: property?.tax_payment_2_amount || '',
+    tax_notes: property?.tax_notes || ''
   });
   
   const [loading, setLoading] = useState(false);

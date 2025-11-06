@@ -11,7 +11,6 @@ function Properties() {
   useEffect(() => {
     loadProperties();
   }, []);
-
   const loadProperties = async () => {
     try {
       const response = await getProperties();
@@ -42,11 +41,9 @@ function Properties() {
       setLoading(false);
     }
   };
-
   useEffect(() => {
     loadProperties();
   }, []);
-
   if (loading) {
     return (
       <div className="loading">
@@ -84,36 +81,28 @@ function Properties() {
               key={property.id}
               className="property-card"
             >
-              {property.images ? (
+              {propertyImages[property.id]?.length > 0 ? (
                 <img
-                  src={property.images}
+                  src={propertyImages[property.id][0].image_url}
                   alt={property.title}
                   className="property-image"
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover'
+                  }}
                 />
               ) : (
-                {propertyImages[property.id]?.length > 0 ? (
-                  <img
-                    src={propertyImages[property.id][0].image_url}
-                    alt={property.title}
-                    className="property-image"
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                      objectFit: 'cover'
-                    }}
-                  />
-                ) : (
-                  <div className="property-image" style={{
-                    background: 'linear-gradient(135deg, var(--light-green) 0%, var(--forest-green) 100%)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: 'white',
-                    fontSize: '3rem'
-                  }}>
-                    🏞️
-                  </div>
-                )}
+                <div className="property-image" style={{
+                  background: 'linear-gradient(135deg, var(--light-green) 0%, var(--forest-green) 100%)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: 'white',
+                  fontSize: '3rem'
+                }}>
+                  🏞️
+                </div>
               )}
               <div className="property-content">
                 <h3>{property.title}</h3>

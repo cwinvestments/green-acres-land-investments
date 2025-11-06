@@ -39,6 +39,24 @@ export const AuthProvider = ({ children }) => {
     setToken(null);
     localStorage.removeItem('token');
     localStorage.removeItem('user');
+    localStorage.removeItem('adminToken');
+  };
+
+  const loginAdmin = async (email, password) => {
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/admin/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw { response: { data: error } };
+    }
+
+    const data = await response.json();
+    localStorage.setItem('adminToken', data.token);
+    return data;
   };
 
   const value = {
@@ -46,6 +64,7 @@ export const AuthProvider = ({ children }) => {
     token,
     login,
     logout,
+    loginAdmin,
     isAuthenticated: !!token,
   };
 

@@ -1146,6 +1146,102 @@ app.delete('/api/admin/expenses/:id', authenticateAdmin, async (req, res) => {
   }
 });
 
+// ==================== PROPERTY IMAGES ROUTES ====================
+
+// Get all images for a property
+app.get('/api/properties/:propertyId/images', async (req, res) => {
+  try {
+    const { propertyId } = req.params;
+    
+    const result = await db.pool.query(
+      'SELECT * FROM property_images WHERE property_id = $1 ORDER BY display_order ASC',
+      [propertyId]
+    );
+    
+    res.json(result.rows);
+  } catch (error) {
+    console.error('Get images error:', error);
+    res.status(500).json({ error: 'Failed to fetch images' });
+  }
+});
+
+// Add image to property (admin only)
+app.post('/api/admin/properties/:propertyId/images', authenticateAdmin, async (req, res) => {
+  try {
+    const { propertyId } = req.params;
+    const { image_url, caption, display_order } = req.body;
+    
+    if (!image_url) {
+      return res.status(400).json({ error: 'Image URL is required' });
+    }
+    
+    // Check current image count
+    const countResult = await db.pool.query(
+      'SELECT COUNT(*) FROM property_images WHERE property_id = $1',
+      [propertyId]
+    );
+    
+    const currentCount = parseInt(countResult.rows[0].count);
+    if (currentCount >= 10) {
+      return res.status(400).json({ error: 'Maximum 10 images per property' });
+    }
+    
+    const result = await db.pool.query(
+      `INSERT INTO property_images (property_id, image_url, caption, display_order)
+       VALUES ($1, $2, $3, $4)
+       RETURNING *`,
+      [propertyId, image_url, caption || null, display_order || currentCount + 1]
+    );
+    
+    res.status(201).json({
+      message: 'Image added successfully',
+      image: result.rows[0]
+    });
+  } catch (error) {
+    console.error('Add image error:', error);
+    res.status(500).json({ error: 'Failed to add image' });
+  }
+});
+
+// Update image order (admin only)
+app.patch('/api/admin/images/:id/order', authenticateAdmin, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { display_order } = req.body;
+    
+    await db.pool.query(
+      'UPDATE property_images SET display_order = $1 WHERE id = $2',
+      [display_order, id]
+    );
+    
+    res.json({ message: 'Display order updated' });
+  } catch (error) {
+    console.error('Update order error:', error);
+    res.status(500).json({ error: 'Failed to update order' });
+  }
+});
+
+// Delete image (admin only)
+app.delete('/api/admin/images/:id', authenticateAdmin, async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    const result = await db.pool.query(
+      'DELETE FROM property_images WHERE id = $1 RETURNING *',
+      [id]
+    );
+    
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Image not found' });
+    }
+    
+    res.json({ message: 'Image deleted successfully' });
+  } catch (error) {
+    console.error('Delete image error:', error);
+    res.status(500).json({ error: 'Failed to delete image' });
+  }
+});
+
 app.listen(PORT, () => {
   console.log('Green Acres Server running on port ' + PORT);
   console.log('Environment: ' + process.env.NODE_ENV);

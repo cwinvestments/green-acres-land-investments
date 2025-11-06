@@ -402,7 +402,13 @@ app.post('/api/admin/properties', authenticateAdmin, async (req, res) => {
       price,
       acquisition_cost,
       apn,
-      coordinates
+      coordinates,
+      annual_tax_amount,
+      tax_payment_1_date,
+      tax_payment_1_amount,
+      tax_payment_2_date,
+      tax_payment_2_amount,
+      tax_notes
     } = req.body;
     // Validate required fields
     if (!title || !location || !state || !county || !acres || !price) {
@@ -410,10 +416,13 @@ app.post('/api/admin/properties', authenticateAdmin, async (req, res) => {
     }
     const result = await db.pool.query(
       `INSERT INTO properties 
-       (title, description, location, state, county, acres, price, acquisition_cost, apn, coordinates, status)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, 'available')
+       (title, description, location, state, county, acres, price, acquisition_cost, apn, coordinates, 
+        annual_tax_amount, tax_payment_1_date, tax_payment_1_amount, tax_payment_2_date, tax_payment_2_amount, tax_notes, status)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, 'available')
        RETURNING *`,
-      [title, description, location, state, county, acres, price, acquisition_cost || null, apn || null, coordinates || null]
+      [title, description, location, state, county, acres, price, acquisition_cost || null, apn || null, coordinates || null,
+       annual_tax_amount || null, tax_payment_1_date || null, tax_payment_1_amount || null, 
+       tax_payment_2_date || null, tax_payment_2_amount || null, tax_notes || null]
     );
     res.status(201).json({
       message: 'Property created successfully',
@@ -440,16 +449,25 @@ app.put('/api/admin/properties/:id', authenticateAdmin, async (req, res) => {
       acquisition_cost,
       apn,
       coordinates,
-      status
+      status,
+      annual_tax_amount,
+      tax_payment_1_date,
+      tax_payment_1_amount,
+      tax_payment_2_date,
+      tax_payment_2_amount,
+      tax_notes
     } = req.body;
     const result = await db.pool.query(
       `UPDATE properties 
        SET title = $1, description = $2, location = $3, state = $4, 
            county = $5, acres = $6, price = $7, acquisition_cost = $8,
-           apn = $9, coordinates = $10, status = $11
-       WHERE id = $12
+           apn = $9, coordinates = $10, status = $11,
+           annual_tax_amount = $12, tax_payment_1_date = $13, tax_payment_1_amount = $14,
+           tax_payment_2_date = $15, tax_payment_2_amount = $16, tax_notes = $17
+       WHERE id = $18
        RETURNING *`,
-      [title, description, location, state, county, acres, price, acquisition_cost, apn, coordinates, status, id]
+      [title, description, location, state, county, acres, price, acquisition_cost, apn, coordinates, status,
+       annual_tax_amount, tax_payment_1_date, tax_payment_1_amount, tax_payment_2_date, tax_payment_2_amount, tax_notes, id]
     );
     if (result.rows.length === 0) {
       return res.status(404).json({ error: 'Property not found' });

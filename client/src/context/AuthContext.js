@@ -58,6 +58,7 @@ export const AuthProvider = ({ children }) => {
 
     const data = await response.json();
     localStorage.setItem('adminToken', data.token);
+    localStorage.setItem('adminUser', JSON.stringify(data.admin));
     return data;
   };
 

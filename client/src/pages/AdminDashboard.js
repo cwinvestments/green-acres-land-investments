@@ -111,7 +111,7 @@ function AdminDashboard() {
         gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
         gap: '20px'
       }}>
-        <div className="card" style={{ padding: '30px', cursor: 'pointer' }} onClick={() => navigate('/admin/properties')}>
+        <div className="card" style={{ padding: '30px', cursor: 'pointer', textAlign: 'center' }} onClick={() => navigate('/admin/properties')}>
           <h2 style={{ margin: '0 0 10px 0' }}>🏘️ Property Management</h2>
           <p style={{ color: '#666', marginBottom: '15px' }}>
             Add, edit, and manage property listings
@@ -119,7 +119,7 @@ function AdminDashboard() {
           <button className="btn btn-primary">Manage Properties</button>
         </div>
 
-        <div className="card" style={{ padding: '30px', cursor: 'pointer' }} onClick={() => navigate('/admin/customers')}>
+        <div className="card" style={{ padding: '30px', cursor: 'pointer', textAlign: 'center' }} onClick={() => navigate('/admin/customers')}>
           <h2 style={{ margin: '0 0 10px 0' }}>👥 Customer Management</h2>
           <p style={{ color: '#666', marginBottom: '15px' }}>
             View and manage customer accounts
@@ -127,7 +127,7 @@ function AdminDashboard() {
           <button className="btn btn-primary">Manage Customers</button>
         </div>
 
-        <div className="card" style={{ padding: '30px', cursor: 'pointer' }} onClick={() => navigate('/admin/loans')}>
+        <div className="card" style={{ padding: '30px', cursor: 'pointer', textAlign: 'center' }} onClick={() => navigate('/admin/loans')}>
           <h2 style={{ margin: '0 0 10px 0' }}>💰 Loan Management</h2>
           <p style={{ color: '#666', marginBottom: '15px' }}>
             Track loans, payments, and balances
@@ -135,7 +135,7 @@ function AdminDashboard() {
           <button className="btn btn-primary">Manage Loans</button>
         </div>
 
-        <div className="card" style={{ padding: '30px', cursor: 'pointer' }}>
+        <div className="card" style={{ padding: '30px', cursor: 'pointer', textAlign: 'center' }}>
           <h2 style={{ margin: '0 0 10px 0' }}>💳 Payment Tracking</h2>
           <p style={{ color: '#666', marginBottom: '15px' }}>
             View payment history and reports

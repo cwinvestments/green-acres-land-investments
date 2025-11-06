@@ -185,9 +185,14 @@ function AdminLoans() {
     <div style={{ padding: '20px', maxWidth: '1600px', margin: '0 auto' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
         <h1>Loan Management</h1>
-        <button onClick={() => navigate('/admin/dashboard')} className="btn btn-secondary">
-          ← Back to Dashboard
-        </button>
+        <div style={{ display: 'flex', gap: '10px' }}>
+          <button onClick={() => navigate('/admin/loans/defaulted')} className="btn" style={{ backgroundColor: '#dc3545', color: 'white' }}>
+            📊 Defaulted Loans Report
+          </button>
+          <button onClick={() => navigate('/admin/dashboard')} className="btn btn-secondary">
+            ← Back to Dashboard
+          </button>
+        </div>
       </div>
 
       {/* Summary Cards */}

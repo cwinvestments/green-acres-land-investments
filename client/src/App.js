@@ -52,7 +52,8 @@ function App() {
                   <LoanDetail />
                 </ProtectedRoute>
               } 
-            />
+            />import AdminLoans from './pages/AdminLoans';
+              import DefaultedLoansReport from './pages/DefaultedLoansReport';  
             <Route 
               path="/loans/:id/payments" 
               element={
@@ -68,6 +69,7 @@ function App() {
             <Route path="/admin/properties" element={<PropertyManagement />} />
             <Route path="/admin/customers" element={<CustomerManagement />} />
             <Route path="/admin/loans" element={<AdminLoans />} />
+            <Route path="/admin/loans/defaulted" element={<DefaultedLoansReport />} /> 
           </Routes>
         </div>
       </AuthProvider>

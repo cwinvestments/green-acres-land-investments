@@ -332,6 +332,35 @@ function AdminLoans() {
                   <td>
                     {loan.status === 'active' && (
                       <>
+                        <div style={{ marginBottom: '5px' }}>
+                          <label style={{ fontSize: '11px', color: '#666', display: 'block', marginBottom: '3px' }}>Due Day:</label>
+                          <select
+                            value={loan.payment_due_day || 1}
+                            onChange={async (e) => {
+                              const newDay = parseInt(e.target.value);
+                              if (window.confirm(`Change payment due day to the ${newDay}${newDay === 1 ? 'st' : 'th'}?`)) {
+                                try {
+                                  const response = await fetch(`${process.env.REACT_APP_API_URL}/admin/loans/${loan.id}/payment-due-day`, {
+                                    method: 'PATCH',
+                                    headers: {
+                                      'Content-Type': 'application/json',
+                                      'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+                                    },
+                                    body: JSON.stringify({ payment_due_day: newDay })
+                                  });
+                                  if (!response.ok) throw new Error('Failed');
+                                  loadLoans();
+                                } catch (err) {
+                                  alert('Failed to update payment due day');
+                                }
+                              }
+                            }}
+                            style={{ width: '100%', padding: '4px', fontSize: '12px' }}
+                          >
+                            <option value="1">1st</option>
+                            <option value="15">15th</option>
+                          </select>
+                        </div>
                         <button
                           onClick={() => toggleAlert(loan.id, loan.alerts_disabled)}
                           className="btn btn-small"

@@ -52,10 +52,68 @@ useEffect(() => {
 
   return (
     <div className="payment-history">
-      <button onClick={() => navigate(`/loans/${id}`)} className="btn btn-secondary">
-        ← Back to Loan Details
-      </button>
-
+      <div style={{ display: 'flex', gap: '10px', marginBottom: '20px', flexWrap: 'wrap' }}>
+        <button onClick={() => navigate(`/loans/${id}`)} className="btn btn-secondary" style={{ flex: '1 1 auto' }}>
+          ← Back to Loan Details
+        </button>
+        <button 
+          onClick={() => {
+            const printWindow = window.open('', '_blank', 'width=800,height=900,left=200,top=50');
+            printWindow.document.write(`
+              <html>
+                <head>
+                  <title>Payment History - ${loan?.property_title || 'Loan'}</title>
+                  <style>
+                    body { font-family: Arial, sans-serif; padding: 20px; }
+                    h1 { color: #2c5f2d; }
+                    table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+                    th, td { padding: 10px; border: 1px solid #ddd; text-align: left; }
+                    th { background-color: #f0f8f0; font-weight: bold; }
+                    .summary { background: #f0f8f0; padding: 15px; border-radius: 8px; margin: 20px 0; }
+                  </style>
+                </head>
+                <body>
+                  <h1>Green Acres Land Investments, LLC</h1>
+                  <h2>Payment History</h2>
+                  <h3>${loan?.property_title || ''}</h3>
+                  <div class="summary">
+                    <strong>Total Paid:</strong> $${formatCurrency(totalPaid)}<br/>
+                    <strong>Remaining Balance:</strong> $${formatCurrency(loan?.balance_remaining || 0)}<br/>
+                    <strong>Monthly Payment:</strong> $${formatCurrency(loan?.monthly_payment || 0)}
+                  </div>
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Date</th>
+                        <th>Amount</th>
+                        <th>Type</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      ${payments.map(payment => `
+                        <tr>
+                          <td>${new Date(payment.payment_date).toLocaleDateString()}</td>
+                          <td>$${formatCurrency(payment.amount)}</td>
+                          <td>${payment.payment_type === 'down_payment' ? 'Down Payment' : 'Monthly Payment'}</td>
+                          <td>${payment.status}</td>
+                        </tr>
+                      `).join('')}
+                    </tbody>
+                  </table>
+                  <p style="margin-top: 40px; font-size: 12px; color: #666;">Generated: ${new Date().toLocaleDateString()}</p>
+                </body>
+              </html>
+            `);
+            printWindow.document.close();
+            printWindow.print();
+          }}
+          className="btn btn-primary" 
+          style={{ flex: '1 1 auto' }}
+        >
+          🖨️ Print Payment History
+        </button>
+      </div>
       <h1>Payment History</h1>
       
       {loan && (
@@ -93,6 +151,7 @@ useEffect(() => {
                 <th>Interest</th>
                 <th>Method</th>
                 <th>Status</th>
+                <th>Receipt</th>
               </tr>
             </thead>
             <tbody>
@@ -120,6 +179,55 @@ useEffect(() => {
                     <span className={`status-badge status-${payment.status}`}>
                       {payment.status === 'completed' ? 'Completed' : payment.status}
                     </span>
+                  </td>
+                  <td>
+                    <button
+                      onClick={() => {
+                        const printWindow = window.open('', '_blank', 'width=600,height=700,left=300,top=100');
+                        printWindow.document.write(`
+                          <html>
+                            <head>
+                              <title>Payment Receipt #${payment.id}</title>
+                              <style>
+                                body { font-family: Arial, sans-serif; padding: 30px; }
+                                h1 { color: #2c5f2d; margin-bottom: 5px; }
+                                h2 { color: #666; margin-top: 0; }
+                                table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+                                td { padding: 10px; border-bottom: 1px solid #ddd; }
+                                .label { font-weight: bold; width: 40%; }
+                                .value { text-align: right; }
+                                .total { background: #f0f8f0; font-size: 18px; font-weight: bold; }
+                              </style>
+                            </head>
+                            <body>
+                              <h1>Green Acres Land Investments, LLC</h1>
+                              <h2>Payment Receipt</h2>
+                              <p><strong>Receipt #${payment.id}</strong></p>
+                              <p><strong>Property:</strong> ${loan?.property_title || ''}</p>
+                              <table>
+                                <tr><td class="label">Payment Date:</td><td class="value">${new Date(payment.payment_date).toLocaleDateString()}</td></tr>
+                                <tr><td class="label">Payment Type:</td><td class="value">${payment.payment_type === 'down_payment' ? 'Down Payment' : 'Monthly Payment'}</td></tr>
+                                ${payment.principal_amount ? `<tr><td class="label">Principal:</td><td class="value">$${formatCurrency(payment.principal_amount)}</td></tr>` : ''}
+                                ${payment.interest_amount ? `<tr><td class="label">Interest:</td><td class="value">$${formatCurrency(payment.interest_amount)}</td></tr>` : ''}
+                                <tr class="total"><td class="label">Total Amount:</td><td class="value">$${formatCurrency(payment.amount)}</td></tr>
+                                <tr><td class="label">Payment Method:</td><td class="value">${payment.payment_method || 'Square'}</td></tr>
+                                <tr><td class="label">Status:</td><td class="value">${payment.status}</td></tr>
+                              </table>
+                              <p style="margin-top: 40px; font-size: 12px; color: #666;">
+                                Thank you for your payment!<br/>
+                                Generated: ${new Date().toLocaleDateString()}
+                              </p>
+                            </body>
+                          </html>
+                        `);
+                        printWindow.document.close();
+                        printWindow.print();
+                      }}
+                      className="btn btn-small"
+                      style={{ padding: '5px 10px', fontSize: '12px' }}
+                    >
+                      🖨️ Receipt
+                    </button>
                   </td>
                 </tr>
               ))}

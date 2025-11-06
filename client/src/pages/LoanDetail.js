@@ -188,7 +188,7 @@ function LoanDetail() {
         </button>
         <button 
           onClick={() => {
-            const printWindow = window.open('', '_blank');
+            const printWindow = window.open('', '_blank', 'width=800,height=900,left=200,top=50');
             printWindow.document.write(`
               <html>
                 <head>

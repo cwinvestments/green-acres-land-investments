@@ -1,8 +1,8 @@
 # 🌿 Green Acres Land Investments - Complete Project Guide
 
-**Last Updated:** November 5, 2025  
-**Version:** 2.1  
-**Status:** Production Deployment Complete
+**Last Updated:** November 6, 2025 
+**Project Status:** ✅ FULLY DEPLOYED TO PRODUCTION  
+**Version:** 3.0 - Advanced Business Management Features Complete
 
 ---
 
@@ -52,11 +52,16 @@ Green Acres Land Investments, LLC is a land investment company that:
 
 ## ✅ Current Status
 
-### Version 2.1 Features (November 5, 2025)
-- ✅ Customer payment due day selection
+### Version 3.0 Features (November 6, 2025)
+- ✅ Customer payment due day selection (1st or 15th)
 - ✅ Next payment date display
 - ✅ Admin Loan Management dashboard
-- ✅ Profit and ROI tracking
+- ✅ Profit and ROI tracking per property
+- ✅ Property tax tracking system
+- ✅ Print/Export system (statements, receipts, history)
+- ✅ Selling expenses tracking with NET profit calculations
+- ✅ Property image management (up to 10 images per property)
+- ✅ Image gallery with thumbnails on property detail pages
 - ✅ Payment alert toggles
 - ✅ Overdue loan highlighting
 
@@ -74,6 +79,10 @@ Green Acres Land Investments, LLC is a land investment company that:
 - ✅ Phase 4: Admin Customer Management
 - ✅ Phase 5: Admin Loan Management
 - ✅ Phase 5.5: Payment Due Day Selection
+- ✅ Phase 6: Property Tax Tracking
+- ✅ Phase 7: Print/Export System
+- ✅ Phase 8: Selling Expenses Tracking
+- ✅ Phase 9: Property Image Management
 
 ---
 
@@ -290,11 +299,17 @@ CREATE TABLE properties (
   county VARCHAR(100) NOT NULL,
   acres DECIMAL(10,2) NOT NULL,
   price DECIMAL(10,2) NOT NULL,
-  acquisition_cost DECIMAL(10,2),        -- NEW: For profit tracking
+  acquisition_cost DECIMAL(10,2),        -- For profit tracking
   image_url VARCHAR(500),
   status VARCHAR(50) DEFAULT 'available',
   apn VARCHAR(100),                       -- Assessor's Parcel Number
   coordinates TEXT,                       -- JSON: GPS coordinates
+  annual_tax_amount DECIMAL(10,2),       -- Annual property tax
+  tax_payment_1_date DATE,               -- First semi-annual payment date
+  tax_payment_1_amount DECIMAL(10,2),    -- First payment amount
+  tax_payment_2_date DATE,               -- Second semi-annual payment date
+  tax_payment_2_amount DECIMAL(10,2),    -- Second payment amount
+  tax_notes TEXT,                        -- Additional tax information
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 ```
@@ -352,6 +367,45 @@ CREATE TABLE payments (
 **Payment Types:**
 - `down_payment` - Initial down payment
 - `monthly_payment` - Regular installment
+
+### Selling Expenses Table
+```sql
+CREATE TABLE selling_expenses (
+  id SERIAL PRIMARY KEY,
+  property_id INTEGER REFERENCES properties(id) ON DELETE CASCADE,
+  expense_date DATE NOT NULL,
+  category VARCHAR(100) NOT NULL,
+  description TEXT,
+  amount DECIMAL(10,2) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+**Expense Categories:**
+- Postal/Mailing
+- Deed Transfer
+- Legal Fees
+- Marketing
+- Property Cleanup
+- Travel
+- Miscellaneous
+
+### Property Images Table
+```sql
+CREATE TABLE property_images (
+  id SERIAL PRIMARY KEY,
+  property_id INTEGER REFERENCES properties(id) ON DELETE CASCADE,
+  image_url TEXT NOT NULL,
+  display_order INTEGER DEFAULT 1,
+  caption TEXT,
+  uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+**Image Management:**
+- Up to 10 images per property
+- Display order for sorting
+- Optional captions for descriptions
 
 ---
 
@@ -458,7 +512,7 @@ GET /api/admin/customers/:id
 Returns: Customer details with loans
 ```
 
-#### Loan Management (NEW)
+#### Loan Management
 ```
 GET /api/admin/loans
 Returns: All loans with property and customer data, including:
@@ -469,6 +523,36 @@ Returns: All loans with property and customer data, including:
 
 PATCH /api/admin/loans/:id/toggle-alert
 Returns: Updated alert status
+```
+
+#### Selling Expenses
+```
+GET /api/admin/properties/:propertyId/expenses
+Returns: All expenses for a property
+
+POST /api/admin/properties/:propertyId/expenses
+Body: { expense_date, category, description, amount }
+Returns: Created expense
+
+DELETE /api/admin/expenses/:id
+Returns: Success message
+```
+
+#### Property Images
+```
+GET /api/properties/:propertyId/images
+Returns: All images for a property (ordered by display_order)
+
+POST /api/admin/properties/:propertyId/images
+Body: { image_url, caption, display_order }
+Returns: Created image
+
+PATCH /api/admin/images/:id/order
+Body: { display_order }
+Returns: Updated order
+
+DELETE /api/admin/images/:id
+Returns: Success message
 ```
 
 ---
@@ -799,61 +883,51 @@ SELECT * FROM loans WHERE user_id NOT IN (SELECT id FROM users);
 
 ## 🚀 Future Enhancements
 
-### Phase 6: Property Tax Tracking
-**Goal:** Track property taxes for each parcel
+### Phase 10: Direct Image Upload
+**Goal:** Upload images directly without external hosting
 
-**Database Changes:**
-```sql
-ALTER TABLE properties ADD COLUMN annual_tax_amount DECIMAL(10,2);
-ALTER TABLE properties ADD COLUMN tax_due_date DATE;
-ALTER TABLE properties ADD COLUMN tax_paid BOOLEAN DEFAULT FALSE;
-```
+**Implementation:**
+- Cloudinary integration for cloud storage
+- Direct file upload from admin panel
+- Automatic image optimization
+- Thumbnail generation
+- Estimated time: 15-20 minutes
 
-**Features:**
-- Admin inputs tax amount and due date
-- Customer sees tax info on loan detail
-- Customer can pay tax through platform
-- Admin marks as paid
-- Tax calendar view
-
-### Phase 7: Selling Expenses Tracking
-**Goal:** Track all costs for true profit calculation
-
-**Database Changes:**
-```sql
-ALTER TABLE properties ADD COLUMN selling_expenses DECIMAL(10,2);
--- Or for itemized:
-CREATE TABLE property_expenses (
-  id SERIAL PRIMARY KEY,
-  property_id INTEGER REFERENCES properties(id),
-  expense_type VARCHAR(100),
-  amount DECIMAL(10,2),
-  description TEXT,
-  date DATE
-);
-```
+### Phase 11: Payment Tracking Dashboard
+**Goal:** View all payments across all customers for reporting
 
 **Features:**
-- Track postal fees, deed fees, title fees, etc.
-- Calculate true profit: price - acquisition - expenses
-- Update ROI calculation
-- Expense reports
+- All payments view with filters (date range, customer, property)
+- Monthly revenue reports
+- Payment reconciliation
+- Export for accounting/bookkeeping
+- Payment trend charts
 
-### Phase 8: Advanced Features
-- **Multiple Property Images** (up to 10 per property)
+### Phase 12: Email & SMS Notifications
 - **Email Notifications** (payment reminders, receipts)
 - **SMS Reminders** (via Twilio)
-- **Document Storage** (contracts, deeds)
 - **Automated Payment Reminders**
-- **Late Fee Calculation**
-- **Early Payoff Calculations**
+- **Receipt auto-send after payment**
 
-### Phase 9: Business Intelligence
+### Phase 13: Document Management
+- **Document Storage** (contracts, deeds)
+- **Digital signatures** (DocuSign integration)
+- **Document templates**
+- **Customer document portal**
+
+### Phase 14: Advanced Financial Features
+- **Late Fee Calculation** (automated)
+- **Early Payoff Calculations** (with discounts)
+- **Payment plans** for missed payments
+- **Refinancing options**
+
+### Phase 15: Business Intelligence
 - **Financial Dashboard** (revenue, profit trends)
 - **Customer Analytics** (payment patterns, demographics)
 - **Property Performance** (time to sell, ROI by state)
 - **Cash Flow Projections**
 - **Export Reports** (CSV, PDF)
+- **Interactive charts and graphs**
 
 ---
 

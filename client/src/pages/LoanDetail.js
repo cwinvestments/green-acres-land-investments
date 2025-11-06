@@ -186,7 +186,48 @@ function LoanDetail() {
         <button onClick={() => navigate(`/loans/${id}/payments`)} className="btn btn-secondary" style={{ flex: '1 1 auto' }}>
           View Payment History
         </button>
-        <button onClick={() => window.print()} className="btn btn-primary" style={{ flex: '1 1 auto' }}>
+        <button 
+          onClick={() => {
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`
+              <html>
+                <head>
+                  <title>Loan Statement - ${loan.property_title}</title>
+                  <style>
+                    body { font-family: Arial, sans-serif; padding: 20px; }
+                    h1 { color: #2c5f2d; }
+                    table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+                    td { padding: 8px; border-bottom: 1px solid #ddd; }
+                    .label { font-weight: bold; width: 40%; }
+                    .value { text-align: right; }
+                  </style>
+                </head>
+                <body>
+                  <h1>Green Acres Land Investments</h1>
+                  <h2>Loan Statement</h2>
+                  <h3>${loan.property_title}</h3>
+                  <p>${loan.location}</p>
+                  <table>
+                    <tr><td class="label">Purchase Price:</td><td class="value">$${formatCurrency(loan.purchase_price)}</td></tr>
+                    <tr><td class="label">Down Payment:</td><td class="value">$${formatCurrency(loan.down_payment)}</td></tr>
+                    <tr><td class="label">Loan Amount:</td><td class="value">$${formatCurrency(loan.loan_amount)}</td></tr>
+                    <tr><td class="label">Interest Rate:</td><td class="value">${loan.interest_rate}% APR</td></tr>
+                    <tr><td class="label">Term:</td><td class="value">${loan.term_months} months</td></tr>
+                    <tr><td class="label">Monthly Payment:</td><td class="value">$${formatCurrency(loan.monthly_payment)}</td></tr>
+                    <tr><td class="label">Balance Remaining:</td><td class="value">$${formatCurrency(loan.balance_remaining)}</td></tr>
+                    <tr><td class="label">Status:</td><td class="value">${loan.status === 'active' ? 'Active' : 'Paid Off'}</td></tr>
+                    ${loan.next_payment_date ? `<tr><td class="label">Next Payment Due:</td><td class="value">${new Date(loan.next_payment_date).toLocaleDateString()}</td></tr>` : ''}
+                  </table>
+                  <p style="margin-top: 40px; font-size: 12px; color: #666;">Generated: ${new Date().toLocaleDateString()}</p>
+                </body>
+              </html>
+            `);
+            printWindow.document.close();
+            printWindow.print();
+          }} 
+          className="btn btn-primary" 
+          style={{ flex: '1 1 auto' }}
+        >
           🖨️ Print Loan Statement
         </button>
       </div>

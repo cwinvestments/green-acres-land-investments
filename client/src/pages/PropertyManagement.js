@@ -20,6 +20,12 @@ function PropertyManagement() {
     description: '',
     amount: ''
   });
+  const [showImagesModal, setShowImagesModal] = useState(false);
+  const [selectedPropertyForImages, setSelectedPropertyForImages] = useState(null);
+  const [images, setImages] = useState([]);
+  const [imageUrl, setImageUrl] = useState('');
+  const [imageCaption, setImageCaption] = useState('');
+  const [loadingImages, setLoadingImages] = useState(false);
 
   const loadProperties = useCallback(async () => {
     try {
@@ -109,6 +115,74 @@ function PropertyManagement() {
     } catch (err) {
       console.error('Failed to delete expense:', err);
       alert('Failed to delete expense');
+    }
+  };
+
+  const loadImages = async (propertyId) => {
+    setLoadingImages(true);
+    try {
+      const token = localStorage.getItem('adminToken');
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/properties/${propertyId}/images`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setImages(response.data);
+    } catch (err) {
+      console.error('Failed to load images:', err);
+      alert('Failed to load images');
+    } finally {
+      setLoadingImages(false);
+    }
+  };
+
+  const openImagesModal = (property) => {
+    setSelectedPropertyForImages(property);
+    setShowImagesModal(true);
+    loadImages(property.id);
+  };
+
+  const handleAddImage = async (e) => {
+    e.preventDefault();
+    
+    if (!imageUrl.trim()) {
+      alert('Please enter an image URL');
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem('adminToken');
+      await axios.post(
+        `${process.env.REACT_APP_API_URL}/admin/properties/${selectedPropertyForImages.id}/images`,
+        { 
+          image_url: imageUrl,
+          caption: imageCaption 
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      alert('Image added successfully!');
+      setImageUrl('');
+      setImageCaption('');
+      loadImages(selectedPropertyForImages.id);
+    } catch (err) {
+      console.error('Failed to add image:', err);
+      alert(err.response?.data?.error || 'Failed to add image');
+    }
+  };
+
+  const deleteImage = async (imageId) => {
+    if (!window.confirm('Delete this image?')) return;
+    
+    try {
+      const token = localStorage.getItem('adminToken');
+      await axios.delete(
+        `${process.env.REACT_APP_API_URL}/admin/images/${imageId}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      alert('Image deleted successfully!');
+      loadImages(selectedPropertyForImages.id);
+    } catch (err) {
+      console.error('Failed to delete image:', err);
+      alert('Failed to delete image');
     }
   };
 
@@ -361,6 +435,20 @@ function PropertyManagement() {
                     💰 Expenses
                   </button>
                   <button
+                    onClick={() => openImagesModal(property)}
+                    className="btn"
+                    style={{
+                      padding: '5px 15px',
+                      fontSize: '14px',
+                      width: '100%',
+                      marginBottom: '5px',
+                      backgroundColor: '#6366f1',
+                      color: 'white'
+                    }}
+                  >
+                    📷 Images
+                  </button>
+                  <button
                     onClick={() => setEditingProperty(property)}
                     className="btn"
                     style={{
@@ -587,6 +675,154 @@ function PropertyManagement() {
                   ))}
                 </tbody>
               </table>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Images Modal */}
+      {showImagesModal && selectedPropertyForImages && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0,0,0,0.5)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 1000
+        }}>
+          <div style={{
+            backgroundColor: 'white',
+            padding: '30px',
+            borderRadius: '10px',
+            maxWidth: '900px',
+            width: '90%',
+            maxHeight: '90vh',
+            overflow: 'auto'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+              <h2 style={{ margin: 0 }}>📷 Property Images - {selectedPropertyForImages.title}</h2>
+              <button 
+                onClick={() => setShowImagesModal(false)}
+                className="btn"
+                style={{ padding: '8px 20px' }}
+              >
+                Close
+              </button>
+            </div>
+
+            {/* Image Count */}
+            <div style={{ 
+              padding: '10px 15px', 
+              backgroundColor: '#f0f8f0', 
+              borderRadius: '8px', 
+              marginBottom: '20px',
+              textAlign: 'center'
+            }}>
+              <strong>{images.length} / 10</strong> images uploaded
+            </div>
+
+            {/* Add Image Form */}
+            {images.length < 10 && (
+              <div style={{ 
+                padding: '20px', 
+                backgroundColor: '#f9f9f9', 
+                borderRadius: '8px', 
+                marginBottom: '20px',
+                border: '2px solid var(--forest-green)'
+              }}>
+                <h3 style={{ marginTop: 0 }}>Add New Image</h3>
+                <form onSubmit={handleAddImage}>
+                  <div className="form-group">
+                    <label>Image URL *</label>
+                    <input
+                      type="url"
+                      value={imageUrl}
+                      onChange={(e) => setImageUrl(e.target.value)}
+                      placeholder="https://example.com/image.jpg"
+                      required
+                    />
+                    <small style={{ color: '#666', fontSize: '12px' }}>
+                      Upload your image to a hosting service (Imgur, Cloudinary, etc.) and paste the URL here
+                    </small>
+                  </div>
+                  <div className="form-group">
+                    <label>Caption (Optional)</label>
+                    <input
+                      type="text"
+                      value={imageCaption}
+                      onChange={(e) => setImageCaption(e.target.value)}
+                      placeholder="Description of this image"
+                    />
+                  </div>
+                  <button type="submit" className="btn btn-primary" style={{ width: '100%' }}>
+                    Add Image
+                  </button>
+                </form>
+              </div>
+            )}
+
+            {/* Images Grid */}
+            {loadingImages ? (
+              <div style={{ textAlign: 'center', padding: '40px', color: '#666' }}>
+                Loading images...
+              </div>
+            ) : images.length === 0 ? (
+              <div style={{ textAlign: 'center', padding: '40px', color: '#666' }}>
+                No images uploaded yet
+              </div>
+            ) : (
+              <div style={{ 
+                display: 'grid', 
+                gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', 
+                gap: '15px' 
+              }}>
+                {images.map(image => (
+                  <div key={image.id} style={{ 
+                    border: '2px solid #ddd', 
+                    borderRadius: '8px', 
+                    overflow: 'hidden',
+                    backgroundColor: 'white'
+                  }}>
+                    <img 
+                      src={image.image_url} 
+                      alt={image.caption || 'Property'} 
+                      style={{ 
+                        width: '100%', 
+                        height: '150px', 
+                        objectFit: 'cover' 
+                      }}
+                    />
+                    <div style={{ padding: '10px' }}>
+                      {image.caption && (
+                        <p style={{ 
+                          margin: '0 0 10px 0', 
+                          fontSize: '13px', 
+                          color: '#666' 
+                        }}>
+                          {image.caption}
+                        </p>
+                      )}
+                      <button
+                        onClick={() => deleteImage(image.id)}
+                        className="btn"
+                        style={{
+                          padding: '5px 10px',
+                          fontSize: '12px',
+                          width: '100%',
+                          backgroundColor: '#dc3545',
+                          color: 'white'
+                        }}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
             )}
           </div>
         </div>

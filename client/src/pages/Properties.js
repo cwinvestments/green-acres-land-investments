@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 import { getProperties, formatCurrency } from '../api';
 
 function Properties() {
@@ -17,7 +18,6 @@ function Properties() {
       setProperties(response.data);
       
       // Load first image for each property
-      const axios = require('axios');
       const imagePromises = response.data.map(async (property) => {
         try {
           const imgResponse = await axios.get(`${process.env.REACT_APP_API_URL}/properties/${property.id}/images`);

@@ -1079,6 +1079,73 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'Green Acres API is running' });
 });
 
+// ==================== SELLING EXPENSES ROUTES ====================
+
+// Get all expenses for a property (admin only)
+app.get('/api/admin/properties/:propertyId/expenses', authenticateAdmin, async (req, res) => {
+  try {
+    const { propertyId } = req.params;
+    
+    const result = await db.pool.query(
+      'SELECT * FROM selling_expenses WHERE property_id = $1 ORDER BY expense_date DESC',
+      [propertyId]
+    );
+    
+    res.json(result.rows);
+  } catch (error) {
+    console.error('Get expenses error:', error);
+    res.status(500).json({ error: 'Failed to fetch expenses' });
+  }
+});
+
+// Add expense to property
+app.post('/api/admin/properties/:propertyId/expenses', authenticateAdmin, async (req, res) => {
+  try {
+    const { propertyId } = req.params;
+    const { expense_date, category, description, amount } = req.body;
+    
+    if (!expense_date || !category || !amount) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
+    
+    const result = await db.pool.query(
+      `INSERT INTO selling_expenses (property_id, expense_date, category, description, amount)
+       VALUES ($1, $2, $3, $4, $5)
+       RETURNING *`,
+      [propertyId, expense_date, category, description || null, amount]
+    );
+    
+    res.status(201).json({
+      message: 'Expense added successfully',
+      expense: result.rows[0]
+    });
+  } catch (error) {
+    console.error('Add expense error:', error);
+    res.status(500).json({ error: 'Failed to add expense' });
+  }
+});
+
+// Delete expense
+app.delete('/api/admin/expenses/:id', authenticateAdmin, async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    const result = await db.pool.query(
+      'DELETE FROM selling_expenses WHERE id = $1 RETURNING *',
+      [id]
+    );
+    
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Expense not found' });
+    }
+    
+    res.json({ message: 'Expense deleted successfully' });
+  } catch (error) {
+    console.error('Delete expense error:', error);
+    res.status(500).json({ error: 'Failed to delete expense' });
+  }
+});
+
 app.listen(PORT, () => {
   console.log('Green Acres Server running on port ' + PORT);
   console.log('Environment: ' + process.env.NODE_ENV);

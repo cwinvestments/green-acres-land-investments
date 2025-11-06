@@ -660,6 +660,64 @@ app.patch('/api/admin/loans/:id/toggle-alert', authenticateAdmin, async (req, re
   }
 });
 
+// Mark loan as defaulted
+app.patch('/api/admin/loans/:id/default', authenticateAdmin, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { default_date, recovery_costs, default_notes } = req.body;
+
+    // Get loan details first
+    const loanResult = await db.pool.query(
+      'SELECT * FROM loans WHERE id = $1',
+      [id]
+    );
+
+    if (loanResult.rows.length === 0) {
+      return res.status(404).json({ error: 'Loan not found' });
+    }
+
+    const loan = loanResult.rows[0];
+
+    // Calculate net recovery: total paid - recovery costs
+    const paymentsResult = await db.pool.query(
+      'SELECT COALESCE(SUM(amount), 0) as total_paid FROM payments WHERE loan_id = $1',
+      [id]
+    );
+    const totalPaid = parseFloat(paymentsResult.rows[0].total_paid);
+    const netRecovery = totalPaid - (parseFloat(recovery_costs) || 0);
+
+    // Update loan to defaulted status
+    await db.pool.query(
+      `UPDATE loans 
+       SET status = 'defaulted',
+           default_date = $1,
+           recovery_costs = $2,
+           net_recovery = $3,
+           default_notes = $4,
+           alerts_disabled = true
+       WHERE id = $5`,
+      [default_date, recovery_costs, netRecovery, default_notes, id]
+    );
+
+    // Set property back to available
+    await db.pool.query(
+      `UPDATE properties 
+       SET status = 'available' 
+       WHERE id = $1`,
+      [loan.property_id]
+    );
+
+    res.json({ 
+      success: true, 
+      message: 'Loan marked as defaulted',
+      netRecovery 
+    });
+  } catch (error) {
+    console.error('Mark loan as defaulted error:', error);
+    res.status(500).json({ error: 'Failed to mark loan as defaulted' });
+  }
+});
+
 // ==================== LOAN ROUTES ====================
 
 // Get user's loans

@@ -1936,9 +1936,9 @@ label:contains('*') {
   }
 
   /* Print links in full */
-  a[href]:after {
+  /* a[href]:after {
     content: " (" attr(href) ")";
-  }
+  } */
 
   /* Ensure tables print properly */
   table {

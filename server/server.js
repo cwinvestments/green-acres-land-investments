@@ -993,10 +993,9 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'Green Acres API is running' });
 });
 
-// Start server
 app.listen(PORT, () => {
-  console.log(`\n🌿 Green Acres Server running on http://localhost:${PORT}`);
-  console.log(`📊 Environment: ${process.env.NODE_ENV}`);
-  console.log(`💳 Square Environment: ${process.env.SQUARE_ENVIRONMENT}`);
-  console.log(`✅ Coming Soon status enabled\n`);
+  console.log('Green Acres Server running on port ' + PORT);
+  console.log('Environment: ' + process.env.NODE_ENV);
+  console.log('Square Environment: ' + process.env.SQUARE_ENVIRONMENT);
+  console.log('Coming Soon status enabled');
 });

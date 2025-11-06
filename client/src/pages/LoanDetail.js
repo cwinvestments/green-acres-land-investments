@@ -203,7 +203,7 @@ function LoanDetail() {
                   </style>
                 </head>
                 <body>
-                  <h1>Green Acres Land Investments</h1>
+                  <h1>Green Acres Land Investments, LLC</h1>
                   <h2>Loan Statement</h2>
                   <h3>${loan.property_title}</h3>
                   <p>${loan.location}</p>
@@ -216,7 +216,7 @@ function LoanDetail() {
                     <tr><td class="label">Monthly Payment:</td><td class="value">$${formatCurrency(loan.monthly_payment)}</td></tr>
                     <tr><td class="label">Balance Remaining:</td><td class="value">$${formatCurrency(loan.balance_remaining)}</td></tr>
                     <tr><td class="label">Status:</td><td class="value">${loan.status === 'active' ? 'Active' : 'Paid Off'}</td></tr>
-                    ${loan.next_payment_date ? `<tr><td class="label">Next Payment Due:</td><td class="value">${new Date(loan.next_payment_date).toLocaleDateString()}</td></tr>` : ''}
+                    ${loan.next_payment_date ? `<tr><td class="label">Next Payment Due:</td><td class="value">${new Date(loan.next_payment_date.split('T')[0].replace(/-/g, '/')).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</td></tr>` : ''}
                   </table>
                   <p style="margin-top: 40px; font-size: 12px; color: #666;">Generated: ${new Date().toLocaleDateString()}</p>
                 </body>

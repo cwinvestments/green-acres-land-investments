@@ -10,6 +10,13 @@ function AdminLoans() {
   const [error, setError] = useState('');
   const [filter, setFilter] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
+  const [showDefaultModal, setShowDefaultModal] = useState(false);
+  const [defaultingLoan, setDefaultingLoan] = useState(null);
+  const [defaultFormData, setDefaultFormData] = useState({
+    default_date: new Date().toISOString().split('T')[0],
+    recovery_costs: '',
+    default_notes: ''
+  });
 
   useEffect(() => {
     loadLoans();
@@ -52,6 +59,8 @@ function AdminLoans() {
       filtered = filtered.filter(loan => isOverdue(loan));
     } else if (filter === 'paid_off') {
       filtered = filtered.filter(loan => loan.status === 'paid_off');
+    } else if (filter === 'defaulted') {
+      filtered = filtered.filter(loan => loan.status === 'defaulted');
     }
 
     // Apply search filter
@@ -105,6 +114,48 @@ function AdminLoans() {
       loadLoans();
     } catch (err) {
       alert('Failed to update alert status');
+      console.error(err);
+    }
+  };
+
+  const openDefaultModal = (loan) => {
+    setDefaultingLoan(loan);
+    setDefaultFormData({
+      default_date: new Date().toISOString().split('T')[0],
+      recovery_costs: '',
+      default_notes: ''
+    });
+    setShowDefaultModal(true);
+  };
+
+  const handleDefaultSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!window.confirm(`Mark "${defaultingLoan.property_title}" as DEFAULTED?\n\nThis will:\n- Set loan status to Defaulted\n- Set property back to Available\n- Calculate net recovery\n\nContinue?`)) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/admin/loans/${defaultingLoan.id}/default`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+        },
+        body: JSON.stringify(defaultFormData)
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to mark as defaulted');
+      }
+
+      const result = await response.json();
+      alert(`Loan marked as defaulted. Net recovery: $${result.netRecovery.toFixed(2)}`);
+      setShowDefaultModal(false);
+      setDefaultingLoan(null);
+      loadLoans();
+    } catch (err) {
+      alert('Failed to mark loan as defaulted');
       console.error(err);
     }
   };
@@ -182,6 +233,13 @@ function AdminLoans() {
             className={`btn ${filter === 'paid_off' ? 'btn-primary' : 'btn-secondary'}`}
           >
             Paid Off ({paidOffCount})
+          </button>
+          <button
+            onClick={() => setFilter('defaulted')}
+            className={`btn ${filter === 'defaulted' ? 'btn-primary' : 'btn-secondary'}`}
+            style={filter === 'defaulted' ? { backgroundColor: '#dc3545' } : {}}
+          >
+            Defaulted ({loans.filter(l => l.status === 'defaulted').length})
           </button>
         </div>
 
@@ -268,16 +326,37 @@ function AdminLoans() {
                   </td>
                   <td>
                     {loan.status === 'active' && (
-                      <button
-                        onClick={() => toggleAlert(loan.id, loan.alerts_disabled)}
-                        className="btn btn-small"
-                        style={{
-                          backgroundColor: loan.alerts_disabled ? '#ffc107' : 'var(--forest-green)',
-                          color: 'white'
-                        }}
-                      >
-                        {loan.alerts_disabled ? '🔕 Off' : '🔔 On'}
-                      </button>
+                      <>
+                        <button
+                          onClick={() => toggleAlert(loan.id, loan.alerts_disabled)}
+                          className="btn btn-small"
+                          style={{
+                            backgroundColor: loan.alerts_disabled ? '#ffc107' : 'var(--forest-green)',
+                            color: 'white',
+                            marginBottom: '5px',
+                            width: '100%'
+                          }}
+                        >
+                          {loan.alerts_disabled ? '🔕 Off' : '🔔 On'}
+                        </button>
+                        <button
+                          onClick={() => openDefaultModal(loan)}
+                          className="btn btn-small"
+                          style={{
+                            backgroundColor: '#dc3545',
+                            color: 'white',
+                            width: '100%',
+                            fontSize: '12px'
+                          }}
+                        >
+                          ⚠️ Default
+                        </button>
+                      </>
+                    )}
+                    {loan.status === 'defaulted' && (
+                      <span style={{ color: '#dc3545', fontWeight: 'bold', fontSize: '12px' }}>
+                        Defaulted {loan.default_date && `on ${new Date(loan.default_date).toLocaleDateString()}`}
+                      </span>
                     )}
                   </td>
                 </tr>
@@ -401,6 +480,90 @@ function AdminLoans() {
       {filteredLoans.length === 0 && (
         <div className="empty-state">
           <p>No loans found matching your filters.</p>
+        </div>
+      )}
+
+      {/* Default Loan Modal */}
+      {showDefaultModal && defaultingLoan && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0,0,0,0.5)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 1000
+        }}>
+          <div style={{
+            backgroundColor: 'white',
+            padding: '30px',
+            borderRadius: '10px',
+            maxWidth: '500px',
+            width: '90%',
+            maxHeight: '90vh',
+            overflow: 'auto'
+          }}>
+            <h2 style={{ marginBottom: '20px', color: '#dc3545' }}>⚠️ Mark Loan as Defaulted</h2>
+            
+            <div style={{ marginBottom: '20px', padding: '15px', backgroundColor: '#fff5f5', borderRadius: '5px' }}>
+              <strong>Property:</strong> {defaultingLoan.property_title}<br/>
+              <strong>Customer:</strong> {defaultingLoan.first_name} {defaultingLoan.last_name}<br/>
+              <strong>Balance:</strong> ${formatCurrency(defaultingLoan.balance_remaining)}
+            </div>
+
+            <form onSubmit={handleDefaultSubmit}>
+              <div className="form-group">
+                <label>Default Date *</label>
+                <input
+                  type="date"
+                  value={defaultFormData.default_date}
+                  onChange={(e) => setDefaultFormData({...defaultFormData, default_date: e.target.value})}
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Recovery Costs</label>
+                <input
+                  type="number"
+                  step="0.01"
+                  placeholder="Legal fees, cleanup, repo costs, etc."
+                  value={defaultFormData.recovery_costs}
+                  onChange={(e) => setDefaultFormData({...defaultFormData, recovery_costs: e.target.value})}
+                />
+                <small style={{ color: '#666', fontSize: '12px' }}>
+                  Legal fees, repo costs, property cleanup, etc.
+                </small>
+              </div>
+
+              <div className="form-group">
+                <label>Notes</label>
+                <textarea
+                  rows="4"
+                  placeholder="Reason for default, contact attempts, etc."
+                  value={defaultFormData.default_notes}
+                  onChange={(e) => setDefaultFormData({...defaultFormData, default_notes: e.target.value})}
+                />
+              </div>
+
+              <div style={{ display: 'flex', gap: '10px', marginTop: '20px' }}>
+                <button type="submit" className="btn" style={{ flex: 1, backgroundColor: '#dc3545', color: 'white' }}>
+                  Mark as Defaulted
+                </button>
+                <button 
+                  type="button" 
+                  onClick={() => setShowDefaultModal(false)} 
+                  className="btn btn-secondary"
+                  style={{ flex: 1 }}
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       )}
     </div>

@@ -1,9 +1,9 @@
 # 🌿 Green Acres Land Investments - Technical Reference Guide
 
-**Last Updated:** November 4, 2025  
+**Last Updated:** November 6, 2025 
 **Purpose:** Technical reference for code architecture, development patterns, and setup instructions
 
-> **📋 For Current Project Status:** See [PROJECT-SUMMARY.md](PROJECT-SUMMARY.md) for features completed, session history, and what's next.
+> **📋 For Current Project Status:** See [PROJECT-SUMMARY.md] for features completed, session history, and what's next.
 > 
 > **This guide** contains technical reference material for working with the codebase.
 

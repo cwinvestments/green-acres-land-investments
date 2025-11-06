@@ -64,6 +64,11 @@ const initDatabase = async () => {
         total_amount DECIMAL NOT NULL,
         balance_remaining DECIMAL NOT NULL,
         next_payment_date DATE,
+        alerts_disabled BOOLEAN DEFAULT FALSE,
+        default_date DATE,
+        recovery_costs DECIMAL,
+        net_recovery DECIMAL,
+        default_notes TEXT,
         status TEXT DEFAULT 'active',
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )

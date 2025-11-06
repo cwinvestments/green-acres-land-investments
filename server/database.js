@@ -194,7 +194,7 @@ const addDefaultAdmin = async (client) => {
   // Admin credentials from environment variables
   const defaultAdmin = {
     email: process.env.ADMIN_EMAIL,
-    password: process.env.ADMIN_DEFAULT_PASSWORD,
+    password: process.env.ADMIN_PASSWORD,
     firstName: process.env.ADMIN_FIRST_NAME || 'Admin',
     lastName: process.env.ADMIN_LAST_NAME || 'User'
   };

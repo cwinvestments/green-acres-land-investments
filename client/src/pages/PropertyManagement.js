@@ -137,25 +137,6 @@ useEffect(() => {
     }
   };
 
-  const updateStatus = async (propertyId, newStatus) => {
-    try {
-      const token = localStorage.getItem('adminToken');
-      console.log('Updating property', propertyId, 'to status', newStatus);
-      console.log('API URL:', process.env.REACT_APP_API_URL);
-      await axios.patch(
-        `${process.env.REACT_APP_API_URL}/admin/properties/${propertyId}/status`,
-        { status: newStatus },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      // Reload properties
-      loadProperties();
-    } catch (err) {
-      console.error('Update status error:', err);
-      console.error('Error response:', err.response?.data);
-      alert('Failed to update status: ' + (err.response?.data?.error || err.message));
-    }
-  };
-
   const deleteProperty = async (propertyId, propertyTitle) => {
     if (!window.confirm(`Are you sure you want to DELETE "${propertyTitle}"?\n\nThis action cannot be undone!`)) {
       return;

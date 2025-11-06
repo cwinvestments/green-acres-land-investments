@@ -513,8 +513,8 @@ function PropertyForm({ property, onSuccess, onCancel }) {
               />
             </div>
 
-            {/* Property Tax Section */}
-            <div style={{ marginTop: '30px', paddingTop: '20px', borderTop: '2px solid #eee' }}>
+        {/* Property Tax Section - Full Width */}
+        <div style={{ marginTop: '30px', paddingTop: '20px', borderTop: '2px solid #eee' }}>
               <h3 style={{ color: 'var(--forest-green)', marginBottom: '15px' }}>Property Tax Information</h3>
               
               <div className="form-group">

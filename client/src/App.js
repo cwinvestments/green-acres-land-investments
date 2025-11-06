@@ -16,6 +16,7 @@ import AdminDashboard from './pages/AdminDashboard';
 import PropertyManagement from './pages/PropertyManagement';
 import CustomerManagement from './pages/CustomerManagement';
 import AdminLoans from './pages/AdminLoans';
+import DefaultedLoansReport from './pages/DefaultedLoansReport';
 
 // Protected route component
 function ProtectedRoute({ children }) {

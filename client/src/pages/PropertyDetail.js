@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import { getProperty, createLoan, formatCurrency } from '../api';
 import { useAuth } from '../context/AuthContext';
 
@@ -94,7 +95,6 @@ const closestOption = findClosestOption();
 
   const loadImages = useCallback(async () => {
     try {
-      const axios = require('axios');
       const response = await axios.get(`${process.env.REACT_APP_API_URL}/properties/${id}/images`);
       setImages(response.data);
     } catch (err) {

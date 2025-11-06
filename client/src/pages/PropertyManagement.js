@@ -525,73 +525,6 @@ function PropertyForm({ property, onSuccess, onCancel }) {
             </div>
         </div>
 
-        {/* Property Tax Section - Full Width */}
-        <div style={{ marginTop: '30px', paddingTop: '20px', borderTop: '2px solid #eee' }}>
-              <h3 style={{ color: 'var(--forest-green)', marginBottom: '15px' }}>Property Tax Information</h3>
-              
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
-                <div className="form-group">
-                  <label>Annual Tax Amount</label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    placeholder="Total annual property tax"
-                    value={formData.annual_tax_amount || ''}
-                    onChange={(e) => setFormData({...formData, annual_tax_amount: e.target.value})}
-                  />
-                </div>
-                <div></div>
-
-                <div className="form-group">
-                  <label>1st Payment Due Date</label>
-                  <input
-                    type="date"
-                    value={formData.tax_payment_1_date || ''}
-                    onChange={(e) => setFormData({...formData, tax_payment_1_date: e.target.value})}
-                  />
-                </div>
-                <div className="form-group">
-                  <label>1st Payment Amount</label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    placeholder="Amount"
-                    value={formData.tax_payment_1_amount || ''}
-                    onChange={(e) => setFormData({...formData, tax_payment_1_amount: e.target.value})}
-                  />
-                </div>
-
-                <div className="form-group">
-                  <label>2nd Payment Due Date</label>
-                  <input
-                    type="date"
-                    value={formData.tax_payment_2_date || ''}
-                    onChange={(e) => setFormData({...formData, tax_payment_2_date: e.target.value})}
-                  />
-                </div>
-                <div className="form-group">
-                  <label>2nd Payment Amount</label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    placeholder="Amount"
-                    value={formData.tax_payment_2_amount || ''}
-                    onChange={(e) => setFormData({...formData, tax_payment_2_amount: e.target.value})}
-                  />
-                </div>
-              </div>
-
-              <div className="form-group" style={{ marginTop: '20px' }}>
-                <label>Tax Notes</label>
-                <textarea
-                  rows="2"
-                  placeholder="Additional tax information, payment instructions, etc."
-                  value={formData.tax_notes || ''}
-                  onChange={(e) => setFormData({...formData, tax_notes: e.target.value})}
-                />
-              </div>
-        </div>
-
         {/* GPS Coordinates - Full Width */}
         <div style={{ marginTop: '30px', paddingTop: '20px', borderTop: '2px solid #eee' }}>
           <label style={{ marginBottom: '10px', display: 'block', fontWeight: 'bold', fontSize: '16px' }}>
@@ -663,6 +596,73 @@ function PropertyForm({ property, onSuccess, onCancel }) {
             rows="4"
             required
           />
+        </div>
+
+        {/* Property Tax Section - Full Width */}
+        <div style={{ marginTop: '30px', paddingTop: '20px', borderTop: '2px solid #eee' }}>
+              <h3 style={{ color: 'var(--forest-green)', marginBottom: '15px' }}>Property Tax Information</h3>
+              
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                <div className="form-group">
+                  <label>Annual Tax Amount</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    placeholder="Total annual property tax"
+                    value={formData.annual_tax_amount || ''}
+                    onChange={(e) => setFormData({...formData, annual_tax_amount: e.target.value})}
+                  />
+                </div>
+                <div></div>
+
+                <div className="form-group">
+                  <label>1st Payment Due Date</label>
+                  <input
+                    type="date"
+                    value={formData.tax_payment_1_date || ''}
+                    onChange={(e) => setFormData({...formData, tax_payment_1_date: e.target.value})}
+                  />
+                </div>
+                <div className="form-group">
+                  <label>1st Payment Amount</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    placeholder="Amount"
+                    value={formData.tax_payment_1_amount || ''}
+                    onChange={(e) => setFormData({...formData, tax_payment_1_amount: e.target.value})}
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>2nd Payment Due Date</label>
+                  <input
+                    type="date"
+                    value={formData.tax_payment_2_date || ''}
+                    onChange={(e) => setFormData({...formData, tax_payment_2_date: e.target.value})}
+                  />
+                </div>
+                <div className="form-group">
+                  <label>2nd Payment Amount</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    placeholder="Amount"
+                    value={formData.tax_payment_2_amount || ''}
+                    onChange={(e) => setFormData({...formData, tax_payment_2_amount: e.target.value})}
+                  />
+                </div>
+              </div>
+
+              <div className="form-group" style={{ marginTop: '20px' }}>
+                <label>Tax Notes</label>
+                <textarea
+                  rows="2"
+                  placeholder="Additional tax information, payment instructions, etc."
+                  value={formData.tax_notes || ''}
+                  onChange={(e) => setFormData({...formData, tax_notes: e.target.value})}
+                />
+              </div>
         </div>
 
         {error && (

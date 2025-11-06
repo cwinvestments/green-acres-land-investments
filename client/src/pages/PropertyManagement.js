@@ -60,6 +60,25 @@ function PropertyManagement() {
     }
   };
 
+  const deleteProperty = async (propertyId, propertyTitle) => {
+    if (!window.confirm(`Are you sure you want to DELETE "${propertyTitle}"?\n\nThis action cannot be undone!`)) {
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem('adminToken');
+      await axios.delete(
+        `${process.env.REACT_APP_API_URL}/admin/properties/${propertyId}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      alert('Property deleted successfully!');
+      loadProperties();
+    } catch (err) {
+      console.error('Delete property error:', err);
+      alert('Failed to delete property: ' + (err.response?.data?.error || err.message));
+    }
+  };
+
   const getStatusBadge = (status) => {
     const styles = {
       available: { backgroundColor: '#10b981', color: 'white' },
@@ -266,10 +285,24 @@ function PropertyManagement() {
                     style={{
                       padding: '5px 15px',
                       fontSize: '14px',
-                      width: '100%'
+                      width: '100%',
+                      marginBottom: '5px'
                     }}
                   >
                     ✏️ Edit
+                  </button>
+                  <button
+                    onClick={() => deleteProperty(property.id, property.title)}
+                    className="btn"
+                    style={{
+                      padding: '5px 15px',
+                      fontSize: '14px',
+                      width: '100%',
+                      backgroundColor: '#dc3545',
+                      color: 'white'
+                    }}
+                  >
+                    🗑️ Delete
                   </button>
                 </td>
               </tr>

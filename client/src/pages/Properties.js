@@ -5,6 +5,7 @@ import { getProperties, formatCurrency } from '../api';
 function Properties() {
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [propertyImages, setPropertyImages] = useState({});
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -15,6 +16,25 @@ function Properties() {
     try {
       const response = await getProperties();
       setProperties(response.data);
+      
+      // Load first image for each property
+      const axios = require('axios');
+      const imagePromises = response.data.map(async (property) => {
+        try {
+          const imgResponse = await axios.get(`${process.env.REACT_APP_API_URL}/properties/${property.id}/images`);
+          return { propertyId: property.id, images: imgResponse.data };
+        } catch (err) {
+          return { propertyId: property.id, images: [] };
+        }
+      });
+      
+      const imageResults = await Promise.all(imagePromises);
+      const imagesMap = {};
+      imageResults.forEach(result => {
+        imagesMap[result.propertyId] = result.images;
+      });
+      setPropertyImages(imagesMap);
+      
     } catch (err) {
       setError('Failed to load properties');
       console.error(err);
@@ -22,6 +42,10 @@ function Properties() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    loadProperties();
+  }, []);
 
   if (loading) {
     return (
@@ -67,16 +91,29 @@ function Properties() {
                   className="property-image"
                 />
               ) : (
-                <div className="property-image" style={{
-                  background: 'linear-gradient(135deg, var(--light-green) 0%, var(--forest-green) 100%)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: 'white',
-                  fontSize: '3rem'
-                }}>
-                  🏞️
-                </div>
+                {propertyImages[property.id]?.length > 0 ? (
+                  <img
+                    src={propertyImages[property.id][0].image_url}
+                    alt={property.title}
+                    className="property-image"
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover'
+                    }}
+                  />
+                ) : (
+                  <div className="property-image" style={{
+                    background: 'linear-gradient(135deg, var(--light-green) 0%, var(--forest-green) 100%)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: 'white',
+                    fontSize: '3rem'
+                  }}>
+                    🏞️
+                  </div>
+                )}
               )}
               <div className="property-content">
                 <h3>{property.title}</h3>

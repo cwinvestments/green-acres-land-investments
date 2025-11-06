@@ -513,22 +513,35 @@ function PropertyForm({ property, onSuccess, onCancel }) {
               />
             </div>
 
+            <div className="form-group">
+              <label>APN (Optional)</label>
+              <input
+                type="text"
+                name="apn"
+                value={formData.apn}
+                onChange={handleChange}
+                placeholder="Assessor's Parcel Number"
+              />
+            </div>
+        </div>
+
         {/* Property Tax Section - Full Width */}
         <div style={{ marginTop: '30px', paddingTop: '20px', borderTop: '2px solid #eee' }}>
               <h3 style={{ color: 'var(--forest-green)', marginBottom: '15px' }}>Property Tax Information</h3>
               
-              <div className="form-group">
-                <label>Annual Tax Amount</label>
-                <input
-                  type="number"
-                  step="0.01"
-                  placeholder="Total annual property tax"
-                  value={formData.annual_tax_amount || ''}
-                  onChange={(e) => setFormData({...formData, annual_tax_amount: e.target.value})}
-                />
-              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                <div className="form-group">
+                  <label>Annual Tax Amount</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    placeholder="Total annual property tax"
+                    value={formData.annual_tax_amount || ''}
+                    onChange={(e) => setFormData({...formData, annual_tax_amount: e.target.value})}
+                  />
+                </div>
+                <div></div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
                 <div className="form-group">
                   <label>1st Payment Due Date</label>
                   <input
@@ -547,9 +560,7 @@ function PropertyForm({ property, onSuccess, onCancel }) {
                     onChange={(e) => setFormData({...formData, tax_payment_1_amount: e.target.value})}
                   />
                 </div>
-              </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
                 <div className="form-group">
                   <label>2nd Payment Due Date</label>
                   <input
@@ -570,7 +581,7 @@ function PropertyForm({ property, onSuccess, onCancel }) {
                 </div>
               </div>
 
-              <div className="form-group">
+              <div className="form-group" style={{ marginTop: '20px' }}>
                 <label>Tax Notes</label>
                 <textarea
                   rows="2"
@@ -579,82 +590,71 @@ function PropertyForm({ property, onSuccess, onCancel }) {
                   onChange={(e) => setFormData({...formData, tax_notes: e.target.value})}
                 />
               </div>
-            </div>
-
-          <div className="form-group">
-            <label>APN (Optional)</label>
-            <input
-              type="text"
-              name="apn"
-              value={formData.apn}
-              onChange={handleChange}
-              placeholder="Assessor's Parcel Number"
-            />
-          </div>
-
-          <div className="form-group" style={{ gridColumn: '1 / -1' }}>
-            <label style={{ marginBottom: '10px', display: 'block', fontWeight: 'bold' }}>
-              GPS Coordinates (5-Point System - Optional)
-            </label>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '15px' }}>
-              <div>
-                <label style={{ fontSize: '14px', color: '#666' }}>NE Corner (Northeast)</label>
-                <input
-                  type="text"
-                  name="coord_ne"
-                  value={formData.coord_ne}
-                  onChange={handleChange}
-                  placeholder="44.2619, -88.4154"
-                />
-              </div>
-              <div>
-                <label style={{ fontSize: '14px', color: '#666' }}>SE Corner (Southeast)</label>
-                <input
-                  type="text"
-                  name="coord_se"
-                  value={formData.coord_se}
-                  onChange={handleChange}
-                  placeholder="44.2600, -88.4154"
-                />
-              </div>
-              <div>
-                <label style={{ fontSize: '14px', color: '#666' }}>SW Corner (Southwest)</label>
-                <input
-                  type="text"
-                  name="coord_sw"
-                  value={formData.coord_sw}
-                  onChange={handleChange}
-                  placeholder="44.2600, -88.4170"
-                />
-              </div>
-              <div>
-                <label style={{ fontSize: '14px', color: '#666' }}>NW Corner (Northwest)</label>
-                <input
-                  type="text"
-                  name="coord_nw"
-                  value={formData.coord_nw}
-                  onChange={handleChange}
-                  placeholder="44.2619, -88.4170"
-                />
-              </div>
-              <div style={{ gridColumn: '1 / -1' }}>
-                <label style={{ fontSize: '14px', color: '#666' }}>Center Point</label>
-                <input
-                  type="text"
-                  name="coord_center"
-                  value={formData.coord_center}
-                  onChange={handleChange}
-                  placeholder="44.2610, -88.4162"
-                />
-              </div>
-            </div>
-            <small style={{ color: '#666', fontSize: '12px', marginTop: '5px', display: 'block' }}>
-              Format: latitude, longitude (e.g., 44.2619, -88.4154)
-            </small>
-          </div>
         </div>
 
-        <div className="form-group">
+        {/* GPS Coordinates - Full Width */}
+        <div style={{ marginTop: '30px', paddingTop: '20px', borderTop: '2px solid #eee' }}>
+          <label style={{ marginBottom: '10px', display: 'block', fontWeight: 'bold', fontSize: '16px' }}>
+            GPS Coordinates (5-Point System - Optional)
+          </label>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '15px' }}>
+            <div>
+              <label style={{ fontSize: '14px', color: '#666' }}>NE Corner (Northeast)</label>
+              <input
+                type="text"
+                name="coord_ne"
+                value={formData.coord_ne}
+                onChange={handleChange}
+                placeholder="44.2619, -88.4154"
+              />
+            </div>
+            <div>
+              <label style={{ fontSize: '14px', color: '#666' }}>SE Corner (Southeast)</label>
+              <input
+                type="text"
+                name="coord_se"
+                value={formData.coord_se}
+                onChange={handleChange}
+                placeholder="44.2600, -88.4154"
+              />
+            </div>
+            <div>
+              <label style={{ fontSize: '14px', color: '#666' }}>SW Corner (Southwest)</label>
+              <input
+                type="text"
+                name="coord_sw"
+                value={formData.coord_sw}
+                onChange={handleChange}
+                placeholder="44.2600, -88.4170"
+              />
+            </div>
+            <div>
+              <label style={{ fontSize: '14px', color: '#666' }}>NW Corner (Northwest)</label>
+              <input
+                type="text"
+                name="coord_nw"
+                value={formData.coord_nw}
+                onChange={handleChange}
+                placeholder="44.2619, -88.4170"
+              />
+            </div>
+            <div style={{ gridColumn: '1 / -1' }}>
+              <label style={{ fontSize: '14px', color: '#666' }}>Center Point</label>
+              <input
+                type="text"
+                name="coord_center"
+                value={formData.coord_center}
+                onChange={handleChange}
+                placeholder="44.2610, -88.4162"
+              />
+            </div>
+          </div>
+          <small style={{ color: '#666', fontSize: '12px', marginTop: '5px', display: 'block' }}>
+            Format: latitude, longitude (e.g., 44.2619, -88.4154)
+          </small>
+        </div>
+
+        <div className="form-group" style={{ marginTop: '30px' }}>
           <label>Description *</label>
           <textarea
             name="description"

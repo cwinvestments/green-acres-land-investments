@@ -4,7 +4,8 @@ import axios from 'axios';
 function SoldProperties() {
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState('all'); // 'all', 'pending', 'under_contract', 'sold'
+  const [filter, setFilter] = useState('all');
+  const [propertyImages, setPropertyImages] = useState({});
 
   useEffect(() => {
     fetchSoldProperties();
@@ -14,6 +15,24 @@ function SoldProperties() {
     try {
       const response = await axios.get(`${process.env.REACT_APP_API_URL}/properties/sold`);
       setProperties(response.data);
+      
+      // Load first image for each property
+      const imagePromises = response.data.map(async (property) => {
+        try {
+          const imgResponse = await axios.get(`${process.env.REACT_APP_API_URL}/properties/${property.id}/images`);
+          return { propertyId: property.id, images: imgResponse.data };
+        } catch (err) {
+          return { propertyId: property.id, images: [] };
+        }
+      });
+      
+      const imageResults = await Promise.all(imagePromises);
+      const imagesMap = {};
+      imageResults.forEach(result => {
+        imagesMap[result.propertyId] = result.images;
+      });
+      setPropertyImages(imagesMap);
+      
       setLoading(false);
     } catch (error) {
       console.error('Error fetching sold properties:', error);
@@ -76,27 +95,31 @@ function SoldProperties() {
               </div>
 
               {/* Property Image */}
-              <div className="property-image">
-                {property.images ? (
-                  <img 
-                    src={property.images} 
-                    alt={property.title}
-                  />
-                ) : (
-                  <div style={{
+              {propertyImages[property.id]?.length > 0 ? (
+                <img
+                  src={propertyImages[property.id][0].image_url}
+                  alt={property.title}
+                  className="property-image"
+                  style={{
                     width: '100%',
                     height: '250px',
-                    background: 'linear-gradient(135deg, var(--light-green) 0%, var(--forest-green) 100%)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: 'white',
-                    fontSize: '3rem'
-                  }}>
-                    🏞️
-                  </div>
-                )}
-              </div>
+                    objectFit: 'cover'
+                  }}
+                />
+              ) : (
+                <div className="property-image" style={{
+                  width: '100%',
+                  height: '250px',
+                  background: 'linear-gradient(135deg, var(--light-green) 0%, var(--forest-green) 100%)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: 'white',
+                  fontSize: '3rem'
+                }}>
+                  🏞️
+                </div>
+              )}
 
               {/* Property Details */}
               <div className="property-details">

@@ -678,6 +678,74 @@ app.patch('/api/admin/loans/:id/toggle-alert', authenticateAdmin, async (req, re
   }
 });
 
+// Update payment due day for a loan
+app.patch('/api/admin/loans/:id/payment-due-day', authenticateAdmin, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { payment_due_day } = req.body;
+
+    // Validate payment_due_day is either 1 or 15
+    if (payment_due_day !== 1 && payment_due_day !== 15) {
+      return res.status(400).json({ error: 'Payment due day must be 1 or 15' });
+    }
+
+    // Get current loan
+    const loanResult = await db.pool.query(
+      'SELECT * FROM loans WHERE id = $1',
+      [id]
+    );
+
+    if (loanResult.rows.length === 0) {
+      return res.status(404).json({ error: 'Loan not found' });
+    }
+
+    const loan = loanResult.rows[0];
+    
+    // Calculate new next_payment_date based on new due day
+    const today = new Date();
+    const currentMonth = today.getMonth();
+    const currentYear = today.getFullYear();
+    const currentDay = today.getDate();
+    
+    let newPaymentDate;
+    if (payment_due_day === 1) {
+      // Next occurrence of the 1st
+      if (currentDay >= 1) {
+        newPaymentDate = new Date(currentYear, currentMonth + 1, 1);
+      } else {
+        newPaymentDate = new Date(currentYear, currentMonth, 1);
+      }
+    } else {
+      // Next occurrence of the 15th
+      if (currentDay >= 15) {
+        newPaymentDate = new Date(currentYear, currentMonth + 1, 15);
+      } else {
+        newPaymentDate = new Date(currentYear, currentMonth, 15);
+      }
+    }
+    
+    const newPaymentDateStr = newPaymentDate.toISOString().split('T')[0];
+
+    // Update loan
+    await db.pool.query(
+      'UPDATE loans SET payment_due_day = $1, next_payment_date = $2 WHERE id = $3',
+      [payment_due_day, newPaymentDateStr, id]
+    );
+
+    res.json({ 
+      success: true, 
+      message: 'Payment due day updated',
+      payment_due_day,
+      next_payment_date: newPaymentDateStr
+    });
+  } catch (error) {
+    console.error('Update payment due day error:', error);
+    res.status(500).json({ error: 'Failed to update payment due day' });
+  }
+});
+
+// Mark loan as defaulted
+
 // Mark loan as defaulted
 app.patch('/api/admin/loans/:id/default', authenticateAdmin, async (req, res) => {
   try {

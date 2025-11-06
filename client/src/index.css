@@ -1902,50 +1902,22 @@ label:contains('*') {
 
 /* Print Styles */
 @media print {
-  /* Hide elements that shouldn't print */
+  /* Hide interactive elements */
   nav,
-  .navbar,
   button,
   .btn,
-  .btn-primary,
-  .btn-secondary,
-  input[type="submit"],
-  footer {
+  input[type="submit"] {
     display: none !important;
   }
 
-  /* Page setup */
+  /* Clean page setup */
   body {
     background: white !important;
     color: black !important;
-    font-size: 12pt;
   }
 
-  /* Ensure content fits on page */
-  .loan-detail,
   .card {
     box-shadow: none !important;
-    border: 1px solid #ddd !important;
-    page-break-inside: avoid;
-  }
-
-  /* Make text readable */
-  h1, h2, h3, h4, h5, h6 {
-    color: black !important;
-    page-break-after: avoid;
-  }
-
-  /* Print links in full */
-  /* a[href]:after {
-    content: " (" attr(href) ")";
-  } */
-
-  /* Ensure tables print properly */
-  table {
-    border-collapse: collapse !important;
-  }
-
-  table td, table th {
     border: 1px solid #ddd !important;
   }
 }

@@ -186,6 +186,9 @@ function LoanDetail() {
         <button onClick={() => navigate(`/loans/${id}/payments`)} className="btn btn-secondary" style={{ flex: '1 1 auto' }}>
           View Payment History
         </button>
+        <button onClick={() => window.print()} className="btn btn-primary" style={{ flex: '1 1 auto' }}>
+          🖨️ Print Loan Statement
+        </button>
       </div>
 
       <h1>{loan.property_title}</h1>

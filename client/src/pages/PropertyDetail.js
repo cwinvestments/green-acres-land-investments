@@ -11,6 +11,8 @@ function PropertyDetail() {
   const [property, setProperty] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [images, setImages] = useState([]);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   
   // Calculator state
   const [downPaymentOption, setDownPaymentOption] = useState('99');
@@ -90,9 +92,20 @@ const closestOption = findClosestOption();
     }
   }, [id]);
 
+  const loadImages = useCallback(async () => {
+    try {
+      const axios = require('axios');
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/properties/${id}/images`);
+      setImages(response.data);
+    } catch (err) {
+      console.error('Failed to load images:', err);
+    }
+  }, [id]);
+
   useEffect(() => {
     loadProperty();
-  }, [id, loadProperty]);
+    loadImages();
+  }, [id, loadProperty, loadImages]);
 
   const calculatePayment = useCallback(() => {
     const processingFee = 99;
@@ -242,11 +255,78 @@ navigate('/dashboard');
       
       <div className="property-detail-grid">
         <div>
-          <img
-            src={property.image_url}
-            alt={property.title}
-            className="property-detail-image"
-          />
+          {/* Image Gallery */}
+          {images.length > 0 ? (
+            <div style={{ marginBottom: '1rem' }}>
+              {/* Main Image */}
+              <img
+                src={images[selectedImageIndex].image_url}
+                alt={images[selectedImageIndex].caption || property.title}
+                style={{
+                  width: '100%',
+                  height: '400px',
+                  objectFit: 'cover',
+                  borderRadius: '10px',
+                  marginBottom: '1rem'
+                }}
+              />
+              
+              {/* Thumbnail Gallery */}
+              {images.length > 1 && (
+                <div style={{ 
+                  display: 'grid', 
+                  gridTemplateColumns: 'repeat(auto-fill, minmax(80px, 1fr))', 
+                  gap: '10px' 
+                }}>
+                  {images.map((image, index) => (
+                    <img
+                      key={image.id}
+                      src={image.image_url}
+                      alt={image.caption || `View ${index + 1}`}
+                      onClick={() => setSelectedImageIndex(index)}
+                      style={{
+                        width: '100%',
+                        height: '80px',
+                        objectFit: 'cover',
+                        borderRadius: '5px',
+                        cursor: 'pointer',
+                        border: selectedImageIndex === index ? '3px solid var(--forest-green)' : '2px solid #ddd',
+                        opacity: selectedImageIndex === index ? 1 : 0.6,
+                        transition: 'all 0.3s ease'
+                      }}
+                    />
+                  ))}
+                </div>
+              )}
+              
+              {/* Caption */}
+              {images[selectedImageIndex].caption && (
+                <p style={{ 
+                  textAlign: 'center', 
+                  color: '#666', 
+                  fontSize: '0.9rem', 
+                  marginTop: '0.5rem',
+                  fontStyle: 'italic'
+                }}>
+                  {images[selectedImageIndex].caption}
+                </p>
+              )}
+            </div>
+          ) : (
+            <div style={{
+              width: '100%',
+              height: '400px',
+              background: 'linear-gradient(135deg, var(--forest-green) 0%, var(--sandy-gold) 100%)',
+              borderRadius: '10px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '4rem',
+              marginBottom: '1rem'
+            }}>
+              🏞️
+            </div>
+          )}
           
           <div className="card" style={{ marginTop: '2rem' }}>
             <h2 style={{ color: 'var(--forest-green)', marginTop: 0 }}>Property Details</h2>

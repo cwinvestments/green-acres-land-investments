@@ -119,6 +119,87 @@ function calculateFinancing(price, downPaymentPercentage, termMonths) {
   };
 }
 
+// Helper function to calculate payment breakdown
+async function calculatePaymentBreakdown(loanId) {
+  try {
+    // Get loan and property details
+    const loanResult = await db.pool.query(`
+      SELECT l.*, p.annual_tax_amount, p.monthly_hoa_fee
+      FROM loans l
+      JOIN properties p ON l.property_id = p.id
+      WHERE l.id = $1
+    `, [loanId]);
+    
+    if (loanResult.rows.length === 0) {
+      throw new Error('Loan not found');
+    }
+    
+    const loan = loanResult.rows[0];
+    
+    // Base monthly payment
+    const loanPayment = parseFloat(loan.monthly_payment);
+    
+    // Monthly tax (annual ÷ 12)
+    const monthlyTax = loan.annual_tax_amount 
+      ? parseFloat(loan.annual_tax_amount) / 12 
+      : 0;
+    
+    // Monthly HOA
+    const monthlyHoa = loan.monthly_hoa_fee 
+      ? parseFloat(loan.monthly_hoa_fee) 
+      : 0;
+    
+    // Check for late fee (7 day grace period)
+    let lateFee = 0;
+    if (loan.next_payment_date && loan.status === 'active') {
+      const dueDate = new Date(loan.next_payment_date);
+      const today = new Date();
+      const daysOverdue = Math.floor((today - dueDate) / (1000 * 60 * 60 * 24));
+      
+      if (daysOverdue > 7) {
+        lateFee = parseFloat(loan.late_fee_amount || 35);
+      }
+    }
+    
+    // Check for notice fees
+    let noticeFee = 0;
+    let postalFee = 0;
+    if (loan.notice_sent_date && !loan.notice_fee_paid) {
+      noticeFee = 75;
+      postalFee = parseFloat(loan.notice_postal_cost || 0);
+    }
+    
+    // Calculate subtotal
+    const subtotal = loanPayment + monthlyTax + monthlyHoa + lateFee + noticeFee + postalFee;
+    
+    // Calculate Square processing fee (2.9% + $0.30)
+    const squareFee = (subtotal * 0.029) + 0.30;
+    
+    // Convenience fee
+    const convenienceFee = 5.00;
+    
+    // Total
+    const total = subtotal + squareFee + convenienceFee;
+    
+    return {
+      loanPayment: parseFloat(loanPayment.toFixed(2)),
+      monthlyTax: parseFloat(monthlyTax.toFixed(2)),
+      monthlyHoa: parseFloat(monthlyHoa.toFixed(2)),
+      lateFee: parseFloat(lateFee.toFixed(2)),
+      noticeFee: parseFloat(noticeFee.toFixed(2)),
+      postalFee: parseFloat(postalFee.toFixed(2)),
+      subtotal: parseFloat(subtotal.toFixed(2)),
+      squareFee: parseFloat(squareFee.toFixed(2)),
+      convenienceFee: parseFloat(convenienceFee.toFixed(2)),
+      total: parseFloat(total.toFixed(2)),
+      daysOverdue: loan.next_payment_date ? Math.floor((new Date() - new Date(loan.next_payment_date)) / (1000 * 60 * 60 * 24)) : 0
+    };
+  } catch (error) {
+    console.error('Calculate payment breakdown error:', error);
+    throw error;
+  }
+}
+
 // ==================== AUTH ROUTES ====================
 
 // Register
@@ -854,6 +935,27 @@ app.get('/api/loans/:id', authenticateToken, async (req, res) => {
   } catch (error) {
     console.error('Get loan error:', error);
     res.status(500).json({ error: 'Failed to fetch loan' });
+  }
+});
+
+// Get payment breakdown for a loan
+app.get('/api/loans/:id/payment-breakdown', authenticateToken, async (req, res) => {
+  try {
+    // Verify loan belongs to user
+    const loanCheck = await db.pool.query(
+      'SELECT id FROM loans WHERE id = $1 AND user_id = $2',
+      [req.params.id, req.user.id]
+    );
+
+    if (loanCheck.rows.length === 0) {
+      return res.status(404).json({ error: 'Loan not found' });
+    }
+
+    const breakdown = await calculatePaymentBreakdown(req.params.id);
+    res.json(breakdown);
+  } catch (error) {
+    console.error('Get payment breakdown error:', error);
+    res.status(500).json({ error: 'Failed to calculate payment breakdown' });
   }
 });
 

@@ -271,7 +271,7 @@ function PropertyManagement() {
           </button>
           <button
             onClick={() => navigate('/admin/dashboard')}
-            className="btn"
+            className="btn btn-secondary"
           >
             ← Back to Dashboard
           </button>

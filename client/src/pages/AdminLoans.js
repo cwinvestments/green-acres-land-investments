@@ -809,9 +809,21 @@ function AdminLoans() {
                 marginBottom: '20px',
                 fontSize: '14px'
               }}>
-                <strong>⚠️ This will add the following to customer's next payment:</strong><br />
+                <strong>⚠️ This will trigger the following actions:</strong><br />
+                <br />
+                <strong>Fees Added to Next Payment:</strong><br />
                 - Default/Cure Notice Fee: $75.00<br />
-                - Postal/Certified Mail: ${noticeForm.postal_cost || '0.00'}
+                - Postal/Certified Mail: ${noticeForm.postal_cost || '0.00'}<br />
+                <br />
+                <strong>Customer Deadline:</strong><br />
+                - Cure Deadline: {new Date(new Date(noticeForm.notice_date).setDate(new Date(noticeForm.notice_date).getDate() + 7)).toLocaleDateString('en-US', { 
+                  weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
+                })} (7 days from notice date)<br />
+                <br />
+                <strong style={{ color: '#dc3545' }}>Customer will see:</strong><br />
+                <span style={{ fontSize: '13px', fontStyle: 'italic' }}>
+                  "You have 7 days to cure the default. Failure to pay will result in forfeiture of all payments and loss of property rights."
+                </span>
               </div>
 
               <div style={{ display: 'flex', gap: '10px' }}>

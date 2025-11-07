@@ -905,15 +905,22 @@ app.post('/api/admin/loans/:id/send-notice', authenticateAdmin, async (req, res)
       return res.status(400).json({ error: 'All required fields must be provided' });
     }
 
-    // Update loan with notice information
+    // Calculate cure deadline (7 days from notice date)
+    const noticeDateTime = new Date(notice_date);
+    const cureDeadline = new Date(noticeDateTime);
+    cureDeadline.setDate(cureDeadline.getDate() + 7);
+    const cureDeadlineStr = cureDeadline.toISOString().split('T')[0];
+
+    // Update loan with notice information and cure deadline
     await db.pool.query(
       `UPDATE loans 
        SET notice_sent_date = $1,
            notice_tracking_number = $2,
            notice_postal_cost = $3,
-           notice_notes = $4
-       WHERE id = $5`,
-      [notice_date, tracking_number, postal_cost, notes, id]
+           notice_notes = $4,
+           cure_deadline_date = $5
+       WHERE id = $6`,
+      [notice_date, tracking_number, postal_cost, notes, cureDeadlineStr, id]
     );
 
     // Record in loan_notices table for history

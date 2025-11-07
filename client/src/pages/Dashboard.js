@@ -76,6 +76,21 @@ function Dashboard() {
             const percentPaid = ((parseFloat(loan.loan_amount) - parseFloat(loan.balance_remaining)) / parseFloat(loan.loan_amount)) * 100;
             const remainingPayments = Math.ceil(parseFloat(loan.balance_remaining) / parseFloat(loan.monthly_payment));
             
+            // Calculate days overdue and cure deadline
+            const getDaysOverdue = () => {
+              if (!loan.next_payment_date) return 0;
+              const today = new Date();
+              const dueDate = new Date(loan.next_payment_date);
+              const diffTime = today - dueDate;
+              const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+              return diffDays > 0 ? diffDays : 0;
+            };
+            
+            const daysOverdue = getDaysOverdue();
+            const daysUntilCure = loan.cure_deadline_date 
+              ? Math.ceil((new Date(loan.cure_deadline_date) - new Date()) / (1000 * 60 * 60 * 24))
+              : null;
+            
             // Calculate payment status
             const getPaymentStatus = () => {
               if (loan.status === 'paid_off' || !loan.next_payment_date || loan.alerts_disabled) return null;
@@ -105,6 +120,101 @@ function Dashboard() {
             
             return (
               <div key={loan.id} className="loan-card">
+                {/* Tier 1: Friendly Reminder (Days 8-14) */}
+                {daysOverdue >= 8 && daysOverdue < 15 && (
+                  <div style={{
+                    backgroundColor: '#fff3cd',
+                    border: '2px solid #ffc107',
+                    borderRadius: '8px',
+                    padding: '15px',
+                    marginBottom: '15px'
+                  }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
+                      <span style={{ fontSize: '24px' }}>⚠️</span>
+                      <strong style={{ fontSize: '16px', color: '#856404' }}>Payment Overdue</strong>
+                    </div>
+                    <p style={{ margin: '0 0 8px 34px', color: '#856404', fontSize: '14px' }}>
+                      Your payment was due {daysOverdue} days ago. A $35 late fee has been applied.
+                    </p>
+                    <p style={{ margin: '0 0 0 34px', color: '#856404', fontSize: '14px', fontWeight: 'bold' }}>
+                      Please make your payment as soon as possible to avoid further action.
+                    </p>
+                  </div>
+                )}
+
+                {/* Tier 2: Serious Warning (Days 15-29) */}
+                {daysOverdue >= 15 && daysOverdue < 30 && (
+                  <div style={{
+                    backgroundColor: '#fff3e0',
+                    border: '2px solid #ff9800',
+                    borderRadius: '8px',
+                    padding: '15px',
+                    marginBottom: '15px'
+                  }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
+                      <span style={{ fontSize: '24px' }}>🚨</span>
+                      <strong style={{ fontSize: '16px', color: '#e65100' }}>URGENT: Payment Seriously Overdue</strong>
+                    </div>
+                    <p style={{ margin: '0 0 8px 34px', color: '#e65100', fontSize: '14px' }}>
+                      Your account is now <strong>{daysOverdue} days</strong> past due.
+                    </p>
+                    <p style={{ margin: '0 0 8px 34px', color: '#e65100', fontSize: '14px' }}>
+                      If payment is not received soon, we will send an official Default Notice with additional fees ($75 + postal costs).
+                    </p>
+                    <p style={{ margin: '0 0 0 34px', color: '#e65100', fontSize: '14px', fontWeight: 'bold' }}>
+                      Contact us immediately: (920) 555-0100
+                    </p>
+                  </div>
+                )}
+
+                {/* Tier 3: Critical Default Notice (Day 30+) */}
+                {daysOverdue >= 30 && (
+                  <div style={{
+                    backgroundColor: '#ffebee',
+                    border: '3px solid #dc3545',
+                    borderRadius: '8px',
+                    padding: '20px',
+                    marginBottom: '15px'
+                  }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
+                      <span style={{ fontSize: '28px' }}>⚠️</span>
+                      <strong style={{ fontSize: '18px', color: '#dc3545' }}>DEFAULT NOTICE - IMMEDIATE ACTION REQUIRED</strong>
+                    </div>
+                    <p style={{ margin: '0 0 12px 38px', color: '#dc3545', fontSize: '14px', fontWeight: 'bold' }}>
+                      Your loan is officially in DEFAULT.
+                    </p>
+                    {daysUntilCure !== null && daysUntilCure > 0 && (
+                      <>
+                        <p style={{ margin: '0 0 8px 38px', color: '#dc3545', fontSize: '16px', fontWeight: 'bold' }}>
+                          YOU HAVE {daysUntilCure} DAYS TO CURE THE DEFAULT
+                        </p>
+                        <p style={{ margin: '0 0 12px 38px', color: '#dc3545', fontSize: '14px' }}>
+                          Cure Deadline: {new Date(loan.cure_deadline_date).toLocaleDateString('en-US', { 
+                            weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
+                          })}
+                        </p>
+                      </>
+                    )}
+                    {daysUntilCure !== null && daysUntilCure <= 0 && (
+                      <p style={{ margin: '0 0 12px 38px', color: '#dc3545', fontSize: '16px', fontWeight: 'bold' }}>
+                        CURE DEADLINE HAS PASSED - REPOSSESSION IMMINENT
+                      </p>
+                    )}
+                    <p style={{ margin: '0 0 8px 38px', color: '#dc3545', fontSize: '14px', fontWeight: 'bold' }}>
+                      FAILURE TO PAY WILL RESULT IN:
+                    </p>
+                    <ul style={{ margin: '0 0 12px 58px', color: '#dc3545', fontSize: '13px', lineHeight: '1.6' }}>
+                      <li>Forfeiture of all payments made to date</li>
+                      <li>Loss of all rights to the property</li>
+                      <li>Immediate repossession proceedings</li>
+                      <li>Property will be resold</li>
+                    </ul>
+                    <p style={{ margin: '0 0 8px 38px', color: '#dc3545', fontSize: '14px', fontWeight: 'bold' }}>
+                      Contact us IMMEDIATELY: (920) 555-0100 | greenacreslandinvestments@gmail.com
+                    </p>
+                  </div>
+                )}
+
                 {paymentStatus && (
                   <div style={{
                     backgroundColor: paymentStatus.color,

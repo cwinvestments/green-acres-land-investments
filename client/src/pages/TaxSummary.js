@@ -79,8 +79,8 @@ function TaxSummary() {
           <button onClick={printReport} className="btn btn-primary">
             🖨️ Print Report
           </button>
-          <button onClick={() => navigate('/admin/dashboard')} className="btn">
-            ← Back
+          <button onClick={() => navigate('/admin/dashboard')} className="btn btn-secondary">
+            ← Back to Dashboard
           </button>
         </div>
       </div>

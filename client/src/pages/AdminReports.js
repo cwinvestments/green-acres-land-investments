@@ -56,7 +56,7 @@ function AdminReports() {
       {/* Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
         <h1 style={{ margin: 0 }}>📊 Financial Reports</h1>
-        <button onClick={() => navigate('/admin/dashboard')} className="btn">
+        <button onClick={() => navigate('/admin/dashboard')} className="btn btn-secondary">
           ← Back to Dashboard
         </button>
       </div>

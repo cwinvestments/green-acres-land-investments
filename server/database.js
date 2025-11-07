@@ -84,8 +84,59 @@ const initDatabase = async () => {
         payment_type TEXT NOT NULL,
         square_payment_id TEXT,
         status TEXT DEFAULT 'completed',
-        payment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        payment_method TEXT DEFAULT 'square',
+        payment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        loan_payment_amount DECIMAL DEFAULT 0,
+        tax_amount DECIMAL DEFAULT 0,
+        hoa_amount DECIMAL DEFAULT 0,
+        late_fee_amount DECIMAL DEFAULT 0,
+        notice_fee_amount DECIMAL DEFAULT 0,
+        postal_fee_amount DECIMAL DEFAULT 0,
+        square_processing_fee DECIMAL DEFAULT 0,
+        convenience_fee DECIMAL DEFAULT 0,
+        principal_amount DECIMAL DEFAULT 0,
+        interest_amount DECIMAL DEFAULT 0
       )
+    `);
+
+ // Add missing columns to payments table if they don't exist
+    await client.query(`
+      DO $$ 
+      BEGIN
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='payments' AND column_name='payment_method') THEN
+          ALTER TABLE payments ADD COLUMN payment_method TEXT DEFAULT 'square';
+        END IF;
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='payments' AND column_name='loan_payment_amount') THEN
+          ALTER TABLE payments ADD COLUMN loan_payment_amount DECIMAL DEFAULT 0;
+        END IF;
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='payments' AND column_name='tax_amount') THEN
+          ALTER TABLE payments ADD COLUMN tax_amount DECIMAL DEFAULT 0;
+        END IF;
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='payments' AND column_name='hoa_amount') THEN
+          ALTER TABLE payments ADD COLUMN hoa_amount DECIMAL DEFAULT 0;
+        END IF;
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='payments' AND column_name='late_fee_amount') THEN
+          ALTER TABLE payments ADD COLUMN late_fee_amount DECIMAL DEFAULT 0;
+        END IF;
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='payments' AND column_name='notice_fee_amount') THEN
+          ALTER TABLE payments ADD COLUMN notice_fee_amount DECIMAL DEFAULT 0;
+        END IF;
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='payments' AND column_name='postal_fee_amount') THEN
+          ALTER TABLE payments ADD COLUMN postal_fee_amount DECIMAL DEFAULT 0;
+        END IF;
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='payments' AND column_name='square_processing_fee') THEN
+          ALTER TABLE payments ADD COLUMN square_processing_fee DECIMAL DEFAULT 0;
+        END IF;
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='payments' AND column_name='convenience_fee') THEN
+          ALTER TABLE payments ADD COLUMN convenience_fee DECIMAL DEFAULT 0;
+        END IF;
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='payments' AND column_name='principal_amount') THEN
+          ALTER TABLE payments ADD COLUMN principal_amount DECIMAL DEFAULT 0;
+        END IF;
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='payments' AND column_name='interest_amount') THEN
+          ALTER TABLE payments ADD COLUMN interest_amount DECIMAL DEFAULT 0;
+        END IF;
+      END $$;
     `);
 
 // Admin users table

@@ -209,8 +209,10 @@ function Dashboard() {
                       <li>Immediate repossession proceedings</li>
                       <li>Property will be resold</li>
                     </ul>
-                    <p style={{ margin: '0 0 8px 38px', color: '#dc3545', fontSize: '14px', fontWeight: 'bold' }}>
-                      Contact us IMMEDIATELY: (920) 555-0100 | greenacreslandinvestments@gmail.com
+                    <p style={{ margin: '0 0 8px 38px', color: '#dc3545', fontSize: '14px', fontWeight: 'bold', wordBreak: 'break-word' }}>
+                      Contact us IMMEDIATELY:<br />
+                      (920) 716-6107<br />
+                      greenacreslandinvestments@gmail.com
                     </p>
                   </div>
                 )}

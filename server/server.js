@@ -1242,6 +1242,39 @@ app.delete('/api/admin/images/:id', authenticateAdmin, async (req, res) => {
   }
 });
 
+// ==================== PAYMENT TRACKING ROUTES ====================
+
+// Get all payments (admin only)
+app.get('/api/admin/payments', authenticateAdmin, async (req, res) => {
+  try {
+    const result = await db.pool.query(`
+      SELECT 
+        p.id,
+        p.amount,
+        p.payment_type,
+        p.square_payment_id,
+        p.status,
+        p.payment_date,
+        u.first_name || ' ' || u.last_name as customer_name,
+        u.email as customer_email,
+        u.phone as customer_phone,
+        prop.title as property_title,
+        prop.id as property_id,
+        l.id as loan_id
+      FROM payments p
+      LEFT JOIN users u ON p.user_id = u.id
+      LEFT JOIN loans l ON p.loan_id = l.id
+      LEFT JOIN properties prop ON l.property_id = prop.id
+      ORDER BY p.payment_date DESC
+    `);
+    
+    res.json(result.rows);
+  } catch (error) {
+    console.error('Get payments error:', error);
+    res.status(500).json({ error: 'Failed to fetch payments' });
+  }
+});
+
 app.listen(PORT, () => {
   console.log('Green Acres Server running on port ' + PORT);
   console.log('Environment: ' + process.env.NODE_ENV);

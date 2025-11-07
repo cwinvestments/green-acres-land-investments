@@ -264,6 +264,11 @@ function LoanDetail() {
           boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
         }}>
           {paymentStatus.icon} {paymentStatus.text}
+          {paymentStatus.color === '#dc3545' && (
+            <div style={{ marginTop: '8px', fontSize: '15px' }}>
+              Contact us: (920) 716-6107
+            </div>
+          )}
         </div>
       )}
       

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
@@ -10,12 +10,7 @@ function PaymentTracking() {
   const [searchTerm, setSearchTerm] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-
-  useEffect(() => {
-    loadPayments();
-  }, []);
-
-  const loadPayments = async () => {
+  const loadPayments = useCallback(async () => {
     try {
       const token = localStorage.getItem('adminToken');
       const response = await axios.get(
@@ -31,7 +26,11 @@ function PaymentTracking() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [navigate]);
+
+  useEffect(() => {
+    loadPayments();
+  }, [loadPayments]);
 
   // Filter payments
   const filteredPayments = payments.filter(payment => {

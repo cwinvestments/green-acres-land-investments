@@ -1508,7 +1508,7 @@ app.get('/api/admin/reports/financial', authenticateAdmin, async (req, res) => {
         SUM(late_fee_amount) as late_fees,
         SUM(notice_fee_amount) as notice_fees,
         SUM(postal_fee_amount) as postal_fees,
-        SUM(convenience_fee_amount) as convenience_fees,
+        SUM(convenience_fee) as convenience_fees,
         SUM(square_processing_fee) as square_fees,
         COUNT(*) as total_payments
       FROM payments

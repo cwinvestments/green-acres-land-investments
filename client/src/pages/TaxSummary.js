@@ -7,6 +7,10 @@ function TaxSummary() {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState(null);
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+  const [taxRate, setTaxRate] = useState(() => {
+    const saved = localStorage.getItem('taxWithholdingRate');
+    return saved ? parseFloat(saved) : 30;
+  });
 
   useEffect(() => {
     loadTaxData();
@@ -48,7 +52,14 @@ function TaxSummary() {
 
   const currentMonth = new Date().getMonth() + 1;
   const currentMonthData = data.monthly.find(m => m.month === currentMonth) || data.monthly[data.monthly.length - 1];
-  const suggestedWithholding = currentMonthData.net_profit * 0.30;
+  const suggestedWithholding = currentMonthData.net_profit * (taxRate / 100);
+  const yearToDateWithholding = data.annual.net_profit * (taxRate / 100);
+
+  const handleTaxRateChange = (e) => {
+    const newRate = parseFloat(e.target.value);
+    setTaxRate(newRate);
+    localStorage.setItem('taxWithholdingRate', newRate);
+  };
 
   return (
     <div style={{ padding: '20px', maxWidth: '95%', margin: '0 auto' }}>
@@ -89,7 +100,49 @@ function TaxSummary() {
         padding: '20px',
         marginBottom: '30px'
       }}>
-        <h3 style={{ margin: '0 0 10px 0' }}>📊 Monthly Tax Withholding Recommendation</h3>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px', flexWrap: 'wrap', gap: '10px' }}>
+          <h3 style={{ margin: 0 }}>📊 Monthly Tax Withholding Calculator</h3>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <label style={{ fontWeight: 'bold', fontSize: '14px' }}>Your Tax Rate:</label>
+            <select 
+              value={taxRate} 
+              onChange={handleTaxRateChange}
+              style={{ 
+                padding: '8px 12px', 
+                fontSize: '16px', 
+                fontWeight: 'bold',
+                border: '2px solid #ffc107',
+                borderRadius: '5px',
+                backgroundColor: 'white',
+                cursor: 'pointer'
+              }}
+            >
+              <option value="25">25%</option>
+              <option value="30">30%</option>
+              <option value="35">35%</option>
+              <option value="40">40%</option>
+            </select>
+            <input
+              type="number"
+              min="0"
+              max="100"
+              step="1"
+              value={taxRate}
+              onChange={handleTaxRateChange}
+              placeholder="Custom"
+              style={{
+                width: '80px',
+                padding: '8px',
+                fontSize: '16px',
+                border: '2px solid #ffc107',
+                borderRadius: '5px',
+                textAlign: 'center'
+              }}
+            />
+            <span style={{ fontSize: '14px', color: '#856404' }}>%</span>
+          </div>
+        </div>
+
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '15px' }}>
           <div>
             <div style={{ fontSize: '14px', color: '#666' }}>Current Month Net Profit:</div>
@@ -98,7 +151,7 @@ function TaxSummary() {
             </div>
           </div>
           <div>
-            <div style={{ fontSize: '14px', color: '#666' }}>Suggested Withholding (30%):</div>
+            <div style={{ fontSize: '14px', color: '#666' }}>Amount to Set Aside ({taxRate}%):</div>
             <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#dc3545' }}>
               ${formatCurrency(suggestedWithholding)}
             </div>
@@ -109,10 +162,16 @@ function TaxSummary() {
               ${formatCurrency(data.annual.net_profit)}
             </div>
           </div>
+          <div>
+            <div style={{ fontSize: '14px', color: '#666' }}>Year-to-Date Total to Withhold:</div>
+            <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#dc3545' }}>
+              ${formatCurrency(yearToDateWithholding)}
+            </div>
+          </div>
         </div>
         <p style={{ margin: '15px 0 0 0', fontSize: '14px', color: '#856404' }}>
-          💡 <strong>Tip:</strong> Set aside 25-30% of monthly net profit for quarterly estimated tax payments. 
-          Consult with your CPA for personalized tax advice.
+          💡 <strong>Tip:</strong> Adjust your tax rate based on your business structure and tax bracket. 
+          Your withholding preference is saved automatically. Consult with your CPA for personalized tax advice.
         </p>
       </div>
 

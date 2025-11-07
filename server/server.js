@@ -1484,6 +1484,133 @@ app.get('/api/admin/payments', authenticateAdmin, async (req, res) => {
   }
 });
 
+// ==================== REPORTING ROUTES ====================
+
+// Get comprehensive financial reports
+app.get('/api/admin/reports/financial', authenticateAdmin, async (req, res) => {
+  try {
+    // Total revenue breakdown
+    const revenueResult = await db.pool.query(`
+      SELECT 
+        SUM(amount) as total_revenue,
+        SUM(loan_payment_amount) as loan_payments,
+        SUM(tax_amount) as tax_collected,
+        SUM(hoa_amount) as hoa_collected,
+        SUM(late_fee_amount) as late_fees,
+        SUM(notice_fee_amount) as notice_fees,
+        SUM(postal_fee_amount) as postal_fees,
+        SUM(convenience_fee_amount) as convenience_fees,
+        SUM(square_processing_fee) as square_fees,
+        COUNT(*) as total_payments
+      FROM payments
+      WHERE status = 'completed'
+    `);
+
+    // Tax escrow by property
+    const taxEscrowResult = await db.pool.query(`
+      SELECT 
+        p.id as property_id,
+        p.title,
+        p.annual_tax_amount,
+        COALESCE(SUM(pay.tax_amount), 0) as tax_collected,
+        p.annual_tax_amount - COALESCE(SUM(pay.tax_amount), 0) as tax_balance
+      FROM properties p
+      LEFT JOIN loans l ON p.id = l.property_id
+      LEFT JOIN payments pay ON l.id = pay.loan_id AND pay.status = 'completed'
+      WHERE p.annual_tax_amount IS NOT NULL AND p.annual_tax_amount > 0
+      GROUP BY p.id, p.title, p.annual_tax_amount
+      ORDER BY p.title
+    `);
+
+    // HOA tracking by property
+    const hoaResult = await db.pool.query(`
+      SELECT 
+        p.id as property_id,
+        p.title,
+        p.monthly_hoa_fee,
+        COALESCE(SUM(pay.hoa_amount), 0) as hoa_collected,
+        COUNT(pay.id) as payments_count
+      FROM properties p
+      LEFT JOIN loans l ON p.id = l.property_id
+      LEFT JOIN payments pay ON l.id = pay.loan_id AND pay.status = 'completed'
+      WHERE p.monthly_hoa_fee IS NOT NULL AND p.monthly_hoa_fee > 0
+      GROUP BY p.id, p.title, p.monthly_hoa_fee
+      ORDER BY p.title
+    `);
+
+    // Monthly revenue trends (last 12 months)
+    const trendsResult = await db.pool.query(`
+      SELECT 
+        DATE_TRUNC('month', payment_date) as month,
+        SUM(amount) as total_revenue,
+        SUM(loan_payment_amount) as loan_revenue,
+        SUM(late_fee_amount + notice_fee_amount + convenience_fee_amount) as fee_revenue,
+        COUNT(*) as payment_count
+      FROM payments
+      WHERE status = 'completed' 
+        AND payment_date >= NOW() - INTERVAL '12 months'
+      GROUP BY DATE_TRUNC('month', payment_date)
+      ORDER BY month DESC
+    `);
+
+    res.json({
+      revenue: revenueResult.rows[0],
+      taxEscrow: taxEscrowResult.rows,
+      hoaTracking: hoaResult.rows,
+      monthlyTrends: trendsResult.rows
+    });
+  } catch (error) {
+    console.error('Get reports error:', error);
+    res.status(500).json({ error: 'Failed to fetch reports' });
+  }
+});
+
+// Get outstanding balances report
+app.get('/api/admin/reports/outstanding', authenticateAdmin, async (req, res) => {
+  try {
+    const result = await db.pool.query(`
+      SELECT 
+        l.id as loan_id,
+        u.first_name || ' ' || u.last_name as customer_name,
+        u.email,
+        u.phone,
+        p.title as property_title,
+        l.balance_remaining,
+        l.monthly_payment,
+        l.next_payment_date,
+        CASE 
+          WHEN l.next_payment_date < CURRENT_DATE THEN 
+            CURRENT_DATE - l.next_payment_date
+          ELSE 0
+        END as days_overdue,
+        l.notice_sent_date,
+        l.cure_deadline_date
+      FROM loans l
+      JOIN users u ON l.user_id = u.id
+      JOIN properties p ON l.property_id = p.id
+      WHERE l.status = 'active'
+      ORDER BY 
+        CASE WHEN l.next_payment_date < CURRENT_DATE THEN 0 ELSE 1 END,
+        l.next_payment_date
+    `);
+
+    const summary = {
+      total_outstanding: result.rows.reduce((sum, row) => sum + parseFloat(row.balance_remaining), 0),
+      total_loans: result.rows.length,
+      overdue_loans: result.rows.filter(r => r.days_overdue > 0).length,
+      in_default: result.rows.filter(r => r.notice_sent_date).length
+    };
+
+    res.json({
+      summary,
+      loans: result.rows
+    });
+  } catch (error) {
+    console.error('Get outstanding report error:', error);
+    res.status(500).json({ error: 'Failed to fetch outstanding balances' });
+  }
+});
+
 app.listen(PORT, () => {
   console.log('Green Acres Server running on port ' + PORT);
   console.log('Environment: ' + process.env.NODE_ENV);

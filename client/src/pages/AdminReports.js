@@ -159,6 +159,11 @@ function AdminReports() {
           </div>
 
           <h2>Monthly Trends (Last 12 Months)</h2>
+          
+          {/* Desktop Table */}
+          <div className="card desktop-only" style={{ padding: '20px' }}>
+            {trends.length > 0 ? (
+              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                 <thead>
                   <tr style={{ borderBottom: '2px solid #ddd' }}>
                     <th style={{ padding: '12px', textAlign: 'left' }}>Month</th>

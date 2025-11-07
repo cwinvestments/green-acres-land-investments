@@ -98,7 +98,7 @@ function CustomerManagement() {
           <h1 style={{ margin: 0 }}>👥 Customer Management</h1>
           <button
             onClick={() => navigate('/admin/dashboard')}
-            className="btn"
+            className="btn btn-secondary"
           >
             ← Back to Dashboard
           </button>

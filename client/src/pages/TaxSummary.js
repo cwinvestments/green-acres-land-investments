@@ -72,7 +72,7 @@ function TaxSummary() {
             onChange={(e) => setSelectedYear(parseInt(e.target.value))}
             style={{ padding: '8px', fontSize: '16px' }}
           >
-            {[2025, 2024, 2023, 2022].map(year => (
+            {Array.from({ length: 10 }, (_, i) => new Date().getFullYear() - i).map(year => (
               <option key={year} value={year}>{year}</option>
             ))}
           </select>

@@ -52,7 +52,7 @@ function AdminReports() {
   const loans = outstandingData?.loans || [];
 
   return (
-    <div style={{ padding: '20px', maxWidth: '1600px', margin: '0 auto' }}>
+    <div style={{ padding: '20px', maxWidth: '95%', margin: '0 auto' }}>
       {/* Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
         <h1 style={{ margin: 0 }}>📊 Financial Reports</h1>

@@ -252,7 +252,7 @@ function AdminLoans() {
   const paidOffCount = loans.filter(l => l.status === 'paid_off').length;
 
   return (
-    <div style={{ padding: '20px', maxWidth: '1600px', margin: '0 auto' }}>
+    <div style={{ padding: '20px', maxWidth: '95%', margin: '0 auto' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
         <h1>Loan Management</h1>
         <div style={{ display: 'flex', gap: '10px' }}>

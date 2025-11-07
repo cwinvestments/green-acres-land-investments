@@ -111,49 +111,49 @@ function AdminDashboard() {
         gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
         gap: '20px'
       }}>
-        <div className="card" style={{ padding: '30px', cursor: 'pointer', textAlign: 'center' }} onClick={() => navigate('/admin/properties')}>
+        <div className="card" style={{ padding: '30px', cursor: 'pointer', textAlign: 'center', display: 'flex', flexDirection: 'column', minHeight: '200px' }} onClick={() => navigate('/admin/properties')}>
           <h2 style={{ margin: '0 0 10px 0' }}>🏘️ Property Management</h2>
-          <p style={{ color: '#666', marginBottom: '15px' }}>
+          <p style={{ color: '#666', marginBottom: '15px', flexGrow: 1 }}>
             Add, edit, and manage property listings
           </p>
           <button className="btn btn-primary">Manage Properties</button>
         </div>
 
-        <div className="card" style={{ padding: '30px', cursor: 'pointer', textAlign: 'center' }} onClick={() => navigate('/admin/customers')}>
+        <div className="card" style={{ padding: '30px', cursor: 'pointer', textAlign: 'center', display: 'flex', flexDirection: 'column', minHeight: '200px' }} onClick={() => navigate('/admin/customers')}>
           <h2 style={{ margin: '0 0 10px 0' }}>👥 Customer Management</h2>
-          <p style={{ color: '#666', marginBottom: '15px' }}>
+          <p style={{ color: '#666', marginBottom: '15px', flexGrow: 1 }}>
             View and manage customer accounts
           </p>
           <button className="btn btn-primary">Manage Customers</button>
         </div>
 
-        <div className="card" style={{ padding: '30px', cursor: 'pointer', textAlign: 'center' }} onClick={() => navigate('/admin/loans')}>
+        <div className="card" style={{ padding: '30px', cursor: 'pointer', textAlign: 'center', display: 'flex', flexDirection: 'column', minHeight: '200px' }} onClick={() => navigate('/admin/loans')}>
           <h2 style={{ margin: '0 0 10px 0' }}>💰 Loan Management</h2>
-          <p style={{ color: '#666', marginBottom: '15px' }}>
+          <p style={{ color: '#666', marginBottom: '15px', flexGrow: 1 }}>
             Track loans, payments, and balances
           </p>
           <button className="btn btn-primary">Manage Loans</button>
         </div>
 
-        <div className="card" style={{ padding: '30px', cursor: 'pointer', textAlign: 'center' }} onClick={() => navigate('/admin/payments')}>
+        <div className="card" style={{ padding: '30px', cursor: 'pointer', textAlign: 'center', display: 'flex', flexDirection: 'column', minHeight: '200px' }} onClick={() => navigate('/admin/payments')}>
           <h2 style={{ margin: '0 0 10px 0' }}>💳 Payment Tracking</h2>
-          <p style={{ color: '#666', marginBottom: '15px' }}>
+          <p style={{ color: '#666', marginBottom: '15px', flexGrow: 1 }}>
             View payment history and reports
           </p>
           <button className="btn btn-primary">View Payments</button>
-        </div>
+        </div>>
 
-        <div className="card" style={{ padding: '30px', cursor: 'pointer', textAlign: 'center' }} onClick={() => navigate('/admin/reports')}>
+        <div className="card" style={{ padding: '30px', cursor: 'pointer', textAlign: 'center', display: 'flex', flexDirection: 'column', minHeight: '200px' }} onClick={() => navigate('/admin/reports')}>
           <h2 style={{ margin: '0 0 10px 0' }}>📊 Financial Reports</h2>
-          <p style={{ color: '#666', marginBottom: '15px' }}>
+          <p style={{ color: '#666', marginBottom: '15px', flexGrow: 1 }}>
             Revenue, tax escrow, HOA tracking, and analytics
           </p>
           <button className="btn btn-primary">View Reports</button>
         </div>
 
-        <div className="card" style={{ padding: '30px', cursor: 'pointer', textAlign: 'center' }} onClick={() => navigate('/admin/tax-summary')}>
+        <div className="card" style={{ padding: '30px', cursor: 'pointer', textAlign: 'center', display: 'flex', flexDirection: 'column', minHeight: '200px' }} onClick={() => navigate('/admin/tax-summary')}>
           <h2 style={{ margin: '0 0 10px 0' }}>💼 Income Tax Summary</h2>
-          <p style={{ color: '#666', marginBottom: '15px' }}>
+          <p style={{ color: '#666', marginBottom: '15px', flexGrow: 1 }}>
             Annual tax report, quarterly breakdown, CPA export
           </p>
           <button className="btn btn-primary">View Tax Report</button>

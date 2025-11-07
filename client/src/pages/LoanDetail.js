@@ -11,6 +11,8 @@ function LoanDetail() {
   const [error, setError] = useState('');
   const [payments, setPayments] = useState([]);
   const [paymentAmount, setPaymentAmount] = useState('');
+  const [paymentBreakdown, setPaymentBreakdown] = useState(null);
+  const [loadingBreakdown, setLoadingBreakdown] = useState(true);
   const [processing, setProcessing] = useState(false);
   const [paymentError, setPaymentError] = useState('');
   const [cardInstance, setCardInstance] = useState(null);
@@ -36,11 +38,24 @@ function LoanDetail() {
         const paymentsData = await paymentsResponse.json();
         setPayments(paymentsData);
       }
+      
+      // Load payment breakdown
+      const breakdownResponse = await fetch(`${process.env.REACT_APP_API_URL}/loans/${id}/payment-breakdown`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+      if (breakdownResponse.ok) {
+        const breakdownData = await breakdownResponse.json();
+        setPaymentBreakdown(breakdownData);
+        setPaymentAmount(breakdownData.total.toFixed(2));
+      }
     } catch (err) {
       setError('Failed to load loan details');
       console.error(err);
     } finally {
       setLoading(false);
+      setLoadingBreakdown(false);
     }
   }, [id]);
 
@@ -394,6 +409,94 @@ function LoanDetail() {
             </div>
             
             <form onSubmit={handlePayment}>
+              {/* Payment Breakdown */}
+              {paymentBreakdown && !loadingBreakdown && (
+                <div style={{
+                  padding: '20px',
+                  marginBottom: '25px',
+                  backgroundColor: '#f9f9f9',
+                  borderRadius: '8px',
+                  border: '2px solid var(--forest-green)'
+                }}>
+                  <h3 style={{ margin: '0 0 15px 0', color: 'var(--forest-green)' }}>💳 Payment Breakdown</h3>
+                  
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '15px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0' }}>
+                      <span>Monthly Loan Payment:</span>
+                      <span style={{ fontWeight: '600' }}>${paymentBreakdown.loanPayment.toFixed(2)}</span>
+                    </div>
+                    
+                    {paymentBreakdown.monthlyTax > 0 && (
+                      <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0' }}>
+                        <span>Estimated Monthly Property Tax:</span>
+                        <span style={{ fontWeight: '600' }}>${paymentBreakdown.monthlyTax.toFixed(2)}</span>
+                      </div>
+                    )}
+                    
+                    {paymentBreakdown.monthlyHoa > 0 && (
+                      <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0' }}>
+                        <span>HOA Fee:</span>
+                        <span style={{ fontWeight: '600' }}>${paymentBreakdown.monthlyHoa.toFixed(2)}</span>
+                      </div>
+                    )}
+                    
+                    {paymentBreakdown.lateFee > 0 && (
+                      <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', color: '#dc3545' }}>
+                        <span>Late Fee ({paymentBreakdown.daysOverdue} days overdue):</span>
+                        <span style={{ fontWeight: '600' }}>${paymentBreakdown.lateFee.toFixed(2)}</span>
+                      </div>
+                    )}
+                    
+                    {paymentBreakdown.noticeFee > 0 && (
+                      <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', color: '#dc3545' }}>
+                        <span>Default/Cure Notice Fee:</span>
+                        <span style={{ fontWeight: '600' }}>${paymentBreakdown.noticeFee.toFixed(2)}</span>
+                      </div>
+                    )}
+                    
+                    {paymentBreakdown.postalFee > 0 && (
+                      <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', color: '#dc3545' }}>
+                        <span>Postal/Certified Mail Fee:</span>
+                        <span style={{ fontWeight: '600' }}>${paymentBreakdown.postalFee.toFixed(2)}</span>
+                      </div>
+                    )}
+                  </div>
+                  
+                  <div style={{ borderTop: '2px solid #ddd', paddingTop: '15px', marginTop: '10px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0' }}>
+                      <span style={{ fontWeight: '600' }}>Subtotal:</span>
+                      <span style={{ fontWeight: '600' }}>${paymentBreakdown.subtotal.toFixed(2)}</span>
+                    </div>
+                    
+                    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', fontSize: '14px', color: '#666' }}>
+                      <span>Square Processing Fee:</span>
+                      <span>${paymentBreakdown.squareFee.toFixed(2)}</span>
+                    </div>
+                    
+                    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', fontSize: '14px', color: '#666' }}>
+                      <span>Credit Card Processing Fee:</span>
+                      <span>${paymentBreakdown.convenienceFee.toFixed(2)}</span>
+                    </div>
+                  </div>
+                  
+                  <div style={{ 
+                    borderTop: '3px solid var(--forest-green)', 
+                    paddingTop: '15px', 
+                    marginTop: '15px',
+                    backgroundColor: 'white',
+                    padding: '15px',
+                    borderRadius: '6px'
+                  }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span style={{ fontSize: '18px', fontWeight: 'bold' }}>TOTAL DUE TODAY:</span>
+                      <span style={{ fontSize: '24px', fontWeight: 'bold', color: 'var(--forest-green)' }}>
+                        ${paymentBreakdown.total.toFixed(2)}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              )}
+              
               <div className="payment-amount-section">
                 <label>Payment Amount:</label>
                 <div className="amount-input-group">

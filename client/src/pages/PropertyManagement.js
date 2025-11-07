@@ -873,7 +873,11 @@ function PropertyForm({ property, onSuccess, onCancel }) {
     tax_payment_1_amount: property?.tax_payment_1_amount || '',
     tax_payment_2_date: property?.tax_payment_2_date ? property.tax_payment_2_date.split('T')[0] : '',
     tax_payment_2_amount: property?.tax_payment_2_amount || '',
-    tax_notes: property?.tax_notes || ''
+    tax_notes: property?.tax_notes || '',
+    monthly_hoa_fee: property?.monthly_hoa_fee || '',
+    hoa_name: property?.hoa_name || '',
+    hoa_contact: property?.hoa_contact || '',
+    hoa_notes: property?.hoa_notes || ''
   });
   
   const [loading, setLoading] = useState(false);
@@ -1173,6 +1177,54 @@ function PropertyForm({ property, onSuccess, onCancel }) {
               placeholder="Additional tax information, payment instructions, etc."
               value={formData.tax_notes || ''}
               onChange={(e) => setFormData({...formData, tax_notes: e.target.value})}
+            />
+          </div>
+        </div>
+
+        {/* HOA Section */}
+        <div style={{ marginTop: '30px', paddingTop: '20px', borderTop: '2px solid #eee' }}>
+          <h3 style={{ color: 'var(--forest-green)', marginBottom: '15px' }}>HOA Information (If Applicable)</h3>
+          
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+            <div className="form-group">
+              <label>Monthly HOA Fee</label>
+              <input
+                type="number"
+                step="0.01"
+                placeholder="0.00"
+                value={formData.monthly_hoa_fee || ''}
+                onChange={(e) => setFormData({...formData, monthly_hoa_fee: e.target.value})}
+              />
+              <small style={{ color: '#666', fontSize: '12px' }}>Leave blank if no HOA</small>
+            </div>
+            <div className="form-group">
+              <label>HOA Name</label>
+              <input
+                type="text"
+                placeholder="Name of HOA"
+                value={formData.hoa_name || ''}
+                onChange={(e) => setFormData({...formData, hoa_name: e.target.value})}
+              />
+            </div>
+          </div>
+
+          <div className="form-group">
+            <label>HOA Contact</label>
+            <input
+              type="text"
+              placeholder="Contact email or phone"
+              value={formData.hoa_contact || ''}
+              onChange={(e) => setFormData({...formData, hoa_contact: e.target.value})}
+            />
+          </div>
+
+          <div className="form-group">
+            <label>HOA Notes</label>
+            <textarea
+              rows="2"
+              placeholder="Payment schedule, included services, etc."
+              value={formData.hoa_notes || ''}
+              onChange={(e) => setFormData({...formData, hoa_notes: e.target.value})}
             />
           </div>
         </div>

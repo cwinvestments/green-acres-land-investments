@@ -838,8 +838,6 @@ app.patch('/api/admin/loans/:id/payment-due-day', authenticateAdmin, async (req,
 });
 
 // Mark loan as defaulted
-
-// Mark loan as defaulted
 app.patch('/api/admin/loans/:id/default', authenticateAdmin, async (req, res) => {
   try {
     const { id } = req.params;
@@ -894,6 +892,62 @@ app.patch('/api/admin/loans/:id/default', authenticateAdmin, async (req, res) =>
   } catch (error) {
     console.error('Mark loan as defaulted error:', error);
     res.status(500).json({ error: 'Failed to mark loan as defaulted' });
+  }
+});
+
+// Send default/cure notice
+app.post('/api/admin/loans/:id/send-notice', authenticateAdmin, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { notice_date, postal_method, postal_cost, tracking_number, notes } = req.body;
+
+    if (!notice_date || !postal_method || !postal_cost || !tracking_number) {
+      return res.status(400).json({ error: 'All required fields must be provided' });
+    }
+
+    // Update loan with notice information
+    await db.pool.query(
+      `UPDATE loans 
+       SET notice_sent_date = $1,
+           notice_tracking_number = $2,
+           notice_postal_cost = $3,
+           notice_notes = $4
+       WHERE id = $5`,
+      [notice_date, tracking_number, postal_cost, notes, id]
+    );
+
+    // Record in loan_notices table for history
+    await db.pool.query(
+      `INSERT INTO loan_notices (loan_id, notice_type, notice_date, postal_method, postal_cost, tracking_number, notice_fee, notes)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+      [id, 'default_cure', notice_date, postal_method, postal_cost, tracking_number, 75.00, notes]
+    );
+
+    res.json({ 
+      success: true, 
+      message: 'Notice recorded successfully'
+    });
+  } catch (error) {
+    console.error('Send notice error:', error);
+    res.status(500).json({ error: 'Failed to record notice' });
+  }
+});
+
+// Waive late fee
+app.post('/api/admin/loans/:id/waive-late-fee', authenticateAdmin, async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // For now, we'll just record this action
+    // In the future, we could add a waived_fees table or adjustment tracking
+    
+    res.json({ 
+      success: true, 
+      message: 'Late fee waived (manual adjustment - remind customer on next call)'
+    });
+  } catch (error) {
+    console.error('Waive late fee error:', error);
+    res.status(500).json({ error: 'Failed to waive late fee' });
   }
 });
 

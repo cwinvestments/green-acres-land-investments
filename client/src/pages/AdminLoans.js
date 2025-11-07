@@ -17,6 +17,15 @@ function AdminLoans() {
     recovery_costs: '',
     default_notes: ''
   });
+  const [showNoticeModal, setShowNoticeModal] = useState(false);
+  const [selectedLoan, setSelectedLoan] = useState(null);
+  const [noticeForm, setNoticeForm] = useState({
+    notice_date: new Date().toISOString().split('T')[0],
+    postal_method: 'Certified Mail with Return Receipt',
+    postal_cost: '',
+    tracking_number: '',
+    notes: ''
+  });
 
   useEffect(() => {
     loadLoans();
@@ -157,6 +166,67 @@ function AdminLoans() {
     } catch (err) {
       alert('Failed to mark loan as defaulted');
       console.error(err);
+    }
+  };
+
+  const openNoticeModal = (loan) => {
+    setSelectedLoan(loan);
+    setShowNoticeModal(true);
+    setNoticeForm({
+      notice_date: new Date().toISOString().split('T')[0],
+      postal_method: 'Certified Mail with Return Receipt',
+      postal_cost: '',
+      tracking_number: '',
+      notes: ''
+    });
+  };
+
+  const handleSendNotice = async (e) => {
+    e.preventDefault();
+    
+    if (!noticeForm.postal_cost || !noticeForm.tracking_number) {
+      alert('Postal cost and tracking number are required');
+      return;
+    }
+
+    try {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/admin/loans/${selectedLoan.id}/send-notice`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+        },
+        body: JSON.stringify(noticeForm)
+      });
+      
+      if (!response.ok) throw new Error('Failed');
+      
+      alert('Default/Cure Notice recorded successfully!');
+      setShowNoticeModal(false);
+      loadLoans();
+    } catch (err) {
+      console.error('Failed to send notice:', err);
+      alert('Failed to record notice');
+    }
+  };
+
+  const waiveLateFee = async (loanId) => {
+    if (!window.confirm('Waive late fee for this loan?')) return;
+
+    try {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/admin/loans/${loanId}/waive-late-fee`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+        }
+      });
+      
+      if (!response.ok) throw new Error('Failed');
+      
+      alert('Late fee waived successfully! Reminder: Inform customer on next call.');
+      loadLoans();
+    } catch (err) {
+      alert('Failed to waive late fee');
     }
   };
 
@@ -373,6 +443,49 @@ function AdminLoans() {
                         >
                           {loan.alerts_disabled ? '🔕 Off' : '🔔 On'}
                         </button>
+                        {daysOverdue >= 30 && !loan.notice_sent_date && (
+                          <button
+                            onClick={() => openNoticeModal(loan)}
+                            className="btn btn-small"
+                            style={{
+                              backgroundColor: '#dc3545',
+                              color: 'white',
+                              width: '100%',
+                              fontSize: '12px',
+                              marginBottom: '5px'
+                            }}
+                          >
+                            📨 Send Notice
+                          </button>
+                        )}
+                        {loan.notice_sent_date && (
+                          <div style={{
+                            padding: '4px 8px',
+                            fontSize: '11px',
+                            backgroundColor: '#6c757d',
+                            color: 'white',
+                            borderRadius: '4px',
+                            marginBottom: '5px',
+                            textAlign: 'center'
+                          }}>
+                            Notice Sent {new Date(loan.notice_sent_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                          </div>
+                        )}
+                        {daysOverdue > 7 && (
+                          <button
+                            onClick={() => waiveLateFee(loan.id)}
+                            className="btn btn-small"
+                            style={{
+                              backgroundColor: '#ffc107',
+                              color: 'white',
+                              width: '100%',
+                              fontSize: '12px',
+                              marginBottom: '5px'
+                            }}
+                          >
+                            Waive Late Fee
+                          </button>
+                        )}
                         <button
                           onClick={() => openDefaultModal(loan)}
                           className="btn btn-small"
@@ -591,6 +704,124 @@ function AdminLoans() {
                   type="button" 
                   onClick={() => setShowDefaultModal(false)} 
                   className="btn btn-secondary"
+                  style={{ flex: 1 }}
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Notice Modal */}
+      {showNoticeModal && selectedLoan && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0,0,0,0.5)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 1000
+        }}>
+          <div style={{
+            backgroundColor: 'white',
+            padding: '30px',
+            borderRadius: '10px',
+            maxWidth: '600px',
+            width: '90%',
+            maxHeight: '90vh',
+            overflow: 'auto'
+          }}>
+            <h2 style={{ marginTop: 0 }}>📨 Send Default/Cure Notice</h2>
+            <p style={{ color: '#666', marginBottom: '20px' }}>
+              <strong>Customer:</strong> {selectedLoan.first_name} {selectedLoan.last_name}<br />
+              <strong>Property:</strong> {selectedLoan.property_title}<br />
+              <strong>Days Overdue:</strong> {getDaysOverdue(selectedLoan)}
+            </p>
+
+            <form onSubmit={handleSendNotice}>
+              <div className="form-group">
+                <label>Notice Date *</label>
+                <input
+                  type="date"
+                  value={noticeForm.notice_date}
+                  onChange={(e) => setNoticeForm({...noticeForm, notice_date: e.target.value})}
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Postal Method *</label>
+                <select
+                  value={noticeForm.postal_method}
+                  onChange={(e) => setNoticeForm({...noticeForm, postal_method: e.target.value})}
+                  required
+                >
+                  <option value="Certified Mail">Certified Mail</option>
+                  <option value="Certified Mail with Return Receipt">Certified Mail with Return Receipt</option>
+                  <option value="Priority Mail">Priority Mail</option>
+                  <option value="Overnight">Overnight</option>
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label>Postal Cost * (Actual cost)</label>
+                <input
+                  type="number"
+                  step="0.01"
+                  placeholder="10.50"
+                  value={noticeForm.postal_cost}
+                  onChange={(e) => setNoticeForm({...noticeForm, postal_cost: e.target.value})}
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Tracking Number *</label>
+                <input
+                  type="text"
+                  placeholder="9400 1000 0000 0000 0000 00"
+                  value={noticeForm.tracking_number}
+                  onChange={(e) => setNoticeForm({...noticeForm, tracking_number: e.target.value})}
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Notes</label>
+                <textarea
+                  rows="3"
+                  placeholder="Customer not responding to calls/emails..."
+                  value={noticeForm.notes}
+                  onChange={(e) => setNoticeForm({...noticeForm, notes: e.target.value})}
+                />
+              </div>
+
+              <div style={{
+                padding: '15px',
+                backgroundColor: '#fff3cd',
+                borderRadius: '6px',
+                marginBottom: '20px',
+                fontSize: '14px'
+              }}>
+                <strong>⚠️ This will add the following to customer's next payment:</strong><br />
+                - Default/Cure Notice Fee: $75.00<br />
+                - Postal/Certified Mail: ${noticeForm.postal_cost || '0.00'}
+              </div>
+
+              <div style={{ display: 'flex', gap: '10px' }}>
+                <button type="submit" className="btn btn-primary" style={{ flex: 1 }}>
+                  Record Notice Sent
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowNoticeModal(false)}
+                  className="btn"
                   style={{ flex: 1 }}
                 >
                   Cancel

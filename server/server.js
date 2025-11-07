@@ -729,10 +729,19 @@ app.get('/api/admin/loans', authenticateAdmin, async (req, res) => {
         p.location as property_location,
         p.price as property_price,
         p.acquisition_cost as property_acquisition_cost,
+        p.annual_tax_amount,
+        p.monthly_hoa_fee,
         u.first_name,
         u.last_name,
         u.email,
-        u.phone
+        u.phone,
+        -- Calculate cure amount
+        l.monthly_payment + 
+        COALESCE(p.annual_tax_amount / 12, 0) + 
+        COALESCE(p.monthly_hoa_fee, 0) +
+        COALESCE(l.late_fee_amount, 0) +
+        CASE WHEN l.notice_sent_date IS NOT NULL THEN 75.00 ELSE 0 END +
+        COALESCE(l.notice_postal_cost, 0) as cure_amount
       FROM loans l
       JOIN properties p ON l.property_id = p.id
       JOIN users u ON l.user_id = u.id

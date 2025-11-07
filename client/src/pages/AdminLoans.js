@@ -341,6 +341,7 @@ function AdminLoans() {
               <th style={{ textAlign: 'left' }}>Customer</th>
               <th style={{ textAlign: 'left' }}>Property</th>
               <th style={{ textAlign: 'right' }}>Balance</th>
+              <th style={{ textAlign: 'right' }}>Cure Amount</th>
               <th style={{ textAlign: 'right' }}>Monthly</th>
               <th style={{ textAlign: 'center' }}>Due Date</th>
               <th style={{ textAlign: 'right' }}>Profit</th>
@@ -368,6 +369,19 @@ function AdminLoans() {
                   </td>
                   <td style={{ fontWeight: '600', color: 'var(--forest-green)', textAlign: 'right' }}>
                     ${formatCurrency(loan.balance_remaining)}
+                  </td>
+                  <td style={{ textAlign: 'right' }}>
+                    {overdueStatus ? (
+                      <span style={{ 
+                        fontWeight: 'bold',
+                        color: daysOverdue >= 30 ? '#dc3545' : daysOverdue >= 15 ? '#ff6b00' : '#ffc107',
+                        fontSize: '15px'
+                      }}>
+                        ${formatCurrency(loan.cure_amount || 0)}
+                      </span>
+                    ) : (
+                      <span style={{ color: '#999' }}>—</span>
+                    )}
                   </td>
                   <td style={{ textAlign: 'right' }}>${formatCurrency(loan.monthly_payment)}</td>
                   <td style={{ textAlign: 'center' }}>
@@ -566,8 +580,15 @@ function AdminLoans() {
                   </div>
                 </div>
                 <div>
-                  <div style={{ fontSize: '12px', color: '#666' }}>Monthly</div>
-                  <div style={{ fontWeight: '600' }}>${formatCurrency(loan.monthly_payment)}</div>
+                  <div style={{ fontSize: '12px', color: '#666' }}>
+                    {overdueStatus ? 'To Cure' : 'Monthly'}
+                  </div>
+                  <div style={{ 
+                    fontWeight: '600',
+                    color: overdueStatus ? '#dc3545' : 'inherit'
+                  }}>
+                    ${formatCurrency(overdueStatus ? (loan.cure_amount || 0) : loan.monthly_payment)}
+                  </div>
                 </div>
                 {loan.next_payment_date && loan.status === 'active' && (
                   <>
@@ -658,7 +679,15 @@ function AdminLoans() {
             <div style={{ marginBottom: '20px', padding: '15px', backgroundColor: '#fff5f5', borderRadius: '5px' }}>
               <strong>Property:</strong> {defaultingLoan.property_title}<br/>
               <strong>Customer:</strong> {defaultingLoan.first_name} {defaultingLoan.last_name}<br/>
-              <strong>Balance:</strong> ${formatCurrency(defaultingLoan.balance_remaining)}
+              <strong>Total Balance Owed:</strong> ${formatCurrency(defaultingLoan.balance_remaining)}<br/>
+              {getDaysOverdue(defaultingLoan) > 0 && (
+                <>
+                  <strong style={{ color: '#dc3545' }}>Amount to Cure Default:</strong>{' '}
+                  <span style={{ fontSize: '18px', fontWeight: 'bold', color: '#dc3545' }}>
+                    ${formatCurrency(defaultingLoan.cure_amount || 0)}
+                  </span>
+                </>
+              )}
             </div>
 
             <form onSubmit={handleDefaultSubmit}>

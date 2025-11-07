@@ -150,6 +150,14 @@ function AdminDashboard() {
           </p>
           <button className="btn btn-primary">View Reports</button>
         </div>
+
+        <div className="card" style={{ padding: '30px', cursor: 'pointer', textAlign: 'center' }} onClick={() => navigate('/admin/tax-summary')}>
+          <h2 style={{ margin: '0 0 10px 0' }}>💼 Income Tax Summary</h2>
+          <p style={{ color: '#666', marginBottom: '15px' }}>
+            Annual tax report, quarterly breakdown, CPA export
+          </p>
+          <button className="btn btn-primary">View Tax Report</button>
+        </div>
       </div>      
     </div>
   );

@@ -1620,6 +1620,201 @@ app.get('/api/admin/reports/outstanding', authenticateAdmin, async (req, res) =>
   }
 });
 
+// Get tax summary report for CPA
+app.get('/api/admin/reports/tax-summary', authenticateAdmin, async (req, res) => {
+  try {
+    const { year } = req.query;
+    const targetYear = year || new Date().getFullYear();
+
+    // REVENUE: All completed payments
+    const revenueResult = await db.pool.query(`
+      SELECT 
+        EXTRACT(MONTH FROM payment_date) as month,
+        EXTRACT(QUARTER FROM payment_date) as quarter,
+        -- Revenue streams
+        SUM(loan_payment_amount) as loan_payments,
+        SUM(late_fee_amount) as late_fees,
+        SUM(notice_fee_amount) as notice_fees,
+        SUM(convenience_fee_amount) as convenience_fees,
+        SUM(postal_fee_amount) as postal_reimbursements,
+        -- Total revenue
+        SUM(loan_payment_amount + late_fee_amount + notice_fee_amount + convenience_fee_amount + postal_fee_amount) as total_revenue
+      FROM payments
+      WHERE status = 'completed'
+        AND EXTRACT(YEAR FROM payment_date) = $1
+      GROUP BY EXTRACT(MONTH FROM payment_date), EXTRACT(QUARTER FROM payment_date)
+      ORDER BY month
+    `, [targetYear]);
+
+    // EXPENSES: Square fees from payments
+    const squareFeesResult = await db.pool.query(`
+      SELECT 
+        EXTRACT(MONTH FROM payment_date) as month,
+        SUM(square_processing_fee) as square_fees
+      FROM payments
+      WHERE status = 'completed'
+        AND EXTRACT(YEAR FROM payment_date) = $1
+      GROUP BY EXTRACT(MONTH FROM payment_date)
+      ORDER BY month
+    `, [targetYear]);
+
+    // EXPENSES: Property acquisition costs (when properties were purchased in this year)
+    const acquisitionResult = await db.pool.query(`
+      SELECT 
+        EXTRACT(MONTH FROM created_at) as month,
+        SUM(acquisition_cost) as acquisition_costs
+      FROM properties
+      WHERE acquisition_cost IS NOT NULL
+        AND EXTRACT(YEAR FROM created_at) = $1
+      GROUP BY EXTRACT(MONTH FROM created_at)
+      ORDER BY month
+    `, [targetYear]);
+
+    // EXPENSES: Selling expenses
+    const sellingExpensesResult = await db.pool.query(`
+      SELECT 
+        EXTRACT(MONTH FROM expense_date) as month,
+        SUM(amount) as selling_expenses
+      FROM selling_expenses
+      WHERE EXTRACT(YEAR FROM expense_date) = $1
+      GROUP BY EXTRACT(MONTH FROM expense_date)
+      ORDER BY month
+    `, [targetYear]);
+
+    // EXPENSES: Recovery costs from defaults
+    const recoveryResult = await db.pool.query(`
+      SELECT 
+        EXTRACT(MONTH FROM default_date) as month,
+        SUM(recovery_costs) as recovery_costs
+      FROM loans
+      WHERE status = 'defaulted'
+        AND recovery_costs IS NOT NULL
+        AND EXTRACT(YEAR FROM default_date) = $1
+      GROUP BY EXTRACT(MONTH FROM default_date)
+      ORDER BY month
+    `, [targetYear]);
+
+    // Combine all data by month
+    const monthlyData = {};
+    for (let i = 1; i <= 12; i++) {
+      monthlyData[i] = {
+        month: i,
+        revenue: {
+          loan_payments: 0,
+          late_fees: 0,
+          notice_fees: 0,
+          convenience_fees: 0,
+          postal_reimbursements: 0,
+          total: 0
+        },
+        expenses: {
+          square_fees: 0,
+          acquisition_costs: 0,
+          selling_expenses: 0,
+          recovery_costs: 0,
+          total: 0
+        },
+        net_profit: 0
+      };
+    }
+
+    // Fill in revenue
+    revenueResult.rows.forEach(row => {
+      const month = parseInt(row.month);
+      monthlyData[month].revenue = {
+        loan_payments: parseFloat(row.loan_payments) || 0,
+        late_fees: parseFloat(row.late_fees) || 0,
+        notice_fees: parseFloat(row.notice_fees) || 0,
+        convenience_fees: parseFloat(row.convenience_fees) || 0,
+        postal_reimbursements: parseFloat(row.postal_reimbursements) || 0,
+        total: parseFloat(row.total_revenue) || 0
+      };
+    });
+
+    // Fill in Square fees
+    squareFeesResult.rows.forEach(row => {
+      const month = parseInt(row.month);
+      monthlyData[month].expenses.square_fees = parseFloat(row.square_fees) || 0;
+    });
+
+    // Fill in acquisition costs
+    acquisitionResult.rows.forEach(row => {
+      const month = parseInt(row.month);
+      monthlyData[month].expenses.acquisition_costs = parseFloat(row.acquisition_costs) || 0;
+    });
+
+    // Fill in selling expenses
+    sellingExpensesResult.rows.forEach(row => {
+      const month = parseInt(row.month);
+      monthlyData[month].expenses.selling_expenses = parseFloat(row.selling_expenses) || 0;
+    });
+
+    // Fill in recovery costs
+    recoveryResult.rows.forEach(row => {
+      const month = parseInt(row.month);
+      monthlyData[month].expenses.recovery_costs = parseFloat(row.recovery_costs) || 0;
+    });
+
+    // Calculate totals and net profit for each month
+    Object.keys(monthlyData).forEach(month => {
+      const data = monthlyData[month];
+      data.expenses.total = 
+        data.expenses.square_fees +
+        data.expenses.acquisition_costs +
+        data.expenses.selling_expenses +
+        data.expenses.recovery_costs;
+      data.net_profit = data.revenue.total - data.expenses.total;
+    });
+
+    // Calculate quarterly summaries
+    const quarterly = {
+      Q1: { revenue: 0, expenses: 0, net_profit: 0 },
+      Q2: { revenue: 0, expenses: 0, net_profit: 0 },
+      Q3: { revenue: 0, expenses: 0, net_profit: 0 },
+      Q4: { revenue: 0, expenses: 0, net_profit: 0 }
+    };
+
+    [1,2,3].forEach(m => {
+      quarterly.Q1.revenue += monthlyData[m].revenue.total;
+      quarterly.Q1.expenses += monthlyData[m].expenses.total;
+      quarterly.Q1.net_profit += monthlyData[m].net_profit;
+    });
+    [4,5,6].forEach(m => {
+      quarterly.Q2.revenue += monthlyData[m].revenue.total;
+      quarterly.Q2.expenses += monthlyData[m].expenses.total;
+      quarterly.Q2.net_profit += monthlyData[m].net_profit;
+    });
+    [7,8,9].forEach(m => {
+      quarterly.Q3.revenue += monthlyData[m].revenue.total;
+      quarterly.Q3.expenses += monthlyData[m].expenses.total;
+      quarterly.Q3.net_profit += monthlyData[m].net_profit;
+    });
+    [10,11,12].forEach(m => {
+      quarterly.Q4.revenue += monthlyData[m].revenue.total;
+      quarterly.Q4.expenses += monthlyData[m].expenses.total;
+      quarterly.Q4.net_profit += monthlyData[m].net_profit;
+    });
+
+    // Calculate annual totals
+    const annual = {
+      revenue: Object.values(monthlyData).reduce((sum, m) => sum + m.revenue.total, 0),
+      expenses: Object.values(monthlyData).reduce((sum, m) => sum + m.expenses.total, 0),
+      net_profit: 0
+    };
+    annual.net_profit = annual.revenue - annual.expenses;
+
+    res.json({
+      year: targetYear,
+      annual,
+      quarterly,
+      monthly: Object.values(monthlyData)
+    });
+  } catch (error) {
+    console.error('Get tax summary error:', error);
+    res.status(500).json({ error: 'Failed to fetch tax summary' });
+  }
+});
+
 app.listen(PORT, () => {
   console.log('Green Acres Server running on port ' + PORT);
   console.log('Environment: ' + process.env.NODE_ENV);

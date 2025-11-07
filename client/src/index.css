@@ -1921,3 +1921,36 @@ label:contains('*') {
     border: 1px solid #ddd !important;
   }
 }
+
+/* Print Styles for Tax Reports */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  .print-only {
+    display: block !important;
+  }
+  
+  body {
+    background: white;
+  }
+  
+  .card {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  
+  table {
+    page-break-inside: auto;
+  }
+  
+  tr {
+    page-break-inside: avoid;
+    page-break-after: auto;
+  }
+}
+
+.print-only {
+  display: none;
+}

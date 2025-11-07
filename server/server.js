@@ -1638,7 +1638,7 @@ app.get('/api/admin/reports/tax-summary', authenticateAdmin, async (req, res) =>
         SUM(convenience_fee) as convenience_fees,
         SUM(postal_fee_amount) as postal_reimbursements,
         -- Total revenue
-        SUM(loan_payment_amount + late_fee_amount + notice_fee_amount + convenience_fee_amount + postal_fee_amount) as total_revenue
+        SUM(loan_payment_amount + late_fee_amount + notice_fee_amount + convenience_fee + postal_fee_amount) as total_revenue
       FROM payments
       WHERE status = 'completed'
         AND EXTRACT(YEAR FROM payment_date) = $1

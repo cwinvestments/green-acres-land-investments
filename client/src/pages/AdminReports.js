@@ -52,7 +52,7 @@ function AdminReports() {
   const loans = outstandingData?.loans || [];
 
   return (
-    <div style={{ padding: '20px', maxWidth: '95%', margin: '0 auto' }}>
+    <div style={{ padding: '20px', maxWidth: '1400px', margin: '0 auto' }}>
       {/* Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
         <h1 style={{ margin: 0 }}>📊 Financial Reports</h1>
@@ -93,7 +93,7 @@ function AdminReports() {
       {activeTab === 'overview' && (
         <>
           <h2>Revenue Summary</h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '20px', marginBottom: '40px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px', marginBottom: '40px' }}>}>
             <div className="card" style={{ padding: '20px' }}>
               <h3 style={{ margin: '0 0 10px 0', fontSize: '16px', color: '#666' }}>Total Revenue</h3>
               <p style={{ margin: 0, fontSize: '32px', fontWeight: 'bold', color: 'var(--forest-green)' }}>

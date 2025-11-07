@@ -62,7 +62,7 @@ function TaxSummary() {
   };
 
   return (
-    <div style={{ padding: '20px', maxWidth: '95%', margin: '0 auto' }}>
+    <div style={{ padding: '20px', maxWidth: '1400px', margin: '0 auto' }}>
       {/* Header - Hide when printing */}
       <div className="no-print" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
         <h1>💼 Income Tax Summary</h1>

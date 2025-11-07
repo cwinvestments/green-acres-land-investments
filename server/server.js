@@ -1095,6 +1095,18 @@ app.post('/api/payments', authenticateToken, async (req, res) => {
   try {
     const { loanId, amount, paymentNonce, paymentMethod = 'square' } = req.body;
 
+    // Get payment breakdown
+    const breakdown = await calculatePaymentBreakdown(loanId);
+    
+    // Verify the payment amount matches expected total
+    if (Math.abs(parseFloat(amount) - breakdown.total) > 0.50) {
+      return res.status(400).json({ 
+        error: 'Payment amount does not match expected total',
+        expected: breakdown.total,
+        received: amount
+      });
+    }
+
     // Get loan
     const loanResult = await db.pool.query(
       'SELECT * FROM loans WHERE id = $1 AND user_id = $2',
@@ -1115,44 +1127,65 @@ app.post('/api/payments', authenticateToken, async (req, res) => {
     const { result } = await squareClient.paymentsApi.createPayment({
       sourceId: paymentNonce,
       amountMoney: {
-        amount: Math.round(amount * 100),
+        amount: Math.round(breakdown.total * 100),
         currency: 'USD',
       },
       locationId: process.env.SQUARE_LOCATION_ID,
       idempotencyKey: `${Date.now()}-${req.user.id}-${loanId}`,
     });
 
-    // Calculate principal and interest breakdown
+    // Calculate principal and interest breakdown (only from loan payment portion)
     const monthlyInterestRate = (loan.interest_rate / 100) / 12;
     const interestAmount = loan.balance_remaining * monthlyInterestRate;
-    const principalAmount = amount - interestAmount;
+    const principalAmount = breakdown.loanPayment - interestAmount;
     
-    // Calculate new balance
-    const newBalance = Math.max(0, loan.balance_remaining - amount);
+    // Calculate new balance (only loan payment reduces balance, not tax/HOA/fees)
+    const newBalance = Math.max(0, loan.balance_remaining - breakdown.loanPayment);
     const status = newBalance === 0 ? 'paid_off' : 'active';
 
     // Calculate next payment due date (30 days from today)
     const nextDueDate = new Date();
     nextDueDate.setDate(nextDueDate.getDate() + 30);
     
-    // Update loan balance and next payment due
+    // Update loan balance, status, and clear notice fees if paid
     await db.pool.query(
-      'UPDATE loans SET balance_remaining = $1, status = $2, next_payment_date = $3 WHERE id = $4',
+      `UPDATE loans 
+       SET balance_remaining = $1, 
+           status = $2, 
+           next_payment_date = $3,
+           notice_sent_date = NULL,
+           notice_tracking_number = NULL,
+           notice_postal_cost = NULL,
+           notice_notes = NULL
+       WHERE id = $4`,
       [newBalance, status, nextDueDate.toISOString().split('T')[0], loanId]
     );
 
-    // Record payment
+    // Record payment with complete breakdown
     await db.pool.query(`
-      INSERT INTO payments (loan_id, user_id, amount, payment_type, square_payment_id, status, payment_method, principal_amount, interest_amount)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+      INSERT INTO payments (
+        loan_id, user_id, amount, payment_type, square_payment_id, status, payment_method,
+        loan_payment_amount, tax_amount, hoa_amount, late_fee_amount, 
+        notice_fee_amount, postal_fee_amount, square_processing_fee, convenience_fee,
+        principal_amount, interest_amount
+      )
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)
     `, [
       loanId,
       req.user.id,
-      amount,
+      breakdown.total,
       'monthly_payment',
       result.payment.id,
       'completed',
       paymentMethod,
+      breakdown.loanPayment,
+      breakdown.monthlyTax,
+      breakdown.monthlyHoa,
+      breakdown.lateFee,
+      breakdown.noticeFee,
+      breakdown.postalFee,
+      breakdown.squareFee,
+      breakdown.convenienceFee,
       principalAmount,
       interestAmount
     ]);
@@ -1161,7 +1194,8 @@ app.post('/api/payments', authenticateToken, async (req, res) => {
       message: 'Payment successful',
       newBalance,
       remainingPayments: Math.ceil(newBalance / loan.monthly_payment),
-      paidOff: newBalance === 0
+      paidOff: newBalance === 0,
+      breakdown: breakdown
     });
   } catch (error) {
     console.error('Payment error:', error);

@@ -18,6 +18,7 @@ import CustomerManagement from './pages/CustomerManagement';
 import AdminLoans from './pages/AdminLoans';
 import PaymentTracking from './pages/PaymentTracking';
 import DefaultedLoansReport from './pages/DefaultedLoansReport';
+import AdminReports from './pages/AdminReports';
 
 // Protected route component
 function ProtectedRoute({ children }) {
@@ -72,7 +73,8 @@ function App() {
             <Route path="/admin/customers" element={<CustomerManagement />} />
             <Route path="/admin/loans" element={<AdminLoans />} />
             <Route path="/admin/payments" element={<PaymentTracking />} />
-            <Route path="/admin/loans/defaulted" element={<DefaultedLoansReport />} /> 
+            <Route path="/admin/loans/defaulted" element={<DefaultedLoansReport />} />
+            <Route path="/admin/reports" element={<AdminReports />} /> 
           </Routes>
         </div>
       </AuthProvider>

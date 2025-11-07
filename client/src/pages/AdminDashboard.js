@@ -142,22 +142,15 @@ function AdminDashboard() {
           </p>
           <button className="btn btn-primary">View Payments</button>
         </div>
-      </div>
 
-      {/* Coming Soon Notice */}
-      <div style={{
-        marginTop: '30px',
-        padding: '20px',
-        backgroundColor: '#fff3cd',
-        border: '1px solid #ffc107',
-        borderRadius: '8px',
-        textAlign: 'center'
-      }}>
-        <strong>🚧 Admin features are being built</strong>
-        <p style={{ margin: '10px 0 0 0' }}>
-          This is the admin dashboard shell. Management features coming next!
-        </p>
-      </div>
+        <div className="card" style={{ padding: '30px', cursor: 'pointer', textAlign: 'center' }} onClick={() => navigate('/admin/reports')}>
+          <h2 style={{ margin: '0 0 10px 0' }}>📊 Financial Reports</h2>
+          <p style={{ color: '#666', marginBottom: '15px' }}>
+            Revenue, tax escrow, HOA tracking, and analytics
+          </p>
+          <button className="btn btn-primary">View Reports</button>
+        </div>
+      </div>      
     </div>
   );
 }

@@ -141,7 +141,7 @@ function AdminDashboard() {
             View payment history and reports
           </p>
           <button className="btn btn-primary">View Payments</button>
-        </div>>
+        </div>
 
         <div className="card" style={{ padding: '30px', cursor: 'pointer', textAlign: 'center', display: 'flex', flexDirection: 'column', minHeight: '200px' }} onClick={() => navigate('/admin/reports')}>
           <h2 style={{ margin: '0 0 10px 0' }}>📊 Financial Reports</h2>

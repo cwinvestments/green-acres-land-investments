@@ -157,7 +157,7 @@ async function calculatePaymentBreakdown(loanId) {
       const daysOverdue = Math.floor((today - dueDate) / (1000 * 60 * 60 * 24));
       
       if (daysOverdue > 7) {
-        lateFee = parseFloat(loan.late_fee_amount || 35);
+        lateFee = parseFloat(loan.late_fee_amount || 75);
       }
     }
     
@@ -534,13 +534,13 @@ app.post('/api/admin/properties', authenticateAdmin, async (req, res) => {
       `INSERT INTO properties 
        (title, description, location, state, county, acres, price, acquisition_cost, apn, coordinates, 
         annual_tax_amount, tax_payment_1_date, tax_payment_1_amount, tax_payment_2_date, tax_payment_2_amount, tax_notes,
-        monthly_hoa_fee, hoa_name, hoa_contact, hoa_notes, status)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, 'available')
+        monthly_hoa_fee, hoa_name, hoa_contact, hoa_notes, property_covenants, status)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, 'available')
        RETURNING *`,
       [title, description, location, state, county, acres, price, acquisition_cost || null, apn || null, coordinates || null,
        annual_tax_amount || null, tax_payment_1_date || null, tax_payment_1_amount || null, 
        tax_payment_2_date || null, tax_payment_2_amount || null, tax_notes || null,
-       monthly_hoa_fee || null, hoa_name || null, hoa_contact || null, hoa_notes || null]
+       monthly_hoa_fee || null, hoa_name || null, hoa_contact || null, hoa_notes || null, property_covenants || null]
     );
     res.status(201).json({
       message: 'Property created successfully',
@@ -577,7 +577,8 @@ app.put('/api/admin/properties/:id', authenticateAdmin, async (req, res) => {
       monthly_hoa_fee,
       hoa_name,
       hoa_contact,
-      hoa_notes
+      hoa_notes,
+      property_covenants
     } = req.body;
     
     // Convert empty date strings to null for PostgreSQL
@@ -591,13 +592,14 @@ app.put('/api/admin/properties/:id', authenticateAdmin, async (req, res) => {
            apn = $9, coordinates = $10, status = $11,
            annual_tax_amount = $12, tax_payment_1_date = $13, tax_payment_1_amount = $14,
            tax_payment_2_date = $15, tax_payment_2_amount = $16, tax_notes = $17,
-           monthly_hoa_fee = $18, hoa_name = $19, hoa_contact = $20, hoa_notes = $21
-       WHERE id = $22
+           monthly_hoa_fee = $18, hoa_name = $19, hoa_contact = $20, hoa_notes = $21,
+           property_covenants = $22
+       WHERE id = $23
        RETURNING *`,
       [title, description, location, state, county, acres, price, acquisition_cost || null, apn || null, coordinates, status,
        annual_tax_amount || null, tax_payment_1_date || null, tax_payment_1_amount || null, 
        tax_payment_2_date || null, tax_payment_2_amount || null, tax_notes || null,
-       monthly_hoa_fee || null, hoa_name || null, hoa_contact || null, hoa_notes || null, id]
+       monthly_hoa_fee || null, hoa_name || null, hoa_contact || null, hoa_notes || null, property_covenants || null, id]
     );
     if (result.rows.length === 0) {
       return res.status(404).json({ error: 'Property not found' });

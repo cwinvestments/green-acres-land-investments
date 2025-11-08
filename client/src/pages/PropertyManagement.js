@@ -897,7 +897,8 @@ function PropertyForm({ property, onSuccess, onCancel }) {
     monthly_hoa_fee: property?.monthly_hoa_fee || '',
     hoa_name: property?.hoa_name || '',
     hoa_contact: property?.hoa_contact || '',
-    hoa_notes: property?.hoa_notes || ''
+    hoa_notes: property?.hoa_notes || '',
+    property_covenants: property?.property_covenants || ''
   });
   
   const [loading, setLoading] = useState(false);
@@ -1137,6 +1138,20 @@ function PropertyForm({ property, onSuccess, onCancel }) {
             rows="4"
             required
           />
+        </div>
+
+        <div className="form-group" style={{ marginTop: '20px' }}>
+          <label>Property Covenants/Restrictions</label>
+          <textarea
+            name="property_covenants"
+            value={formData.property_covenants}
+            onChange={handleChange}
+            rows="4"
+            placeholder="Enter any covenants, restrictions, or HOA rules (optional). If none, leave blank and contract will show 'None'."
+          />
+          <small style={{ color: '#666', fontSize: '12px', display: 'block', marginTop: '5px' }}>
+            This will be inserted into Section 27 of the Contract for Deed
+          </small>
         </div>
 
         {/* Property Tax Section */}

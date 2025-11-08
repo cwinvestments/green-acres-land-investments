@@ -134,7 +134,7 @@ function Dashboard() {
                       <strong style={{ fontSize: '16px', color: '#856404' }}>Payment Overdue</strong>
                     </div>
                     <p style={{ margin: '0 0 8px 34px', color: '#856404', fontSize: '14px' }}>
-                      Your payment was due {daysOverdue} days ago. A $35 late fee has been applied.
+                      Your payment was due {daysOverdue} days ago. A $75 late fee has been applied.
                     </p>
                     <p style={{ margin: '0 0 0 34px', color: '#856404', fontSize: '14px', fontWeight: 'bold' }}>
                       Please make your payment as soon as possible to avoid further action.

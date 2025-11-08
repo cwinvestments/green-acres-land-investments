@@ -247,7 +247,7 @@ function PropertyManagement() {
   }
 
   return (
-    <div style={{ padding: '20px', maxWidth: '1400px', margin: '0 auto' }}>
+    <div style={{ padding: '20px', maxWidth: '1400px', margin: '0 auto', width: '100%', boxSizing: 'border-box' }}>
       {/* Header */}
       <div style={{
         display: 'flex',
@@ -349,7 +349,7 @@ function PropertyManagement() {
       )}
 
       {/* Properties Table */}
-      <div className="card" style={{ padding: 0, overflowX: 'auto', maxWidth: '100%' }}>
+      <div className="card" style={{ padding: 0, overflowX: 'auto', width: '100%', WebkitOverflowScrolling: 'touch' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '900px' }}>
           <thead>
             <tr style={{ backgroundColor: 'var(--light-green)', borderBottom: '2px solid var(--forest-green)' }}>

@@ -7,15 +7,30 @@ function TaxSummary() {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState(null);
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
-  const [taxRate, setTaxRate] = useState(() => {
-    const saved = localStorage.getItem('taxWithholdingRate');
-    return saved ? parseFloat(saved) : 30;
-  });
+  const [taxRate, setTaxRate] = useState(30);
 
   useEffect(() => {
     loadTaxData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedYear]);
+
+useEffect(() => {
+    loadTaxRate();
+  }, []);
+
+  const loadTaxRate = async () => {
+    try {
+      const token = localStorage.getItem('adminToken');
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/admin/tax-rate`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      const data = await response.json();
+      setTaxRate(data.taxRate);
+    } catch (err) {
+      console.error('Failed to load tax rate:', err);
+    }
+  };
 
   const loadTaxData = async () => {
     try {
@@ -55,10 +70,26 @@ function TaxSummary() {
   const suggestedWithholding = currentMonthData.net_profit * (taxRate / 100);
   const yearToDateWithholding = data.annual.net_profit * (taxRate / 100);
 
-  const handleTaxRateChange = (e) => {
+  const handleTaxRateChange = async (e) => {
     const newRate = parseFloat(e.target.value);
     setTaxRate(newRate);
-    localStorage.setItem('taxWithholdingRate', newRate);
+    
+    try {
+      const token = localStorage.getItem('adminToken');
+      await fetch(
+        `${process.env.REACT_APP_API_URL}/admin/tax-rate`,
+        {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify({ taxRate: newRate })
+        }
+      );
+    } catch (err) {
+      console.error('Failed to save tax rate:', err);
+    }
   };
 
   return (

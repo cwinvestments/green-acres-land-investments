@@ -386,6 +386,40 @@ app.post('/api/admin/login', async (req, res) => {
   }
 });
 
+// Get admin tax rate
+app.get('/api/admin/tax-rate', authenticateAdmin, async (req, res) => {
+  try {
+    const result = await db.pool.query(
+      'SELECT tax_withholding_rate FROM admin_users WHERE id = $1',
+      [req.admin.id]
+    );
+    res.json({ taxRate: result.rows[0].tax_withholding_rate || 30 });
+  } catch (err) {
+    console.error('Get tax rate error:', err);
+    res.status(500).json({ error: 'Failed to get tax rate' });
+  }
+});
+
+// Update admin tax rate
+app.patch('/api/admin/tax-rate', authenticateAdmin, async (req, res) => {
+  try {
+    const { taxRate } = req.body;
+    await db.pool.query(
+      'UPDATE admin_users SET tax_withholding_rate = $1 WHERE id = $2',
+      [taxRate, req.admin.id]
+    );
+    res.json({ success: true });
+  } catch (err) {
+    console.error('Update tax rate error:', err);
+    res.status(500).json({ error: 'Failed to update tax rate' });
+  }
+});
+
+// ==================== PROPERTY ROUTES ====================
+
+// Get all properties (available and coming soon)
+app.get('/api/properties', async (req, res) => {
+
 // Get all properties (available and coming soon)
 app.get('/api/properties', async (req, res) => {
   try {

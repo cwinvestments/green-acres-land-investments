@@ -20,7 +20,7 @@ import PaymentTracking from './pages/PaymentTracking';
 import DefaultedLoansReport from './pages/DefaultedLoansReport';
 import AdminReports from './pages/AdminReports';
 import TaxSummary from './pages/TaxSummary';
-import StateManagement from './pages/StateManagement';
+import StateManagement from './pages/Admin/StateManagement';
 
 // Protected route component
 function ProtectedRoute({ children }) {

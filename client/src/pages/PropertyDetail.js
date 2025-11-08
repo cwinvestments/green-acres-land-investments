@@ -357,6 +357,18 @@ navigate('/dashboard');
                 <span style={{ fontSize: '0.85rem', color: '#666', marginBottom: '0.25rem' }}>Acres</span>
                 <strong style={{ color: 'var(--forest-green)' }}>{property.acres}</strong>
               </div>
+              {property.annual_tax_amount && (
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  <span style={{ fontSize: '0.85rem', color: '#666', marginBottom: '0.25rem' }}>Annual Property Tax</span>
+                  <strong style={{ color: 'var(--forest-green)' }}>${formatCurrency(property.annual_tax_amount)}</strong>
+                </div>
+              )}
+              {property.monthly_hoa_fee && (
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  <span style={{ fontSize: '0.85rem', color: '#666', marginBottom: '0.25rem' }}>Monthly HOA Fee</span>
+                  <strong style={{ color: 'var(--forest-green)' }}>${formatCurrency(property.monthly_hoa_fee)}</strong>
+                </div>
+              )}
             </div>
 
 {/* GPS Coordinates Section */}

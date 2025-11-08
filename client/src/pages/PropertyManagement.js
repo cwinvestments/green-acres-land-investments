@@ -253,7 +253,9 @@ function PropertyManagement() {
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: '30px'
+        marginBottom: '30px',
+        flexWrap: 'wrap',
+        gap: '1rem'
       }}>
         <div>
           <h1 style={{ margin: '0 0 5px 0' }}>🏘️ Property Management</h1>
@@ -261,11 +263,10 @@ function PropertyManagement() {
             {properties.length} total properties
           </p>
         </div>
-        <div>
+        <div style={{ display: 'flex', gap: '10px' }}>
           <button
             onClick={() => setShowAddForm(!showAddForm)}
             className="btn btn-primary"
-            style={{ marginRight: '10px' }}
           >
             {showAddForm ? 'Cancel' : '+ Add Property'}
           </button>
@@ -348,7 +349,7 @@ function PropertyManagement() {
       )}
 
       {/* Properties Table */}
-      <div className="card" style={{ padding: 0, overflow: 'auto', maxWidth: '100%' }}>
+      <div className="card" style={{ padding: 0, overflowX: 'auto', maxWidth: '100%' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '900px' }}>
           <thead>
             <tr style={{ backgroundColor: 'var(--light-green)', borderBottom: '2px solid var(--forest-green)' }}>
@@ -963,7 +964,7 @@ function PropertyForm({ property, onSuccess, onCancel }) {
       </div>
 
       <form onSubmit={handleSubmit}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '20px' }}>
           <div className="form-group">
             <label>Property Title *</label>
             <input
@@ -1068,7 +1069,7 @@ function PropertyForm({ property, onSuccess, onCancel }) {
           <label style={{ marginBottom: '10px', display: 'block', fontWeight: 'bold', fontSize: '16px' }}>
             GPS Coordinates (5-Point System - Optional)
           </label>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '15px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '15px' }}>
             <div>
               <label style={{ fontSize: '14px', color: '#666' }}>NE Corner (Northeast)</label>
               <input
@@ -1140,7 +1141,7 @@ function PropertyForm({ property, onSuccess, onCancel }) {
         <div style={{ marginTop: '30px', paddingTop: '20px', borderTop: '2px solid #eee' }}>
           <h3 style={{ color: 'var(--forest-green)', marginBottom: '15px' }}>Property Tax Information</h3>
           
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '20px' }}>
             <div className="form-group">
               <label>Annual Tax Amount</label>
               <input
@@ -1207,7 +1208,7 @@ function PropertyForm({ property, onSuccess, onCancel }) {
         <div style={{ marginTop: '30px', paddingTop: '20px', borderTop: '2px solid #eee' }}>
           <h3 style={{ color: 'var(--forest-green)', marginBottom: '15px' }}>HOA Information (If Applicable)</h3>
           
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '20px' }}>
             <div className="form-group">
               <label>Monthly HOA Fee</label>
               <input

@@ -2074,6 +2074,14 @@ app.get('/api/admin/loans/:id/generate-contract', authenticateAdmin, async (req,
     // Calculate remaining payments
     const remainingPayments = Math.ceil(loan.balance_remaining / loan.monthly_payment);
 
+    // Parse numeric values (PostgreSQL returns them as strings)
+    const purchasePrice = parseFloat(loan.purchase_price);
+    const downPayment = parseFloat(loan.down_payment);
+    const loanAmount = parseFloat(loan.loan_amount);
+    const interestRate = parseFloat(loan.interest_rate);
+    const monthlyPayment = parseFloat(loan.monthly_payment);
+    const balanceRemaining = parseFloat(loan.balance_remaining);
+
     // Prepare merge data
     const mergeData = {
       CONTRACT_DATE: contractDate,
@@ -2087,14 +2095,14 @@ app.get('/api/admin/loans/:id/generate-contract', authenticateAdmin, async (req,
       PROPERTY_DESCRIPTION: loan.title,
       ACRES: loan.acres,
       APN: loan.apn || 'N/A',
-      PURCHASE_PRICE: loan.purchase_price.toFixed(2),
-      PURCHASE_PRICE_WORDS: numberToWords(loan.purchase_price) + ' dollars',
-      DOWN_PAYMENT: loan.down_payment.toFixed(2),
-      BALANCE: loan.loan_amount.toFixed(2),
-      BALANCE_WORDS: numberToWords(loan.loan_amount) + ' dollars',
-      INTEREST_RATE: loan.interest_rate.toFixed(2),
-      MONTHLY_PAYMENT: loan.monthly_payment.toFixed(2),
-      MONTHLY_PAYMENT_WORDS: numberToWords(loan.monthly_payment) + ' dollars',
+      PURCHASE_PRICE: purchasePrice.toFixed(2),
+      PURCHASE_PRICE_WORDS: numberToWords(purchasePrice) + ' dollars',
+      DOWN_PAYMENT: downPayment.toFixed(2),
+      BALANCE: loanAmount.toFixed(2),
+      BALANCE_WORDS: numberToWords(loanAmount) + ' dollars',
+      INTEREST_RATE: interestRate.toFixed(2),
+      MONTHLY_PAYMENT: monthlyPayment.toFixed(2),
+      MONTHLY_PAYMENT_WORDS: numberToWords(monthlyPayment) + ' dollars',
       FIRST_PAYMENT_DATE: firstPaymentDate,
       NUMBER_OF_PAYMENTS: remainingPayments,
       PROPERTY_COVENANTS: loan.property_covenants || 'None'

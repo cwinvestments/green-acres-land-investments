@@ -8,10 +8,22 @@ function Properties() {
   const [loading, setLoading] = useState(true);
   const [propertyImages, setPropertyImages] = useState({});
   const [error, setError] = useState('');
+  const [states, setStates] = useState([]);
+  const [selectedState, setSelectedState] = useState('all');
 
   useEffect(() => {
+    loadStates();
     loadProperties();
   }, []);
+
+  const loadStates = async () => {
+    try {
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/states`);
+      setStates(response.data);
+    } catch (err) {
+      console.error('Failed to load states:', err);
+    }
+  };
   const loadProperties = async () => {
     try {
       const response = await getProperties();
@@ -61,11 +73,76 @@ function Properties() {
     );
   }
 
+  const filteredProperties = selectedState === 'all' 
+    ? properties 
+    : properties.filter(p => p.state === selectedState);
+
   return (
     <div className="properties-page">
       <h1>Available Properties</h1>
-      <p style={{ color: '#666', marginBottom: '2rem' }}>
-        {properties.length} {properties.length === 1 ? 'property' : 'properties'} available
+      
+      {/* State Filter Tabs */}
+      {states.length > 0 && (
+        <div style={{
+          display: 'flex',
+          justifyContent: 'center',
+          gap: '1rem',
+          marginBottom: '2rem',
+          flexWrap: 'wrap'
+        }}>
+          <button
+            onClick={() => setSelectedState('all')}
+            style={{
+              padding: '0.75rem 1.5rem',
+              border: selectedState === 'all' ? '2px solid var(--forest-green)' : '2px solid var(--border-color)',
+              background: selectedState === 'all' ? 'var(--forest-green)' : 'white',
+              color: selectedState === 'all' ? 'white' : 'var(--text-dark)',
+              borderRadius: '8px',
+              fontSize: '1rem',
+              cursor: 'pointer',
+              transition: 'all 0.3s ease',
+              fontWeight: '500'
+            }}
+          >
+            All States
+          </button>
+          {states.map(state => (
+            <button
+              key={state.id}
+              onClick={() => setSelectedState(state.name)}
+              style={{
+                padding: '0.75rem 1.5rem',
+                border: selectedState === state.name ? '2px solid var(--forest-green)' : '2px solid var(--border-color)',
+                background: selectedState === state.name ? 'var(--forest-green)' : 'white',
+                color: selectedState === state.name ? 'white' : 'var(--text-dark)',
+                borderRadius: '8px',
+                fontSize: '1rem',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                fontWeight: '500'
+              }}
+            >
+              {state.name}
+              {state.coming_soon && (
+                <span style={{
+                  marginLeft: '8px',
+                  padding: '2px 8px',
+                  backgroundColor: '#8b5cf6',
+                  color: 'white',
+                  borderRadius: '10px',
+                  fontSize: '11px',
+                  fontWeight: '600'
+                }}>
+                  COMING SOON
+                </span>
+              )}
+            </button>
+          ))}
+        </div>
+      )}
+      
+      <p style={{ color: '#666', marginBottom: '2rem', textAlign: 'center' }}>
+        {filteredProperties.length} {filteredProperties.length === 1 ? 'property' : 'properties'} available
       </p>
 
       {properties.length === 0 ? (

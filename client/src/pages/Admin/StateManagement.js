@@ -17,7 +17,6 @@ function StateManagement() {
   });
 
   useEffect(() => {
-    // Check if admin is logged in
     const adminToken = localStorage.getItem('adminToken');
     if (!adminToken) {
       navigate('/admin/login');
@@ -133,96 +132,160 @@ function StateManagement() {
   };
 
   if (loading) {
-    return <div className="admin-container"><p>Loading...</p></div>;
+    return <div style={{ padding: '40px', textAlign: 'center' }}>Loading states...</div>;
   }
 
   return (
-    <div className="admin-container">
-      <div className="admin-header">
+    <div style={{ padding: '20px', maxWidth: '1400px', margin: '0 auto' }}>
+      {/* Header */}
+      <div style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: '30px'
+      }}>
         <div>
-          <button onClick={() => navigate('/admin')} className="back-button">
+          <h1 style={{ margin: '0 0 5px 0' }}>🗺️ State Management</h1>
+          <p style={{ margin: 0, color: '#666' }}>
+            Manage which states appear on the public website
+          </p>
+        </div>
+        <div>
+          <button
+            onClick={() => handleOpenModal()}
+            className="btn btn-primary"
+            style={{ marginRight: '10px' }}
+          >
+            + Add New State
+          </button>
+          <button
+            onClick={() => navigate('/admin/dashboard')}
+            className="btn btn-secondary"
+          >
             ← Back to Dashboard
           </button>
-          <h1>State Management</h1>
-          <p>Manage which states appear on the public website</p>
-        </div>
-        <button onClick={() => handleOpenModal()} className="btn-primary">
-          Add New State
-        </button>
-      </div>
-
-      <div className="summary-cards">
-        <div className="summary-card">
-          <h3>Total States</h3>
-          <p className="summary-number">{states.length}</p>
-        </div>
-        <div className="summary-card">
-          <h3>Active States</h3>
-          <p className="summary-number">{states.filter(s => s.is_active).length}</p>
-        </div>
-        <div className="summary-card">
-          <h3>Coming Soon</h3>
-          <p className="summary-number">{states.filter(s => s.coming_soon).length}</p>
-        </div>
-        <div className="summary-card">
-          <h3>Total Properties</h3>
-          <p className="summary-number">{states.reduce((sum, s) => sum + parseInt(s.property_count), 0)}</p>
         </div>
       </div>
 
-      <div className="admin-table-container">
-        <table className="admin-table">
+      {/* Summary Cards */}
+      <div style={{ 
+        display: 'grid', 
+        gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', 
+        gap: '20px', 
+        marginBottom: '30px' 
+      }}>
+        <div className="card" style={{ padding: '20px' }}>
+          <h3 style={{ margin: '0 0 10px 0', fontSize: '16px', color: '#666' }}>Total States</h3>
+          <p style={{ margin: 0, fontSize: '28px', fontWeight: 'bold', color: 'var(--forest-green)' }}>
+            {states.length}
+          </p>
+        </div>
+
+        <div className="card" style={{ padding: '20px' }}>
+          <h3 style={{ margin: '0 0 10px 0', fontSize: '16px', color: '#666' }}>Active States</h3>
+          <p style={{ margin: 0, fontSize: '28px', fontWeight: 'bold', color: 'var(--forest-green)' }}>
+            {states.filter(s => s.is_active).length}
+          </p>
+        </div>
+
+        <div className="card" style={{ padding: '20px' }}>
+          <h3 style={{ margin: '0 0 10px 0', fontSize: '16px', color: '#666' }}>Coming Soon</h3>
+          <p style={{ margin: 0, fontSize: '28px', fontWeight: 'bold', color: 'var(--sandy-gold)' }}>
+            {states.filter(s => s.coming_soon).length}
+          </p>
+        </div>
+
+        <div className="card" style={{ padding: '20px' }}>
+          <h3 style={{ margin: '0 0 10px 0', fontSize: '16px', color: '#666' }}>Total Properties</h3>
+          <p style={{ margin: 0, fontSize: '28px', fontWeight: 'bold', color: 'var(--forest-green)' }}>
+            {states.reduce((sum, s) => sum + parseInt(s.property_count || 0), 0)}
+          </p>
+        </div>
+      </div>
+
+      {/* States Table */}
+      <div className="card" style={{ padding: 0, overflow: 'auto', maxWidth: '100%' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '800px' }}>
           <thead>
-            <tr>
-              <th>State</th>
-              <th>Abbreviation</th>
-              <th>Properties</th>
-              <th>Sort Order</th>
-              <th>Status</th>
-              <th>Actions</th>
+            <tr style={{ backgroundColor: 'var(--light-green)', borderBottom: '2px solid var(--forest-green)' }}>
+              <th style={{ padding: '15px', textAlign: 'left' }}>State</th>
+              <th style={{ padding: '15px', textAlign: 'center' }}>Abbreviation</th>
+              <th style={{ padding: '15px', textAlign: 'center' }}>Properties</th>
+              <th style={{ padding: '15px', textAlign: 'center' }}>Sort Order</th>
+              <th style={{ padding: '15px', textAlign: 'center' }}>Status</th>
+              <th style={{ padding: '15px', textAlign: 'center' }}>Actions</th>
             </tr>
           </thead>
           <tbody>
             {states.map((state) => (
-              <tr key={state.id}>
-                <td><strong>{state.name}</strong></td>
-                <td>{state.abbreviation}</td>
-                <td>{state.property_count}</td>
-                <td>{state.sort_order}</td>
-                <td>
-                  <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+              <tr key={state.id} style={{ borderBottom: '1px solid #eee' }}>
+                <td style={{ padding: '15px' }}>
+                  <strong>{state.name}</strong>
+                </td>
+                <td style={{ padding: '15px', textAlign: 'center' }}>
+                  {state.abbreviation}
+                </td>
+                <td style={{ padding: '15px', textAlign: 'center' }}>
+                  {state.property_count}
+                </td>
+                <td style={{ padding: '15px', textAlign: 'center' }}>
+                  {state.sort_order}
+                </td>
+                <td style={{ padding: '15px', textAlign: 'center' }}>
+                  <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', justifyContent: 'center' }}>
                     <button
                       onClick={() => handleToggleActive(state)}
-                      className={state.is_active ? 'status-badge-success' : 'status-badge-warning'}
-                      style={{ cursor: 'pointer', border: 'none', padding: '4px 8px', borderRadius: '4px' }}
+                      style={{
+                        cursor: 'pointer',
+                        border: 'none',
+                        padding: '6px 12px',
+                        borderRadius: '12px',
+                        fontSize: '13px',
+                        fontWeight: '500',
+                        backgroundColor: state.is_active ? '#10b981' : '#f59e0b',
+                        color: 'white'
+                      }}
                     >
                       {state.is_active ? '✓ Active' : '○ Inactive'}
                     </button>
                     <button
                       onClick={() => handleToggleComingSoon(state)}
-                      className={state.coming_soon ? 'status-badge-info' : 'status-badge'}
-                      style={{ cursor: 'pointer', border: 'none', padding: '4px 8px', borderRadius: '4px' }}
+                      style={{
+                        cursor: 'pointer',
+                        border: 'none',
+                        padding: '6px 12px',
+                        borderRadius: '12px',
+                        fontSize: '13px',
+                        fontWeight: '500',
+                        backgroundColor: state.coming_soon ? '#8b5cf6' : '#e5e7eb',
+                        color: state.coming_soon ? 'white' : '#666'
+                      }}
                     >
-                      {state.coming_soon ? '⭐ Coming Soon' : '○ Not Coming Soon'}
+                      {state.coming_soon ? '⭐ Coming Soon' : '○ Not Coming'}
                     </button>
                   </div>
                 </td>
-                <td>
-                  <div style={{ display: 'flex', gap: '8px' }}>
+                <td style={{ padding: '15px', textAlign: 'center' }}>
+                  <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
                     <button
                       onClick={() => handleOpenModal(state)}
-                      className="btn-secondary"
+                      className="btn"
                       style={{ padding: '6px 12px', fontSize: '14px' }}
                     >
-                      Edit
+                      ✏️ Edit
                     </button>
                     <button
                       onClick={() => handleDelete(state.id, state.name)}
-                      className="btn-danger"
-                      style={{ padding: '6px 12px', fontSize: '14px' }}
+                      className="btn"
+                      style={{
+                        padding: '6px 12px',
+                        fontSize: '14px',
+                        backgroundColor: '#dc3545',
+                        color: 'white'
+                      }}
                       disabled={parseInt(state.property_count) > 0}
                     >
-                      Delete
+                      🗑️ Delete
                     </button>
                   </div>
                 </td>
@@ -232,10 +295,30 @@ function StateManagement() {
         </table>
       </div>
 
+      {/* Modal */}
       {showModal && (
-        <div className="modal-overlay" onClick={handleCloseModal}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <h2>{editingState ? 'Edit State' : 'Add New State'}</h2>
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0,0,0,0.5)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 1000
+        }}>
+          <div style={{
+            backgroundColor: 'white',
+            padding: '30px',
+            borderRadius: '10px',
+            maxWidth: '600px',
+            width: '90%',
+            maxHeight: '90vh',
+            overflow: 'auto'
+          }}>
+            <h2 style={{ marginTop: 0 }}>{editingState ? 'Edit State' : 'Add New State'}</h2>
             <form onSubmit={handleSubmit}>
               <div className="form-group">
                 <label>State Name *</label>
@@ -268,7 +351,7 @@ function StateManagement() {
                   onChange={(e) => setFormData({ ...formData, sort_order: parseInt(e.target.value) })}
                   placeholder="0"
                 />
-                <small>Lower numbers appear first in navigation</small>
+                <small style={{ color: '#666', fontSize: '12px' }}>Lower numbers appear first in navigation</small>
               </div>
 
               <div className="form-group">
@@ -293,11 +376,11 @@ function StateManagement() {
                 </label>
               </div>
 
-              <div className="modal-actions">
-                <button type="button" onClick={handleCloseModal} className="btn-secondary">
+              <div style={{ display: 'flex', gap: '10px', marginTop: '20px' }}>
+                <button type="button" onClick={handleCloseModal} className="btn">
                   Cancel
                 </button>
-                <button type="submit" className="btn-primary">
+                <button type="submit" className="btn btn-primary">
                   {editingState ? 'Update State' : 'Add State'}
                 </button>
               </div>

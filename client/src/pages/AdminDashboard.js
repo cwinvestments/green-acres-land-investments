@@ -158,6 +158,14 @@ function AdminDashboard() {
           </p>
           <button className="btn btn-primary">View Tax Report</button>
         </div>
+
+        <div className="card" style={{ padding: '30px', cursor: 'pointer', textAlign: 'center', display: 'flex', flexDirection: 'column', minHeight: '200px' }} onClick={() => navigate('/admin/states')}>
+          <h2 style={{ margin: '0 0 10px 0' }}>🗺️ State Management</h2>
+          <p style={{ color: '#666', marginBottom: '15px', flexGrow: 1 }}>
+            Manage states shown on public site
+          </p>
+          <button className="btn btn-primary">Manage States</button>
+        </div>
       </div>      
     </div>
   );

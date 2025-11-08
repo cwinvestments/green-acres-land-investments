@@ -41,4 +41,13 @@ export const formatCurrency = (amount) => {
   });
 };
 
+// States API (Public)
+export const getStates = () => api.get('/states');
+
+// States API (Admin)
+export const getAdminStates = () => api.get('/admin/states');
+export const createState = (stateData) => api.post('/admin/states', stateData);
+export const updateState = (id, stateData) => api.patch(`/admin/states/${id}`, stateData);
+export const deleteState = (id) => api.delete(`/admin/states/${id}`);
+
 export default api;

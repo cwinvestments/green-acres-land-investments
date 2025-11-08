@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
@@ -28,13 +28,14 @@ function ProtectedRoute({ children }) {
   return isAuthenticated ? children : <Navigate to="/login" />;
 }
 
-function App() {
+function AppContent() {
+  const location = useLocation();
+  const isAdminRoute = location.pathname.startsWith('/admin');
+
   return (
-    <Router>
-      <AuthProvider>
-        <div className="App">
-          <Navbar />
-          <Routes>
+    <div className="App">
+      {!isAdminRoute && <Navbar />}
+      <Routes>
             {/* Customer Routes */}
             <Route path="/" element={<Home />} />
             <Route path="/properties" element={<Properties />} />
@@ -81,6 +82,14 @@ function App() {
             <Route path="/admin/states" element={<StateManagement />} />
           </Routes>
         </div>
+  );
+}
+
+function App() {
+  return (
+    <Router>
+      <AuthProvider>
+        <AppContent />
       </AuthProvider>
     </Router>
   );

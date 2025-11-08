@@ -349,8 +349,9 @@ function PropertyManagement() {
       )}
 
       {/* Properties Table */}
-      <div className="card" style={{ padding: 0, overflowX: 'auto', width: '100%', WebkitOverflowScrolling: 'touch' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '900px' }}>
+      <div style={{ margin: '0 -20px', overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+        <div className="card" style={{ padding: 0, margin: '0', borderRadius: 0 }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '900px' }}>
           <thead>
             <tr style={{ backgroundColor: 'var(--light-green)', borderBottom: '2px solid var(--forest-green)' }}>
               <th style={{ padding: '15px', textAlign: 'left' }}>Property</th>
@@ -479,6 +480,7 @@ function PropertyManagement() {
             ))}
           </tbody>
         </table>
+        </div>
       </div>
 
       {/* Expenses Modal */}

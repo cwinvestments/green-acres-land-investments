@@ -834,6 +834,23 @@ function PropertyManagement() {
 // Property Form Component (Add/Edit)
 function PropertyForm({ property, onSuccess, onCancel }) {
   const isEditing = !!property;
+  const [availableStates, setAvailableStates] = useState([]);
+  
+  useEffect(() => {
+    const loadStates = async () => {
+      try {
+        const token = localStorage.getItem('adminToken');
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_URL}/admin/states`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        setAvailableStates(response.data);
+      } catch (err) {
+        console.error('Failed to load states:', err);
+      }
+    };
+    loadStates();
+  }, []);
   
   const parseCoordinates = (coordString) => {
     if (!coordString) return { ne: '', se: '', sw: '', nw: '', center: '' };
@@ -972,14 +989,19 @@ function PropertyForm({ property, onSuccess, onCancel }) {
 
           <div className="form-group">
             <label>State *</label>
-            <input
-              type="text"
+            <select
               name="state"
               value={formData.state}
               onChange={handleChange}
-              placeholder="e.g., Wisconsin"
               required
-            />
+            >
+              <option value="">-- Select State --</option>
+              {availableStates.map(state => (
+                <option key={state.id} value={state.name}>
+                  {state.name}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div className="form-group">

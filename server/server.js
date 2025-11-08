@@ -1846,6 +1846,128 @@ app.get('/api/admin/reports/tax-summary', authenticateAdmin, async (req, res) =>
   }
 });
 
+// ==================== STATE MANAGEMENT ROUTES ====================
+
+// Get all states (public - for navigation)
+app.get('/api/states', async (req, res) => {
+  try {
+    const result = await db.pool.query(`
+      SELECT s.*, 
+        COUNT(p.id) as property_count
+      FROM states s
+      LEFT JOIN properties p ON s.abbreviation = p.state AND p.status IN ('available', 'coming_soon')
+      WHERE s.is_active = true OR s.coming_soon = true
+      GROUP BY s.id
+      ORDER BY s.sort_order, s.name
+    `);
+    res.json(result.rows);
+  } catch (error) {
+    console.error('Get states error:', error);
+    res.status(500).json({ error: 'Failed to fetch states' });
+  }
+});
+
+// Get all states (admin - for management)
+app.get('/api/admin/states', authenticateAdmin, async (req, res) => {
+  try {
+    const result = await db.pool.query(`
+      SELECT s.*, 
+        COUNT(p.id) as property_count
+      FROM states s
+      LEFT JOIN properties p ON s.abbreviation = p.state
+      GROUP BY s.id
+      ORDER BY s.sort_order, s.name
+    `);
+    res.json(result.rows);
+  } catch (error) {
+    console.error('Get admin states error:', error);
+    res.status(500).json({ error: 'Failed to fetch states' });
+  }
+});
+
+// Create new state
+app.post('/api/admin/states', authenticateAdmin, async (req, res) => {
+  try {
+    const { name, abbreviation, is_active, coming_soon, sort_order } = req.body;
+    
+    const result = await db.pool.query(
+      `INSERT INTO states (name, abbreviation, is_active, coming_soon, sort_order)
+       VALUES ($1, $2, $3, $4, $5)
+       RETURNING *`,
+      [name, abbreviation, is_active || false, coming_soon || false, sort_order || 0]
+    );
+    
+    res.status(201).json({
+      message: 'State created successfully',
+      state: result.rows[0]
+    });
+  } catch (error) {
+    console.error('Create state error:', error);
+    res.status(500).json({ error: 'Failed to create state' });
+  }
+});
+
+// Update state
+app.patch('/api/admin/states/:id', authenticateAdmin, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, abbreviation, is_active, coming_soon, sort_order } = req.body;
+    
+    const result = await db.pool.query(
+      `UPDATE states 
+       SET name = $1, abbreviation = $2, is_active = $3, coming_soon = $4, sort_order = $5
+       WHERE id = $6
+       RETURNING *`,
+      [name, abbreviation, is_active, coming_soon, sort_order, id]
+    );
+    
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'State not found' });
+    }
+    
+    res.json({
+      message: 'State updated successfully',
+      state: result.rows[0]
+    });
+  } catch (error) {
+    console.error('Update state error:', error);
+    res.status(500).json({ error: 'Failed to update state' });
+  }
+});
+
+// Delete state
+app.delete('/api/admin/states/:id', authenticateAdmin, async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    // Check if state has properties
+    const propertyCheck = await db.pool.query(
+      'SELECT COUNT(*) FROM properties WHERE state = (SELECT abbreviation FROM states WHERE id = $1)',
+      [id]
+    );
+    
+    if (parseInt(propertyCheck.rows[0].count) > 0) {
+      return res.status(400).json({ 
+        error: 'Cannot delete state with existing properties' 
+      });
+    }
+    
+    const result = await db.pool.query(
+      'DELETE FROM states WHERE id = $1 RETURNING *',
+      [id]
+    );
+    
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'State not found' });
+    }
+    
+    res.json({ message: 'State deleted successfully' });
+  } catch (error) {
+    console.error('Delete state error:', error);
+    res.status(500).json({ error: 'Failed to delete state' });
+  }
+});
+
 app.listen(PORT, () => {
   console.log('Green Acres Server running on port ' + PORT);
   console.log('Environment: ' + process.env.NODE_ENV);

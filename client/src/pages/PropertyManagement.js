@@ -349,8 +349,8 @@ function PropertyManagement() {
       )}
 
       {/* Properties Table */}
-      <div style={{ margin: '0 -20px', overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
-        <div className="card" style={{ padding: 0, margin: '0', borderRadius: 0 }}>
+      <div className="card" style={{ padding: 0, margin: '0 -20px 0 -20px' }}>
+        <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '900px' }}>
           <thead>
             <tr style={{ backgroundColor: 'var(--light-green)', borderBottom: '2px solid var(--forest-green)' }}>

@@ -594,9 +594,10 @@ app.put('/api/admin/properties/:id', authenticateAdmin, async (req, res) => {
            monthly_hoa_fee = $18, hoa_name = $19, hoa_contact = $20, hoa_notes = $21
        WHERE id = $22
        RETURNING *`,
-      [title, description, location, state, county, acres, price, acquisition_cost, apn, coordinates, status,
-       annual_tax_amount, cleanTaxDate1, tax_payment_1_amount, cleanTaxDate2, tax_payment_2_amount, tax_notes,
-       monthly_hoa_fee, hoa_name, hoa_contact, hoa_notes, id]
+      [title, description, location, state, county, acres, price, acquisition_cost || null, apn || null, coordinates, status,
+       annual_tax_amount || null, tax_payment_1_date || null, tax_payment_1_amount || null, 
+       tax_payment_2_date || null, tax_payment_2_amount || null, tax_notes || null,
+       monthly_hoa_fee || null, hoa_name || null, hoa_contact || null, hoa_notes || null, id]
     );
     if (result.rows.length === 0) {
       return res.status(404).json({ error: 'Property not found' });

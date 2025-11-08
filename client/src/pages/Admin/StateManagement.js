@@ -17,8 +17,14 @@ function StateManagement() {
   });
 
   useEffect(() => {
+    // Check if admin is logged in
+    const adminToken = localStorage.getItem('adminToken');
+    if (!adminToken) {
+      navigate('/admin/login');
+      return;
+    }
     fetchStates();
-  }, []);
+  }, [navigate]);
 
   const fetchStates = async () => {
     try {

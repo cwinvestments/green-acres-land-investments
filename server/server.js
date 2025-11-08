@@ -1847,7 +1847,6 @@ app.get('/api/admin/reports/tax-summary', authenticateAdmin, async (req, res) =>
 });
 
 // ==================== STATE MANAGEMENT ROUTES ====================
-
 // Get all states (public - for navigation)
 app.get('/api/states', async (req, res) => {
   try {
@@ -1855,7 +1854,7 @@ app.get('/api/states', async (req, res) => {
       SELECT s.*, 
         COUNT(p.id) as property_count
       FROM states s
-      LEFT JOIN properties p ON s.abbreviation = p.state AND p.status IN ('available', 'coming_soon')
+      LEFT JOIN properties p ON s.name = p.state AND p.status IN ('available', 'coming_soon')
       WHERE s.is_active = true OR s.coming_soon = true
       GROUP BY s.id
       HAVING s.coming_soon = true OR COUNT(p.id) > 0
@@ -1867,7 +1866,6 @@ app.get('/api/states', async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch states' });
   }
 });
-
 // Get all states (admin - for management)
 app.get('/api/admin/states', authenticateAdmin, async (req, res) => {
   try {
@@ -1875,7 +1873,7 @@ app.get('/api/admin/states', authenticateAdmin, async (req, res) => {
       SELECT s.*, 
         COUNT(p.id) as property_count
       FROM states s
-      LEFT JOIN properties p ON s.abbreviation = p.state
+      LEFT JOIN properties p ON s.name = p.state
       GROUP BY s.id
       ORDER BY s.sort_order, s.name
     `);
@@ -1885,7 +1883,6 @@ app.get('/api/admin/states', authenticateAdmin, async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch states' });
   }
 });
-
 // Create new state
 app.post('/api/admin/states', authenticateAdmin, async (req, res) => {
   try {
@@ -1907,7 +1904,6 @@ app.post('/api/admin/states', authenticateAdmin, async (req, res) => {
     res.status(500).json({ error: 'Failed to create state' });
   }
 });
-
 // Update state
 app.patch('/api/admin/states/:id', authenticateAdmin, async (req, res) => {
   try {
@@ -1935,7 +1931,6 @@ app.patch('/api/admin/states/:id', authenticateAdmin, async (req, res) => {
     res.status(500).json({ error: 'Failed to update state' });
   }
 });
-
 // Delete state
 app.delete('/api/admin/states/:id', authenticateAdmin, async (req, res) => {
   try {
@@ -1943,7 +1938,7 @@ app.delete('/api/admin/states/:id', authenticateAdmin, async (req, res) => {
     
     // Check if state has properties
     const propertyCheck = await db.pool.query(
-      'SELECT COUNT(*) FROM properties WHERE state = (SELECT abbreviation FROM states WHERE id = $1)',
+      'SELECT COUNT(*) FROM properties WHERE state = (SELECT name FROM states WHERE id = $1)',
       [id]
     );
     
@@ -1968,10 +1963,9 @@ app.delete('/api/admin/states/:id', authenticateAdmin, async (req, res) => {
     res.status(500).json({ error: 'Failed to delete state' });
   }
 });
-
 app.listen(PORT, () => {
   console.log('Green Acres Server running on port ' + PORT);
   console.log('Environment: ' + process.env.NODE_ENV);
-  console.log('Square Environment: ' + process.env.SQUARE_ENVIRONMENT);
+  console.log('Square Environment: ' + process.env.SQUARE_environment);
   console.log('Coming Soon status enabled');
 });

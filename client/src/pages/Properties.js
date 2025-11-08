@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { getProperties, formatCurrency } from '../api';
@@ -73,9 +73,12 @@ function Properties() {
     );
   }
 
-  const filteredProperties = selectedState === 'all' 
-    ? properties 
-    : properties.filter(p => p.state === selectedState);
+  const filteredProperties = useMemo(() => {
+    if (selectedState === 'all') {
+      return properties;
+    }
+    return properties.filter(p => p.state === selectedState);
+  }, [properties, selectedState]);
 
   return (
     <div className="properties-page">
@@ -145,14 +148,14 @@ function Properties() {
         {filteredProperties.length} {filteredProperties.length === 1 ? 'property' : 'properties'} available
       </p>
 
-      {properties.length === 0 ? (
+      {filteredProperties.length === 0 ? (
         <div className="empty-state">
           <h3>No properties available</h3>
-          <p>Check back soon for new listings!</p>
+          <p>{selectedState === 'all' ? 'Check back soon for new listings!' : `No properties available in ${selectedState}`}</p>
         </div>
       ) : (
         <div className="properties-grid">
-          {properties.map((property) => (
+          {filteredProperties.map((property) => (
             <Link 
               to={`/properties/${property.id}`} 
               key={property.id}

@@ -1858,6 +1858,7 @@ app.get('/api/states', async (req, res) => {
       LEFT JOIN properties p ON s.abbreviation = p.state AND p.status IN ('available', 'coming_soon')
       WHERE s.is_active = true OR s.coming_soon = true
       GROUP BY s.id
+      HAVING s.coming_soon = true OR COUNT(p.id) > 0
       ORDER BY s.sort_order, s.name
     `);
     res.json(result.rows);

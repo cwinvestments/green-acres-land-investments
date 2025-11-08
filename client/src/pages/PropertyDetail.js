@@ -357,6 +357,12 @@ navigate('/dashboard');
                 <span style={{ fontSize: '0.85rem', color: '#666', marginBottom: '0.25rem' }}>Acres</span>
                 <strong style={{ color: 'var(--forest-green)' }}>{property.acres}</strong>
               </div>
+              {property.apn && (
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  <span style={{ fontSize: '0.85rem', color: '#666', marginBottom: '0.25rem' }}>APN</span>
+                  <strong style={{ color: 'var(--forest-green)' }}>{property.apn}</strong>
+                </div>
+              )}
               {property.annual_tax_amount && (
                 <div style={{ display: 'flex', flexDirection: 'column' }}>
                   <span style={{ fontSize: '0.85rem', color: '#666', marginBottom: '0.25rem' }}>Annual Property Tax</span>

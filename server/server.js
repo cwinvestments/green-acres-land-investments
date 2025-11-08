@@ -419,9 +419,6 @@ app.patch('/api/admin/tax-rate', authenticateAdmin, async (req, res) => {
 
 // Get all properties (available and coming soon)
 app.get('/api/properties', async (req, res) => {
-
-// Get all properties (available and coming soon)
-app.get('/api/properties', async (req, res) => {
   try {
     const result = await db.pool.query(
       "SELECT * FROM properties WHERE status IN ('available', 'coming_soon') ORDER BY created_at DESC"

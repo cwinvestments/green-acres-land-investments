@@ -1972,6 +1972,150 @@ app.delete('/api/admin/states/:id', authenticateAdmin, async (req, res) => {
     res.status(500).json({ error: 'Failed to delete state' });
   }
 });
+
+// ==================== CONTRACT GENERATION ====================
+
+// Helper function to convert number to words
+function numberToWords(num) {
+  const ones = ['', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'];
+  const tens = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
+  const teens = ['ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'];
+
+  if (num === 0) return 'zero';
+
+  // Split into dollars and cents
+  const dollars = Math.floor(num);
+  const cents = Math.round((num - dollars) * 100);
+
+  let result = '';
+
+  // Handle thousands
+  if (dollars >= 1000) {
+    const thousands = Math.floor(dollars / 1000);
+    result += numberToWords(thousands) + ' thousand ';
+    const remainder = dollars % 1000;
+    if (remainder > 0) {
+      result += numberToWords(remainder);
+    }
+  } else if (dollars >= 100) {
+    const hundreds = Math.floor(dollars / 100);
+    result += ones[hundreds] + ' hundred ';
+    const remainder = dollars % 100;
+    if (remainder > 0) {
+      result += numberToWords(remainder);
+    }
+  } else if (dollars >= 20) {
+    const tensDigit = Math.floor(dollars / 10);
+    const onesDigit = dollars % 10;
+    result += tens[tensDigit];
+    if (onesDigit > 0) {
+      result += '-' + ones[onesDigit];
+    }
+  } else if (dollars >= 10) {
+    result += teens[dollars - 10];
+  } else {
+    result += ones[dollars];
+  }
+
+  result = result.trim();
+  
+  // Add cents
+  if (cents > 0) {
+    result += ' and ' + cents + '/100';
+  } else {
+    result += ' and no';
+  }
+
+  return result.charAt(0).toUpperCase() + result.slice(1);
+}
+
+// Generate contract for a loan
+app.get('/api/admin/loans/:id/generate-contract', authenticateAdmin, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const fs = require('fs');
+    const path = require('path');
+
+    // Get loan with property and user data
+    const result = await db.pool.query(`
+      SELECT 
+        l.*,
+        p.title, p.location, p.state, p.county, p.acres, p.apn, p.property_covenants,
+        u.first_name, u.last_name, u.email
+      FROM loans l
+      JOIN properties p ON l.property_id = p.id
+      JOIN users u ON l.user_id = u.id
+      WHERE l.id = $1
+    `, [id]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Loan not found' });
+    }
+
+    const loan = result.rows[0];
+
+    // Read contract template
+    const templatePath = path.join(__dirname, 'contract-template.txt');
+    let contract = fs.readFileSync(templatePath, 'utf8');
+
+    // Format dates
+    const contractDate = new Date().toLocaleDateString('en-US', { 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    });
+    
+    const firstPaymentDate = new Date(loan.next_payment_date || loan.start_date).toLocaleDateString('en-US', { 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    });
+
+    // Calculate remaining payments
+    const remainingPayments = Math.ceil(loan.balance_remaining / loan.monthly_payment);
+
+    // Prepare merge data
+    const mergeData = {
+      CONTRACT_DATE: contractDate,
+      PURCHASER_NAME: `${loan.first_name} ${loan.last_name}`,
+      PURCHASER_ADDRESS: loan.billing_address || '[ADDRESS]',
+      PURCHASER_CITY: loan.billing_city || '[CITY]',
+      PURCHASER_STATE: loan.billing_state || '[ST]',
+      PURCHASER_ZIP: loan.billing_zip || '[ZIP]',
+      COUNTY: loan.county,
+      STATE: loan.state,
+      PROPERTY_DESCRIPTION: loan.title,
+      ACRES: loan.acres,
+      APN: loan.apn || 'N/A',
+      PURCHASE_PRICE: loan.purchase_price.toFixed(2),
+      PURCHASE_PRICE_WORDS: numberToWords(loan.purchase_price) + ' dollars',
+      DOWN_PAYMENT: loan.down_payment.toFixed(2),
+      BALANCE: loan.loan_amount.toFixed(2),
+      BALANCE_WORDS: numberToWords(loan.loan_amount) + ' dollars',
+      INTEREST_RATE: loan.interest_rate.toFixed(2),
+      MONTHLY_PAYMENT: loan.monthly_payment.toFixed(2),
+      MONTHLY_PAYMENT_WORDS: numberToWords(loan.monthly_payment) + ' dollars',
+      FIRST_PAYMENT_DATE: firstPaymentDate,
+      NUMBER_OF_PAYMENTS: remainingPayments,
+      PROPERTY_COVENANTS: loan.property_covenants || 'None'
+    };
+
+    // Replace all merge fields
+    Object.keys(mergeData).forEach(key => {
+      const regex = new RegExp(`\\{\\{${key}\\}\\}`, 'g');
+      contract = contract.replace(regex, mergeData[key]);
+    });
+
+    // Send as downloadable file
+    res.setHeader('Content-Type', 'text/plain');
+    res.setHeader('Content-Disposition', `attachment; filename="Contract_${loan.first_name}_${loan.last_name}_${Date.now()}.txt"`);
+    res.send(contract);
+
+  } catch (error) {
+    console.error('Generate contract error:', error);
+    res.status(500).json({ error: 'Failed to generate contract' });
+  }
+});
 app.listen(PORT, () => {
   console.log('Green Acres Server running on port ' + PORT);
   console.log('Environment: ' + process.env.NODE_ENV);

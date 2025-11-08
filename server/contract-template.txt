@@ -1,0 +1,184 @@
+CONTRACT FOR DEED
+
+THIS DAY {{CONTRACT_DATE}} this agreement is entered into by and between Green Acres Land Investments, LLC, hereinafter referred to as "SELLER", and {{PURCHASER_NAME}}, hereinafter referred to as "PURCHASER", whether one or more, on the terms and conditions and for the purposes hereinafter set forth:
+
+1. SALE OF PROPERTY
+
+For and in consideration of TEN DOLLARS ($10.00) and other good and valuable considerations the receipt and sufficiency of which is hereby acknowledged, Seller does hereby agree to convey, sell, assign, transfer and set over unto Purchaser, the following property situated in {{COUNTY}} County, State of {{STATE}}, said property being described as follows:
+
+{{PROPERTY_DESCRIPTION}}
+{{ACRES}} Acres +/-
+APN: {{APN}}
+{{COUNTY}} County, {{STATE}}
+
+Together with all rights of ownership associated with the property, including, but not limited to, all easements and rights benefiting the premises, whether or not such easements and rights are of record, and all tenements, hereditaments, improvements and appurtenances, including all lighting fixtures, plumbing fixtures, shades, venetian blinds, curtain rods, storm windows, storm doors, screens, awnings, if any, now on the premises.
+
+SUBJECT TO all recorded easements, rights-of-way, conditions, encumbrances, and limitations and to all applicable building and use restrictions, zoning laws and ordinances, if any, affecting the property.
+
+2. PURCHASE PRICE AND TERMS
+
+The purchase price of the property shall be {{PURCHASE_PRICE_WORDS}} (${{PURCHASE_PRICE}}). The purchaser does hereby agree to pay to the order of the Seller ${{DOWN_PAYMENT}} upon execution of this agreement (this amount has been received as the date of preparation of this contract), with the balance of {{BALANCE_WORDS}} (${{BALANCE}}) being due and payable as follows:
+
+(b) Balance payable, together with interest on the whole sum that shall be from time to time unpaid at the rate of {{INTEREST_RATE}}% per annum, payable in the amount of {{MONTHLY_PAYMENT_WORDS}} (${{MONTHLY_PAYMENT}}) per month beginning on {{FIRST_PAYMENT_DATE}} and continuing on the same day of each month thereafter until fully paid ({{NUMBER_OF_PAYMENTS}} payments remaining).
+
+If interest is charged, interest shall be computed monthly and deducted from payment and the balance of payment shall be applied on principal.
+
+3. TIME OF THE ESSENCE
+
+Time is of the essence in the performance of each and every term and provision in this agreement by Purchaser.
+
+4. SECURITY
+
+This contract shall stand as security of the payment of the obligations of Purchaser.
+
+5. MAINTENANCE OF IMPROVEMENTS
+
+All improvements on the property, including, but not limited to, buildings, trees, or other improvements now on the premises, or hereafter made or placed thereon, shall be a part of the security for the performance of this contract and shall not be removed therefrom. Purchaser shall not commit, or suffer any other person to commit, any waste or damage to said premises or the appurtenances and shall keep the premises and all improvements in as good condition as they are now.
+
+6. CONDITION OF IMPROVEMENTS
+
+Purchaser agrees that the Seller has not made, nor makes any representations or warranties as to the condition of the premises, the condition of the buildings, appurtenances and fixtures locate thereon, and/or the location of the boundaries. Purchaser accepts the property in its "as-is" condition without warranty of any kind.
+
+7. POSSESSION OF PROPERTY
+
+Purchaser shall take possession of the property and all improvements thereon upon execution of this contract and shall continue in the peaceful enjoyment of the property so long as all payments due under the terms of this contract are timely made. Purchaser agrees to keep the property in a good state of repair and in the event of termination of this contract, Purchaser agrees to return the property to Seller in substantially the same condition as it now exists, ordinary wear and tear excepted. Seller reserves the right to inspect the property at any time with or without notice to Purchaser.
+
+8. TAXES, INSURANCE AND ASSESSMENTS
+
+Taxes and Assessments: During the term of this contract:
+
+(b) Seller shall pay all taxes and assessments levied against the property. In the event that Seller pays the taxes and insurance, Purchaser shall reimburse Seller for same upon 30 days' notice to purchaser.
+
+9. DEFAULT
+
+If Purchaser fails to make any payment when due under this contract, a late fee of $75.00 shall be assessed after a seven (7) day grace period, as specified in Section 16.
+
+If Purchaser remains in default for thirty (30) days or more after the payment due date, Seller may, at Seller's sole discretion, send Purchaser a written Default and Cure Notice by certified mail. Upon sending such notice, a notice fee of $75.00 plus actual postal costs shall be added to the amount due.
+
+Upon receipt of a Default and Cure Notice, Purchaser shall have fourteen (14) days to cure the default by paying all amounts due, including missed payments, late fees, notice fees, and postal costs. If Purchaser fails to cure the default within the 14-day cure period, Seller shall have the following remedies, at Seller's sole discretion:
+
+(a) Cancel this contract, declare all payments made by Purchaser forfeited as liquidated damages, and regain immediate possession of the property; or
+
+(b) Declare the entire unpaid principal balance and all accrued interest immediately due and payable, and take appropriate legal action for collection according to the laws of the State of {{STATE}}.
+
+In the event of default and termination of this contract by Seller, Purchaser shall forfeit any and all payments made under the terms of this contract, including taxes and assessments, as liquidated damages. Seller shall be entitled to recover such other damages as may be due which are caused by the acts or negligence of Purchaser.
+
+The parties expressly agree that in the event of default not cured by Purchaser and termination of this agreement, if Purchaser fails to vacate the premises, Seller shall have the right to obtain possession by appropriate court action, including but not limited to eviction proceedings.
+
+10. DEED AND EVIDENCE OF TITLE
+
+Upon total payment of the purchase price and any and all late charges, and other amounts due Seller, Seller agrees to deliver to Purchaser a Special Warranty Deed to the subject property, at Seller's expense, free and clear of any liens or encumbrances other than taxes and assessments for the current year.
+
+11. NOTICES
+
+All notices required hereunder shall be deemed to have been made when deposited in the U. S. Mail, postage prepaid, certified, and returns receipt requested, to the Purchaser or Seller at the addresses listed below. All notices required hereunder may be sent to:
+
+Seller:
+Green Acres Land Investments, LLC
+P.O. Box 43
+Kimberly, WI 54113-0043
+
+Purchaser:
+{{PURCHASER_NAME}}
+{{PURCHASER_ADDRESS}}
+{{PURCHASER_CITY}}, {{PURCHASER_STATE}} {{PURCHASER_ZIP}}
+
+and when mailed, postage prepaid, to said address, shall be binding and conclusively presumed to be served upon said parties, respectively.
+
+12. ASSIGNMENT OR SALE
+
+Purchaser shall not sell, assign, transfer, or convey any interest in the subject property or this agreement, without first securing the written consent of the Seller.
+
+13. PREPAYMENT
+
+Purchaser to have the right to prepay, without penalty, the whole or any part of the balance remaining unpaid on this contract at any time before the due date. (No additional discount applies to contracts with 0% interest).
+
+14. ATTORNEY FEES
+
+In the event of default, Purchaser shall pay to Seller, Seller's reasonable and actual attorneys' fees and expenses incurred by Seller in enforcement of any rights of Seller. All attorney fees shall be payable prior to Purchaser's being deemed to have corrected any such default.
+
+15. LEGAL RESOLVE
+
+This contract was consummated in Outagamie County, Wisconsin; any disputes arising out of said contract or real estate therein shall be resolved solely in Outagamie County, Wisconsin, with the method of dispute resolution being arbitration in the standard manner utilized in said county with choice of law being Wisconsin.
+
+16. LATE PAYMENT CHARGES
+
+If Purchaser shall fail to pay, within seven (07) days after the due date, any installment due hereunder, Purchaser shall be required to pay an additional charge of $75.00. Such charge shall be paid to Seller at the time of payment of the past due installment. There is NO grace period for the first payment, and a late charge shall apply to a non-paid first payment at time past due, not after 7 days.
+
+PAYMENT BY MAIL: Payments sent by U.S. Mail must be postmarked by the due date to avoid late fees. However, payment must be received within 10 business days of the due date. Seller recommends mailing payments at least 10 business days prior to the due date to ensure timely receipt. Certified mail with tracking is recommended for proof of mailing. Checks should be mailed to: Green Acres Land Investments, LLC, P.O. Box 43, Kimberly, WI 54113-0043.
+
+17. CONVEYANCE OR MORTGAGE BY SELLER
+
+If the Seller's interest is now or hereafter encumbered by mortgage, the Seller covenants that Seller will meet the payments of principal and interest thereon as they mature and produce evidence thereof to the Purchaser upon demand. In the event the Seller shall default upon any such mortgage or land contract, the Purchaser shall have the right to do the acts or make the payments necessary to cure such default and shall be reimbursed for so doing by receiving, automatically, credit to this contract to apply on the payments due or to become due hereon.
+
+The Seller reserves the right to convey, his or her interest in the above-described land and such conveyance hereof shall not be a cause for rescission but such conveyance shall be subject to the terms of this agreement.
+
+The Seller may, during the lifetime of this contract, place a mortgage on the premises above described, which shall be a lien on the premises, superior to the rights of the Purchaser herein, or may continue and renew any existing mortgage thereon, provided that the aggregate amount due on all outstanding mortgages shall not at any time be greater than the unpaid balance of the contract.
+
+18. ENTIRE AGREEMENT
+
+This Agreement embodies and constitutes the entire understanding between the parties with respect to the transactions contemplated herein. All prior or contemporaneous agreements, understandings, representations, oral or written, are merged into this Agreement.
+
+19. AMENDMENT – WAIVERS
+
+This Agreement shall not be modified or amended except by an instrument in writing signed by all parties.
+
+No delay or failure on the part of any party hereto in exercising any right, power, or privilege under this Agreement or under any other documents furnished in connection with or pursuant to this Agreement shall impair any such right, power or privilege or be construed as a waiver of any default or any acquiescence therein. No single or partial exercise of any such right, power or privilege shall preclude the further exercise of such right, power or privilege, or the exercise of any other right, power or privilege. No waiver shall be valid against any party hereto unless made in writing and signed by the party against whom enforcement of such waiver is sought and then only to the extent expressly specified therein.
+
+20. SEVERABILITY
+
+If any one or more of the provisions contained in this Agreement shall be held illegal or unenforceable by a court, no other provisions shall be affected by this holding. The parties intend that in the event one or more provisions of this agreement are declared invalid or unenforceable, the remaining provisions shall remain enforceable and this agreement shall be interpreted by a Court in favor of survival of all remaining provisions.
+
+21. HEADINGS
+
+Section headings contained in this Agreement are inserted for convenience of reference only, shall not be deemed to be a part of this Agreement for any purpose, and shall not in any way define or affect the meaning, construction, or scope of any of the provisions hereof.
+
+22. PRONOUNS
+
+All pronouns and any variations thereof shall be deemed to refer to the masculine, feminine, neuter, singular, or plural, as the identity of the person or entity may require. As used in this agreement: (1) words of the masculine gender shall mean and include corresponding neuter words or words of the feminine gender, (2) words in the singular shall mean and include the plural and vice versa, and (3) the word "may" gives sole discretion without any obligation to take any action.
+
+23. JOINT AND SEVERAL LIABILITY
+
+All Purchasers, if more than one, covenants and agrees that their obligations and liability shall be joint and several.
+
+24. PURCHASER'S RIGHT TO REINSTATE AFTER ACCELERATION
+
+If Purchaser defaults and the loan is accelerated, then Purchaser shall have the right of reinstatement as allowed under the laws of the State of {{STATE}}, provided that Purchaser: (a) pays Lender all sums which then would be due under this agreement as if no acceleration had occurred; (b) cures any default of any other covenants or agreements; and (c) pays all expenses incurred in enforcing this agreement, including, but not limited to, reasonable attorneys' fees, and other fees incurred for the purpose of protecting Seller's interest in the Property and rights under this agreement. Seller may require that Purchaser pay such reinstatement sums and expenses in one or more of the following forms, as selected by Seller: (a) cash, (b) money order, (c) certified check, bank check, treasurer's check, or cashier's check, provided any such check is drawn upon an institution whose deposits are insured by a federal agency, instrumentality, or entity or (d) Electronic Funds Transfer. Upon reinstatement by Purchaser, this Security Instrument and obligations secured hereby shall remain fully effective as if no acceleration had occurred.
+
+25. HEIRS AND ASSIGNS
+
+This contract shall be binding upon and to the benefit of the heirs, administrators, executors, and assigns of the parties hereto. However, nothing herein shall authorize a transfer in violation of paragraph (12).
+
+26. OTHER PROVISIONS
+
+The fees applicable to this contract are as follows:
+
+Contract Fee: $99.00
+Credit Card Processing: Square rate (2.9% + $0.30) plus $5.00 convenience fee per transaction
+Late Monthly Payment: $75.00 (after 7-day grace period)
+Default/Cure Notice Fee: $75.00 plus actual postal costs (when sent by Seller after 30+ days of default)
+Returned Payment (Check/ACH): $75.00
+Change Due Date: $75.00
+Change Property Transfer: $175.00 (available within 60 days of contract execution only)
+Lien Release Processing: $75.00
+
+27. PROPERTY COVENANTS AND RESTRICTIONS
+
+{{PROPERTY_COVENANTS}}
+
+WITNESS THE SIGNATURES of the Parties this {{CONTRACT_DATE}}.
+
+SELLER:
+
+X:_________________________________
+Lisa Legendre, Managing Member
+Green Acres Land Investments, LLC
+P.O. Box 43
+Kimberly, WI 54113-0043
+
+PURCHASER:
+
+X:_________________________________
+{{PURCHASER_NAME}}
+{{PURCHASER_ADDRESS}}
+{{PURCHASER_CITY}}, {{PURCHASER_STATE}} {{PURCHASER_ZIP}}

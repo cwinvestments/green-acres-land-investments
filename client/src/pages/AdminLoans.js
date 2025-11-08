@@ -512,6 +512,39 @@ function AdminLoans() {
                         >
                           ⚠️ Default
                         </button>
+                        <button
+                          onClick={async () => {
+                            try {
+                              const response = await fetch(`${process.env.REACT_APP_API_URL}/admin/loans/${loan.id}/generate-contract`, {
+                                headers: {
+                                  'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+                                }
+                              });
+                              if (!response.ok) throw new Error('Failed');
+                              const blob = await response.blob();
+                              const url = window.URL.createObjectURL(blob);
+                              const a = document.createElement('a');
+                              a.href = url;
+                              a.download = `Contract_${loan.first_name}_${loan.last_name}_${Date.now()}.txt`;
+                              document.body.appendChild(a);
+                              a.click();
+                              window.URL.revokeObjectURL(url);
+                              document.body.removeChild(a);
+                            } catch (err) {
+                              alert('Failed to generate contract');
+                            }
+                          }}
+                          className="btn btn-small"
+                          style={{
+                            backgroundColor: '#6c757d',
+                            color: 'white',
+                            width: '100%',
+                            fontSize: '12px',
+                            marginTop: '5px'
+                          }}
+                        >
+                          📄 Contract
+                        </button>
                       </>
                     )}
                     {loan.status === 'defaulted' && (

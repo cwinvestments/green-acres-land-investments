@@ -56,6 +56,14 @@ function Properties() {
   useEffect(() => {
     loadProperties();
   }, []);
+
+  const filteredProperties = useMemo(() => {
+    if (selectedState === 'all') {
+      return properties;
+    }
+    return properties.filter(p => p.state === selectedState);
+  }, [properties, selectedState]);
+
   if (loading) {
     return (
       <div className="loading">
@@ -72,13 +80,6 @@ function Properties() {
       </div>
     );
   }
-
-  const filteredProperties = useMemo(() => {
-    if (selectedState === 'all') {
-      return properties;
-    }
-    return properties.filter(p => p.state === selectedState);
-  }, [properties, selectedState]);
 
   return (
     <div className="properties-page">

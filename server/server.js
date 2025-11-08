@@ -524,7 +524,8 @@ app.post('/api/admin/properties', authenticateAdmin, async (req, res) => {
       monthly_hoa_fee,
       hoa_name,
       hoa_contact,
-      hoa_notes
+      hoa_notes,
+      property_covenants
     } = req.body;
     // Validate required fields
     if (!title || !location || !state || !county || !acres || !price) {

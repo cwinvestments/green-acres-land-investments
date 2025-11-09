@@ -566,6 +566,20 @@ function AdminLoans() {
                             📝 Generate Contract
                           </button>
                         </div>
+                        {loan.contract_status === 'pending' && (
+                          <div style={{
+                            padding: '8px',
+                            backgroundColor: '#fff3cd',
+                            color: '#856404',
+                            borderRadius: '4px',
+                            marginTop: '5px',
+                            textAlign: 'center',
+                            fontSize: '12px',
+                            fontWeight: 'bold'
+                          }}>
+                            ⏳ Awaiting Customer Signature
+                          </div>
+                        )}
 			{loan.contract_status === 'customer_signed' && (
                           <button
                             onClick={async () => {
@@ -602,23 +616,37 @@ function AdminLoans() {
                           >
                             ✍️ Sign Contract (Customer Signed)
                           </button>
-                        )}
                         {loan.contract_status === 'fully_signed' && (
-                          <div style={{
-                            padding: '8px',
-                            backgroundColor: '#d4edda',
-                            color: '#155724',
-                            borderRadius: '4px',
-                            marginTop: '5px',
-                            textAlign: 'center',
-                            fontSize: '12px',
-                            fontWeight: 'bold'
-                          }}>
-                            ✅ Fully Executed
-                          </div>
+                          <>
+                            <div style={{
+                              padding: '8px',
+                              backgroundColor: '#d4edda',
+                              color: '#155724',
+                              borderRadius: '4px',
+                              marginTop: '5px',
+                              textAlign: 'center',
+                              fontSize: '12px',
+                              fontWeight: 'bold'
+                            }}>
+                              ✅ Fully Executed
+                            </div>
+                            <button
+                              onClick={() => {
+                                window.open(`${process.env.REACT_APP_API_URL}/loans/${loan.id}/download-contract`, '_blank');
+                              }}
+                              className="btn btn-small"
+                              style={{
+                                backgroundColor: '#6c757d',
+                                color: 'white',
+                                width: '100%',
+                                fontSize: '12px',
+                                marginTop: '5px'
+                              }}
+                            >
+                              📄 Download Contract
+                            </button>
+                          </>
                         )}
-                      </>
-                    )}
                     {loan.status === 'defaulted' && (
                       <span style={{ color: '#dc3545', fontWeight: 'bold', fontSize: '12px' }}>
                         Defaulted {loan.default_date && `on ${new Date(loan.default_date).toLocaleDateString()}`}

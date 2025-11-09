@@ -2014,49 +2014,57 @@ function numberToWords(num) {
   const tens = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
   const teens = ['ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'];
 
-  if (num === 0) return 'zero';
+  // Helper function that converts just the dollar amount (no cents)
+  function convertDollars(n) {
+    if (n === 0) return '';
+    
+    let result = '';
+    
+    // Handle thousands
+    if (n >= 1000) {
+      const thousands = Math.floor(n / 1000);
+      result += convertDollars(thousands) + ' thousand';
+      const remainder = n % 1000;
+      if (remainder > 0) {
+        result += ' ' + convertDollars(remainder);
+      }
+    } else if (n >= 100) {
+      const hundreds = Math.floor(n / 100);
+      result += ones[hundreds] + ' hundred';
+      const remainder = n % 100;
+      if (remainder > 0) {
+        result += ' ' + convertDollars(remainder);
+      }
+    } else if (n >= 20) {
+      const tensDigit = Math.floor(n / 10);
+      const onesDigit = n % 10;
+      result += tens[tensDigit];
+      if (onesDigit > 0) {
+        result += '-' + ones[onesDigit];
+      }
+    } else if (n >= 10) {
+      result += teens[n - 10];
+    } else {
+      result += ones[n];
+    }
+    
+    return result.trim();
+  }
+
+  if (num === 0) return 'Zero';
 
   // Split into dollars and cents
   const dollars = Math.floor(num);
   const cents = Math.round((num - dollars) * 100);
 
-  let result = '';
-
-  // Handle thousands
-  if (dollars >= 1000) {
-    const thousands = Math.floor(dollars / 1000);
-    result += numberToWords(thousands) + ' thousand ';
-    const remainder = dollars % 1000;
-    if (remainder > 0) {
-      result += numberToWords(remainder);
-    }
-  } else if (dollars >= 100) {
-    const hundreds = Math.floor(dollars / 100);
-    result += ones[hundreds] + ' hundred ';
-    const remainder = dollars % 100;
-    if (remainder > 0) {
-      result += numberToWords(remainder);
-    }
-  } else if (dollars >= 20) {
-    const tensDigit = Math.floor(dollars / 10);
-    const onesDigit = dollars % 10;
-    result += tens[tensDigit];
-    if (onesDigit > 0) {
-      result += '-' + ones[onesDigit];
-    }
-  } else if (dollars >= 10) {
-    result += teens[dollars - 10];
-  } else {
-    result += ones[dollars];
-  }
-
-  // Add cents
+  let result = convertDollars(dollars);
+  
+  // Add cents only if there are cents
   if (cents > 0) {
     result += ' and ' + cents + '/100';
-  } else {
-    result += ' and 00/100';
   }
 
+  // Capitalize first letter
   return result.charAt(0).toUpperCase() + result.slice(1);
 }
 

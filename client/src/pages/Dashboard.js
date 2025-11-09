@@ -264,33 +264,27 @@ ${contract.contract_text}
                 )}
 
                 {loan.contract_status === 'customer_signed' && (
-                  <div style={{
-                    backgroundColor: '#d1ecf1',
-                    border: '2px solid #17a2b8',
-                    borderRadius: '8px',
-                    padding: '15px',
-                    marginBottom: '15px'
-                  }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
-                      <span style={{ fontSize: '24px' }}>✅</span>
-                      <strong style={{ fontSize: '16px' }}>You've Signed!</strong>
+                    <div className="status-box" style={{ border: '2px solid #0dcaf0', backgroundColor: '#e7f6fd' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+                        <span style={{ fontSize: '32px', marginRight: '15px' }}>✅</span>
+                        <h3 style={{ margin: 0, color: '#0a6375' }}>You've Signed!</h3>
+                      </div>
+                      <p style={{ margin: '0 0 15px 0' }}>
+                        Your signature has been recorded. Awaiting seller's signature.
+                      </p>
+                      <div style={{
+                        padding: '12px',
+                        backgroundColor: '#fff3cd',
+                        border: '2px solid #ffc107',
+                        borderRadius: '5px',
+                        textAlign: 'center',
+                        fontWeight: '600',
+                        color: '#856404'
+                      }}>
+                        ⏳ Awaiting Admin Signature
+                      </div>
                     </div>
-                    <p style={{ margin: '0 0 10px 34px', fontSize: '14px' }}>
-                      Your signature has been recorded. Awaiting seller's signature.
-                    </p>
-                    <button
-                      onClick={() => downloadContract(loan.id)}
-                      className="btn"
-                      style={{
-                        marginLeft: '34px',
-                        backgroundColor: '#6c757d',
-                        color: 'white'
-                      }}
-                    >
-                      📄 Download Contract
-                    </button>
-                  </div>
-                )}
+                  )}
 
                 {loan.contract_status === 'fully_signed' && (
                   <div style={{

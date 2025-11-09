@@ -648,6 +648,36 @@ function AdminLoans() {
                             </button>
                           </>
                         )}
+                        {(loan.contract_status === 'pending' || loan.contract_status === 'customer_signed' || loan.contract_status === 'fully_signed') && (
+                          <button
+                            onClick={async () => {
+                              if (!window.confirm(`Delete contract for ${loan.property_title}?\n\nThis cannot be undone. Customer will no longer see this contract.`)) return;
+                              try {
+                                const response = await fetch(`${process.env.REACT_APP_API_URL}/admin/loans/${loan.id}/contract`, {
+                                  method: 'DELETE',
+                                  headers: {
+                                    'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+                                  }
+                                });
+                                if (!response.ok) throw new Error('Failed');
+                                alert('Contract deleted successfully');
+                                loadLoans();
+                              } catch (err) {
+                                alert('Failed to delete contract');
+                              }
+                            }}
+                            className="btn btn-small"
+                            style={{
+                              backgroundColor: '#dc3545',
+                              color: 'white',
+                              width: '100%',
+                              fontSize: '12px',
+                              marginTop: '5px'
+                            }}
+                          >
+                            🗑️ Delete Contract
+                          </button>
+                        )}
                       </>
                     )}
                     {loan.status === 'defaulted' && (
@@ -662,13 +692,11 @@ function AdminLoans() {
           </tbody>
         </table>
       </div>
-
       {/* Mobile Card View */}
       <div className="mobile-only">
         {filteredLoans.map(loan => {
           const daysOverdue = getDaysOverdue(loan);
           const overdueStatus = isOverdue(loan);
-
           return (
             <div
               key={loan.id}

@@ -2149,13 +2149,13 @@ app.post('/api/admin/loans/:id/generate-contract', authenticateAdmin, async (req
       PROPERTY_DESCRIPTION: loan.legal_description || loan.title,
       ACRES: loan.acres,
       APN: loan.apn || 'N/A',
-      PURCHASE_PRICE: purchasePrice.toFixed(2),
+      PURCHASE_PRICE: purchasePrice.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
       PURCHASE_PRICE_WORDS: numberToWords(purchasePrice) + ' dollars',
-      DOWN_PAYMENT: downPayment.toFixed(2),
-      BALANCE: loanAmount.toFixed(2),
+      DOWN_PAYMENT: downPayment.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+      BALANCE: loanAmount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
       BALANCE_WORDS: numberToWords(loanAmount) + ' dollars',
       INTEREST_RATE: interestRate.toFixed(2),
-      MONTHLY_PAYMENT: monthlyPayment.toFixed(2),
+      MONTHLY_PAYMENT: monthlyPayment.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
       MONTHLY_PAYMENT_WORDS: numberToWords(monthlyPayment) + ' dollars',
       FIRST_PAYMENT_DATE: firstPaymentDate,
       NUMBER_OF_PAYMENTS: remainingPayments,
@@ -2303,6 +2303,31 @@ app.post('/api/admin/loans/:id/sign-contract', authenticateAdmin, async (req, re
   } catch (error) {
     console.error('Admin sign contract error:', error);
     res.status(500).json({ error: 'Failed to sign contract' });
+  }
+});
+
+// Delete contract (admin only)
+app.delete('/api/admin/loans/:id/contract', authenticateAdmin, async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Delete contract
+    const result = await db.pool.query(
+      'DELETE FROM contracts WHERE loan_id = $1 RETURNING *',
+      [id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Contract not found' });
+    }
+
+    res.json({ 
+      success: true, 
+      message: 'Contract deleted successfully' 
+    });
+  } catch (error) {
+    console.error('Delete contract error:', error);
+    res.status(500).json({ error: 'Failed to delete contract' });
   }
 });
 

@@ -775,6 +775,7 @@ app.get('/api/admin/loans', authenticateAdmin, async (req, res) => {
         u.last_name,
         u.email,
         u.phone,
+        c.status as contract_status,
         -- Calculate cure amount
         l.monthly_payment + 
         COALESCE(p.annual_tax_amount / 12, 0) + 
@@ -785,6 +786,7 @@ app.get('/api/admin/loans', authenticateAdmin, async (req, res) => {
       FROM loans l
       JOIN properties p ON l.property_id = p.id
       JOIN users u ON l.user_id = u.id
+      LEFT JOIN contracts c ON l.id = c.loan_id
       ORDER BY l.created_at DESC
     `);
     

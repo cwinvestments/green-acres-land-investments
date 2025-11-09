@@ -2021,13 +2021,11 @@ function numberToWords(num) {
     result += ones[dollars];
   }
 
-  result = result.trim();
-  
   // Add cents
   if (cents > 0) {
     result += ' and ' + cents + '/100';
   } else {
-    result += ' and no';
+    result += ' and 00/100';
   }
 
   return result.charAt(0).toUpperCase() + result.slice(1);

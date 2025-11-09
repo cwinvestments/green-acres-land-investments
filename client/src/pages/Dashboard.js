@@ -311,8 +311,9 @@ ${contract.contract_text}
                       onClick={() => downloadContract(loan.id)}
                       className="btn"
                       style={{
-                        marginLeft: '34px',
-                        backgroundColor: 'var(--forest-green)',
+                        display: 'block',
+                        margin: '0 auto',
+                        backgroundColor: '#6c757d',
                         color: 'white'
                       }}
                     >

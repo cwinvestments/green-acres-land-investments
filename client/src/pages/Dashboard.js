@@ -25,6 +25,70 @@ function Dashboard() {
     }
   };
 
+  const loadContract = async (loanId) => {
+    try {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/loans/${loanId}/contract`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        return data;
+      }
+      return null;
+    } catch (err) {
+      console.error('Load contract error:', err);
+      return null;
+    }
+  };
+
+  const signContract = async (loanId, signature) => {
+    try {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/loans/${loanId}/sign-contract`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify({ signature })
+      });
+
+      if (!response.ok) throw new Error('Failed to sign');
+
+      const data = await response.json();
+      alert(data.message);
+      loadLoans();
+    } catch (err) {
+      alert('Failed to sign contract');
+    }
+  };
+
+  const downloadContract = async (loanId) => {
+    try {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/loans/${loanId}/download-contract`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+      
+      if (!response.ok) throw new Error('Failed');
+      
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Contract_${Date.now()}.txt`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    } catch (err) {
+      alert('Failed to download contract');
+    }
+  };
+
   if (loading) {
     return (
       <div className="loading">
@@ -120,6 +184,102 @@ function Dashboard() {
             
             return (
               <div key={loan.id} className="loan-card">
+                {/* Contract Section */}
+                {loan.contract_status === 'pending' && (
+                  <div style={{
+                    backgroundColor: '#fff3cd',
+                    border: '2px solid #ffc107',
+                    borderRadius: '8px',
+                    padding: '15px',
+                    marginBottom: '15px'
+                  }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
+                      <span style={{ fontSize: '24px' }}>📝</span>
+                      <strong style={{ fontSize: '16px' }}>Contract Ready to Sign</strong>
+                    </div>
+                    <p style={{ margin: '0 0 10px 34px', fontSize: '14px' }}>
+                      Your Contract for Deed is ready for review and signature.
+                    </p>
+                    <button
+                      onClick={async () => {
+                        const contract = await loadContract(loan.id);
+                        if (contract) {
+                          const signature = prompt('Please type your full legal name to sign:\n\nBy typing your name, you agree to the terms of this Contract for Deed.');
+                          if (signature && signature.trim()) {
+                            await signContract(loan.id, signature.trim());
+                          }
+                        }
+                      }}
+                      className="btn"
+                      style={{
+                        marginLeft: '34px',
+                        backgroundColor: 'var(--forest-green)',
+                        color: 'white'
+                      }}
+                    >
+                      📝 Review & Sign Contract
+                    </button>
+                  </div>
+                )}
+
+                {loan.contract_status === 'customer_signed' && (
+                  <div style={{
+                    backgroundColor: '#d1ecf1',
+                    border: '2px solid #17a2b8',
+                    borderRadius: '8px',
+                    padding: '15px',
+                    marginBottom: '15px'
+                  }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
+                      <span style={{ fontSize: '24px' }}>✅</span>
+                      <strong style={{ fontSize: '16px' }}>You've Signed!</strong>
+                    </div>
+                    <p style={{ margin: '0 0 10px 34px', fontSize: '14px' }}>
+                      Your signature has been recorded. Awaiting seller's signature.
+                    </p>
+                    <button
+                      onClick={() => downloadContract(loan.id)}
+                      className="btn"
+                      style={{
+                        marginLeft: '34px',
+                        backgroundColor: '#6c757d',
+                        color: 'white'
+                      }}
+                    >
+                      📄 Download Contract
+                    </button>
+                  </div>
+                )}
+
+                {loan.contract_status === 'fully_signed' && (
+                  <div style={{
+                    backgroundColor: '#d4edda',
+                    border: '2px solid #28a745',
+                    borderRadius: '8px',
+                    padding: '15px',
+                    marginBottom: '15px'
+                  }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
+                      <span style={{ fontSize: '24px' }}>✅</span>
+                      <strong style={{ fontSize: '16px', color: '#28a745' }}>Contract Fully Executed</strong>
+                    </div>
+                    <p style={{ margin: '0 0 10px 34px', fontSize: '14px' }}>
+                      Both parties have signed. Your contract is complete.
+                    </p>
+                    <button
+                      onClick={() => downloadContract(loan.id)}
+                      className="btn"
+                      style={{
+                        marginLeft: '34px',
+                        backgroundColor: 'var(--forest-green)',
+                        color: 'white'
+                      }}
+                    >
+                      📄 Download Signed Contract
+                    </button>
+                  </div>
+                )}
+
                 {/* Tier 1: Friendly Reminder (Days 8-14) */}
                 {daysOverdue >= 8 && daysOverdue < 15 && (
                   <div style={{

@@ -1013,9 +1013,11 @@ app.post('/api/admin/loans/:id/waive-late-fee', authenticateAdmin, async (req, r
 app.get('/api/loans', authenticateToken, async (req, res) => {
   try {
     const result = await db.pool.query(`
-      SELECT l.*, p.title as property_title, p.location
+      SELECT l.*, p.title as property_title, p.location,
+             c.status as contract_status
       FROM loans l
       JOIN properties p ON l.property_id = p.id
+      LEFT JOIN contracts c ON l.id = c.loan_id
       WHERE l.user_id = $1
       ORDER BY l.created_at DESC
     `, [req.user.id]);
@@ -2029,8 +2031,284 @@ function numberToWords(num) {
   return result.charAt(0).toUpperCase() + result.slice(1);
 }
 
-// Generate contract for a loan
-app.get('/api/admin/loans/:id/generate-contract', authenticateAdmin, async (req, res) => {
+// Generate and save contract (admin triggers this)
+app.post('/api/admin/loans/:id/generate-contract', authenticateAdmin, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const fs = require('fs');
+    const path = require('path');
+
+    // Check if contract already exists
+    const existingContract = await db.pool.query(
+      'SELECT id, status FROM contracts WHERE loan_id = $1',
+      [id]
+    );
+
+    if (existingContract.rows.length > 0) {
+      return res.json({ 
+        success: true, 
+        message: 'Contract already exists',
+        contractId: existingContract.rows[0].id,
+        status: existingContract.rows[0].status
+      });
+    }
+
+    // Get loan with property and user data
+    const result = await db.pool.query(`
+      SELECT 
+        l.*,
+        p.title, p.location, p.state, p.county, p.acres, p.apn, p.property_covenants,
+        u.first_name, u.last_name, u.email
+      FROM loans l
+      JOIN properties p ON l.property_id = p.id
+      JOIN users u ON l.user_id = u.id
+      WHERE l.id = $1
+    `, [id]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Loan not found' });
+    }
+
+    const loan = result.rows[0];
+
+    // Read contract template
+    const templatePath = path.join(__dirname, 'contract-template.txt');
+    let contract = fs.readFileSync(templatePath, 'utf8');
+
+    // Format dates
+    const contractDate = new Date().toLocaleDateString('en-US', { 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    });
+    
+    const firstPaymentDate = new Date(loan.next_payment_date || loan.start_date).toLocaleDateString('en-US', { 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    });
+
+    // Calculate remaining payments
+    const remainingPayments = Math.ceil(parseFloat(loan.balance_remaining) / parseFloat(loan.monthly_payment));
+
+    // Parse numeric values
+    const purchasePrice = parseFloat(loan.purchase_price);
+    const downPayment = parseFloat(loan.down_payment);
+    const loanAmount = parseFloat(loan.loan_amount);
+    const interestRate = parseFloat(loan.interest_rate);
+    const monthlyPayment = parseFloat(loan.monthly_payment);
+
+    // Prepare merge data
+    const mergeData = {
+      CONTRACT_DATE: contractDate,
+      PURCHASER_NAME: `${loan.first_name} ${loan.last_name}`,
+      PURCHASER_ADDRESS: loan.billing_address || '[ADDRESS]',
+      PURCHASER_CITY: loan.billing_city || '[CITY]',
+      PURCHASER_STATE: loan.billing_state || '[ST]',
+      PURCHASER_ZIP: loan.billing_zip || '[ZIP]',
+      COUNTY: loan.county,
+      STATE: loan.state,
+      PROPERTY_DESCRIPTION: loan.title,
+      ACRES: loan.acres,
+      APN: loan.apn || 'N/A',
+      PURCHASE_PRICE: purchasePrice.toFixed(2),
+      PURCHASE_PRICE_WORDS: numberToWords(purchasePrice) + ' dollars',
+      DOWN_PAYMENT: downPayment.toFixed(2),
+      BALANCE: loanAmount.toFixed(2),
+      BALANCE_WORDS: numberToWords(loanAmount) + ' dollars',
+      INTEREST_RATE: interestRate.toFixed(2),
+      MONTHLY_PAYMENT: monthlyPayment.toFixed(2),
+      MONTHLY_PAYMENT_WORDS: numberToWords(monthlyPayment) + ' dollars',
+      FIRST_PAYMENT_DATE: firstPaymentDate,
+      NUMBER_OF_PAYMENTS: remainingPayments,
+      PROPERTY_COVENANTS: loan.property_covenants || 'None'
+    };
+
+    // Replace all merge fields
+    Object.keys(mergeData).forEach(key => {
+      const regex = new RegExp(`\\{\\{${key}\\}\\}`, 'g');
+      contract = contract.replace(regex, mergeData[key]);
+    });
+
+    // Save contract to database
+    const contractResult = await db.pool.query(
+      `INSERT INTO contracts (loan_id, contract_text, status)
+       VALUES ($1, $2, 'pending')
+       RETURNING id`,
+      [id, contract]
+    );
+
+    res.json({ 
+      success: true, 
+      message: 'Contract generated and ready for customer signature',
+      contractId: contractResult.rows[0].id
+    });
+
+  } catch (error) {
+    console.error('Generate contract error:', error);
+    res.status(500).json({ error: 'Failed to generate contract' });
+  }
+});
+
+// Customer views their contract
+app.get('/api/loans/:id/contract', authenticateToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Verify loan belongs to user
+    const loanCheck = await db.pool.query(
+      'SELECT id FROM loans WHERE id = $1 AND user_id = $2',
+      [id, req.user.id]
+    );
+
+    if (loanCheck.rows.length === 0) {
+      return res.status(404).json({ error: 'Loan not found' });
+    }
+
+    // Get contract
+    const result = await db.pool.query(
+      'SELECT * FROM contracts WHERE loan_id = $1',
+      [id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Contract not found' });
+    }
+
+    res.json(result.rows[0]);
+  } catch (error) {
+    console.error('Get contract error:', error);
+    res.status(500).json({ error: 'Failed to fetch contract' });
+  }
+});
+
+// Customer signs contract
+app.post('/api/loans/:id/sign-contract', authenticateToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { signature } = req.body;
+
+    if (!signature || signature.trim().length === 0) {
+      return res.status(400).json({ error: 'Signature is required' });
+    }
+
+    // Verify loan belongs to user
+    const loanCheck = await db.pool.query(
+      'SELECT id FROM loans WHERE id = $1 AND user_id = $2',
+      [id, req.user.id]
+    );
+
+    if (loanCheck.rows.length === 0) {
+      return res.status(404).json({ error: 'Loan not found' });
+    }
+
+    // Get IP and user agent
+    const ipAddress = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+    const userAgent = req.headers['user-agent'];
+
+    // Update contract with customer signature
+    await db.pool.query(
+      `UPDATE contracts 
+       SET customer_signature = $1,
+           customer_signed_date = NOW(),
+           customer_ip_address = $2,
+           customer_user_agent = $3,
+           status = 'customer_signed'
+       WHERE loan_id = $4 AND status = 'pending'`,
+      [signature, ipAddress, userAgent, id]
+    );
+
+    res.json({ 
+      success: true, 
+      message: 'Contract signed successfully. Awaiting admin signature.' 
+    });
+  } catch (error) {
+    console.error('Sign contract error:', error);
+    res.status(500).json({ error: 'Failed to sign contract' });
+  }
+});
+
+// Admin signs contract
+app.post('/api/admin/loans/:id/sign-contract', authenticateAdmin, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { signature } = req.body;
+
+    if (!signature || signature.trim().length === 0) {
+      return res.status(400).json({ error: 'Signature is required' });
+    }
+
+    // Get IP
+    const ipAddress = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+
+    // Update contract with admin signature
+    const result = await db.pool.query(
+      `UPDATE contracts 
+       SET admin_signature = $1,
+           admin_signed_date = NOW(),
+           admin_ip_address = $2,
+           status = 'fully_signed'
+       WHERE loan_id = $3 AND status = 'customer_signed'
+       RETURNING id`,
+      [signature, ipAddress, id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(400).json({ error: 'Contract must be signed by customer first' });
+    }
+
+    res.json({ 
+      success: true, 
+      message: 'Contract fully executed' 
+    });
+  } catch (error) {
+    console.error('Admin sign contract error:', error);
+    res.status(500).json({ error: 'Failed to sign contract' });
+  }
+});
+
+// Download signed contract
+app.get('/api/loans/:loanId/download-contract', async (req, res) => {
+  try {
+    const { loanId } = req.params;
+    
+    // Get contract
+    const result = await db.pool.query(
+      'SELECT * FROM contracts WHERE loan_id = $1',
+      [loanId]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Contract not found' });
+    }
+
+    const contract = result.rows[0];
+    let contractText = contract.contract_text;
+
+    // Add signature block at the end
+    contractText += '\n\n--- SIGNATURES ---\n\n';
+    
+    if (contract.customer_signature) {
+      contractText += `PURCHASER SIGNATURE: ${contract.customer_signature}\n`;
+      contractText += `Signed: ${new Date(contract.customer_signed_date).toLocaleString()}\n`;
+      contractText += `IP Address: ${contract.customer_ip_address}\n\n`;
+    }
+
+    if (contract.admin_signature) {
+      contractText += `SELLER SIGNATURE: ${contract.admin_signature}\n`;
+      contractText += `Signed: ${new Date(contract.admin_signed_date).toLocaleString()}\n`;
+      contractText += `IP Address: ${contract.admin_ip_address}\n`;
+    }
+
+    res.setHeader('Content-Type', 'text/plain');
+    res.setHeader('Content-Disposition', `attachment; filename="Signed_Contract_${Date.now()}.txt"`);
+    res.send(contractText);
+
+  } catch (error) {
+    console.error('Download contract error:', error);
+    res.status(500).json({ error: 'Failed to download contract' });
+  }
+});
   try {
     const { id } = req.params;
     const fs = require('fs');

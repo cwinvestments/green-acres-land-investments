@@ -616,6 +616,7 @@ function AdminLoans() {
                           >
                             ✍️ Sign Contract (Customer Signed)
                           </button>
+                        )}
                         {loan.contract_status === 'fully_signed' && (
                           <>
                             <div style={{

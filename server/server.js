@@ -1009,6 +1009,35 @@ app.post('/api/admin/loans/:id/waive-late-fee', authenticateAdmin, async (req, r
   }
 });
 
+// Update deed type for a loan
+app.patch('/api/admin/loans/:id/deed-type', authenticateAdmin, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { deed_type } = req.body;
+
+    // Validate deed type
+    const validDeedTypes = ['Special Warranty Deed', 'Quitclaim Deed'];
+    if (!validDeedTypes.includes(deed_type)) {
+      return res.status(400).json({ error: 'Invalid deed type' });
+    }
+
+    // Update loan
+    await db.pool.query(
+      'UPDATE loans SET deed_type = $1 WHERE id = $2',
+      [deed_type, id]
+    );
+
+    res.json({ 
+      success: true, 
+      message: 'Deed type updated',
+      deed_type
+    });
+  } catch (error) {
+    console.error('Update deed type error:', error);
+    res.status(500).json({ error: 'Failed to update deed type' });
+  }
+});
+
 // ==================== LOAN ROUTES ====================
 
 // Get user's loans
@@ -2121,7 +2150,8 @@ app.post('/api/admin/loans/:id/generate-contract', authenticateAdmin, async (req
       MONTHLY_PAYMENT_WORDS: numberToWords(monthlyPayment) + ' dollars',
       FIRST_PAYMENT_DATE: firstPaymentDate,
       NUMBER_OF_PAYMENTS: remainingPayments,
-      PROPERTY_COVENANTS: loan.property_covenants || 'None'
+      PROPERTY_COVENANTS: loan.property_covenants || 'None',
+      DEED_TYPE: loan.deed_type || 'Special Warranty Deed'
     };
 
     // Replace all merge fields

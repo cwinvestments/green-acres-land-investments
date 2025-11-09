@@ -67,7 +67,7 @@ The parties expressly agree that in the event of default not cured by Purchaser 
 
 10. DEED AND EVIDENCE OF TITLE
 
-Upon total payment of the purchase price and any and all late charges, and other amounts due Seller, Seller agrees to deliver to Purchaser a Special Warranty Deed to the subject property, at Seller's expense, free and clear of any liens or encumbrances other than taxes and assessments for the current year.
+Upon total payment of the purchase price and any and all late charges, and other amounts due Seller, Seller agrees to deliver to Purchaser a {{DEED_TYPE}} to the subject property, at Seller's expense, free and clear of any liens or encumbrances other than taxes and assessments for the current year.
 
 11. NOTICES
 

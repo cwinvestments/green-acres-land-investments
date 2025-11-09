@@ -512,35 +512,60 @@ function AdminLoans() {
                         >
                           ⚠️ Default
                         </button>
-                        <button
-                          onClick={async () => {
-                            if (!window.confirm('Generate contract and send to customer for signature?')) return;
-                            try {
-                              const response = await fetch(`${process.env.REACT_APP_API_URL}/admin/loans/${loan.id}/generate-contract`, {
-                                method: 'POST',
-                                headers: {
-                                  'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
-                                }
-                              });
-                              if (!response.ok) throw new Error('Failed');
-                              const data = await response.json();
-                              alert(data.message);
-                              loadLoans();
-                            } catch (err) {
-                              alert('Failed to generate contract');
-                            }
-                          }}
-                          className="btn btn-small"
-                          style={{
-                            backgroundColor: '#2c5f2d',
-                            color: 'white',
-                            width: '100%',
-                            fontSize: '12px',
-                            marginTop: '5px'
-                          }}
-                        >
-                          📝 Generate Contract
-                        </button>
+                        <div style={{ marginTop: '5px' }}>
+                          <label style={{ fontSize: '11px', color: '#666', display: 'block', marginBottom: '3px' }}>Deed Type:</label>
+                          <select
+                            value={loan.deed_type || 'Special Warranty Deed'}
+                            onChange={async (e) => {
+                              try {
+                                const response = await fetch(`${process.env.REACT_APP_API_URL}/admin/loans/${loan.id}/deed-type`, {
+                                  method: 'PATCH',
+                                  headers: {
+                                    'Content-Type': 'application/json',
+                                    'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+                                  },
+                                  body: JSON.stringify({ deed_type: e.target.value })
+                                });
+                                if (!response.ok) throw new Error('Failed');
+                                loadLoans();
+                              } catch (err) {
+                                alert('Failed to update deed type');
+                              }
+                            }}
+                            style={{ width: '100%', padding: '4px', fontSize: '12px', marginBottom: '5px' }}
+                          >
+                            <option value="Special Warranty Deed">Special Warranty</option>
+                            <option value="Quitclaim Deed">Quitclaim</option>
+                          </select>
+                          <button
+                            onClick={async () => {
+                              if (!window.confirm('Generate contract and send to customer for signature?')) return;
+                              try {
+                                const response = await fetch(`${process.env.REACT_APP_API_URL}/admin/loans/${loan.id}/generate-contract`, {
+                                  method: 'POST',
+                                  headers: {
+                                    'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+                                  }
+                                });
+                                if (!response.ok) throw new Error('Failed');
+                                const data = await response.json();
+                                alert(data.message);
+                                loadLoans();
+                              } catch (err) {
+                                alert('Failed to generate contract');
+                              }
+                            }}
+                            className="btn btn-small"
+                            style={{
+                              backgroundColor: '#2c5f2d',
+                              color: 'white',
+                              width: '100%',
+                              fontSize: '12px'
+                            }}
+                          >
+                            📝 Generate Contract
+                          </button>
+                        </div>
                       </>
                     )}
                     {loan.status === 'defaulted' && (

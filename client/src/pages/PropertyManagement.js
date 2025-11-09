@@ -883,6 +883,7 @@ function PropertyForm({ property, onSuccess, onCancel }) {
     price: property?.price || '',
     acquisition_cost: property?.acquisition_cost || '',
     apn: property?.apn || '',
+    legal_description: property?.legal_description || '',
     coord_ne: existingCoords.ne || '',
     coord_se: existingCoords.se || '',
     coord_sw: existingCoords.sw || '',
@@ -1065,6 +1066,20 @@ function PropertyForm({ property, onSuccess, onCancel }) {
               placeholder="Assessor's Parcel Number"
             />
           </div>
+        </div>
+
+        <div className="form-group">
+          <label>Legal Description</label>
+          <textarea
+            name="legal_description"
+            value={formData.legal_description}
+            onChange={handleChange}
+            rows="3"
+            placeholder="Legal property description (e.g., Lot 5, Block 3, County Subdivision)"
+          />
+          <small style={{ color: '#666', fontSize: '12px' }}>
+            This will appear on the contract instead of the title
+          </small>
         </div>
 
         {/* GPS Coordinates */}

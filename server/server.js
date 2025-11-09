@@ -515,6 +515,7 @@ app.post('/api/admin/properties', authenticateAdmin, async (req, res) => {
       acquisition_cost,
       apn,
       coordinates,
+      legal_description,
       annual_tax_amount,
       tax_payment_1_date,
       tax_payment_1_amount,
@@ -533,12 +534,12 @@ app.post('/api/admin/properties', authenticateAdmin, async (req, res) => {
     }
     const result = await db.pool.query(
       `INSERT INTO properties 
-       (title, description, location, state, county, acres, price, acquisition_cost, apn, coordinates, 
+       (title, description, location, state, county, acres, price, acquisition_cost, apn, coordinates, legal_description,
         annual_tax_amount, tax_payment_1_date, tax_payment_1_amount, tax_payment_2_date, tax_payment_2_amount, tax_notes,
         monthly_hoa_fee, hoa_name, hoa_contact, hoa_notes, property_covenants, status)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, 'available')
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, 'available')
        RETURNING *`,
-      [title, description, location, state, county, acres, price, acquisition_cost || null, apn || null, coordinates || null,
+      [title, description, location, state, county, acres, price, acquisition_cost || null, apn || null, coordinates || null, legal_description || null,
        annual_tax_amount || null, tax_payment_1_date || null, tax_payment_1_amount || null, 
        tax_payment_2_date || null, tax_payment_2_amount || null, tax_notes || null,
        monthly_hoa_fee || null, hoa_name || null, hoa_contact || null, hoa_notes || null, property_covenants || null]
@@ -552,7 +553,6 @@ app.post('/api/admin/properties', authenticateAdmin, async (req, res) => {
     res.status(500).json({ error: 'Failed to create property' });
   }
 });
-
 // Update property
 app.put('/api/admin/properties/:id', authenticateAdmin, async (req, res) => {
   try {
@@ -568,6 +568,7 @@ app.put('/api/admin/properties/:id', authenticateAdmin, async (req, res) => {
       acquisition_cost,
       apn,
       coordinates,
+      legal_description,
       status,
       annual_tax_amount,
       tax_payment_1_date,
@@ -590,14 +591,14 @@ app.put('/api/admin/properties/:id', authenticateAdmin, async (req, res) => {
       `UPDATE properties 
        SET title = $1, description = $2, location = $3, state = $4, 
            county = $5, acres = $6, price = $7, acquisition_cost = $8,
-           apn = $9, coordinates = $10, status = $11,
-           annual_tax_amount = $12, tax_payment_1_date = $13, tax_payment_1_amount = $14,
-           tax_payment_2_date = $15, tax_payment_2_amount = $16, tax_notes = $17,
-           monthly_hoa_fee = $18, hoa_name = $19, hoa_contact = $20, hoa_notes = $21,
-           property_covenants = $22
-       WHERE id = $23
+           apn = $9, coordinates = $10, legal_description = $11, status = $12,
+           annual_tax_amount = $13, tax_payment_1_date = $14, tax_payment_1_amount = $15,
+           tax_payment_2_date = $16, tax_payment_2_amount = $17, tax_notes = $18,
+           monthly_hoa_fee = $19, hoa_name = $20, hoa_contact = $21, hoa_notes = $22,
+           property_covenants = $23
+       WHERE id = $24
        RETURNING *`,
-      [title, description, location, state, county, acres, price, acquisition_cost || null, apn || null, coordinates, status,
+      [title, description, location, state, county, acres, price, acquisition_cost || null, apn || null, coordinates, legal_description || null, status,
        annual_tax_amount || null, tax_payment_1_date || null, tax_payment_1_amount || null, 
        tax_payment_2_date || null, tax_payment_2_amount || null, tax_notes || null,
        monthly_hoa_fee || null, hoa_name || null, hoa_contact || null, hoa_notes || null, property_covenants || null, id]
@@ -2094,7 +2095,7 @@ app.post('/api/admin/loans/:id/generate-contract', authenticateAdmin, async (req
     const result = await db.pool.query(`
       SELECT 
         l.*,
-        p.title, p.location, p.state, p.county, p.acres, p.apn, p.property_covenants,
+        p.title, p.location, p.state, p.county, p.acres, p.apn, p.legal_description, p.property_covenants,
         u.first_name, u.last_name, u.email
       FROM loans l
       JOIN properties p ON l.property_id = p.id
@@ -2145,7 +2146,7 @@ app.post('/api/admin/loans/:id/generate-contract', authenticateAdmin, async (req
       PURCHASER_ZIP: loan.billing_zip || '[ZIP]',
       COUNTY: loan.county,
       STATE: loan.state,
-      PROPERTY_DESCRIPTION: loan.title,
+      PROPERTY_DESCRIPTION: loan.legal_description || loan.title,
       ACRES: loan.acres,
       APN: loan.apn || 'N/A',
       PURCHASE_PRICE: purchasePrice.toFixed(2),

@@ -204,17 +204,58 @@ function Dashboard() {
                       onClick={async () => {
                         const contract = await loadContract(loan.id);
                         if (contract) {
-                          const signature = prompt('Please type your full legal name to sign:\n\nBy typing your name, you agree to the terms of this Contract for Deed.');
-                          if (signature && signature.trim()) {
-                            await signContract(loan.id, signature.trim());
-                          }
+                          // Show contract modal
+                          const modal = document.createElement('div');
+                          modal.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;z-index:9999;padding:20px;';
+                          modal.innerHTML = `
+                            <div style="background:white;border-radius:10px;max-width:800px;width:100%;max-height:90vh;display:flex;flex-direction:column;">
+                              <div style="padding:20px;border-bottom:2px solid var(--forest-green);">
+                                <h2 style="margin:0;color:var(--forest-green);">Contract for Deed - Review</h2>
+                              </div>
+                              <div style="padding:20px;overflow-y:auto;flex:1;white-space:pre-wrap;font-family:monospace;font-size:12px;line-height:1.6;">
+${contract.contract_text}
+                              </div>
+                              <div style="padding:20px;border-top:2px solid #e0e0e0;display:flex;flex-direction:column;gap:15px;">
+                                <div style="background:#fff3cd;padding:15px;border-radius:5px;border:2px solid #ffc107;">
+                                  <strong>⚠️ Electronic Signature Agreement</strong><br/>
+                                  By typing your name below, you agree to sign this Contract for Deed electronically. This signature will be legally binding.
+                                </div>
+                                <input type="text" id="signatureInput" placeholder="Type your full legal name here" style="padding:12px;border:2px solid var(--forest-green);border-radius:5px;font-size:16px;width:100%;box-sizing:border-box;" />
+                                <div style="display:flex;gap:10px;">
+                                  <button id="signBtn" style="flex:1;padding:12px;background:var(--forest-green);color:white;border:none;border-radius:5px;font-size:16px;cursor:pointer;font-weight:600;">
+                                    ✍️ Sign Contract
+                                  </button>
+                                  <button id="cancelBtn" style="flex:1;padding:12px;background:#6c757d;color:white;border:none;border-radius:5px;font-size:16px;cursor:pointer;font-weight:600;">
+                                    Cancel
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          `;
+                          document.body.appendChild(modal);
+                          
+                          document.getElementById('cancelBtn').onclick = () => {
+                            document.body.removeChild(modal);
+                          };
+                          
+                          document.getElementById('signBtn').onclick = async () => {
+                            const signature = document.getElementById('signatureInput').value.trim();
+                            if (!signature) {
+                              alert('Please enter your full legal name');
+                              return;
+                            }
+                            document.body.removeChild(modal);
+                            await signContract(loan.id, signature);
+                          };
                         }
                       }}
                       className="btn"
                       style={{
                         marginLeft: '34px',
                         backgroundColor: 'var(--forest-green)',
-                        color: 'white'
+                        color: 'white',
+                        display: 'block',
+                        margin: '0 auto'
                       }}
                     >
                       📝 Review & Sign Contract

@@ -648,6 +648,8 @@ function AdminLoans() {
                             </button>
                           </>
                         )}
+                      </>
+                    )}
                     {loan.status === 'defaulted' && (
                       <span style={{ color: '#dc3545', fontWeight: 'bold', fontSize: '12px' }}>
                         Defaulted {loan.default_date && `on ${new Date(loan.default_date).toLocaleDateString()}`}

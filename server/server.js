@@ -1176,8 +1176,9 @@ app.post('/api/loans', authenticateToken, async (req, res) => {
       INSERT INTO loans (
         user_id, property_id, purchase_price, down_payment, 
         processing_fee, loan_amount, interest_rate, term_months, 
-        monthly_payment, total_amount, balance_remaining, status, next_payment_date
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+        monthly_payment, total_amount, balance_remaining, status, next_payment_date,
+        deed_name, deed_mailing_address
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
       RETURNING id
     `, [
       req.user.id,
@@ -1192,7 +1193,9 @@ app.post('/api/loans', authenticateToken, async (req, res) => {
       financing.totalAmount,
       financing.principal,
       'active',
-      firstPaymentDateStr
+      firstPaymentDateStr,
+      req.body.deedName || null,
+      req.body.deedMailingAddress || null
     ]);
 
     const loanId = loanResult.rows[0].id;

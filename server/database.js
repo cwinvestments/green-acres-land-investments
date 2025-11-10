@@ -139,6 +139,19 @@ const initDatabase = async () => {
       END $$;
     `);
 
+    // Add deed columns to loans table
+    await client.query(`
+      DO $$ 
+      BEGIN
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='loans' AND column_name='deed_name') THEN
+          ALTER TABLE loans ADD COLUMN deed_name TEXT;
+        END IF;
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='loans' AND column_name='deed_mailing_address') THEN
+          ALTER TABLE loans ADD COLUMN deed_mailing_address TEXT;
+        END IF;
+      END $$;
+    `);
+
     // Property tax payments table
     await client.query(`
       CREATE TABLE IF NOT EXISTS property_tax_payments (

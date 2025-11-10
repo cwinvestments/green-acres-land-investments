@@ -28,6 +28,10 @@ function PropertyDetail() {
   state: '',
   zip: ''
 });
+  const [deedInfo, setDeedInfo] = useState({
+    deedName: '',
+    deedMailingAddress: ''
+  });
   const [paymentDueDay, setPaymentDueDay] = useState('1');
   // Find closest payment option to desired payment
 const findClosestOption = () => {
@@ -196,6 +200,12 @@ const closestOption = findClosestOption();
       return;
     }
 
+    // Validate deed info
+    if (!deedInfo.deedName || !deedInfo.deedMailingAddress) {
+      setPurchaseError('Please fill in deed name and mailing address.');
+      return;
+    }
+
     if (!cardInstance) {
       await initializeSquarePayment();
       return;
@@ -216,7 +226,9 @@ const closestOption = findClosestOption();
           termMonths: termMonths,
           paymentNonce: result.token,
           phone: billingInfo.phone,
-          paymentDueDay: parseInt(paymentDueDay)
+          paymentDueDay: parseInt(paymentDueDay),
+          deedName: deedInfo.deedName,
+          deedMailingAddress: deedInfo.deedMailingAddress
         });
 
         alert('✅ Purchase Successful!\n\nYour property purchase has been completed and your loan has been created.\n\nRedirecting to your dashboard...');
@@ -1019,6 +1031,60 @@ navigate('/dashboard');
                     fontSize: '1rem'
                   }}
                 />
+              </div>
+            </div>
+
+            <div style={{ marginTop: '1.5rem', padding: '15px', backgroundColor: '#e8f5e9', borderRadius: '8px', border: '2px solid var(--forest-green)' }}>
+              <h5 style={{ marginBottom: '1rem', color: 'var(--forest-green)' }}>📜 Deed Information</h5>
+              <p style={{ fontSize: '13px', color: '#666', marginBottom: '15px' }}>
+                This information will appear on the property deed when your loan is paid off.
+              </p>
+              
+              <div className="form-group" style={{ marginBottom: '15px' }}>
+                <label style={{ display: 'block', marginBottom: '0.25rem', fontSize: '0.9rem', color: '#333' }}>
+                  Name(s) for Deed <span style={{ color: '#dc3545', fontWeight: 'bold' }}>*</span>
+                </label>
+                <input
+                  type="text"
+                  value={deedInfo.deedName}
+                  onChange={(e) => setDeedInfo({...deedInfo, deedName: e.target.value})}
+                  placeholder="John and Jane Smith"
+                  required
+                  style={{
+                    width: '100%',
+                    padding: '0.75rem',
+                    border: '2px solid var(--border-color)',
+                    borderRadius: '5px',
+                    fontSize: '1rem'
+                  }}
+                />
+                <small style={{ display: 'block', color: '#666', fontSize: '0.85rem', marginTop: '0.25rem' }}>
+                  Enter name(s) exactly as you want them to appear on the deed
+                </small>
+              </div>
+
+              <div className="form-group">
+                <label style={{ display: 'block', marginBottom: '0.25rem', fontSize: '0.9rem', color: '#333' }}>
+                  Mailing Address for Deed <span style={{ color: '#dc3545', fontWeight: 'bold' }}>*</span>
+                </label>
+                <textarea
+                  rows="3"
+                  value={deedInfo.deedMailingAddress}
+                  onChange={(e) => setDeedInfo({...deedInfo, deedMailingAddress: e.target.value})}
+                  placeholder="123 Main St&#10;Appleton, WI 54911"
+                  required
+                  style={{
+                    width: '100%',
+                    padding: '0.75rem',
+                    border: '2px solid var(--border-color)',
+                    borderRadius: '5px',
+                    fontSize: '1rem',
+                    resize: 'vertical'
+                  }}
+                />
+                <small style={{ display: 'block', color: '#666', fontSize: '0.85rem', marginTop: '0.25rem' }}>
+                  Full address where the deed should be mailed upon loan payoff
+                </small>
               </div>
             </div>
 

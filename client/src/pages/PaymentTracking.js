@@ -227,10 +227,11 @@ function PaymentTracking() {
             <tr style={{ backgroundColor: 'var(--light-green)', borderBottom: '2px solid var(--forest-green)' }}>
               <th style={{ padding: '15px', textAlign: 'left' }}>Date</th>
               <th style={{ padding: '15px', textAlign: 'left' }}>Customer</th>
-              <th style={{ padding: '15px', textAlign: 'left' }}>Property</th>
-              <th style={{ padding: '15px', textAlign: 'center' }}>Type</th>
-              <th style={{ padding: '15px', textAlign: 'right' }}>Amount</th>
-              <th style={{ padding: '15px', textAlign: 'center' }}>Status</th>
+              <th style={{ padding: '12px', textAlign: 'left' }}>Property</th>
+              <th style={{ padding: '12px', textAlign: 'center' }}>Type</th>
+              <th style={{ padding: '12px', textAlign: 'right' }}>Amount</th>
+              <th style={{ padding: '12px', textAlign: 'left' }}>Breakdown</th>
+              <th style={{ padding: '12px', textAlign: 'center' }}>Status</th>
             </tr>
           </thead>
           <tbody>
@@ -278,6 +279,26 @@ function PaymentTracking() {
                   </td>
                   <td style={{ padding: '15px', textAlign: 'right', fontWeight: 'bold', fontSize: '16px' }}>
                     ${parseFloat(payment.amount).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}
+                  </td>
+                  <td style={{ padding: '15px', fontSize: '13px', lineHeight: '1.5' }}>
+                    {payment.loan_payment_amount > 0 && (
+                      <div>💰 Loan: ${parseFloat(payment.loan_payment_amount).toFixed(2)}</div>
+                    )}
+                    {payment.tax_amount > 0 && (
+                      <div>🏛️ Tax: ${parseFloat(payment.tax_amount).toFixed(2)}</div>
+                    )}
+                    {payment.hoa_amount > 0 && (
+                      <div>🏘️ HOA: ${parseFloat(payment.hoa_amount).toFixed(2)}</div>
+                    )}
+                    {payment.late_fee_amount > 0 && (
+                      <div>⏰ Late Fee: ${parseFloat(payment.late_fee_amount).toFixed(2)}</div>
+                    )}
+                    {payment.notice_fee_amount > 0 && (
+                      <div>📄 Notice Fee: ${parseFloat(payment.notice_fee_amount).toFixed(2)}</div>
+                    )}
+                    {payment.postal_fee_amount > 0 && (
+                      <div>📮 Postal: ${parseFloat(payment.postal_fee_amount).toFixed(2)}</div>
+                    )}
                   </td>
                   <td style={{ padding: '15px', textAlign: 'center' }}>
                     <span style={{

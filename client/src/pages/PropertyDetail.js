@@ -598,7 +598,7 @@ navigate('/dashboard');
         <div>Down Payment: ${formatCurrency(calculation.downPayment)}</div>
         <div>Processing Fee: $99</div>
         <div>Monthly Payment: ${formatCurrency(calculation.monthlyPayment)}</div>
-        <div>Total Cost: ${formatCurrency(calculation.totalAmount)}</div>
+        <div>Total Cost (Includes Loan Interest): ${formatCurrency(calculation.totalAmount)}</div>
       </div>
     </div>
   )}
@@ -812,9 +812,9 @@ navigate('/dashboard');
               <strong style={{ color: 'var(--forest-green)' }}>${formatCurrency(calculation.monthlyPayment)}</strong>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <span style={{ color: '#666' }}>Total Cost:</span>
-              <strong>${formatCurrency(calculation.totalAmount)}</strong>
-            </div>
+                  <span style={{ color: '#666' }}>Total Cost (Includes Loan Interest):</span>
+                  <strong>${formatCurrency(calculation.totalAmount)}</strong>
+                </div>
           </div>
           
           <div style={{ 

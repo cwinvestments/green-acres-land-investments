@@ -21,7 +21,7 @@ import DefaultedLoansReport from './pages/DefaultedLoansReport';
 import AdminReports from './pages/AdminReports';
 import TaxSummary from './pages/TaxSummary';
 import StateManagement from './pages/Admin/StateManagement';
-
+import AccountSettings from './pages/AccountSettings';
 // Protected route component
 function ProtectedRoute({ children }) {
   const { isAuthenticated } = useAuth();
@@ -68,7 +68,14 @@ function AppContent() {
                 </ProtectedRoute>
               } 
             />
-
+            <Route 
+              path="/account-settings" 
+              element={
+                <ProtectedRoute>
+                  <AccountSettings />
+                </ProtectedRoute>
+              } 
+            />
             {/* Admin Routes */}
             <Route path="/admin/login" element={<AdminLogin />} />
             <Route path="/admin/dashboard" element={<AdminDashboard />} />

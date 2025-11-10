@@ -35,6 +35,7 @@ function Navbar() {
           {user ? (
             <>
               <Link to="/dashboard" className="nav-link">Dashboard</Link>
+              <Link to="/account-settings" className="nav-link">Account Settings</Link>
               <button onClick={handleLogout} className="nav-link btn-logout">
                 Logout
               </button>

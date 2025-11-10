@@ -1103,6 +1103,111 @@ app.get('/api/loans/:id/payment-breakdown', authenticateToken, async (req, res) 
   }
 });
 
+// ==================== USER ACCOUNT SETTINGS ROUTES ====================
+
+// Get user profile/settings
+app.get('/api/user/profile', authenticateToken, async (req, res) => {
+  try {
+    const result = await db.pool.query(
+      'SELECT id, email, first_name, last_name, phone, mailing_address, mailing_city, mailing_state, mailing_zip FROM users WHERE id = $1',
+      [req.user.id]
+    );
+    
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    
+    res.json(result.rows[0]);
+  } catch (error) {
+    console.error('Get profile error:', error);
+    res.status(500).json({ error: 'Failed to fetch profile' });
+  }
+});
+
+// Update user profile/settings
+app.patch('/api/user/profile', authenticateToken, async (req, res) => {
+  try {
+    const { phone, mailing_address, mailing_city, mailing_state, mailing_zip } = req.body;
+    
+    const result = await db.pool.query(
+      `UPDATE users 
+       SET phone = $1, 
+           mailing_address = $2, 
+           mailing_city = $3, 
+           mailing_state = $4, 
+           mailing_zip = $5
+       WHERE id = $6
+       RETURNING id, email, first_name, last_name, phone, mailing_address, mailing_city, mailing_state, mailing_zip`,
+      [phone, mailing_address, mailing_city, mailing_state, mailing_zip, req.user.id]
+    );
+    
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    
+    res.json({
+      message: 'Profile updated successfully',
+      user: result.rows[0]
+    });
+  } catch (error) {
+    console.error('Update profile error:', error);
+    res.status(500).json({ error: 'Failed to update profile' });
+  }
+});
+
+// Get deed info for active loans
+app.get('/api/user/deed-info', authenticateToken, async (req, res) => {
+  try {
+    const result = await db.pool.query(
+      `SELECT l.id as loan_id, l.deed_name, l.deed_mailing_address, p.title as property_title
+       FROM loans l
+       JOIN properties p ON l.property_id = p.id
+       WHERE l.user_id = $1 AND l.status = 'active'
+       ORDER BY l.created_at DESC`,
+      [req.user.id]
+    );
+    
+    res.json(result.rows);
+  } catch (error) {
+    console.error('Get deed info error:', error);
+    res.status(500).json({ error: 'Failed to fetch deed info' });
+  }
+});
+
+// Update deed info for a specific loan
+app.patch('/api/user/loans/:loanId/deed-info', authenticateToken, async (req, res) => {
+  try {
+    const { loanId } = req.params;
+    const { deed_name, deed_mailing_address } = req.body;
+    
+    // Verify loan belongs to user
+    const loanCheck = await db.pool.query(
+      'SELECT id FROM loans WHERE id = $1 AND user_id = $2',
+      [loanId, req.user.id]
+    );
+    
+    if (loanCheck.rows.length === 0) {
+      return res.status(404).json({ error: 'Loan not found' });
+    }
+    
+    const result = await db.pool.query(
+      `UPDATE loans 
+       SET deed_name = $1, deed_mailing_address = $2
+       WHERE id = $3 AND user_id = $4
+       RETURNING id, deed_name, deed_mailing_address`,
+      [deed_name, deed_mailing_address, loanId, req.user.id]
+    );
+    
+    res.json({
+      message: 'Deed information updated successfully',
+      loan: result.rows[0]
+    });
+  } catch (error) {
+    console.error('Update deed info error:', error);
+    res.status(500).json({ error: 'Failed to update deed information' });
+  }
+});
+
 // Create loan (purchase property)
 app.post('/api/loans', authenticateToken, async (req, res) => {
   try {

@@ -152,6 +152,25 @@ const initDatabase = async () => {
       END $$;
     `);
 
+    // Add mailing address fields to users table
+    await client.query(`
+      DO $$ 
+      BEGIN
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='users' AND column_name='mailing_address') THEN
+          ALTER TABLE users ADD COLUMN mailing_address TEXT;
+        END IF;
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='users' AND column_name='mailing_city') THEN
+          ALTER TABLE users ADD COLUMN mailing_city TEXT;
+        END IF;
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='users' AND column_name='mailing_state') THEN
+          ALTER TABLE users ADD COLUMN mailing_state TEXT;
+        END IF;
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='users' AND column_name='mailing_zip') THEN
+          ALTER TABLE users ADD COLUMN mailing_zip TEXT;
+        END IF;
+      END $$;
+    `);
+
     // Property tax payments table
     await client.query(`
       CREATE TABLE IF NOT EXISTS property_tax_payments (

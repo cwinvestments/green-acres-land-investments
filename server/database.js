@@ -142,7 +142,7 @@ const initDatabase = async () => {
 END $$;
     `);
 
-    // Property tax payments table - tracks when taxes are actually paid to county
+    // Property tax payments table
     await client.query(`
       CREATE TABLE IF NOT EXISTS property_tax_payments (
         id SERIAL PRIMARY KEY,

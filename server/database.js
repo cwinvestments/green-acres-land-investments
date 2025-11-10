@@ -139,9 +139,6 @@ const initDatabase = async () => {
       END $$;
     `);
 
-END $$;
-    `);
-
     // Property tax payments table
     await client.query(`
       CREATE TABLE IF NOT EXISTS property_tax_payments (

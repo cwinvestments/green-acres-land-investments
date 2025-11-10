@@ -328,6 +328,20 @@ navigate('/dashboard');
             </div>
           )}
           
+          {/* Photo Disclaimer */}
+          <div style={{
+            padding: '12px 15px',
+            backgroundColor: '#fff3cd',
+            border: '2px solid #ffc107',
+            borderRadius: '8px',
+            marginBottom: '1.5rem',
+            textAlign: 'center'
+          }}>
+            <span style={{ fontSize: '14px', color: '#856404', fontStyle: 'italic' }}>
+              📷 Note: Photos shown are representative of the surrounding area and may not depict the exact parcel for sale.
+            </span>
+          </div>
+          
           <div className="card" style={{ marginTop: '2rem' }}>
             <h2 style={{ color: 'var(--forest-green)', marginTop: 0 }}>Property Details</h2>
             <p style={{ marginTop: '1rem', lineHeight: '1.8', color: '#666' }}>{property.description}</p>
@@ -526,7 +540,7 @@ navigate('/dashboard');
             </div>
           ) : (
             <div className="calculator">
-  <h3>💰 Find Your Perfect Payment Plan</h3>>
+  <h3>💰 Find Your Perfect Payment Plan</h3>
   
   {/* INPUTS AT TOP */}
   <div className="calculator-options">

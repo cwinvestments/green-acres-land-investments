@@ -239,7 +239,7 @@ useEffect(() => {
               <th style={{ padding: '12px', textAlign: 'right' }}>Revenue</th>
               <th style={{ padding: '12px', textAlign: 'right' }}>Expenses</th>
               <th style={{ padding: '12px', textAlign: 'right' }}>Net Profit</th>
-              <th style={{ padding: '12px', textAlign: 'right' }}>Est. Tax (30%)</th>
+              <th style={{ padding: '12px', textAlign: 'right' }}>Est. Tax ({taxRate}%)</th>
             </tr>
           </thead>
           <tbody>
@@ -256,7 +256,7 @@ useEffect(() => {
                   ${formatCurrency(data.quarterly[q].net_profit)}
                 </td>
                 <td style={{ padding: '12px', textAlign: 'right', fontWeight: 'bold', color: '#ffc107' }}>
-                  ${formatCurrency(data.quarterly[q].net_profit * 0.30)}
+                  ${formatCurrency(data.quarterly[q].net_profit * (taxRate / 100))}
                 </td>
               </tr>
             ))}

@@ -276,7 +276,7 @@ ${contract.contract_text}
                         padding: '12px',
                         backgroundColor: '#fff3cd',
                         border: '2px solid #ffc107',
-                        borderRadius: '5px',
+                        borderRadius: '12px',
                         textAlign: 'center',
                         fontWeight: '600',
                         color: '#856404'

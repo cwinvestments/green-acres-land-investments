@@ -81,9 +81,11 @@ function AccountSettings() {
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setMessage('✅ Profile updated successfully!');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (err) {
       console.error('Failed to update profile:', err);
       setError('Failed to update profile');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } finally {
       setSaving(false);
     }
@@ -112,9 +114,11 @@ function AccountSettings() {
       setMessage('✅ Deed information updated successfully!');
       setEditingLoan(null);
       loadDeedInfo();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (err) {
       console.error('Failed to update deed info:', err);
       setError('Failed to update deed information');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } finally {
       setSaving(false);
     }

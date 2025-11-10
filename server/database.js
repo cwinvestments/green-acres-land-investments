@@ -139,10 +139,27 @@ const initDatabase = async () => {
       END $$;
     `);
 
+END $$;
+    `);
+
+    // Property tax payments table - tracks when taxes are actually paid to county
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS property_tax_payments (
+        id SERIAL PRIMARY KEY,
+        property_id INTEGER NOT NULL REFERENCES properties(id),
+        payment_date DATE NOT NULL,
+        amount DECIMAL NOT NULL,
+        tax_year INTEGER NOT NULL,
+        payment_method TEXT,
+        check_number TEXT,
+        notes TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
 // Admin users table
     await client.query(`
-      CREATE TABLE IF NOT EXISTS admin_users (
-        id SERIAL PRIMARY KEY,
+      CREATE TABLE IF NOT EXISTS admin_users (        id SERIAL PRIMARY KEY,
         email TEXT UNIQUE NOT NULL,
         password TEXT NOT NULL,
         first_name TEXT NOT NULL,

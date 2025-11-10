@@ -1438,6 +1438,73 @@ app.delete('/api/admin/expenses/:id', authenticateAdmin, async (req, res) => {
   }
 });
 
+// ==================== PROPERTY TAX PAYMENT ROUTES ====================
+
+// Record tax payment to county
+app.post('/api/admin/properties/:propertyId/pay-taxes', authenticateAdmin, async (req, res) => {
+  try {
+    const { propertyId } = req.params;
+    const { payment_date, amount, tax_year, payment_method, check_number, notes } = req.body;
+    
+    if (!payment_date || !amount || !tax_year) {
+      return res.status(400).json({ error: 'Payment date, amount, and tax year are required' });
+    }
+    
+    const result = await db.pool.query(
+      `INSERT INTO property_tax_payments (property_id, payment_date, amount, tax_year, payment_method, check_number, notes)
+       VALUES ($1, $2, $3, $4, $5, $6, $7)
+       RETURNING *`,
+      [propertyId, payment_date, amount, tax_year, payment_method || null, check_number || null, notes || null]
+    );
+    
+    res.status(201).json({
+      message: 'Tax payment recorded successfully',
+      payment: result.rows[0]
+    });
+  } catch (error) {
+    console.error('Record tax payment error:', error);
+    res.status(500).json({ error: 'Failed to record tax payment' });
+  }
+});
+
+// Get tax payments for a property
+app.get('/api/admin/properties/:propertyId/tax-payments', authenticateAdmin, async (req, res) => {
+  try {
+    const { propertyId } = req.params;
+    
+    const result = await db.pool.query(
+      'SELECT * FROM property_tax_payments WHERE property_id = $1 ORDER BY payment_date DESC',
+      [propertyId]
+    );
+    
+    res.json(result.rows);
+  } catch (error) {
+    console.error('Get tax payments error:', error);
+    res.status(500).json({ error: 'Failed to fetch tax payments' });
+  }
+});
+
+// Delete tax payment
+app.delete('/api/admin/tax-payments/:id', authenticateAdmin, async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    const result = await db.pool.query(
+      'DELETE FROM property_tax_payments WHERE id = $1 RETURNING *',
+      [id]
+    );
+    
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Tax payment not found' });
+    }
+    
+    res.json({ message: 'Tax payment deleted successfully' });
+  } catch (error) {
+    console.error('Delete tax payment error:', error);
+    res.status(500).json({ error: 'Failed to delete tax payment' });
+  }
+});
+
 // ==================== PROPERTY IMAGES ROUTES ====================
 
 // Get all images for a property
@@ -1596,10 +1663,12 @@ app.get('/api/admin/reports/financial', authenticateAdmin, async (req, res) => {
         p.title,
         p.annual_tax_amount,
         COALESCE(SUM(pay.tax_amount), 0) as tax_collected,
-        p.annual_tax_amount - COALESCE(SUM(pay.tax_amount), 0) as tax_balance
+        COALESCE(SUM(tp.amount), 0) as taxes_paid,
+        COALESCE(SUM(pay.tax_amount), 0) - COALESCE(SUM(tp.amount), 0) as tax_balance
       FROM properties p
       LEFT JOIN loans l ON p.id = l.property_id
       LEFT JOIN payments pay ON l.id = pay.loan_id AND pay.status = 'completed'
+      LEFT JOIN property_tax_payments tp ON p.id = tp.property_id
       WHERE p.annual_tax_amount IS NOT NULL AND p.annual_tax_amount > 0
       GROUP BY p.id, p.title, p.annual_tax_amount
       ORDER BY p.title

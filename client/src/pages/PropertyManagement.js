@@ -26,6 +26,18 @@ function PropertyManagement() {
   const [imageUrl, setImageUrl] = useState('');
   const [imageCaption, setImageCaption] = useState('');
   const [loadingImages, setLoadingImages] = useState(false);
+  const [showTaxPaymentModal, setShowTaxPaymentModal] = useState(false);
+  const [selectedPropertyForTax, setSelectedPropertyForTax] = useState(null);
+  const [taxPayments, setTaxPayments] = useState([]);
+  const [showAddTaxPaymentForm, setShowAddTaxPaymentForm] = useState(false);
+  const [taxPaymentFormData, setTaxPaymentFormData] = useState({
+    payment_date: new Date().toISOString().split('T')[0],
+    amount: '',
+    tax_year: new Date().getFullYear(),
+    payment_method: 'Check',
+    check_number: '',
+    notes: ''
+  });
 
   const loadProperties = useCallback(async () => {
     try {
@@ -183,6 +195,71 @@ function PropertyManagement() {
     } catch (err) {
       console.error('Failed to delete image:', err);
       alert('Failed to delete image');
+    }
+  };
+
+const loadTaxPayments = async (propertyId) => {
+    try {
+      const token = localStorage.getItem('adminToken');
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/admin/properties/${propertyId}/tax-payments`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setTaxPayments(response.data);
+    } catch (err) {
+      console.error('Failed to load tax payments:', err);
+      alert('Failed to load tax payments');
+    }
+  };
+
+  const openTaxPaymentModal = (property) => {
+    setSelectedPropertyForTax(property);
+    setShowTaxPaymentModal(true);
+    loadTaxPayments(property.id);
+  };
+
+  const handleAddTaxPayment = async (e) => {
+    e.preventDefault();
+    try {
+      const token = localStorage.getItem('adminToken');
+      await axios.post(
+        `${process.env.REACT_APP_API_URL}/admin/properties/${selectedPropertyForTax.id}/pay-taxes`,
+        taxPaymentFormData,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      alert('Tax payment recorded successfully!');
+      setShowAddTaxPaymentForm(false);
+      setTaxPaymentFormData({
+        payment_date: new Date().toISOString().split('T')[0],
+        amount: '',
+        tax_year: new Date().getFullYear(),
+        payment_method: 'Check',
+        check_number: '',
+        notes: ''
+      });
+      loadTaxPayments(selectedPropertyForTax.id);
+      loadProperties();
+    } catch (err) {
+      console.error('Failed to record tax payment:', err);
+      alert('Failed to record tax payment');
+    }
+  };
+
+  const deleteTaxPayment = async (paymentId) => {
+    if (!window.confirm('Delete this tax payment?')) return;
+    
+    try {
+      const token = localStorage.getItem('adminToken');
+      await axios.delete(
+        `${process.env.REACT_APP_API_URL}/admin/tax-payments/${paymentId}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      alert('Tax payment deleted successfully!');
+      loadTaxPayments(selectedPropertyForTax.id);
+      loadProperties();
+    } catch (err) {
+      console.error('Failed to delete tax payment:', err);
+      alert('Failed to delete tax payment');
     }
   };
 
@@ -435,6 +512,20 @@ function PropertyManagement() {
                     }}
                   >
                     💰 Expenses
+                  </button>
+		  <button
+                    onClick={() => openTaxPaymentModal(property)}
+                    className="btn"
+                    style={{
+                      padding: '5px 15px',
+                      fontSize: '14px',
+                      width: '100%',
+                      marginBottom: '5px',
+                      backgroundColor: '#28a745',
+                      color: 'white'
+                    }}
+                  >
+                    💵 Pay Taxes
                   </button>
                   <button
                     onClick={() => openImagesModal(property)}
@@ -830,10 +921,209 @@ function PropertyManagement() {
           </div>
         </div>
       )}
+
+      {/* Tax Payment Modal */}
+      {showTaxPaymentModal && selectedPropertyForTax && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0,0,0,0.5)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 1000
+        }}>
+          <div style={{
+            backgroundColor: 'white',
+            padding: '30px',
+            borderRadius: '10px',
+            maxWidth: '800px',
+            width: '90%',
+            maxHeight: '90vh',
+            overflow: 'auto'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+              <h2 style={{ margin: 0 }}>💵 Tax Payments - {selectedPropertyForTax.title}</h2>
+              <button 
+                onClick={() => {
+                  setShowTaxPaymentModal(false);
+                  setShowAddTaxPaymentForm(false);
+                }}
+                className="btn"
+                style={{ padding: '8px 20px' }}
+              >
+                Close
+              </button>
+            </div>
+
+            {/* Summary */}
+            <div style={{ 
+              padding: '15px', 
+              backgroundColor: '#f0f8f0', 
+              borderRadius: '8px', 
+              marginBottom: '20px'
+            }}>
+              <div style={{ fontSize: '12px', color: '#666' }}>Annual Tax Amount</div>
+              <div style={{ fontSize: '20px', fontWeight: 'bold', color: 'var(--forest-green)' }}>
+                ${selectedPropertyForTax.annual_tax_amount ? selectedPropertyForTax.annual_tax_amount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) : '0.00'}
+              </div>
+            </div>
+
+            {/* Add Payment Button/Form */}
+            {!showAddTaxPaymentForm ? (
+              <button
+                onClick={() => setShowAddTaxPaymentForm(true)}
+                className="btn btn-primary"
+                style={{ marginBottom: '20px', width: '100%' }}
+              >
+                + Record Tax Payment
+              </button>
+            ) : (
+              <div style={{ 
+                padding: '20px', 
+                backgroundColor: '#f9f9f9', 
+                borderRadius: '8px', 
+                marginBottom: '20px',
+                border: '2px solid var(--forest-green)'
+              }}>
+                <h3 style={{ marginTop: 0 }}>Record Tax Payment to County</h3>
+                <form onSubmit={handleAddTaxPayment}>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
+                    <div className="form-group">
+                      <label>Payment Date *</label>
+                      <input
+                        type="date"
+                        value={taxPaymentFormData.payment_date}
+                        onChange={(e) => setTaxPaymentFormData({...taxPaymentFormData, payment_date: e.target.value})}
+                        required
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label>Amount Paid *</label>
+                      <input
+                        type="number"
+                        step="0.01"
+                        value={taxPaymentFormData.amount}
+                        onChange={(e) => setTaxPaymentFormData({...taxPaymentFormData, amount: e.target.value})}
+                        placeholder="0.00"
+                        required
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label>Tax Year *</label>
+                      <input
+                        type="number"
+                        value={taxPaymentFormData.tax_year}
+                        onChange={(e) => setTaxPaymentFormData({...taxPaymentFormData, tax_year: e.target.value})}
+                        required
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label>Payment Method</label>
+                      <select
+                        value={taxPaymentFormData.payment_method}
+                        onChange={(e) => setTaxPaymentFormData({...taxPaymentFormData, payment_method: e.target.value})}
+                      >
+                        <option value="Check">Check</option>
+                        <option value="Wire Transfer">Wire Transfer</option>
+                        <option value="ACH">ACH</option>
+                        <option value="Cash">Cash</option>
+                        <option value="Other">Other</option>
+                      </select>
+                    </div>
+                    <div className="form-group">
+                      <label>Check Number</label>
+                      <input
+                        type="text"
+                        value={taxPaymentFormData.check_number}
+                        onChange={(e) => setTaxPaymentFormData({...taxPaymentFormData, check_number: e.target.value})}
+                        placeholder="Optional"
+                      />
+                    </div>
+                  </div>
+                  <div className="form-group">
+                    <label>Notes</label>
+                    <textarea
+                      rows="2"
+                      value={taxPaymentFormData.notes}
+                      onChange={(e) => setTaxPaymentFormData({...taxPaymentFormData, notes: e.target.value})}
+                      placeholder="Additional notes about this payment"
+                    />
+                  </div>
+                  <div style={{ display: 'flex', gap: '10px' }}>
+                    <button type="submit" className="btn btn-primary" style={{ flex: 1 }}>
+                      Save Payment
+                    </button>
+                    <button 
+                      type="button" 
+                      onClick={() => setShowAddTaxPaymentForm(false)}
+                      className="btn"
+                      style={{ flex: 1 }}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </form>
+              </div>
+            )}
+
+            {/* Payment History */}
+            {taxPayments.length === 0 ? (
+              <div style={{ textAlign: 'center', padding: '40px', color: '#666' }}>
+                No tax payments recorded yet
+              </div>
+            ) : (
+              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                <thead>
+                  <tr style={{ backgroundColor: 'var(--light-green)', borderBottom: '2px solid var(--forest-green)' }}>
+                    <th style={{ padding: '10px', textAlign: 'left' }}>Date</th>
+                    <th style={{ padding: '10px', textAlign: 'left' }}>Tax Year</th>
+                    <th style={{ padding: '10px', textAlign: 'left' }}>Method</th>
+                    <th style={{ padding: '10px', textAlign: 'left' }}>Check #</th>
+                    <th style={{ padding: '10px', textAlign: 'right' }}>Amount</th>
+                    <th style={{ padding: '10px', textAlign: 'center' }}>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {taxPayments.map(payment => (
+                    <tr key={payment.id} style={{ borderBottom: '1px solid #eee' }}>
+                      <td style={{ padding: '10px' }}>
+                        {new Date(payment.payment_date).toLocaleDateString()}
+                      </td>
+                      <td style={{ padding: '10px' }}>{payment.tax_year}</td>
+                      <td style={{ padding: '10px' }}>{payment.payment_method || '—'}</td>
+                      <td style={{ padding: '10px' }}>{payment.check_number || '—'}</td>
+                      <td style={{ padding: '10px', textAlign: 'right', fontWeight: 'bold' }}>
+                        ${parseFloat(payment.amount).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}
+                      </td>
+                      <td style={{ padding: '10px', textAlign: 'center' }}>
+                        <button
+                          onClick={() => deleteTaxPayment(payment.id)}
+                          className="btn"
+                          style={{
+                            padding: '5px 10px',
+                            fontSize: '12px',
+                            backgroundColor: '#dc3545',
+                            color: 'white'
+                          }}
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
-
 // Property Form Component (Add/Edit)
 function PropertyForm({ property, onSuccess, onCancel }) {
   const isEditing = !!property;
@@ -870,7 +1160,6 @@ function PropertyForm({ property, onSuccess, onCancel }) {
       return { ne: '', se: '', sw: '', nw: '', center: '' };
     }
   };
-
   const existingCoords = isEditing ? parseCoordinates(property.coordinates) : {};
 
   const [formData, setFormData] = useState({

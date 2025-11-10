@@ -247,9 +247,10 @@ function AdminReports() {
                 <thead>
                   <tr style={{ borderBottom: '2px solid #ddd' }}>
                     <th style={{ padding: '12px', textAlign: 'left' }}>Property</th>
-                    <th style={{ padding: '12px', textAlign: 'right' }}>Annual Tax</th>
-                    <th style={{ padding: '12px', textAlign: 'right' }}>Collected</th>
-                    <th style={{ padding: '12px', textAlign: 'right' }}>Balance</th>
+              <th style={{ padding: '12px', textAlign: 'right' }}>Annual Tax</th>
+              <th style={{ padding: '12px', textAlign: 'right' }}>Collected</th>
+              <th style={{ padding: '12px', textAlign: 'right' }}>Taxes Paid</th>
+              <th style={{ padding: '12px', textAlign: 'right' }}>Balance</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -259,12 +260,15 @@ function AdminReports() {
                       <td style={{ padding: '12px', textAlign: 'right' }}>
                         ${formatCurrency(prop.annual_tax_amount)}
                       </td>
-                      <td style={{ padding: '12px', textAlign: 'right', fontWeight: 'bold', color: 'var(--forest-green)' }}>
-                        ${formatCurrency(prop.tax_collected)}
-                      </td>
-                      <td style={{ padding: '12px', textAlign: 'right', fontWeight: 'bold' }}>
-                        ${formatCurrency(prop.tax_balance)}
-                      </td>
+                      <td style={{ padding: '12px', textAlign: 'right', color: '#10b981', fontWeight: 'bold' }}>
+                  ${formatCurrency(property.tax_collected)}
+                </td>
+                <td style={{ padding: '12px', textAlign: 'right', color: '#dc3545', fontWeight: 'bold' }}>
+                  ${formatCurrency(property.taxes_paid || 0)}
+                </td>
+                <td style={{ padding: '12px', textAlign: 'right', fontWeight: 'bold' }}>
+                  ${formatCurrency(property.tax_balance)}
+                </td>
                     </tr>
                   ))}
                 </tbody>

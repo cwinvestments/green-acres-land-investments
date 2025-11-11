@@ -517,21 +517,22 @@ const loadTaxPayments = async (propertyId) => {
         />
       )}
 
-      {/* Properties Table */}
-      <div className="card" style={{ padding: 0 }}>
-        <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '900px' }}>
-          <thead>
-            <tr style={{ backgroundColor: 'var(--light-green)', borderBottom: '2px solid var(--forest-green)' }}>
-              <th style={{ padding: '15px', textAlign: 'left' }}>Property</th>
-              <th style={{ padding: '15px', textAlign: 'left' }}>Location</th>
-              <th style={{ padding: '15px', textAlign: 'center' }}>Price</th>
-              <th style={{ padding: '15px', textAlign: 'center' }}>Acres</th>
-              <th style={{ padding: '15px', textAlign: 'center' }}>Status</th>
-              <th style={{ padding: '15px', textAlign: 'center' }}>Profit</th>
-              <th style={{ padding: '15px', textAlign: 'center' }}>Actions</th>
-            </tr>
-          </thead>
+      {/* Desktop Properties Table */}
+      <div className="desktop-only">
+        <div className="card" style={{ padding: 0 }}>
+          <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '900px' }}>
+            <thead>
+              <tr style={{ backgroundColor: 'var(--light-green)', borderBottom: '2px solid var(--forest-green)' }}>
+                <th style={{ padding: '15px', textAlign: 'left' }}>Property</th>
+                <th style={{ padding: '15px', textAlign: 'left' }}>Location</th>
+                <th style={{ padding: '15px', textAlign: 'center' }}>Price</th>
+                <th style={{ padding: '15px', textAlign: 'center' }}>Acres</th>
+                <th style={{ padding: '15px', textAlign: 'center' }}>Status</th>
+                <th style={{ padding: '15px', textAlign: 'center' }}>Profit</th>
+                <th style={{ padding: '15px', textAlign: 'center' }}>Actions</th>
+              </tr>
+            </thead>
           <tbody>
             {properties.map(property => (
               <tr key={property.id} style={{ borderBottom: '1px solid #eee' }}>
@@ -1296,11 +1297,164 @@ const loadTaxPayments = async (propertyId) => {
                     </tr>
                   ))}
                 </tbody>
-              </table>
-            )}
+        </table>
           </div>
         </div>
-      )}
+      </div>
+
+      {/* Mobile Properties Cards */}
+      <div className="mobile-only">
+        {properties.map(property => (
+          <div key={property.id} style={{
+            background: 'white',
+            border: '2px solid #ddd',
+            borderRadius: '8px',
+            padding: '15px',
+            marginBottom: '15px',
+            boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+          }}>
+            <div style={{ marginBottom: '10px', borderBottom: '2px solid var(--forest-green)', paddingBottom: '10px' }}>
+              <div style={{ fontWeight: 'bold', fontSize: '16px', color: 'var(--forest-green)' }}>
+                {property.title}
+              </div>
+              <div style={{ fontSize: '14px', color: '#666' }}>ID: {property.id}</div>
+            </div>
+
+            <div style={{ marginBottom: '10px' }}>
+              <div style={{ fontSize: '12px', color: '#666' }}>Location</div>
+              <div style={{ fontWeight: '600' }}>{property.county}, {property.state}</div>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '10px' }}>
+              <div>
+                <div style={{ fontSize: '12px', color: '#666' }}>Price</div>
+                <div style={{ fontWeight: '600', color: 'var(--forest-green)' }}>
+                  ${parseFloat(property.price).toLocaleString()}
+                </div>
+              </div>
+              <div>
+                <div style={{ fontSize: '12px', color: '#666' }}>Acres</div>
+                <div style={{ fontWeight: '600' }}>
+                  {parseFloat(property.acres).toFixed(1)}
+                </div>
+              </div>
+            </div>
+
+            <div style={{ marginBottom: '10px' }}>
+              <div style={{ fontSize: '12px', color: '#666', marginBottom: '5px' }}>Status</div>
+              {getStatusBadge(property.status)}
+            </div>
+
+            {property.acquisition_cost && (
+              <div style={{ marginBottom: '10px', padding: '10px', backgroundColor: 'var(--light-green)', borderRadius: '5px' }}>
+                <div style={{ fontSize: '12px', color: '#666' }}>Profit</div>
+                <div style={{ 
+                  color: (property.price - property.acquisition_cost) >= 0 ? '#10b981' : '#ef4444',
+                  fontWeight: 'bold',
+                  fontSize: '16px'
+                }}>
+                  ${(property.price - property.acquisition_cost).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}
+                </div>
+                <div style={{ fontSize: '11px', color: '#666' }}>
+                  {(((property.price - property.acquisition_cost) / property.acquisition_cost) * 100).toFixed(1)}% ROI
+                </div>
+              </div>
+            )}
+
+            <div style={{ marginTop: '15px' }}>
+              <select
+                value={property.status}
+                onChange={(e) => updateStatus(property.id, e.target.value)}
+                style={{
+                  padding: '8px',
+                  borderRadius: '4px',
+                  border: '1px solid #ddd',
+                  width: '100%',
+                  marginBottom: '8px'
+                }}
+              >
+                <option value="available">Available</option>
+                <option value="coming_soon">Coming Soon</option>
+                <option value="pending">Pending</option>
+                <option value="under_contract">Under Contract</option>
+                <option value="sold">Sold</option>
+              </select>
+
+              <button
+                onClick={() => openExpensesModal(property)}
+                className="btn"
+                style={{
+                  padding: '8px',
+                  fontSize: '14px',
+                  width: '100%',
+                  marginBottom: '8px',
+                  backgroundColor: '#f59e0b',
+                  color: 'white'
+                }}
+              >
+                💰 Expenses
+              </button>
+
+              <button
+                onClick={() => openTaxPaymentModal(property)}
+                className="btn"
+                style={{
+                  padding: '8px',
+                  fontSize: '14px',
+                  width: '100%',
+                  marginBottom: '8px',
+                  backgroundColor: '#28a745',
+                  color: 'white'
+                }}
+              >
+                💵 Pay Taxes
+              </button>
+
+              <button
+                onClick={() => openImagesModal(property)}
+                className="btn"
+                style={{
+                  padding: '8px',
+                  fontSize: '14px',
+                  width: '100%',
+                  marginBottom: '8px',
+                  backgroundColor: '#6366f1',
+                  color: 'white'
+                }}
+              >
+                📷 Images
+              </button>
+
+              <button
+                onClick={() => setEditingProperty(property)}
+                className="btn"
+                style={{
+                  padding: '8px',
+                  fontSize: '14px',
+                  width: '100%',
+                  marginBottom: '8px'
+                }}
+              >
+                ✏️ Edit
+              </button>
+
+              <button
+                onClick={() => deleteProperty(property.id, property.title)}
+                className="btn"
+                style={{
+                  padding: '8px',
+                  fontSize: '14px',
+                  width: '100%',
+                  backgroundColor: '#dc3545',
+                  color: 'white'
+                }}
+              >
+                🗑️ Delete
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

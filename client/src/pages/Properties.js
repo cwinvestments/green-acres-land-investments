@@ -175,10 +175,9 @@ function Properties() {
   className="property-image"
   style={{
     width: '100%',
-    height: '100%',
-    objectFit: 'contain',
-    opacity: '0.7',
-    background: '#f5f5f5'
+    height: '180px',
+    objectFit: 'cover',
+    opacity: '0.9'
   }}
 />
               )}

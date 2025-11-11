@@ -966,6 +966,12 @@ body {
   flex-shrink: 0;
 }
 
+/* Override for placeholder images to prevent cropping text */
+.property-card img[src*="IMAGES-COMING-SOON"] {
+  object-fit: contain;
+  background: #2c5f2d;
+}
+
 /* Property Content */
 .property-content {
   padding: 1.5rem;

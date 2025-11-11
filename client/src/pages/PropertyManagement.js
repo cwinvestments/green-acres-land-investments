@@ -27,6 +27,7 @@ function PropertyManagement() {
   const [imageCaption, setImageCaption] = useState('');
   const [loadingImages, setLoadingImages] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [draggedImageIndex, setDraggedImageIndex] = useState(null);
   const [showTaxPaymentModal, setShowTaxPaymentModal] = useState(false);
   const [selectedPropertyForTax, setSelectedPropertyForTax] = useState(null);
   const [taxPayments, setTaxPayments] = useState([]);
@@ -238,6 +239,54 @@ function PropertyManagement() {
       console.error('Failed to delete image:', err);
       alert('Failed to delete image');
     }
+  };
+
+  const handleDragStart = (e, index) => {
+    setDraggedImageIndex(index);
+    e.dataTransfer.effectAllowed = 'move';
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+  };
+
+  const handleDrop = async (e, dropIndex) => {
+    e.preventDefault();
+    
+    if (draggedImageIndex === null || draggedImageIndex === dropIndex) {
+      setDraggedImageIndex(null);
+      return;
+    }
+
+    const reorderedImages = [...images];
+    const [draggedImage] = reorderedImages.splice(draggedImageIndex, 1);
+    reorderedImages.splice(dropIndex, 0, draggedImage);
+
+    const imageOrders = reorderedImages.map((img, idx) => ({
+      id: img.id,
+      display_order: idx
+    }));
+
+    setImages(reorderedImages);
+    setDraggedImageIndex(null);
+
+    try {
+      const token = localStorage.getItem('adminToken');
+      await axios.patch(
+        `${process.env.REACT_APP_API_URL}/admin/properties/${selectedPropertyForImages.id}/images/reorder`,
+        { imageOrders },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+    } catch (err) {
+      console.error('Failed to reorder images:', err);
+      alert('Failed to save new image order');
+      loadImages(selectedPropertyForImages.id);
+    }
+  };
+
+  const handleDragEnd = () => {
+    setDraggedImageIndex(null);
   };
 
 const loadTaxPayments = async (propertyId) => {
@@ -928,13 +977,37 @@ const loadTaxPayments = async (propertyId) => {
                 gap: '15px' 
               }}>
                 {images.map((image, index) => (
-                  <div key={image.id} style={{ 
-                    border: '2px solid #ddd', 
-                    borderRadius: '8px', 
-                    overflow: 'hidden',
-                    backgroundColor: 'white',
-                    position: 'relative'
-                  }}>
+                  <div 
+                    key={image.id}
+                    draggable
+                    onDragStart={(e) => handleDragStart(e, index)}
+                    onDragOver={handleDragOver}
+                    onDrop={(e) => handleDrop(e, index)}
+                    onDragEnd={handleDragEnd}
+                    style={{ 
+                      border: '2px solid #ddd', 
+                      borderRadius: '8px', 
+                      overflow: 'hidden',
+                      backgroundColor: 'white',
+                      position: 'relative',
+                      cursor: draggedImageIndex === index ? 'grabbing' : 'grab',
+                      opacity: draggedImageIndex === index ? 0.5 : 1,
+                      transition: 'opacity 0.2s'
+                    }}>
+                    <div style={{
+                      position: 'absolute',
+                      top: '10px',
+                      left: '10px',
+                      backgroundColor: 'rgba(0,0,0,0.6)',
+                      color: 'white',
+                      padding: '4px 8px',
+                      borderRadius: '4px',
+                      fontSize: '12px',
+                      fontWeight: 'bold',
+                      zIndex: 1
+                    }}>
+                      ☰ {index + 1}
+                    </div>
                     {image.is_featured && (
                       <div style={{
                         position: 'absolute',
@@ -958,14 +1031,10 @@ const loadTaxPayments = async (propertyId) => {
                         width: '100%', 
                         height: '150px', 
                         objectFit: 'cover',
-                        cursor: 'pointer'
+                        pointerEvents: 'none'
                       }}
-                      onClick={() => window.open(image.url, '_blank')}
                     />
                     <div style={{ padding: '10px' }}>
-                      <div style={{ fontSize: '11px', color: '#999', marginBottom: '5px' }}>
-                        Order: {image.display_order + 1}
-                      </div>
                       {image.caption ? (
                         <p style={{ 
                           margin: '0 0 10px 0', 

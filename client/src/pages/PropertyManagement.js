@@ -23,9 +23,10 @@ function PropertyManagement() {
   const [showImagesModal, setShowImagesModal] = useState(false);
   const [selectedPropertyForImages, setSelectedPropertyForImages] = useState(null);
   const [images, setImages] = useState([]);
-  const [imageUrl, setImageUrl] = useState('');
+  const [selectedImageFile, setSelectedImageFile] = useState(null);
   const [imageCaption, setImageCaption] = useState('');
   const [loadingImages, setLoadingImages] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
   const [showTaxPaymentModal, setShowTaxPaymentModal] = useState(false);
   const [selectedPropertyForTax, setSelectedPropertyForTax] = useState(null);
   const [taxPayments, setTaxPayments] = useState([]);
@@ -153,41 +154,82 @@ function PropertyManagement() {
     loadImages(property.id);
   };
 
-  const handleAddImage = async (e) => {
+  const handleImageUpload = async (e) => {
     e.preventDefault();
     
-    if (!imageUrl.trim()) {
-      alert('Please enter an image URL');
+    if (!selectedImageFile) {
+      alert('Please select an image file');
       return;
     }
 
+    setUploadingImage(true);
     try {
       const token = localStorage.getItem('adminToken');
+      const formData = new FormData();
+      formData.append('image', selectedImageFile);
+      formData.append('caption', imageCaption);
+
       await axios.post(
-        `${process.env.REACT_APP_API_URL}/admin/properties/${selectedPropertyForImages.id}/images`,
+        `${process.env.REACT_APP_API_URL}/admin/properties/${selectedPropertyForImages.id}/images/upload`,
+        formData,
         { 
-          image_url: imageUrl,
-          caption: imageCaption 
-        },
-        { headers: { Authorization: `Bearer ${token}` } }
+          headers: { 
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data'
+          } 
+        }
       );
-      alert('Image added successfully!');
-      setImageUrl('');
+      alert('Image uploaded successfully!');
+      setSelectedImageFile(null);
       setImageCaption('');
       loadImages(selectedPropertyForImages.id);
     } catch (err) {
-      console.error('Failed to add image:', err);
-      alert(err.response?.data?.error || 'Failed to add image');
+      console.error('Failed to upload image:', err);
+      alert(err.response?.data?.error || 'Failed to upload image');
+    } finally {
+      setUploadingImage(false);
+    }
+  };
+
+  const updateImageCaption = async (imageId, caption) => {
+    try {
+      const token = localStorage.getItem('adminToken');
+      await axios.patch(
+        `${process.env.REACT_APP_API_URL}/admin/properties/${selectedPropertyForImages.id}/images/${imageId}`,
+        { caption },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      alert('Caption updated!');
+      loadImages(selectedPropertyForImages.id);
+    } catch (err) {
+      console.error('Failed to update caption:', err);
+      alert('Failed to update caption');
+    }
+  };
+
+  const setFeaturedImage = async (imageId) => {
+    try {
+      const token = localStorage.getItem('adminToken');
+      await axios.patch(
+        `${process.env.REACT_APP_API_URL}/admin/properties/${selectedPropertyForImages.id}/images/${imageId}`,
+        { is_featured: true },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      alert('Featured image set!');
+      loadImages(selectedPropertyForImages.id);
+    } catch (err) {
+      console.error('Failed to set featured image:', err);
+      alert('Failed to set featured image');
     }
   };
 
   const deleteImage = async (imageId) => {
-    if (!window.confirm('Delete this image?')) return;
+    if (!window.confirm('Delete this image? This will permanently remove it from Cloudinary.')) return;
     
     try {
       const token = localStorage.getItem('adminToken');
       await axios.delete(
-        `${process.env.REACT_APP_API_URL}/admin/images/${imageId}`,
+        `${process.env.REACT_APP_API_URL}/admin/properties/${selectedPropertyForImages.id}/images/${imageId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       alert('Image deleted successfully!');
@@ -774,7 +816,7 @@ const loadTaxPayments = async (propertyId) => {
         </div>
       )}
 
-      {/* Images Modal */}
+      {/* Images Modal - CLOUDINARY VERSION */}
       {showImagesModal && selectedPropertyForImages && (
         <div style={{
           position: 'fixed',
@@ -819,7 +861,7 @@ const loadTaxPayments = async (propertyId) => {
               <strong>{images.length} / 10</strong> images uploaded
             </div>
 
-            {/* Add Image Form */}
+            {/* Add Image Form - FILE UPLOAD */}
             {images.length < 10 && (
               <div style={{ 
                 padding: '20px', 
@@ -828,19 +870,25 @@ const loadTaxPayments = async (propertyId) => {
                 marginBottom: '20px',
                 border: '2px solid var(--forest-green)'
               }}>
-                <h3 style={{ marginTop: 0 }}>Add New Image</h3>
-                <form onSubmit={handleAddImage}>
+                <h3 style={{ marginTop: 0 }}>📤 Upload New Image</h3>
+                <form onSubmit={handleImageUpload}>
                   <div className="form-group">
-                    <label>Image URL *</label>
+                    <label>Select Image File *</label>
                     <input
-                      type="url"
-                      value={imageUrl}
-                      onChange={(e) => setImageUrl(e.target.value)}
-                      placeholder="https://example.com/image.jpg"
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => setSelectedImageFile(e.target.files[0])}
                       required
+                      style={{
+                        width: '100%',
+                        padding: '10px',
+                        border: '2px dashed var(--border-color)',
+                        borderRadius: '8px',
+                        cursor: 'pointer'
+                      }}
                     />
-                    <small style={{ color: '#666', fontSize: '12px' }}>
-                      Upload your image to a hosting service (Imgur, Cloudinary, etc.) and paste the URL here
+                    <small style={{ color: '#666', fontSize: '12px', display: 'block', marginTop: '5px' }}>
+                      Supported: JPG, PNG, GIF, WebP (max 10MB per image)
                     </small>
                   </div>
                   <div className="form-group">
@@ -849,11 +897,16 @@ const loadTaxPayments = async (propertyId) => {
                       type="text"
                       value={imageCaption}
                       onChange={(e) => setImageCaption(e.target.value)}
-                      placeholder="Description of this image"
+                      placeholder="Front view, Aerial shot, etc."
                     />
                   </div>
-                  <button type="submit" className="btn btn-primary" style={{ width: '100%' }}>
-                    Add Image
+                  <button 
+                    type="submit" 
+                    className="btn btn-primary" 
+                    style={{ width: '100%' }}
+                    disabled={uploadingImage}
+                  >
+                    {uploadingImage ? '⏳ Uploading...' : '📤 Upload Image'}
                   </button>
                 </form>
               </div>
@@ -866,7 +919,7 @@ const loadTaxPayments = async (propertyId) => {
               </div>
             ) : images.length === 0 ? (
               <div style={{ textAlign: 'center', padding: '40px', color: '#666' }}>
-                No images uploaded yet
+                No images uploaded yet. Upload your first image above!
               </div>
             ) : (
               <div style={{ 
@@ -874,24 +927,46 @@ const loadTaxPayments = async (propertyId) => {
                 gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', 
                 gap: '15px' 
               }}>
-                {images.map(image => (
+                {images.map((image, index) => (
                   <div key={image.id} style={{ 
                     border: '2px solid #ddd', 
                     borderRadius: '8px', 
                     overflow: 'hidden',
-                    backgroundColor: 'white'
+                    backgroundColor: 'white',
+                    position: 'relative'
                   }}>
+                    {image.is_featured && (
+                      <div style={{
+                        position: 'absolute',
+                        top: '10px',
+                        right: '10px',
+                        backgroundColor: '#f59e0b',
+                        color: 'white',
+                        padding: '4px 8px',
+                        borderRadius: '4px',
+                        fontSize: '12px',
+                        fontWeight: 'bold',
+                        zIndex: 1
+                      }}>
+                        ⭐ Featured
+                      </div>
+                    )}
                     <img 
-                      src={image.image_url} 
+                      src={image.url} 
                       alt={image.caption || 'Property'} 
                       style={{ 
                         width: '100%', 
                         height: '150px', 
-                        objectFit: 'cover' 
+                        objectFit: 'cover',
+                        cursor: 'pointer'
                       }}
+                      onClick={() => window.open(image.url, '_blank')}
                     />
                     <div style={{ padding: '10px' }}>
-                      {image.caption && (
+                      <div style={{ fontSize: '11px', color: '#999', marginBottom: '5px' }}>
+                        Order: {image.display_order + 1}
+                      </div>
+                      {image.caption ? (
                         <p style={{ 
                           margin: '0 0 10px 0', 
                           fontSize: '13px', 
@@ -899,20 +974,55 @@ const loadTaxPayments = async (propertyId) => {
                         }}>
                           {image.caption}
                         </p>
+                      ) : (
+                        <button
+                          onClick={() => {
+                            const caption = prompt('Enter caption for this image:');
+                            if (caption !== null) updateImageCaption(image.id, caption);
+                          }}
+                          className="btn"
+                          style={{
+                            padding: '5px 10px',
+                            fontSize: '12px',
+                            width: '100%',
+                            marginBottom: '5px',
+                            backgroundColor: '#6366f1',
+                            color: 'white'
+                          }}
+                        >
+                          ✏️ Add Caption
+                        </button>
                       )}
-                      <button
-                        onClick={() => deleteImage(image.id)}
-                        className="btn"
-                        style={{
-                          padding: '5px 10px',
-                          fontSize: '12px',
-                          width: '100%',
-                          backgroundColor: '#dc3545',
-                          color: 'white'
-                        }}
-                      >
-                        Delete
-                      </button>
+                      <div style={{ display: 'flex', gap: '5px' }}>
+                        {!image.is_featured && (
+                          <button
+                            onClick={() => setFeaturedImage(image.id)}
+                            className="btn"
+                            style={{
+                              padding: '5px 10px',
+                              fontSize: '12px',
+                              flex: 1,
+                              backgroundColor: '#f59e0b',
+                              color: 'white'
+                            }}
+                          >
+                            ⭐ Feature
+                          </button>
+                        )}
+                        <button
+                          onClick={() => deleteImage(image.id)}
+                          className="btn"
+                          style={{
+                            padding: '5px 10px',
+                            fontSize: '12px',
+                            flex: 1,
+                            backgroundColor: '#dc3545',
+                            color: 'white'
+                          }}
+                        >
+                          🗑️ Delete
+                        </button>
+                      </div>
                     </div>
                   </div>
                 ))}

@@ -1713,6 +1713,27 @@ app.get('/api/properties/:propertyId/images', async (req, res) => {
   }
 });
 
+// Reorder images - MUST come before /:imageId route
+app.patch('/api/admin/properties/:id/images/reorder', authenticateAdmin, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { imageOrders } = req.body; // Array of { id, display_order }
+    
+    // Update each image's display order
+    for (const item of imageOrders) {
+      await db.pool.query(
+        'UPDATE property_images SET display_order = $1 WHERE id = $2 AND property_id = $3',
+        [item.display_order, item.id, id]
+      );
+    }
+    
+    res.json({ message: 'Images reordered successfully' });
+  } catch (error) {
+    console.error('Reorder images error:', error);
+    res.status(500).json({ error: 'Failed to reorder images' });
+  }
+});
+
 // Update image (caption, order, featured status)
 app.patch('/api/admin/properties/:propertyId/images/:imageId', authenticateAdmin, async (req, res) => {
   try {
@@ -1748,27 +1769,6 @@ app.patch('/api/admin/properties/:propertyId/images/:imageId', authenticateAdmin
   } catch (error) {
     console.error('Update image error:', error);
     res.status(500).json({ error: 'Failed to update image' });
-  }
-});
-
-// Reorder images
-app.patch('/api/admin/properties/:id/images/reorder', authenticateAdmin, async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { imageOrders } = req.body; // Array of { id, display_order }
-    
-    // Update each image's display order
-    for (const item of imageOrders) {
-      await db.pool.query(
-        'UPDATE property_images SET display_order = $1 WHERE id = $2 AND property_id = $3',
-        [item.display_order, item.id, id]
-      );
-    }
-    
-    res.json({ message: 'Images reordered successfully' });
-  } catch (error) {
-    console.error('Reorder images error:', error);
-    res.status(500).json({ error: 'Failed to reorder images' });
   }
 });
 

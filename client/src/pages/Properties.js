@@ -175,16 +175,17 @@ function Properties() {
                 />
               ) : (
                 <img
-                  src="https://res.cloudinary.com/dxd4ef2tc/image/upload/IMAGES-COMING-SOON_tbspdc.png"
-                  alt="Property Coming Soon"
-                  className="property-image"
-                  style={{
-                    width: '100%',
-                    height: '100%',
-                    objectFit: 'cover',
-                    opacity: '0.7'
-                  }}
-                />
+  src="https://res.cloudinary.com/dxd4ef2tc/image/upload/IMAGES-COMING-SOON_tbspdc.png"
+  alt="Property Coming Soon"
+  className="property-image"
+  style={{
+    width: '100%',
+    height: '100%',
+    objectFit: 'contain',
+    opacity: '0.7',
+    background: '#f5f5f5'
+  }}
+/>
               )}
               <div className="property-content">
                 <h3>{property.title}</h3>

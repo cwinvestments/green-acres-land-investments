@@ -325,19 +325,18 @@ navigate('/dashboard');
               )}
             </div>
           ) : (
-            <div style={{
-              width: '100%',
-              height: '400px',
-              background: 'linear-gradient(135deg, var(--forest-green) 0%, var(--sandy-gold) 100%)',
-              borderRadius: '10px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '4rem',
-              marginBottom: '1rem'
-            }}>
-              🏞️
-            </div>
+            <img
+              src="https://res.cloudinary.com/dxd4ef2tc/image/upload/IMAGES-COMING-SOON_tbspdc.png"
+              alt="Images Coming Soon"
+              style={{
+                width: '100%',
+                height: '400px',
+                objectFit: 'contain',
+                borderRadius: '10px',
+                background: '#f5f5f5',
+                marginBottom: '1rem'
+              }}
+            />
           )}
           
           {/* Photo Disclaimer */}

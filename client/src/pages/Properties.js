@@ -167,11 +167,6 @@ function Properties() {
                   src={propertyImages[property.id][0].url}
                   alt={property.title}
                   className="property-image"
-                  style={{
-                    width: '100%',
-                    height: '100%',
-                    objectFit: 'cover'
-                  }}
                 />
               ) : (
                 <img

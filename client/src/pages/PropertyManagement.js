@@ -518,7 +518,7 @@ const loadTaxPayments = async (propertyId) => {
       )}
 
       {/* Properties Table */}
-      <div className="card" style={{ padding: 0, margin: '0 -20px 0 -20px' }}>
+      <div className="card" style={{ padding: 0 }}>
         <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '900px' }}>
           <thead>

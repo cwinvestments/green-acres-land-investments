@@ -174,7 +174,9 @@ function Properties() {
   alt="Property Coming Soon"
   className="property-image"
   style={{
-    opacity: '0.9'
+    opacity: '0.9',
+    objectFit: 'cover',
+    objectPosition: 'center'
   }}
 />
               )}

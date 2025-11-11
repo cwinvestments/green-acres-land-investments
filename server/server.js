@@ -3,9 +3,21 @@ const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { Client, Environment } = require('square');
+const cloudinary = require('cloudinary').v2;
+const multer = require('multer');
 require('dotenv').config();
 
 const db = require('./database');
+
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
+
+// Configure multer for memory storage
+const upload = multer({ storage: multer.memoryStorage() });
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -1615,6 +1627,68 @@ app.delete('/api/admin/tax-payments/:id', authenticateAdmin, async (req, res) =>
 
 // ==================== PROPERTY IMAGES ROUTES ====================
 
+// Upload property image to Cloudinary
+app.post('/api/admin/properties/:id/images/upload', authenticateAdmin, upload.single('image'), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { caption } = req.body;
+
+    if (!req.file) {
+      return res.status(400).json({ error: 'No image file provided' });
+    }
+
+    // Check how many images this property already has
+    const countResult = await db.pool.query(
+      'SELECT COUNT(*) FROM property_images WHERE property_id = $1',
+      [id]
+    );
+    
+    if (parseInt(countResult.rows[0].count) >= 10) {
+      return res.status(400).json({ error: 'Maximum of 10 images per property reached' });
+    }
+
+    // Upload to Cloudinary
+    const uploadPromise = new Promise((resolve, reject) => {
+      const uploadStream = cloudinary.uploader.upload_stream(
+        {
+          folder: 'green-acres-properties',
+          resource_type: 'image'
+        },
+        (error, result) => {
+          if (error) reject(error);
+          else resolve(result);
+        }
+      );
+      uploadStream.end(req.file.buffer);
+    });
+
+    const cloudinaryResult = await uploadPromise;
+
+    // Get next display order
+    const orderResult = await db.pool.query(
+      'SELECT COALESCE(MAX(display_order), -1) + 1 as next_order FROM property_images WHERE property_id = $1',
+      [id]
+    );
+    const nextOrder = orderResult.rows[0].next_order;
+
+    // Save to database
+    const result = await db.pool.query(
+      `INSERT INTO property_images (property_id, cloudinary_public_id, url, caption, display_order)
+       VALUES ($1, $2, $3, $4, $5)
+       RETURNING *`,
+      [id, cloudinaryResult.public_id, cloudinaryResult.secure_url, caption || null, nextOrder]
+    );
+
+    res.status(201).json({
+      message: 'Image uploaded successfully',
+      image: result.rows[0]
+    });
+  } catch (error) {
+    console.error('Upload image error:', error);
+    res.status(500).json({ error: 'Failed to upload image' });
+  }
+});
+
 // Get all images for a property
 app.get('/api/properties/:propertyId/images', async (req, res) => {
   try {
@@ -1632,7 +1706,101 @@ app.get('/api/properties/:propertyId/images', async (req, res) => {
   }
 });
 
-// Add image to property (admin only)
+// Update image (caption, order, featured status)
+app.patch('/api/admin/properties/:propertyId/images/:imageId', authenticateAdmin, async (req, res) => {
+  try {
+    const { propertyId, imageId } = req.params;
+    const { caption, display_order, is_featured } = req.body;
+    
+    // If setting as featured, unset all other featured images for this property
+    if (is_featured === true) {
+      await db.pool.query(
+        'UPDATE property_images SET is_featured = FALSE WHERE property_id = $1',
+        [propertyId]
+      );
+    }
+    
+    const result = await db.pool.query(
+      `UPDATE property_images 
+       SET caption = COALESCE($1, caption),
+           display_order = COALESCE($2, display_order),
+           is_featured = COALESCE($3, is_featured)
+       WHERE id = $4 AND property_id = $5
+       RETURNING *`,
+      [caption, display_order, is_featured, imageId, propertyId]
+    );
+    
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Image not found' });
+    }
+    
+    res.json({
+      message: 'Image updated successfully',
+      image: result.rows[0]
+    });
+  } catch (error) {
+    console.error('Update image error:', error);
+    res.status(500).json({ error: 'Failed to update image' });
+  }
+});
+
+// Reorder images
+app.patch('/api/admin/properties/:id/images/reorder', authenticateAdmin, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { imageOrders } = req.body; // Array of { id, display_order }
+    
+    // Update each image's display order
+    for (const item of imageOrders) {
+      await db.pool.query(
+        'UPDATE property_images SET display_order = $1 WHERE id = $2 AND property_id = $3',
+        [item.display_order, item.id, id]
+      );
+    }
+    
+    res.json({ message: 'Images reordered successfully' });
+  } catch (error) {
+    console.error('Reorder images error:', error);
+    res.status(500).json({ error: 'Failed to reorder images' });
+  }
+});
+
+// Delete image from Cloudinary and database
+app.delete('/api/admin/properties/:propertyId/images/:imageId', authenticateAdmin, async (req, res) => {
+  try {
+    const { propertyId, imageId } = req.params;
+    
+    // Get image info
+    const imageResult = await db.pool.query(
+      'SELECT * FROM property_images WHERE id = $1 AND property_id = $2',
+      [imageId, propertyId]
+    );
+    
+    if (imageResult.rows.length === 0) {
+      return res.status(404).json({ error: 'Image not found' });
+    }
+    
+    const image = imageResult.rows[0];
+    
+    // Delete from Cloudinary if it has a cloudinary_public_id
+    if (image.cloudinary_public_id) {
+      await cloudinary.uploader.destroy(image.cloudinary_public_id);
+    }
+    
+    // Delete from database
+    await db.pool.query(
+      'DELETE FROM property_images WHERE id = $1',
+      [imageId]
+    );
+    
+    res.json({ message: 'Image deleted successfully' });
+  } catch (error) {
+    console.error('Delete image error:', error);
+    res.status(500).json({ error: 'Failed to delete image' });
+  }
+});
+
+// Add image to property (admin only) - OLD URL-BASED METHOD
 app.post('/api/admin/properties/:propertyId/images', authenticateAdmin, async (req, res) => {
   try {
     const { propertyId } = req.params;

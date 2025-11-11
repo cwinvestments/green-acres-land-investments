@@ -186,6 +186,20 @@ const initDatabase = async () => {
       )
     `);
 
+    // Property images table
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS property_images (
+        id SERIAL PRIMARY KEY,
+        property_id INTEGER NOT NULL REFERENCES properties(id) ON DELETE CASCADE,
+        cloudinary_public_id TEXT NOT NULL,
+        url TEXT NOT NULL,
+        caption TEXT,
+        display_order INTEGER NOT NULL DEFAULT 0,
+        is_featured BOOLEAN DEFAULT FALSE,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
 // Admin users table
     await client.query(`
       CREATE TABLE IF NOT EXISTS admin_users (        id SERIAL PRIMARY KEY,

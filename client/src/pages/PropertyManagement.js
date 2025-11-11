@@ -278,6 +278,7 @@ function PropertyManagement() {
         { imageOrders },
         { headers: { Authorization: `Bearer ${token}` } }
       );
+      alert('Image order saved successfully!');
     } catch (err) {
       console.error('Failed to reorder images:', err);
       alert('Failed to save new image order');

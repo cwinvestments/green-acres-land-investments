@@ -272,7 +272,7 @@ navigate('/dashboard');
             <div style={{ marginBottom: '1rem' }}>
               {/* Main Image */}
               <img
-                src={images[selectedImageIndex].image_url}
+                src={images[selectedImageIndex].url}
                 alt={images[selectedImageIndex].caption || property.title}
                 style={{
                   width: '100%',
@@ -293,7 +293,7 @@ navigate('/dashboard');
                   {images.map((image, index) => (
                     <img
                       key={image.id}
-                      src={image.image_url}
+                      src={image.url}
                       alt={image.caption || `View ${index + 1}`}
                       onClick={() => setSelectedImageIndex(index)}
                       style={{

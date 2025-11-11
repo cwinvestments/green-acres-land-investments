@@ -170,13 +170,11 @@ function Properties() {
                 />
               ) : (
                 <img
+  <img
   src="https://res.cloudinary.com/dxd4ef2tc/image/upload/IMAGES-COMING-SOON_tbspdc.png"
   alt="Property Coming Soon"
   className="property-image"
   style={{
-    width: '100%',
-    height: '180px',
-    objectFit: 'cover',
     opacity: '0.9'
   }}
 />

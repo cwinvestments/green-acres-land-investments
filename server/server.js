@@ -9,11 +9,18 @@ require('dotenv').config();
 
 const db = require('./database');
 
-// Configure Cloudinary
+// Configure Cloudinary - Railway uses different env var names
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET
+});
+
+// Log Cloudinary config to verify (without exposing secrets)
+console.log('Cloudinary configured:', {
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME ? 'Set' : 'MISSING',
+  api_key: process.env.CLOUDINARY_API_KEY ? 'Set' : 'MISSING',
+  api_secret: process.env.CLOUDINARY_API_SECRET ? 'Set' : 'MISSING'
 });
 
 // Configure multer for memory storage

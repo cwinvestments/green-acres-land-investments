@@ -8,10 +8,35 @@ function AdminReports() {
   const [financialData, setFinancialData] = useState(null);
   const [outstandingData, setOutstandingData] = useState(null);
   const [activeTab, setActiveTab] = useState('overview');
+  const [showExportModal, setShowExportModal] = useState(false);
+  const [exportFilters, setExportFilters] = useState({
+    reportType: 'overview',
+    startDate: '',
+    endDate: new Date().toISOString().split('T')[0],
+    properties: 'all',
+    selectedPropertyIds: []
+  });
+  const [properties, setProperties] = useState([]);
+  const [generatingPDF, setGeneratingPDF] = useState(false);
 
   useEffect(() => {
     loadReports();
+    loadProperties();
   }, []);
+
+  const loadProperties = async () => {
+    try {
+      const token = localStorage.getItem('adminToken');
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/admin/properties`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      const data = await response.json();
+      setProperties(data);
+    } catch (err) {
+      console.error('Failed to load properties:', err);
+    }
+  };
 
   const loadReports = async () => {
     try {
@@ -54,11 +79,19 @@ function AdminReports() {
   return (
     <div style={{ padding: '20px', maxWidth: '1400px', margin: '0 auto' }}>
       {/* Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px', flexWrap: 'wrap', gap: '10px' }}>
         <h1 style={{ margin: 0 }}>📊 Financial Reports</h1>
-        <button onClick={() => navigate('/admin/dashboard')} className="btn btn-secondary">
-          ← Back to Dashboard
-        </button>
+        <div style={{ display: 'flex', gap: '10px' }}>
+          <button 
+            onClick={() => setShowExportModal(true)} 
+            className="btn btn-primary"
+          >
+            📄 Export PDF
+          </button>
+          <button onClick={() => navigate('/admin/dashboard')} className="btn btn-secondary">
+            ← Back to Dashboard
+          </button>
+        </div>
       </div>
 
       {/* Tabs */}
@@ -535,6 +568,189 @@ function AdminReports() {
             ))}
           </div>
         </>
+      )}
+
+      {/* Export PDF Modal */}
+      {showExportModal && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0,0,0,0.5)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 1000,
+          padding: '20px'
+        }}>
+          <div style={{
+            backgroundColor: 'white',
+            padding: '30px',
+            borderRadius: '10px',
+            maxWidth: '600px',
+            width: '100%',
+            maxHeight: '90vh',
+            overflow: 'auto'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+              <h2 style={{ margin: 0 }}>📄 Export Financial Report</h2>
+              <button 
+                onClick={() => setShowExportModal(false)}
+                className="btn"
+                style={{ padding: '8px 20px' }}
+              >
+                Close
+              </button>
+            </div>
+
+            <form onSubmit={async (e) => {
+              e.preventDefault();
+              setGeneratingPDF(true);
+              try {
+                const token = localStorage.getItem('adminToken');
+                const queryParams = new URLSearchParams({
+                  reportType: exportFilters.reportType,
+                  startDate: exportFilters.startDate,
+                  endDate: exportFilters.endDate,
+                  properties: exportFilters.properties,
+                  ...(exportFilters.properties === 'selected' && {
+                    propertyIds: exportFilters.selectedPropertyIds.join(',')
+                  })
+                });
+
+                const response = await fetch(
+                  `${process.env.REACT_APP_API_URL}/admin/reports/export?${queryParams}`,
+                  { 
+                    headers: { Authorization: `Bearer ${token}` },
+                    method: 'GET'
+                  }
+                );
+
+                if (!response.ok) throw new Error('Failed to generate PDF');
+
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `financial-report-${exportFilters.reportType}-${new Date().toISOString().split('T')[0]}.pdf`;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+
+                alert('Report downloaded successfully!');
+                setShowExportModal(false);
+              } catch (err) {
+                console.error('Failed to generate PDF:', err);
+                alert('Failed to generate PDF report');
+              } finally {
+                setGeneratingPDF(false);
+              }
+            }}>
+              <div className="form-group">
+                <label>Report Type *</label>
+                <select
+                  value={exportFilters.reportType}
+                  onChange={(e) => setExportFilters({...exportFilters, reportType: e.target.value})}
+                  required
+                  style={{ width: '100%', padding: '10px', borderRadius: '4px', border: '1px solid #ddd' }}
+                >
+                  <option value="overview">Overview</option>
+                  <option value="tax">Tax Escrow</option>
+                  <option value="hoa">HOA Tracking</option>
+                  <option value="outstanding">Outstanding Balances</option>
+                </select>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
+                <div className="form-group">
+                  <label>Start Date</label>
+                  <input
+                    type="date"
+                    value={exportFilters.startDate}
+                    onChange={(e) => setExportFilters({...exportFilters, startDate: e.target.value})}
+                    style={{ width: '100%', padding: '10px', borderRadius: '4px', border: '1px solid #ddd' }}
+                  />
+                  <small style={{ color: '#666', fontSize: '12px' }}>Leave blank for all time</small>
+                </div>
+                <div className="form-group">
+                  <label>End Date</label>
+                  <input
+                    type="date"
+                    value={exportFilters.endDate}
+                    onChange={(e) => setExportFilters({...exportFilters, endDate: e.target.value})}
+                    style={{ width: '100%', padding: '10px', borderRadius: '4px', border: '1px solid #ddd' }}
+                  />
+                </div>
+              </div>
+
+              <div className="form-group">
+                <label>Properties *</label>
+                <select
+                  value={exportFilters.properties}
+                  onChange={(e) => setExportFilters({...exportFilters, properties: e.target.value, selectedPropertyIds: []})}
+                  required
+                  style={{ width: '100%', padding: '10px', borderRadius: '4px', border: '1px solid #ddd' }}
+                >
+                  <option value="all">All Properties</option>
+                  <option value="selected">Select Specific Properties</option>
+                </select>
+              </div>
+
+              {exportFilters.properties === 'selected' && (
+                <div className="form-group">
+                  <label>Select Properties *</label>
+                  <div style={{ 
+                    maxHeight: '200px', 
+                    overflowY: 'auto', 
+                    border: '1px solid #ddd', 
+                    borderRadius: '4px', 
+                    padding: '10px',
+                    backgroundColor: '#f9f9f9'
+                  }}>
+                    {properties.map(property => (
+                      <label key={property.id} style={{ display: 'block', padding: '5px 0', cursor: 'pointer' }}>
+                        <input
+                          type="checkbox"
+                          checked={exportFilters.selectedPropertyIds.includes(property.id)}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setExportFilters({
+                                ...exportFilters,
+                                selectedPropertyIds: [...exportFilters.selectedPropertyIds, property.id]
+                              });
+                            } else {
+                              setExportFilters({
+                                ...exportFilters,
+                                selectedPropertyIds: exportFilters.selectedPropertyIds.filter(id => id !== property.id)
+                              });
+                            }
+                          }}
+                          style={{ marginRight: '8px' }}
+                        />
+                        {property.title} - {property.county}, {property.state}
+                      </label>
+                    ))}
+                  </div>
+                  {exportFilters.selectedPropertyIds.length === 0 && (
+                    <small style={{ color: '#dc3545', fontSize: '12px' }}>Please select at least one property</small>
+                  )}
+                </div>
+              )}
+
+              <button
+                type="submit"
+                className="btn btn-primary"
+                style={{ width: '100%', marginTop: '20px' }}
+                disabled={generatingPDF || (exportFilters.properties === 'selected' && exportFilters.selectedPropertyIds.length === 0)}
+              >
+                {generatingPDF ? '⏳ Generating PDF...' : '📥 Generate & Download PDF'}
+              </button>
+            </form>
+          </div>
+        </div>
       )}
     </div>
   );

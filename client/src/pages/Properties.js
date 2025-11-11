@@ -164,7 +164,7 @@ function Properties() {
             >
               {propertyImages[property.id]?.length > 0 ? (
                 <img
-                  src={propertyImages[property.id][0].image_url}
+                  src={propertyImages[property.id][0].url}
                   alt={property.title}
                   className="property-image"
                   style={{
@@ -174,16 +174,17 @@ function Properties() {
                   }}
                 />
               ) : (
-                <div className="property-image" style={{
-                  background: 'linear-gradient(135deg, var(--light-green) 0%, var(--forest-green) 100%)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: 'white',
-                  fontSize: '3rem'
-                }}>
-                  🏞️
-                </div>
+                <img
+                  src="https://res.cloudinary.com/dxd4ef2tc/image/upload/IMAGES-COMING-SOON_tbspdc.png"
+                  alt="Property Coming Soon"
+                  className="property-image"
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover',
+                    opacity: '0.7'
+                  }}
+                />
               )}
               <div className="property-content">
                 <h3>{property.title}</h3>

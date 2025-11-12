@@ -1,5 +1,5 @@
 # Green Acres Land Investments - Project Summary
-**Last Updated: November 11, 2025**
+**Last Updated: November 12, 2025**
 
 ## Project Overview
 Green Acres Land Investments, LLC is a land financing platform that enables customers to purchase raw land with flexible owner financing options. The platform features a React frontend, Node.js/Express backend, PostgreSQL database, and integrates with Square for payments and Cloudinary for image storage.
@@ -473,11 +473,12 @@ DELETE /api/admin/tax-payments/:id                      (Delete tax payment)
 
 ### Admin - Reports
 ```
-GET    /api/admin/stats                        (Dashboard statistics)
+GET    /api/admin/stats                        (Dashboard statistics - enhanced with trends)
 GET    /api/admin/payments                     (All payments)
 GET    /api/admin/reports/financial            (Financial reports)
 GET    /api/admin/reports/outstanding          (Outstanding balances)
 GET    /api/admin/reports/tax-summary          (Tax summary for CPA)
+GET    /api/admin/reports/export               (PDF export with filters)
 ```
 
 ### Admin - States
@@ -648,12 +649,18 @@ ALTER TABLE table_name ADD COLUMN column_name TYPE;
 ### Known Issues
 None - system is working cleanly
 
+### Completed Enhancements (November 12, 2025)
+1. ✅ Drag-and-drop image reordering in admin
+2. ✅ Featured image priority on public site
+3. ✅ Mobile responsive Property Management page
+4. ✅ PDF export functionality for financial reports
+5. ✅ Enhanced Admin Dashboard with performance indicators
+6. ✅ Smart navigation from dashboard to property tax modals
+
 ### Planned Enhancements
-1. Drag-and-drop image reordering in admin
-2. Featured image priority on public site
-3. Mobile responsive table on Property Management page
-4. Cloudinary image transformations for thumbnails
-5. Move Square from Sandbox to Production mode
+1. Email notifications for payments/overdue accounts
+2. Cloudinary image transformations for thumbnails
+3. Move Square from Sandbox to Production mode
 
 ---
 
@@ -677,5 +684,5 @@ None - system is working cleanly
 
 ---
 
-**Last Major Update**: Cloudinary integration completed November 11, 2025
-**System Status**: Fully operational with clean, maintainable code
+**Last Major Update**: Enhanced reporting and dashboard analytics November 12, 2025
+**System Status**: Fully operational with mobile-responsive admin interfaces and comprehensive PDF reporting

@@ -47,18 +47,34 @@ Tracks visual design improvements and enhancement roadmap.
 
 ### Customer Features
 - Property browsing with financing calculator
-- User registration and secure login
+- User registration and secure login (reCAPTCHA protected)
 - Customer dashboard with active loans
 - Online payments via Square (down payments & monthly)
-- Detailed loan tracking and payment history
-- Mobile-responsive design
+- Detailed payment breakdowns (principal, interest, tax, HOA, fees)
+- Payment history with full transaction details
+- Account settings with deed name/address management per property
+- Mobile-responsive design throughout
+
+### Admin Features
+- Comprehensive property management with Cloudinary image storage
+- Customer and loan management dashboards
+- Performance indicators with visual analytics
+- Financial reports with PDF export functionality
+- Tax escrow reconciliation tracking
+- HOA fee tracking and management
+- Selling expense tracking per property
+- Default/cure notice management system
+- Contract generation with e-signatures
+- Mobile-responsive admin interfaces
+- Smart navigation with action-driven workflows
 
 ### Financing Options
 - **$99 Down Special** - 18% APR
 - **20% Down** - 12% APR  
-- **25%+ Down** - 8% APR
+- **50%+ Down** - 8% APR
 - Loan terms: 1-5 years
 - $50 minimum monthly payment
+- Payment due day selection (1st or 15th)
 - No early payoff penalties
 
 ---
@@ -66,10 +82,33 @@ Tracks visual design improvements and enhancement roadmap.
 ## 🛠️ Tech Stack
 
 **Frontend:** React 18 + React Router + Axios + Square Web SDK  
-**Backend:** Node.js + Express + JWT + bcrypt  
+**Backend:** Node.js + Express + JWT + bcrypt + PDFKit  
 **Database:** PostgreSQL via Supabase  
-**Payment Processing:** Square API (PCI compliant)  
-**Hosting:** Netlify (frontend) + Local (backend - deployment pending)
+**Payment Processing:** Square API (PCI compliant, Sandbox mode)  
+**Image Storage:** Cloudinary with direct file uploads  
+**Hosting:** Netlify (frontend) + Railway (backend)  
+**Security:** reCAPTCHA v3, JWT tokens, bcrypt password hashing
+
+---
+
+## 📊 Current Status
+
+**Last Updated:** November 12, 2025
+
+✅ **Production Ready Features:**
+- Complete loan origination and payment system
+- Tax escrow and HOA fee tracking
+- Comprehensive financial reporting with PDF export
+- Mobile-responsive admin and customer interfaces
+- Cloudinary image management with drag-and-drop
+- Performance dashboard with actionable insights
+- Contract generation and e-signature system
+
+⚠️ **Pending for Production:**
+- Square payment processing (currently in Sandbox mode)
+- Email notification system (planned)
+
+**System Status:** Fully operational, ready for production use
 
 ---
 

@@ -70,18 +70,6 @@ function PropertyManagement() {
     loadProperties();
   }, [loadProperties]);
 
-  // Auto-open tax payment modal if propertyId in URL
-  useEffect(() => {
-    if (propertyId && properties.length > 0 && !loading) {
-      const property = properties.find(p => p.id === parseInt(propertyId));
-      if (property) {
-        openTaxPaymentModal(property);
-        // Clear the URL to avoid re-opening on refresh
-        navigate('/admin/properties', { replace: true });
-      }
-    }
-  }, [propertyId, properties, loading, navigate, openTaxPaymentModal]);
-
   const loadExpenses = async (propertyId) => {
     try {
       const token = localStorage.getItem('adminToken');
@@ -322,6 +310,18 @@ const loadTaxPayments = async (propertyId) => {
     setShowTaxPaymentModal(true);
     loadTaxPayments(property.id);
   }, []);
+
+  // Auto-open tax payment modal if propertyId in URL
+  useEffect(() => {
+    if (propertyId && properties.length > 0 && !loading) {
+      const property = properties.find(p => p.id === parseInt(propertyId));
+      if (property) {
+        openTaxPaymentModal(property);
+        // Clear the URL to avoid re-opening on refresh
+        navigate('/admin/properties', { replace: true });
+      }
+    }
+  }, [propertyId, properties, loading, navigate, openTaxPaymentModal]);
 
   const handleAddTaxPayment = async (e) => {
     e.preventDefault();

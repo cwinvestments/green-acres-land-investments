@@ -46,6 +46,7 @@ function PropertyDetail() {
     deedMailingAddress: ''
   });
   const [paymentDueDay, setPaymentDueDay] = useState('1');
+  const [dueDiligenceAgreed, setDueDiligenceAgreed] = useState(false);
   // Find closest payment option to desired payment
 const findClosestOption = () => {
   if (!desiredPayment || desiredPayment < 50) return null;
@@ -1109,6 +1110,65 @@ navigate('/dashboard');
           </div>
         )}
 
+	{/* Due Diligence Agreement */}
+        {cardInstance && (
+          <div style={{
+            padding: '1rem',
+            backgroundColor: '#fff3cd',
+            border: '2px solid #ffc107',
+            borderRadius: '8px',
+            marginBottom: '1rem'
+          }}>
+            <h5 style={{ marginTop: 0, marginBottom: '0.75rem', color: '#856404' }}>
+              ⚠️ Due Diligence Statement
+            </h5>
+            <p style={{ fontSize: '0.85rem', color: '#856404', marginBottom: '0.75rem', lineHeight: '1.5' }}>
+              All prospective buyers are urged to conduct their own due diligence to their satisfaction prior to purchasing this property. 
+              Prospective purchasers are strongly encouraged to examine, visit, and thoroughly research the property before buying. 
+              This includes verifying boundaries, utilities, zoning, road access, and suitability for your intended use.
+            </p>
+            <p style={{ fontSize: '0.85rem', color: '#856404', marginBottom: '0.75rem', lineHeight: '1.5' }}>
+              All information contained in this listing has come from reliable sources and is believed to be accurate to the best of our knowledge. 
+              However, <strong>Green Acres Land Investments, LLC</strong> makes no guarantee, expressed or implied, as to the location, condition, 
+              accessibility, terrain, buildability, utility availability, or any other information contained in this listing.
+            </p>
+            <div style={{
+              display: 'flex',
+              alignItems: 'flex-start',
+              gap: '0.5rem',
+              padding: '0.75rem',
+              backgroundColor: 'white',
+              borderRadius: '4px',
+              border: '1px solid #ffc107'
+            }}>
+              <input
+                type="checkbox"
+                id="dueDiligenceCheckbox"
+                checked={dueDiligenceAgreed}
+                onChange={(e) => setDueDiligenceAgreed(e.target.checked)}
+                style={{
+                  marginTop: '0.25rem',
+                  width: '18px',
+                  height: '18px',
+                  cursor: 'pointer'
+                }}
+              />
+              <label 
+                htmlFor="dueDiligenceCheckbox" 
+                style={{ 
+                  fontSize: '0.9rem', 
+                  color: '#333',
+                  cursor: 'pointer',
+                  userSelect: 'none'
+                }}
+              >
+                <strong>I acknowledge that I have read and understand the Due Diligence Statement above. 
+                I have conducted adequate due diligence and accept the property in its current condition.</strong>
+              </label>
+            </div>
+          </div>
+        )}
+
         <div id="card-container" style={{ display: cardInstance ? 'block' : 'none', marginBottom: '1rem' }}></div>
 
         {purchaseError && (
@@ -1120,7 +1180,7 @@ navigate('/dashboard');
         <button 
           className="btn btn-primary btn-full-width"
           onClick={cardInstance ? handlePurchase : initializeSquarePayment}
-          disabled={purchasing}
+          disabled={purchasing || (cardInstance && !dueDiligenceAgreed)}
           style={{ marginTop: '1rem' }}
         >
           {purchasing 

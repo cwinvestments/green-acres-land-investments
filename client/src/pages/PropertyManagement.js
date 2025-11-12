@@ -1205,18 +1205,22 @@ const loadTaxPayments = async (propertyId) => {
                       }}
                     />
                     <div style={{ padding: '10px' }}>
-                      {image.caption ? (
-                        <p style={{ 
-                          margin: '0 0 10px 0', 
-                          fontSize: '13px', 
-                          color: '#666' 
-                        }}>
-                          {image.caption}
-                        </p>
-                      ) : (
+                      <div style={{ marginBottom: '10px' }}>
+                        {image.caption && (
+                          <p style={{ 
+                            margin: '0 0 5px 0', 
+                            fontSize: '13px', 
+                            color: '#666' 
+                          }}>
+                            {image.caption}
+                          </p>
+                        )}
                         <button
                           onClick={() => {
-                            const caption = prompt('Enter caption for this image:');
+                            const caption = prompt(
+                              image.caption ? 'Edit caption:' : 'Enter caption for this image:', 
+                              image.caption || ''
+                            );
                             if (caption !== null) updateImageCaption(image.id, caption);
                           }}
                           className="btn"
@@ -1229,9 +1233,9 @@ const loadTaxPayments = async (propertyId) => {
                             color: 'white'
                           }}
                         >
-                          ✏️ Add Caption
+                          ✏️ {image.caption ? 'Edit Caption' : 'Add Caption'}
                         </button>
-                      )}
+                      </div>
                       <div style={{ display: 'flex', gap: '5px' }}>
                         {!image.is_featured && (
                           <button

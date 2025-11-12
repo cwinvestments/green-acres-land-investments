@@ -1174,6 +1174,7 @@ const loadTaxPayments = async (propertyId) => {
             </div>
 
             {/* Add Image Form - FILE UPLOAD */}
+            {/* Upload Form - Bulk Upload with Drag & Drop */}
             {images.length < 10 && (
               <div style={{ 
                 padding: '20px', 
@@ -1182,45 +1183,208 @@ const loadTaxPayments = async (propertyId) => {
                 marginBottom: '20px',
                 border: '2px solid var(--forest-green)'
               }}>
-                <h3 style={{ marginTop: 0 }}>ðŸ“¤ Upload New Image</h3>
-                <form onSubmit={handleImageUpload}>
-                  <div className="form-group">
-                    <label>Select Image File *</label>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => setSelectedImageFile(e.target.files[0])}
-                      required
-                      style={{
-                        width: '100%',
-                        padding: '10px',
-                        border: '2px dashed var(--border-color)',
-                        borderRadius: '8px',
-                        cursor: 'pointer'
-                      }}
-                    />
-                    <small style={{ color: '#666', fontSize: '12px', display: 'block', marginTop: '5px' }}>
-                      Supported: JPG, PNG, GIF, WebP (max 10MB per image)
-                    </small>
+                <h3 style={{ marginTop: 0 }}>📤 Upload Images</h3>
+                
+                {/* Drag & Drop Zone */}
+                <div
+                  onDragOver={(e) => { e.preventDefault(); setIsDraggingFiles(true); }}
+                  onDragLeave={() => setIsDraggingFiles(false)}
+                  onDrop={handleFilesDrop}
+                  style={{
+                    border: `3px dashed ${isDraggingFiles ? '#2563eb' : '#cbd5e1'}`,
+                    borderRadius: '12px',
+                    padding: '40px 20px',
+                    textAlign: 'center',
+                    backgroundColor: isDraggingFiles ? '#eff6ff' : 'white',
+                    transition: 'all 0.2s',
+                    marginBottom: '15px',
+                    cursor: 'pointer'
+                  }}
+                  onClick={() => document.getElementById('bulk-file-input').click()}
+                >
+                  <div style={{ fontSize: '48px', marginBottom: '10px' }}>📤</div>
+                  <p style={{ margin: '0 0 10px 0', fontSize: '16px', fontWeight: 'bold', color: '#1e293b' }}>
+                    Drop images here or click to select
+                  </p>
+                  <p style={{ margin: 0, fontSize: '13px', color: '#64748b' }}>
+                    JPG, PNG, GIF, WebP • Max 10MB per image • Up to {10 - images.length} remaining
+                  </p>
+                  <input
+                    id="bulk-file-input"
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    onChange={(e) => handleFilesSelected(Array.from(e.target.files))}
+                    style={{ display: 'none' }}
+                  />
+                </div>
+
+                {/* Selected Files Preview */}
+                {selectedFiles.length > 0 && (
+                  <div style={{ marginBottom: '15px' }}>
+                    <div style={{ 
+                      display: 'flex', 
+                      justifyContent: 'space-between', 
+                      alignItems: 'center', 
+                      marginBottom: '10px' 
+                    }}>
+                      <h4 style={{ margin: 0, fontSize: '14px', color: '#1e293b' }}>
+                        Selected: {selectedFiles.length} {selectedFiles.length === 1 ? 'file' : 'files'}
+                      </h4>
+                      <button
+                        type="button"
+                        onClick={() => setSelectedFiles([])}
+                        className="btn"
+                        style={{
+                          padding: '4px 12px',
+                          fontSize: '12px',
+                          backgroundColor: '#f1f5f9',
+                          color: '#64748b'
+                        }}
+                      >
+                        Clear All
+                      </button>
+                    </div>
+                    
+                    <div style={{ 
+                      display: 'grid', 
+                      gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))', 
+                      gap: '10px',
+                      maxHeight: '200px',
+                      overflowY: 'auto',
+                      padding: '10px',
+                      backgroundColor: 'white',
+                      borderRadius: '8px'
+                    }}>
+                      {selectedFiles.map((file, index) => (
+                        <div 
+                          key={index}
+                          style={{ 
+                            position: 'relative',
+                            borderRadius: '8px',
+                            overflow: 'hidden',
+                            border: '2px solid #e2e8f0',
+                            backgroundColor: '#f8fafc'
+                          }}
+                        >
+                          <img
+                            src={URL.createObjectURL(file)}
+                            alt={file.name}
+                            style={{
+                              width: '100%',
+                              height: '100px',
+                              objectFit: 'cover'
+                            }}
+                          />
+                          <button
+                            type="button"
+                            onClick={() => removeSelectedFile(index)}
+                            style={{
+                              position: 'absolute',
+                              top: '5px',
+                              right: '5px',
+                              backgroundColor: 'rgba(239, 68, 68, 0.9)',
+                              color: 'white',
+                              border: 'none',
+                              borderRadius: '50%',
+                              width: '24px',
+                              height: '24px',
+                              cursor: 'pointer',
+                              fontSize: '14px',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              padding: 0
+                            }}
+                          >
+                            ×
+                          </button>
+                          {uploadProgress[index] && (
+                            <div style={{
+                              position: 'absolute',
+                              bottom: 0,
+                              left: 0,
+                              right: 0,
+                              backgroundColor: 'rgba(0,0,0,0.7)',
+                              color: 'white',
+                              fontSize: '10px',
+                              padding: '2px',
+                              textAlign: 'center'
+                            }}>
+                              {uploadProgress[index].status === 'uploading' && 'Uploading…'}
+                              {uploadProgress[index].status === 'completed' && '✓'}
+                              {uploadProgress[index].status === 'error' && '✗'}
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                  <div className="form-group">
-                    <label>Caption (Optional)</label>
-                    <input
-                      type="text"
-                      value={imageCaption}
-                      onChange={(e) => setImageCaption(e.target.value)}
-                      placeholder="Front view, Aerial shot, etc."
-                    />
-                  </div>
-                  <button 
-                    type="submit" 
-                    className="btn btn-primary" 
+                )}
+
+                {/* Upload Button */}
+                {selectedFiles.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={uploadAllFiles}
+                    className="btn btn-primary"
                     style={{ width: '100%' }}
                     disabled={uploadingImage}
                   >
-                    {uploadingImage ? 'â³ Uploading...' : 'ðŸ“¤ Upload Image'}
+                    {uploadingImage 
+                      ? `⏳ Uploading ${Object.values(uploadProgress).filter(p => p.status === 'completed').length} / ${selectedFiles.length}...`
+                      : `🚀 Upload ${selectedFiles.length} ${selectedFiles.length === 1 ? 'Image' : 'Images'}`
+                    }
                   </button>
-                </form>
+                )}
+
+                {/* Legacy Single Upload Option */}
+                {selectedFiles.length === 0 && (
+                  <details style={{ marginTop: '15px' }}>
+                    <summary style={{ 
+                      cursor: 'pointer', 
+                      color: '#64748b', 
+                      fontSize: '13px',
+                      userSelect: 'none'
+                    }}>
+                      Or upload one image at a time
+                    </summary>
+                    <form onSubmit={handleImageUpload} style={{ marginTop: '15px' }}>
+                      <div className="form-group">
+                        <label>Select Image</label>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => setSelectedImageFile(e.target.files[0])}
+                          required
+                          style={{
+                            width: '100%',
+                            padding: '10px',
+                            border: '1px solid #cbd5e1',
+                            borderRadius: '6px'
+                          }}
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label>Caption (Optional)</label>
+                        <input
+                          type="text"
+                          value={imageCaption}
+                          onChange={(e) => setImageCaption(e.target.value)}
+                          placeholder="Front view, Aerial shot, etc."
+                        />
+                      </div>
+                      <button 
+                        type="submit" 
+                        className="btn" 
+                        style={{ width: '100%' }}
+                        disabled={uploadingImage}
+                      >
+                        {uploadingImage ? 'Uploading…' : 'Upload Single Image'}
+                      </button>
+                    </form>
+                  </details>
+                )}
               </div>
             )}
 

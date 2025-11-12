@@ -80,6 +80,7 @@ function AppContent() {
             <Route path="/admin/login" element={<AdminLogin />} />
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
             <Route path="/admin/properties" element={<PropertyManagement />} />
+            <Route path="/admin/properties/:propertyId" element={<PropertyManagement />} />
             <Route path="/admin/customers" element={<CustomerManagement />} />
             <Route path="/admin/loans" element={<AdminLoans />} />
             <Route path="/admin/payments" element={<PaymentTracking />} />

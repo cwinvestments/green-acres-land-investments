@@ -1,11 +1,12 @@
 // Production build - error handling improved
 // Force rebuild for production API
 import React, { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 
 function PropertyManagement() {
   const navigate = useNavigate();
+  const { propertyId } = useParams();
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showAddForm, setShowAddForm] = useState(false);
@@ -68,6 +69,16 @@ function PropertyManagement() {
   useEffect(() => {
     loadProperties();
   }, [loadProperties]);
+
+  // Auto-open tax payment modal if propertyId in URL
+  useEffect(() => {
+    if (propertyId && properties.length > 0) {
+      const property = properties.find(p => p.id === parseInt(propertyId));
+      if (property) {
+        openTaxPaymentModal(property);
+      }
+    }
+  }, [propertyId, properties]);
 
   const loadExpenses = async (propertyId) => {
     try {

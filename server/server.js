@@ -2501,7 +2501,6 @@ app.get('/api/admin/reports/export', authenticateAdmin, async (req, res) => {
         doc.fontSize(10);
         doc.moveDown(0.8);
       });
-      });
       
     } else if (reportType === 'outstanding') {
       // Outstanding Balances Report

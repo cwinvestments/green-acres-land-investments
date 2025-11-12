@@ -80,7 +80,7 @@ function PropertyManagement() {
         navigate('/admin/properties', { replace: true });
       }
     }
-  }, [propertyId, properties, loading, navigate]);
+  }, [propertyId, properties, loading, navigate, openTaxPaymentModal]);
 
   const loadExpenses = async (propertyId) => {
     try {
@@ -317,11 +317,11 @@ const loadTaxPayments = async (propertyId) => {
     }
   };
 
-  const openTaxPaymentModal = (property) => {
+  const openTaxPaymentModal = useCallback((property) => {
     setSelectedPropertyForTax(property);
     setShowTaxPaymentModal(true);
     loadTaxPayments(property.id);
-  };
+  }, []);
 
   const handleAddTaxPayment = async (e) => {
     e.preventDefault();

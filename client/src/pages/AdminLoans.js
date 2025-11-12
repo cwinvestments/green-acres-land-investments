@@ -255,7 +255,10 @@ function AdminLoans() {
     <div style={{ padding: '20px', maxWidth: '1400px', margin: '0 auto' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
         <h1>Loan Management</h1>
-        <div style={{ display: 'flex', gap: '10px' }}>
+        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+          <button onClick={() => navigate('/admin/loans/import')} className="btn" style={{ backgroundColor: '#2e7d32', color: 'white' }}>
+            📥 Import Existing Loan
+          </button>
           <button onClick={() => navigate('/admin/loans/defaulted')} className="btn" style={{ backgroundColor: '#dc3545', color: 'white' }}>
             📊 Defaulted Loans Report
           </button>

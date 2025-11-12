@@ -22,6 +22,7 @@ import AdminReports from './pages/AdminReports';
 import TaxSummary from './pages/TaxSummary';
 import StateManagement from './pages/Admin/StateManagement';
 import AccountSettings from './pages/AccountSettings';
+import ImportLoan from './pages/ImportLoan';
 // Protected route component
 function ProtectedRoute({ children }) {
   const { isAuthenticated } = useAuth();
@@ -88,6 +89,7 @@ function AppContent() {
             <Route path="/admin/reports" element={<AdminReports />} /> 
             <Route path="/admin/tax-summary" element={<TaxSummary />} />
             <Route path="/admin/states" element={<StateManagement />} />
+            <Route path="/admin/loans/import" element={<ImportLoan />} />
           </Routes>
         </div>
   );

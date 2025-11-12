@@ -1000,7 +1000,108 @@ app.patch('/api/admin/loans/:id/payment-due-day', authenticateAdmin, async (req,
   }
 });
 
-// Mark loan as defaulted
+// Admin - Import existing loan with payment history
+app.post('/api/admin/loans/import', authenticateAdmin, async (req, res) => {
+  const { loanData, payments, taxPayments } = req.body;
+
+  try {
+    // Start transaction
+    await db.pool.query('BEGIN');
+
+    // Create the loan
+    const loanResult = await db.pool.query(
+      `INSERT INTO loans (
+        user_id, property_id, purchase_price, down_payment, processing_fee,
+        loan_amount, interest_rate, term_months, monthly_payment, 
+        total_amount, balance_remaining, next_payment_date, payment_due_day,
+        status, created_at
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
+      RETURNING *`,
+      [
+        loanData.userId,
+        loanData.propertyId,
+        loanData.purchasePrice,
+        loanData.downPayment,
+        loanData.processingFee,
+        loanData.loanAmount,
+        loanData.interestRate,
+        loanData.termMonths,
+        loanData.monthlyPayment,
+        parseFloat(loanData.monthlyPayment) * parseInt(loanData.termMonths),
+        loanData.currentBalance,
+        loanData.nextPaymentDate,
+        loanData.paymentDueDay,
+        'active',
+        loanData.purchaseDate
+      ]
+    );
+
+    const loan = loanResult.rows[0];
+
+    // Insert payment history
+    for (const payment of payments) {
+      await db.pool.query(
+        `INSERT INTO payments (
+          loan_id, user_id, amount, payment_type, payment_method,
+          status, payment_date, principal_amount, interest_amount,
+          tax_amount, hoa_amount, late_fee_amount
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`,
+        [
+          loan.id,
+          loanData.userId,
+          payment.amount,
+          'monthly_payment',
+          'imported',
+          'completed',
+          payment.paymentDate,
+          payment.principalAmount || 0,
+          payment.interestAmount || 0,
+          payment.taxAmount || 0,
+          payment.hoaAmount || 0,
+          payment.lateFeeAmount || 0
+        ]
+      );
+    }
+
+    // Insert tax payment history
+    for (const taxPayment of taxPayments) {
+      await db.pool.query(
+        `INSERT INTO property_tax_payments (
+          property_id, payment_date, amount, tax_year, payment_method, notes
+        ) VALUES ($1, $2, $3, $4, $5, $6)`,
+        [
+          loanData.propertyId,
+          taxPayment.paymentDate,
+          taxPayment.amount,
+          taxPayment.taxYear,
+          taxPayment.paymentMethod,
+          taxPayment.notes || 'Imported from existing loan'
+        ]
+      );
+    }
+
+    // Update property status
+    await db.pool.query(
+      `UPDATE properties SET status = 'sold' WHERE id = $1`,
+      [loanData.propertyId]
+    );
+
+    await db.pool.query('COMMIT');
+
+    res.json({ 
+      success: true, 
+      loan,
+      message: `Loan imported successfully with ${payments.length} payments and ${taxPayments.length} tax payments` 
+    });
+
+  } catch (error) {
+    await db.pool.query('ROLLBACK');
+    console.error('Loan import error:', error);
+    res.status(500).json({ error: 'Failed to import loan' });
+  }
+});
+
+// Admin - Mark loan as defaulted
 app.patch('/api/admin/loans/:id/default', authenticateAdmin, async (req, res) => {
   try {
     const { id } = req.params;

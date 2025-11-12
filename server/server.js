@@ -495,10 +495,101 @@ app.get('/api/admin/stats', authenticateAdmin, async (req, res) => {
     const customersResult = await db.pool.query('SELECT COUNT(*) FROM users');
     const totalCustomers = parseInt(customersResult.rows[0].count);
 
+    // Overdue loans (7+ days past due)
+    const overdueResult = await db.pool.query(`
+      SELECT COUNT(*) 
+      FROM loans 
+      WHERE status = 'active' 
+        AND next_payment_date < CURRENT_DATE - INTERVAL '7 days'
+    `);
+    const overdueLoans = parseInt(overdueResult.rows[0].count);
+
+    // In default (notice sent)
+    const defaultResult = await db.pool.query(`
+      SELECT COUNT(*) 
+      FROM loans 
+      WHERE status = 'active' 
+        AND notice_sent_date IS NOT NULL
+    `);
+    const loansInDefault = parseInt(defaultResult.rows[0].count);
+
+    // Revenue last 30 days
+    const revenueResult = await db.pool.query(`
+      SELECT COALESCE(SUM(amount), 0) as revenue
+      FROM payments
+      WHERE status = 'completed'
+        AND payment_date >= CURRENT_DATE - INTERVAL '30 days'
+    `);
+    const revenueLast30Days = parseFloat(revenueResult.rows[0].revenue);
+
+    // Revenue previous 30 days (for trend comparison)
+    const prevRevenueResult = await db.pool.query(`
+      SELECT COALESCE(SUM(amount), 0) as revenue
+      FROM payments
+      WHERE status = 'completed'
+        AND payment_date >= CURRENT_DATE - INTERVAL '60 days'
+        AND payment_date < CURRENT_DATE - INTERVAL '30 days'
+    `);
+    const revenuePrev30Days = parseFloat(prevRevenueResult.rows[0].revenue);
+
+    // Calculate revenue trend
+    let revenueTrend = 'flat';
+    if (revenuePrev30Days > 0) {
+      const percentChange = ((revenueLast30Days - revenuePrev30Days) / revenuePrev30Days) * 100;
+      if (percentChange > 5) revenueTrend = 'up';
+      else if (percentChange < -5) revenueTrend = 'down';
+    } else if (revenueLast30Days > 0) {
+      revenueTrend = 'up';
+    }
+
+    // Collection rate (payments on time)
+    const onTimeResult = await db.pool.query(`
+      SELECT 
+        COUNT(*) as total_payments,
+        SUM(CASE WHEN payment_date <= l.next_payment_date THEN 1 ELSE 0 END) as on_time_payments
+      FROM payments p
+      JOIN loans l ON p.loan_id = l.id
+      WHERE p.status = 'completed'
+        AND p.payment_type = 'monthly_payment'
+        AND p.payment_date >= CURRENT_DATE - INTERVAL '90 days'
+    `);
+    
+    const totalPayments = parseInt(onTimeResult.rows[0].total_payments) || 0;
+    const onTimePayments = parseInt(onTimeResult.rows[0].on_time_payments) || 0;
+    const collectionRate = totalPayments > 0 ? Math.round((onTimePayments / totalPayments) * 100) : 0;
+
+    // Upcoming tax deadlines (next 60 days)
+    const taxDeadlinesResult = await db.pool.query(`
+      SELECT 
+        p.id,
+        p.title,
+        p.tax_payment_1_date,
+        p.tax_payment_2_date,
+        p.tax_payment_1_amount,
+        p.tax_payment_2_amount
+      FROM properties p
+      WHERE 
+        (p.tax_payment_1_date IS NOT NULL AND p.tax_payment_1_date BETWEEN CURRENT_DATE AND CURRENT_DATE + INTERVAL '60 days')
+        OR
+        (p.tax_payment_2_date IS NOT NULL AND p.tax_payment_2_date BETWEEN CURRENT_DATE AND CURRENT_DATE + INTERVAL '60 days')
+      ORDER BY 
+        LEAST(
+          COALESCE(p.tax_payment_1_date, '9999-12-31'::date),
+          COALESCE(p.tax_payment_2_date, '9999-12-31'::date)
+        )
+      LIMIT 5
+    `);
+
     res.json({
       totalProperties,
       activeLoans,
-      totalCustomers
+      totalCustomers,
+      overdueLoans,
+      loansInDefault,
+      revenueLast30Days,
+      revenueTrend,
+      collectionRate,
+      taxDeadlines: taxDeadlinesResult.rows
     });
   } catch (error) {
     console.error('Get admin stats error:', error);

@@ -29,9 +29,6 @@ function PropertyManagement() {
   const [loadingImages, setLoadingImages] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
   const [draggedImageIndex, setDraggedImageIndex] = useState(null);
-  const [selectedFiles, setSelectedFiles] = useState([]);
-  const [uploadProgress, setUploadProgress] = useState({});
-  const [isDraggingFiles, setIsDraggingFiles] = useState(false);
   const [showTaxPaymentModal, setShowTaxPaymentModal] = useState(false);
   const [selectedPropertyForTax, setSelectedPropertyForTax] = useState(null);
   const [taxPayments, setTaxPayments] = useState([]);
@@ -194,96 +191,6 @@ function PropertyManagement() {
     } finally {
       setUploadingImage(false);
     }
-  };
-
-  const handleFilesDrop = (e) => {
-    e.preventDefault();
-    setIsDraggingFiles(false);
-    
-    const files = Array.from(e.dataTransfer.files);
-    handleFilesSelected(files);
-  };
-
-  const handleFilesSelected = (files) => {
-    const imageFiles = files.filter(file => 
-      file.type.startsWith('image/') && file.size <= 10 * 1024 * 1024
-    );
-    
-    if (imageFiles.length === 0) {
-      alert('Please select valid image files (JPG, PNG, GIF, WebP) under 10MB each');
-      return;
-    }
-    
-    const currentCount = images.length;
-    const newFilesCount = imageFiles.length;
-    const totalCount = currentCount + newFilesCount + selectedFiles.length;
-    
-    if (totalCount > 10) {
-      alert(`Cannot add ${newFilesCount} files. Maximum 10 images per property. Currently: ${currentCount} uploaded, ${selectedFiles.length} pending.`);
-      return;
-    }
-    
-    setSelectedFiles(prev => [...prev, ...imageFiles]);
-  };
-
-  const removeSelectedFile = (index) => {
-    setSelectedFiles(prev => prev.filter((_, i) => i !== index));
-  };
-
-  const uploadAllFiles = async () => {
-    if (selectedFiles.length === 0) return;
-    
-    setUploadingImage(true);
-    const progress = {};
-    selectedFiles.forEach((_, index) => {
-      progress[index] = { status: 'pending', percent: 0 };
-    });
-    setUploadProgress(progress);
-
-    for (let i = 0; i < selectedFiles.length; i++) {
-      try {
-        setUploadProgress(prev => ({
-          ...prev,
-          [i]: { status: 'uploading', percent: 50 }
-        }));
-
-        const token = localStorage.getItem('adminToken');
-        const formData = new FormData();
-        formData.append('image', selectedFiles[i]);
-        formData.append('caption', '');
-
-        await axios.post(
-          `${process.env.REACT_APP_API_URL}/admin/properties/${selectedPropertyForImages.id}/images/upload`,
-          formData,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              'Content-Type': 'multipart/form-data'
-            }
-          }
-        );
-
-        setUploadProgress(prev => ({
-          ...prev,
-          [i]: { status: 'completed', percent: 100 }
-        }));
-      } catch (err) {
-        console.error(`Failed to upload file ${i}:`, err);
-        setUploadProgress(prev => ({
-          ...prev,
-          [i]: { status: 'error', percent: 0 }
-        }));
-      }
-    }
-
-    // Clear selected files and reload images
-    setTimeout(() => {
-      setSelectedFiles([]);
-      setUploadProgress({});
-      setUploadingImage(false);
-      loadImages(selectedPropertyForImages.id);
-      alert('Bulk upload completed!');
-    }, 500);
   };
 
   const updateImageCaption = async (imageId, caption) => {
@@ -533,7 +440,7 @@ const loadTaxPayments = async (propertyId) => {
         gap: '1rem'
       }}>
         <div>
-          <h1 style={{ margin: '0 0 5px 0' }}>ðŸ˜ï¸ Property Management</h1>
+          <h1 style={{ margin: '0 0 5px 0' }}>🏘️ Property Management</h1>
           <p style={{ margin: 0, color: '#666' }}>
             {properties.length} total properties
           </p>
@@ -549,7 +456,7 @@ const loadTaxPayments = async (propertyId) => {
             onClick={() => navigate('/admin/dashboard')}
             className="btn btn-secondary"
           >
-            â† Back to Dashboard
+            ← Back to Dashboard
           </button>
         </div>
       </div>
@@ -563,7 +470,7 @@ const loadTaxPayments = async (propertyId) => {
       }}>
         {/* Total Profit Card */}
         <div className="card" style={{ padding: '20px' }}>
-          <h3 style={{ margin: '0 0 10px 0', fontSize: '16px', color: '#666' }}>ðŸ’° Total Profit</h3>
+          <h3 style={{ margin: '0 0 10px 0', fontSize: '16px', color: '#666' }}>💰 Total Profit</h3>
           <p style={{ margin: 0, fontSize: '28px', fontWeight: 'bold', color: 'var(--forest-green)' }}>
             ${properties
               .filter(p => p.acquisition_cost)
@@ -577,7 +484,7 @@ const loadTaxPayments = async (propertyId) => {
 
         {/* Average ROI Card */}
         <div className="card" style={{ padding: '20px' }}>
-          <h3 style={{ margin: '0 0 10px 0', fontSize: '16px', color: '#666' }}>ðŸ“ˆ Average ROI</h3>
+          <h3 style={{ margin: '0 0 10px 0', fontSize: '16px', color: '#666' }}>📈 Average ROI</h3>
           <p style={{ margin: 0, fontSize: '28px', fontWeight: 'bold', color: 'var(--sandy-gold)' }}>
             {properties.filter(p => p.acquisition_cost).length > 0
               ? (properties
@@ -592,7 +499,7 @@ const loadTaxPayments = async (propertyId) => {
 
         {/* Most Profitable Property Card */}
         <div className="card" style={{ padding: '20px' }}>
-          <h3 style={{ margin: '0 0 10px 0', fontSize: '16px', color: '#666' }}>ðŸ† Most Profitable</h3>
+          <h3 style={{ margin: '0 0 10px 0', fontSize: '16px', color: '#666' }}>🏆 Most Profitable</h3>
           {properties.filter(p => p.acquisition_cost).length > 0 ? (
             <>
               <p style={{ margin: '0 0 5px 0', fontSize: '18px', fontWeight: 'bold' }}>
@@ -675,7 +582,7 @@ const loadTaxPayments = async (propertyId) => {
                       </small>
                     </div>
                   ) : (
-                    <span style={{ color: '#999' }}>â€”</span>
+                    <span style={{ color: '#999' }}>—</span>
                   )}
                 </td>
                 <td style={{ padding: '15px', textAlign: 'center' }}>
@@ -710,7 +617,7 @@ const loadTaxPayments = async (propertyId) => {
                       color: 'white'
                     }}
                   >
-                    ðŸ’° Expenses
+                    💰 Expenses
                   </button>
 		  <button
                     onClick={() => openTaxPaymentModal(property)}
@@ -724,7 +631,7 @@ const loadTaxPayments = async (propertyId) => {
                       color: 'white'
                     }}
                   >
-                    ðŸ’µ Pay Taxes
+                    💵 Pay Taxes
                   </button>
                   <button
                     onClick={() => openImagesModal(property)}
@@ -738,7 +645,7 @@ const loadTaxPayments = async (propertyId) => {
                       color: 'white'
                     }}
                   >
-                    ðŸ“· Images
+                    📷 Images
                   </button>
                   <button
                     onClick={() => setEditingProperty(property)}
@@ -750,7 +657,7 @@ const loadTaxPayments = async (propertyId) => {
                       marginBottom: '5px'
                     }}
                   >
-                    âœï¸ Edit
+                    ✏️ Edit
                   </button>
                   <button
                     onClick={() => deleteProperty(property.id, property.title)}
@@ -763,7 +670,7 @@ const loadTaxPayments = async (propertyId) => {
                       color: 'white'
                     }}
                   >
-                    ðŸ—‘ï¸ Delete
+                    🗑️ Delete
                   </button>
                 </td>
               </tr>
@@ -864,7 +771,7 @@ const loadTaxPayments = async (propertyId) => {
                   color: 'white'
                 }}
               >
-                ðŸ’° Expenses
+                💰 Expenses
               </button>
 
               <button
@@ -879,7 +786,7 @@ const loadTaxPayments = async (propertyId) => {
                   color: 'white'
                 }}
               >
-                ðŸ’µ Pay Taxes
+                💵 Pay Taxes
               </button>
 
               <button
@@ -894,7 +801,7 @@ const loadTaxPayments = async (propertyId) => {
                   color: 'white'
                 }}
               >
-                ðŸ“· Images
+                📷 Images
               </button>
 
               <button
@@ -907,7 +814,7 @@ const loadTaxPayments = async (propertyId) => {
                   marginBottom: '8px'
                 }}
               >
-                âœï¸ Edit
+                ✏️ Edit
               </button>
 
               <button
@@ -921,7 +828,7 @@ const loadTaxPayments = async (propertyId) => {
                   color: 'white'
                 }}
               >
-                ðŸ—‘ï¸ Delete
+                🗑️ Delete
               </button>
             </div>
           </div>
@@ -952,7 +859,7 @@ const loadTaxPayments = async (propertyId) => {
             overflow: 'auto'
           }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-              <h2 style={{ margin: 0 }}>ðŸ’° Selling Expenses - {selectedProperty.title}</h2>
+              <h2 style={{ margin: 0 }}>💰 Selling Expenses - {selectedProperty.title}</h2>
               <button 
                 onClick={() => {
                   setShowExpensesModal(false);
@@ -1101,7 +1008,7 @@ const loadTaxPayments = async (propertyId) => {
                         {new Date(expense.expense_date).toLocaleDateString()}
                       </td>
                       <td style={{ padding: '10px' }}>{expense.category}</td>
-                      <td style={{ padding: '10px' }}>{expense.description || 'â€”'}</td>
+                      <td style={{ padding: '10px' }}>{expense.description || '—'}</td>
                       <td style={{ padding: '10px', textAlign: 'right', fontWeight: 'bold' }}>
                         ${parseFloat(expense.amount).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}
                       </td>
@@ -1152,7 +1059,7 @@ const loadTaxPayments = async (propertyId) => {
             overflow: 'auto'
           }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-              <h2 style={{ margin: 0 }}>ðŸ“· Property Images - {selectedPropertyForImages.title}</h2>
+              <h2 style={{ margin: 0 }}>📷 Property Images - {selectedPropertyForImages.title}</h2>
               <button 
                 onClick={() => setShowImagesModal(false)}
                 className="btn"
@@ -1174,7 +1081,6 @@ const loadTaxPayments = async (propertyId) => {
             </div>
 
             {/* Add Image Form - FILE UPLOAD */}
-            {/* Upload Form - Bulk Upload with Drag & Drop */}
             {images.length < 10 && (
               <div style={{ 
                 padding: '20px', 
@@ -1183,208 +1089,45 @@ const loadTaxPayments = async (propertyId) => {
                 marginBottom: '20px',
                 border: '2px solid var(--forest-green)'
               }}>
-                <h3 style={{ marginTop: 0 }}>📤 Upload Images</h3>
-                
-                {/* Drag & Drop Zone */}
-                <div
-                  onDragOver={(e) => { e.preventDefault(); setIsDraggingFiles(true); }}
-                  onDragLeave={() => setIsDraggingFiles(false)}
-                  onDrop={handleFilesDrop}
-                  style={{
-                    border: `3px dashed ${isDraggingFiles ? '#2563eb' : '#cbd5e1'}`,
-                    borderRadius: '12px',
-                    padding: '40px 20px',
-                    textAlign: 'center',
-                    backgroundColor: isDraggingFiles ? '#eff6ff' : 'white',
-                    transition: 'all 0.2s',
-                    marginBottom: '15px',
-                    cursor: 'pointer'
-                  }}
-                  onClick={() => document.getElementById('bulk-file-input').click()}
-                >
-                  <div style={{ fontSize: '48px', marginBottom: '10px' }}>📤</div>
-                  <p style={{ margin: '0 0 10px 0', fontSize: '16px', fontWeight: 'bold', color: '#1e293b' }}>
-                    Drop images here or click to select
-                  </p>
-                  <p style={{ margin: 0, fontSize: '13px', color: '#64748b' }}>
-                    JPG, PNG, GIF, WebP • Max 10MB per image • Up to {10 - images.length} remaining
-                  </p>
-                  <input
-                    id="bulk-file-input"
-                    type="file"
-                    accept="image/*"
-                    multiple
-                    onChange={(e) => handleFilesSelected(Array.from(e.target.files))}
-                    style={{ display: 'none' }}
-                  />
-                </div>
-
-                {/* Selected Files Preview */}
-                {selectedFiles.length > 0 && (
-                  <div style={{ marginBottom: '15px' }}>
-                    <div style={{ 
-                      display: 'flex', 
-                      justifyContent: 'space-between', 
-                      alignItems: 'center', 
-                      marginBottom: '10px' 
-                    }}>
-                      <h4 style={{ margin: 0, fontSize: '14px', color: '#1e293b' }}>
-                        Selected: {selectedFiles.length} {selectedFiles.length === 1 ? 'file' : 'files'}
-                      </h4>
-                      <button
-                        type="button"
-                        onClick={() => setSelectedFiles([])}
-                        className="btn"
-                        style={{
-                          padding: '4px 12px',
-                          fontSize: '12px',
-                          backgroundColor: '#f1f5f9',
-                          color: '#64748b'
-                        }}
-                      >
-                        Clear All
-                      </button>
-                    </div>
-                    
-                    <div style={{ 
-                      display: 'grid', 
-                      gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))', 
-                      gap: '10px',
-                      maxHeight: '200px',
-                      overflowY: 'auto',
-                      padding: '10px',
-                      backgroundColor: 'white',
-                      borderRadius: '8px'
-                    }}>
-                      {selectedFiles.map((file, index) => (
-                        <div 
-                          key={index}
-                          style={{ 
-                            position: 'relative',
-                            borderRadius: '8px',
-                            overflow: 'hidden',
-                            border: '2px solid #e2e8f0',
-                            backgroundColor: '#f8fafc'
-                          }}
-                        >
-                          <img
-                            src={URL.createObjectURL(file)}
-                            alt={file.name}
-                            style={{
-                              width: '100%',
-                              height: '100px',
-                              objectFit: 'cover'
-                            }}
-                          />
-                          <button
-                            type="button"
-                            onClick={() => removeSelectedFile(index)}
-                            style={{
-                              position: 'absolute',
-                              top: '5px',
-                              right: '5px',
-                              backgroundColor: 'rgba(239, 68, 68, 0.9)',
-                              color: 'white',
-                              border: 'none',
-                              borderRadius: '50%',
-                              width: '24px',
-                              height: '24px',
-                              cursor: 'pointer',
-                              fontSize: '14px',
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              padding: 0
-                            }}
-                          >
-                            ×
-                          </button>
-                          {uploadProgress[index] && (
-                            <div style={{
-                              position: 'absolute',
-                              bottom: 0,
-                              left: 0,
-                              right: 0,
-                              backgroundColor: 'rgba(0,0,0,0.7)',
-                              color: 'white',
-                              fontSize: '10px',
-                              padding: '2px',
-                              textAlign: 'center'
-                            }}>
-                              {uploadProgress[index].status === 'uploading' && 'Uploading…'}
-                              {uploadProgress[index].status === 'completed' && '✓'}
-                              {uploadProgress[index].status === 'error' && '✗'}
-                            </div>
-                          )}
-                        </div>
-                      ))}
-                    </div>
+                <h3 style={{ marginTop: 0 }}>📤 Upload New Image</h3>
+                <form onSubmit={handleImageUpload}>
+                  <div className="form-group">
+                    <label>Select Image File *</label>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => setSelectedImageFile(e.target.files[0])}
+                      required
+                      style={{
+                        width: '100%',
+                        padding: '10px',
+                        border: '2px dashed var(--border-color)',
+                        borderRadius: '8px',
+                        cursor: 'pointer'
+                      }}
+                    />
+                    <small style={{ color: '#666', fontSize: '12px', display: 'block', marginTop: '5px' }}>
+                      Supported: JPG, PNG, GIF, WebP (max 10MB per image)
+                    </small>
                   </div>
-                )}
-
-                {/* Upload Button */}
-                {selectedFiles.length > 0 && (
-                  <button
-                    type="button"
-                    onClick={uploadAllFiles}
-                    className="btn btn-primary"
+                  <div className="form-group">
+                    <label>Caption (Optional)</label>
+                    <input
+                      type="text"
+                      value={imageCaption}
+                      onChange={(e) => setImageCaption(e.target.value)}
+                      placeholder="Front view, Aerial shot, etc."
+                    />
+                  </div>
+                  <button 
+                    type="submit" 
+                    className="btn btn-primary" 
                     style={{ width: '100%' }}
                     disabled={uploadingImage}
                   >
-                    {uploadingImage 
-                      ? `⏳ Uploading ${Object.values(uploadProgress).filter(p => p.status === 'completed').length} / ${selectedFiles.length}...`
-                      : `🚀 Upload ${selectedFiles.length} ${selectedFiles.length === 1 ? 'Image' : 'Images'}`
-                    }
+                    {uploadingImage ? '⏳ Uploading...' : '📤 Upload Image'}
                   </button>
-                )}
-
-                {/* Legacy Single Upload Option */}
-                {selectedFiles.length === 0 && (
-                  <details style={{ marginTop: '15px' }}>
-                    <summary style={{ 
-                      cursor: 'pointer', 
-                      color: '#64748b', 
-                      fontSize: '13px',
-                      userSelect: 'none'
-                    }}>
-                      Or upload one image at a time
-                    </summary>
-                    <form onSubmit={handleImageUpload} style={{ marginTop: '15px' }}>
-                      <div className="form-group">
-                        <label>Select Image</label>
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={(e) => setSelectedImageFile(e.target.files[0])}
-                          required
-                          style={{
-                            width: '100%',
-                            padding: '10px',
-                            border: '1px solid #cbd5e1',
-                            borderRadius: '6px'
-                          }}
-                        />
-                      </div>
-                      <div className="form-group">
-                        <label>Caption (Optional)</label>
-                        <input
-                          type="text"
-                          value={imageCaption}
-                          onChange={(e) => setImageCaption(e.target.value)}
-                          placeholder="Front view, Aerial shot, etc."
-                        />
-                      </div>
-                      <button 
-                        type="submit" 
-                        className="btn" 
-                        style={{ width: '100%' }}
-                        disabled={uploadingImage}
-                      >
-                        {uploadingImage ? 'Uploading…' : 'Upload Single Image'}
-                      </button>
-                    </form>
-                  </details>
-                )}
+                </form>
               </div>
             )}
 
@@ -1433,7 +1176,7 @@ const loadTaxPayments = async (propertyId) => {
                       fontWeight: 'bold',
                       zIndex: 1
                     }}>
-                      â˜° {index + 1}
+                      ☰ {index + 1}
                     </div>
                     {image.is_featured && (
                       <div style={{
@@ -1448,7 +1191,7 @@ const loadTaxPayments = async (propertyId) => {
                         fontWeight: 'bold',
                         zIndex: 1
                       }}>
-                        â­ Featured
+                        ⭐ Featured
                       </div>
                     )}
                     <img 
@@ -1490,7 +1233,7 @@ const loadTaxPayments = async (propertyId) => {
                             color: 'white'
                           }}
                         >
-                          âœï¸ {image.caption ? 'Edit Caption' : 'Add Caption'}
+                          ✏️ {image.caption ? 'Edit Caption' : 'Add Caption'}
                         </button>
                       </div>
                       <div style={{ display: 'flex', gap: '5px' }}>
@@ -1506,7 +1249,7 @@ const loadTaxPayments = async (propertyId) => {
                               color: 'white'
                             }}
                           >
-                            â­ Feature
+                            ⭐ Feature
                           </button>
                         )}
                         <button
@@ -1520,7 +1263,7 @@ const loadTaxPayments = async (propertyId) => {
                             color: 'white'
                           }}
                         >
-                          ðŸ—‘ï¸ Delete
+                          🗑️ Delete
                         </button>
                       </div>
                     </div>
@@ -1556,7 +1299,7 @@ const loadTaxPayments = async (propertyId) => {
             overflow: 'auto'
           }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-              <h2 style={{ margin: 0 }}>ðŸ’µ Tax Payments - {selectedPropertyForTax.title}</h2>
+              <h2 style={{ margin: 0 }}>💵 Tax Payments - {selectedPropertyForTax.title}</h2>
               <button 
                 onClick={() => {
                   setShowTaxPaymentModal(false);
@@ -1704,8 +1447,8 @@ const loadTaxPayments = async (propertyId) => {
                         {new Date(payment.payment_date).toLocaleDateString()}
                       </td>
                       <td style={{ padding: '10px' }}>{payment.tax_year}</td>
-                      <td style={{ padding: '10px' }}>{payment.payment_method || 'â€”'}</td>
-                      <td style={{ padding: '10px' }}>{payment.check_number || 'â€”'}</td>
+                      <td style={{ padding: '10px' }}>{payment.payment_method || '—'}</td>
+                      <td style={{ padding: '10px' }}>{payment.check_number || '—'}</td>
                       <td style={{ padding: '10px', textAlign: 'right', fontWeight: 'bold' }}>
                         ${parseFloat(payment.amount).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}
                       </td>

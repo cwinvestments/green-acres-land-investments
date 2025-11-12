@@ -484,7 +484,7 @@ function ImportLoan() {
                 <tbody>
                   {payments.map((payment, index) => (
                     <tr key={index} style={{ borderBottom: '1px solid #eee' }}>
-                      <td style={{ padding: '10px' }}>{new Date(payment.paymentDate).toLocaleDateString()}</td>
+                      <td style={{ padding: '10px' }}>{new Date(payment.paymentDate + 'T12:00:00').toLocaleDateString()}</td>
                       <td style={{ padding: '10px', textAlign: 'right' }}>${parseFloat(payment.amount).toFixed(2)}</td>
                       <td style={{ padding: '10px', textAlign: 'right' }}>
                         ${payment.principalAmount ? parseFloat(payment.principalAmount).toFixed(2) : '0.00'}
@@ -584,7 +584,7 @@ function ImportLoan() {
                 <tbody>
                   {taxPayments.map((payment, index) => (
                     <tr key={index} style={{ borderBottom: '1px solid #eee' }}>
-                      <td style={{ padding: '10px' }}>{new Date(payment.paymentDate).toLocaleDateString()}</td>
+                      <td style={{ padding: '10px' }}>{new Date(payment.paymentDate + 'T12:00:00').toLocaleDateString()}</td>
                       <td style={{ padding: '10px', textAlign: 'center' }}>{payment.taxYear}</td>
                       <td style={{ padding: '10px', textAlign: 'right' }}>${parseFloat(payment.amount).toFixed(2)}</td>
                       <td style={{ padding: '10px', textAlign: 'center' }}>

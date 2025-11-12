@@ -4,6 +4,19 @@ import axios from 'axios';
 import { getProperty, createLoan, formatCurrency } from '../api';
 import { useAuth } from '../context/AuthContext';
 
+// Helper function to transform Cloudinary URLs
+const getCloudinaryTransform = (url, width, height = null, quality = 'auto') => {
+  if (!url || !url.includes('cloudinary.com')) return url;
+  
+  const parts = url.split('/upload/');
+  if (parts.length === 2) {
+    const transforms = [`w_${width}`, 'c_fill', `q_${quality}`, 'f_auto'];
+    if (height) transforms.splice(1, 0, `h_${height}`);
+    return `${parts[0]}/upload/${transforms.join(',')}/${parts[1]}`;
+  }
+  return url;
+};
+
 function PropertyDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -272,8 +285,9 @@ navigate('/dashboard');
             <div style={{ marginBottom: '1rem' }}>
               {/* Main Image */}
               <img
-                src={images[selectedImageIndex].url}
+                src={getCloudinaryTransform(images[selectedImageIndex].url, 800, 400)}
                 alt={images[selectedImageIndex].caption || property.title}
+                loading="eager"
                 style={{
                   width: '100%',
                   height: '400px',
@@ -293,9 +307,10 @@ navigate('/dashboard');
                   {images.map((image, index) => (
                     <img
                       key={image.id}
-                      src={image.url}
+                      src={getCloudinaryTransform(image.url, 100, 100)}
                       alt={image.caption || `View ${index + 1}`}
                       onClick={() => setSelectedImageIndex(index)}
+                      loading="lazy"
                       style={{
                         width: '100%',
                         height: '80px',
@@ -326,8 +341,9 @@ navigate('/dashboard');
             </div>
           ) : (
             <img
-              src="https://res.cloudinary.com/dxd4ef2tc/image/upload/IMAGES-COMING-SOON_tbspdc.png"
+              src={getCloudinaryTransform("https://res.cloudinary.com/dxd4ef2tc/image/upload/IMAGES-COMING-SOON_tbspdc.png", 800, 400)}
               alt="Images Coming Soon"
+              loading="lazy"
               style={{
                 width: '100%',
                 height: '400px',

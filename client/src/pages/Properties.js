@@ -3,6 +3,18 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { getProperties, formatCurrency } from '../api';
 
+// Helper function to transform Cloudinary URLs for thumbnails
+const getCloudinaryThumbnail = (url, width = 400, quality = 'auto') => {
+  if (!url || !url.includes('cloudinary.com')) return url;
+  
+  // Insert transformation parameters into Cloudinary URL
+  const parts = url.split('/upload/');
+  if (parts.length === 2) {
+    return `${parts[0]}/upload/w_${width},c_fill,q_${quality},f_auto/${parts[1]}`;
+  }
+  return url;
+};
+
 function Properties() {
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -164,21 +176,23 @@ function Properties() {
             >
               {propertyImages[property.id]?.length > 0 ? (
                 <img
-                  src={propertyImages[property.id][0].url}
+                  src={getCloudinaryThumbnail(propertyImages[property.id][0].url, 400)}
                   alt={property.title}
                   className="property-image"
+                  loading="lazy"
                 />
               ) : (
-  <img
-  src="https://res.cloudinary.com/dxd4ef2tc/image/upload/IMAGES-COMING-SOON_tbspdc.png"
-  alt="Property Coming Soon"
-  className="property-image"
-  style={{
-    opacity: '0.9',
-    objectFit: 'cover',
-    objectPosition: 'center'
-  }}
-/>
+                <img
+                  src={getCloudinaryThumbnail("https://res.cloudinary.com/dxd4ef2tc/image/upload/IMAGES-COMING-SOON_tbspdc.png", 400)}
+                  alt="Property Coming Soon"
+                  className="property-image"
+                  loading="lazy"
+                  style={{
+                    opacity: '0.9',
+                    objectFit: 'cover',
+                    objectPosition: 'center'
+                  }}
+                />
               )}
               <div className="property-content">
                 <h3>{property.title}</h3>

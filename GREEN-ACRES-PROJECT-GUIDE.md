@@ -1,6 +1,6 @@
 # 🌿 Green Acres Land Investments - Technical Reference Guide
 
-**Last Updated:** November 6, 2025 
+**Last Updated:** November 12, 2025 
 **Purpose:** Technical reference for code architecture, development patterns, and setup instructions
 
 > **📋 For Current Project Status:** See [PROJECT-SUMMARY.md] for features completed, session history, and what's next.
@@ -83,9 +83,16 @@ Financing options that traditional lenders don't offer:
 - **Project:** db.fywbavjylonrnaipxawn.supabase.co
 - **Status:** Fully operational
 
-### Future Integrations
-- **Mapping:** Google Maps API (already integrated for GPS coordinates)
+### Additional Features
+- **Image Storage:** Cloudinary with direct file uploads, drag-and-drop reordering
+- **PDF Generation:** PDFKit for comprehensive financial reports
+- **Reporting:** Advanced financial analytics with export capabilities
+- **Mobile UI:** Fully responsive admin interfaces
+- **Mapping:** Google Maps API (integrated for GPS coordinates)
 - **Coordinate System:** 5-point GPS boundary system for raw land parcels (implemented)
+
+### Future Integrations
+- **Email Notifications:** SendGrid/Mailgun for payment reminders and alerts
 - **File Processing:** KML/KMZ/GPX import for property boundaries
 
 ---

@@ -72,13 +72,15 @@ function PropertyManagement() {
 
   // Auto-open tax payment modal if propertyId in URL
   useEffect(() => {
-    if (propertyId && properties.length > 0) {
+    if (propertyId && properties.length > 0 && !loading) {
       const property = properties.find(p => p.id === parseInt(propertyId));
       if (property) {
         openTaxPaymentModal(property);
+        // Clear the URL to avoid re-opening on refresh
+        navigate('/admin/properties', { replace: true });
       }
     }
-  }, [propertyId, properties]);
+  }, [propertyId, properties, loading, navigate]);
 
   const loadExpenses = async (propertyId) => {
     try {

@@ -227,7 +227,7 @@ function AdminDashboard() {
                     )}
                   </div>
                   <button 
-                    onClick={() => navigate(`/admin/properties`)}
+                    onClick={() => navigate(`/admin/properties/${deadline.id}`)}
                     className="btn btn-secondary"
                     style={{ padding: '8px 16px', fontSize: '14px' }}
                   >

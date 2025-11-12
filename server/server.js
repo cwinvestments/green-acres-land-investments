@@ -2283,6 +2283,21 @@ app.get('/api/admin/reports/export', authenticateAdmin, async (req, res) => {
 
     // Get report data based on type
     if (reportType === 'overview') {
+      // Portfolio Summary
+      const portfolioResult = await db.pool.query(`
+        SELECT 
+          COUNT(*) as total_properties,
+          SUM(price) as total_value,
+          SUM(CASE WHEN acquisition_cost IS NOT NULL THEN price - acquisition_cost ELSE 0 END) as total_profit
+        FROM properties
+      `);
+      
+      const activeLoansResult = await db.pool.query(`
+        SELECT COUNT(*) as active_loans
+        FROM loans
+        WHERE status = 'active'
+      `);
+
       // Revenue Summary
       const revenueResult = await db.pool.query(`
         SELECT 
@@ -2295,8 +2310,39 @@ app.get('/api/admin/reports/export', authenticateAdmin, async (req, res) => {
         ${whereClause}
       `, queryParams);
 
+      // Property-level revenue
+      const propertyRevenueResult = await db.pool.query(`
+        SELECT 
+          prop.id,
+          prop.title,
+          prop.state,
+          prop.county,
+          prop.acres,
+          prop.price,
+          prop.acquisition_cost,
+          COALESCE(SUM(pay.amount), 0) as revenue_generated
+        FROM properties prop
+        LEFT JOIN loans l ON prop.id = l.property_id
+        LEFT JOIN payments pay ON l.id = pay.loan_id AND pay.status = 'completed'
+        GROUP BY prop.id
+        ORDER BY revenue_generated DESC
+      `);
+
+      const portfolio = portfolioResult.rows[0];
+      const activeLoans = activeLoansResult.rows[0];
       const revenue = revenueResult.rows[0];
       
+      // Portfolio Summary
+      doc.fontSize(14).text('Portfolio Summary', { underline: true });
+      doc.moveDown();
+      doc.fontSize(11);
+      doc.text(`Total Properties: ${portfolio.total_properties}`);
+      doc.text(`Active Loans: ${activeLoans.active_loans}`);
+      doc.text(`Total Portfolio Value: $${parseFloat(portfolio.total_value || 0).toLocaleString()}`);
+      doc.text(`Total Profit: $${parseFloat(portfolio.total_profit || 0).toFixed(2)}`);
+      doc.moveDown(1.5);
+      
+      // Revenue Summary
       doc.fontSize(14).text('Revenue Summary', { underline: true });
       doc.moveDown();
       doc.fontSize(11);
@@ -2305,6 +2351,23 @@ app.get('/api/admin/reports/export', authenticateAdmin, async (req, res) => {
       doc.text(`Late Fees: $${parseFloat(revenue.late_fees || 0).toFixed(2)}`);
       doc.text(`Notice Fees: $${parseFloat(revenue.notice_fees || 0).toFixed(2)}`);
       doc.text(`Convenience Fees: $${parseFloat(revenue.convenience_fees || 0).toFixed(2)}`);
+      doc.moveDown(1.5);
+      
+      // Property Revenue Breakdown
+      doc.fontSize(14).text('Property Revenue Breakdown', { underline: true });
+      doc.moveDown();
+      doc.fontSize(10);
+      
+      propertyRevenueResult.rows.forEach(prop => {
+        const profit = prop.acquisition_cost ? parseFloat(prop.price) - parseFloat(prop.acquisition_cost) : 0;
+        doc.text(`${prop.title} (ID: ${prop.id})`, { continued: false });
+        doc.fontSize(9);
+        doc.text(`  Location: ${prop.county}, ${prop.state} | Acres: ${parseFloat(prop.acres).toFixed(1)}`);
+        doc.text(`  Price: $${parseFloat(prop.price).toLocaleString()} | Profit: $${profit.toFixed(2)}`);
+        doc.text(`  Revenue Generated: $${parseFloat(prop.revenue_generated).toFixed(2)}`);
+        doc.fontSize(10);
+        doc.moveDown(0.5);
+      });
       
     } else if (reportType === 'tax') {
       // Tax Escrow Report
@@ -2313,27 +2376,68 @@ app.get('/api/admin/reports/export', authenticateAdmin, async (req, res) => {
       
       const taxResult = await db.pool.query(`
         SELECT 
+          p.id,
           p.title,
+          p.state,
+          p.county,
+          p.acres,
           p.annual_tax_amount,
+          p.tax_payment_1_date,
+          p.tax_payment_1_amount,
+          p.tax_payment_2_date,
+          p.tax_payment_2_amount,
           COALESCE(SUM(pay.tax_amount), 0) as tax_collected,
-          COALESCE(SUM(tp.amount), 0) as taxes_paid
+          COALESCE(SUM(tp.amount), 0) as taxes_paid,
+          MAX(tp.payment_date) as last_payment_date
         FROM properties p
         LEFT JOIN loans l ON p.id = l.property_id
         LEFT JOIN payments pay ON l.id = pay.loan_id AND pay.status = 'completed'
         LEFT JOIN property_tax_payments tp ON p.id = tp.property_id
         WHERE p.annual_tax_amount IS NOT NULL AND p.annual_tax_amount > 0
-        GROUP BY p.id, p.title, p.annual_tax_amount
+        GROUP BY p.id, p.title, p.state, p.county, p.acres, p.annual_tax_amount, 
+                 p.tax_payment_1_date, p.tax_payment_1_amount, p.tax_payment_2_date, p.tax_payment_2_amount
         ORDER BY p.title
       `);
 
+      // Summary totals
+      const totalCollected = taxResult.rows.reduce((sum, p) => sum + parseFloat(p.tax_collected || 0), 0);
+      const totalPaid = taxResult.rows.reduce((sum, p) => sum + parseFloat(p.taxes_paid || 0), 0);
+      const totalBalance = totalCollected - totalPaid;
+      
       doc.fontSize(11);
+      doc.text(`Total Tax Collected: $${totalCollected.toFixed(2)}`);
+      doc.text(`Total Tax Paid to Counties: $${totalPaid.toFixed(2)}`);
+      doc.text(`Total Balance Held: $${totalBalance.toFixed(2)}`, { underline: true });
+      doc.moveDown(1.5);
+      
+      doc.fontSize(12).text('Property Details:', { underline: true });
+      doc.moveDown();
+
       taxResult.rows.forEach(prop => {
         const balance = parseFloat(prop.tax_collected || 0) - parseFloat(prop.taxes_paid || 0);
-        doc.text(`${prop.title}:`);
-        doc.text(`  Collected: $${parseFloat(prop.tax_collected || 0).toFixed(2)}`);
-        doc.text(`  Paid: $${parseFloat(prop.taxes_paid || 0).toFixed(2)}`);
-        doc.text(`  Balance: $${balance.toFixed(2)}`);
-        doc.moveDown(0.5);
+        const status = balance >= parseFloat(prop.annual_tax_amount || 0) ? 'FUNDED' : 'COLLECTING';
+        
+        doc.fontSize(10);
+        doc.text(`${prop.title} (ID: ${prop.id})`, { continued: false });
+        doc.fontSize(9);
+        doc.text(`  Location: ${prop.county}, ${prop.state} | Acres: ${parseFloat(prop.acres).toFixed(1)}`);
+        doc.text(`  Annual Tax: $${parseFloat(prop.annual_tax_amount).toFixed(2)}`);
+        
+        if (prop.tax_payment_1_date) {
+          doc.text(`  Payment 1: $${parseFloat(prop.tax_payment_1_amount || 0).toFixed(2)} due ${new Date(prop.tax_payment_1_date).toLocaleDateString()}`);
+        }
+        if (prop.tax_payment_2_date) {
+          doc.text(`  Payment 2: $${parseFloat(prop.tax_payment_2_amount || 0).toFixed(2)} due ${new Date(prop.tax_payment_2_date).toLocaleDateString()}`);
+        }
+        
+        doc.text(`  Collected from Customer: $${parseFloat(prop.tax_collected || 0).toFixed(2)}`);
+        doc.text(`  Paid to County: $${parseFloat(prop.taxes_paid || 0).toFixed(2)}`);
+        if (prop.last_payment_date) {
+          doc.text(`  Last Payment: ${new Date(prop.last_payment_date).toLocaleDateString()}`);
+        }
+        doc.text(`  Balance: $${balance.toFixed(2)} [${status}]`, { continued: false });
+        doc.fontSize(10);
+        doc.moveDown(0.8);
       });
       
     } else if (reportType === 'hoa') {
@@ -2343,23 +2447,60 @@ app.get('/api/admin/reports/export', authenticateAdmin, async (req, res) => {
       
       const hoaResult = await db.pool.query(`
         SELECT 
+          p.id,
           p.title,
+          p.state,
+          p.county,
+          p.acres,
           p.monthly_hoa_fee,
-          COALESCE(SUM(pay.hoa_amount), 0) as hoa_collected
+          p.hoa_name,
+          p.hoa_contact,
+          COALESCE(SUM(pay.hoa_amount), 0) as hoa_collected,
+          COUNT(pay.id) as payment_count,
+          MAX(pay.payment_date) as last_payment_date
         FROM properties p
         LEFT JOIN loans l ON p.id = l.property_id
         LEFT JOIN payments pay ON l.id = pay.loan_id AND pay.status = 'completed'
         WHERE p.monthly_hoa_fee IS NOT NULL AND p.monthly_hoa_fee > 0
-        GROUP BY p.id, p.title, p.monthly_hoa_fee
+        GROUP BY p.id, p.title, p.state, p.county, p.acres, p.monthly_hoa_fee, p.hoa_name, p.hoa_contact
         ORDER BY p.title
       `);
 
+      // Summary totals
+      const totalCollected = hoaResult.rows.reduce((sum, p) => sum + parseFloat(p.hoa_collected || 0), 0);
+      const totalMonthlyFees = hoaResult.rows.reduce((sum, p) => sum + parseFloat(p.monthly_hoa_fee || 0), 0);
+      
       doc.fontSize(11);
+      doc.text(`Total Properties with HOA: ${hoaResult.rows.length}`);
+      doc.text(`Total Monthly HOA Fees: $${totalMonthlyFees.toFixed(2)}`);
+      doc.text(`Total HOA Collected: $${totalCollected.toFixed(2)}`);
+      doc.moveDown(1.5);
+      
+      doc.fontSize(12).text('Property Details:', { underline: true });
+      doc.moveDown();
+
       hoaResult.rows.forEach(prop => {
-        doc.text(`${prop.title}:`);
+        const monthsCollected = parseFloat(prop.hoa_collected) / parseFloat(prop.monthly_hoa_fee);
+        
+        doc.fontSize(10);
+        doc.text(`${prop.title} (ID: ${prop.id})`, { continued: false });
+        doc.fontSize(9);
+        doc.text(`  Location: ${prop.county}, ${prop.state} | Acres: ${parseFloat(prop.acres).toFixed(1)}`);
+        if (prop.hoa_name) {
+          doc.text(`  HOA: ${prop.hoa_name}`);
+        }
+        if (prop.hoa_contact) {
+          doc.text(`  Contact: ${prop.hoa_contact}`);
+        }
         doc.text(`  Monthly Fee: $${parseFloat(prop.monthly_hoa_fee || 0).toFixed(2)}`);
-        doc.text(`  Total Collected: $${parseFloat(prop.hoa_collected || 0).toFixed(2)}`);
-        doc.moveDown(0.5);
+        doc.text(`  Total Collected: $${parseFloat(prop.hoa_collected || 0).toFixed(2)} (${monthsCollected.toFixed(1)} months)`);
+        doc.text(`  Payments Received: ${prop.payment_count}`);
+        if (prop.last_payment_date) {
+          doc.text(`  Last Payment: ${new Date(prop.last_payment_date).toLocaleDateString()}`);
+        }
+        doc.fontSize(10);
+        doc.moveDown(0.8);
+      });
       });
       
     } else if (reportType === 'outstanding') {
@@ -2369,16 +2510,30 @@ app.get('/api/admin/reports/export', authenticateAdmin, async (req, res) => {
       
       const outstandingResult = await db.pool.query(`
         SELECT 
+          l.id as loan_id,
           u.first_name || ' ' || u.last_name as customer_name,
-          p.title as property_title,
+          u.email,
+          u.phone,
+          prop.id as property_id,
+          prop.title as property_title,
+          prop.state,
+          prop.county,
+          prop.acres,
+          prop.price as property_price,
+          l.purchase_price,
+          l.loan_amount as original_loan_amount,
           l.balance_remaining,
           l.monthly_payment,
+          l.interest_rate,
+          l.term_months,
+          l.created_at as loan_start_date,
           l.next_payment_date,
           CASE 
             WHEN l.next_payment_date < CURRENT_DATE THEN 
               CURRENT_DATE - l.next_payment_date
             ELSE 0
-          END as days_overdue
+          END as days_overdue,
+          l.notice_sent_date
         FROM loans l
         JOIN users u ON l.user_id = u.id
         JOIN properties prop ON l.property_id = prop.id
@@ -2386,16 +2541,54 @@ app.get('/api/admin/reports/export', authenticateAdmin, async (req, res) => {
         ORDER BY days_overdue DESC, l.next_payment_date
       `);
 
+      // Summary totals
+      const totalOutstanding = outstandingResult.rows.reduce((sum, l) => sum + parseFloat(l.balance_remaining), 0);
+      const totalMonthlyPayments = outstandingResult.rows.reduce((sum, l) => sum + parseFloat(l.monthly_payment), 0);
+      const overdueLoans = outstandingResult.rows.filter(l => l.days_overdue > 0).length;
+      const inDefault = outstandingResult.rows.filter(l => l.notice_sent_date).length;
+      
       doc.fontSize(11);
+      doc.text(`Total Active Loans: ${outstandingResult.rows.length}`);
+      doc.text(`Total Outstanding: $${totalOutstanding.toFixed(2)}`);
+      doc.text(`Total Monthly Payments: $${totalMonthlyPayments.toFixed(2)}`);
+      doc.text(`Overdue Loans: ${overdueLoans}`);
+      doc.text(`In Default: ${inDefault}`);
+      doc.moveDown(1.5);
+      
+      doc.fontSize(12).text('Loan Details:', { underline: true });
+      doc.moveDown();
+
       outstandingResult.rows.forEach(loan => {
-        doc.text(`${loan.customer_name} - ${loan.property_title}:`);
-        doc.text(`  Balance: $${parseFloat(loan.balance_remaining).toFixed(2)}`);
+        const paymentsRemaining = Math.ceil(parseFloat(loan.balance_remaining) / parseFloat(loan.monthly_payment));
+        const percentPaid = ((parseFloat(loan.original_loan_amount) - parseFloat(loan.balance_remaining)) / parseFloat(loan.original_loan_amount) * 100).toFixed(1);
+        const expectedPayoff = new Date(loan.loan_start_date);
+        expectedPayoff.setMonth(expectedPayoff.getMonth() + parseInt(loan.term_months));
+        
+        doc.fontSize(10);
+        doc.text(`Loan #${loan.loan_id} - ${loan.customer_name}`, { continued: false });
+        doc.fontSize(9);
+        doc.text(`  Customer: ${loan.email} | ${loan.phone || 'No phone'}`);
+        doc.text(`  Property: ${loan.property_title} (ID: ${loan.property_id})`);
+        doc.text(`  Location: ${loan.county}, ${loan.state} | ${parseFloat(loan.acres).toFixed(1)} acres`);
+        doc.text(`  Purchase Price: $${parseFloat(loan.purchase_price).toFixed(2)}`);
+        doc.text(`  Original Loan: $${parseFloat(loan.original_loan_amount).toFixed(2)} @ ${parseFloat(loan.interest_rate).toFixed(2)}%`);
+        doc.text(`  Current Balance: $${parseFloat(loan.balance_remaining).toFixed(2)} (${percentPaid}% paid)`);
         doc.text(`  Monthly Payment: $${parseFloat(loan.monthly_payment).toFixed(2)}`);
+        doc.text(`  Payments Remaining: ~${paymentsRemaining}`);
+        doc.text(`  Loan Started: ${new Date(loan.loan_start_date).toLocaleDateString()}`);
+        doc.text(`  Expected Payoff: ${expectedPayoff.toLocaleDateString()}`);
         doc.text(`  Next Due: ${new Date(loan.next_payment_date).toLocaleDateString()}`);
-        if (loan.days_overdue > 0) {
-          doc.text(`  OVERDUE: ${loan.days_overdue} days`, { continued: false });
+        
+        if (loan.notice_sent_date) {
+          doc.text(`  STATUS: IN DEFAULT (Notice sent ${new Date(loan.notice_sent_date).toLocaleDateString()})`, { continued: false });
+        } else if (loan.days_overdue > 0) {
+          doc.text(`  STATUS: OVERDUE ${loan.days_overdue} days`, { continued: false });
+        } else {
+          doc.text(`  STATUS: CURRENT`, { continued: false });
         }
-        doc.moveDown(0.5);
+        
+        doc.fontSize(10);
+        doc.moveDown(0.8);
       });
     }
 

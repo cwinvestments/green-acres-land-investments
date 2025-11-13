@@ -68,13 +68,23 @@ function ImportLoan() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Pre-fill bulk payment amount when moving to Step 2
+  // Pre-fill bulk generator when moving to Step 2
   useEffect(() => {
-    if (step === 2 && loanData.monthlyPayment && !bulkData.paymentAmount) {
-      setBulkData(prevBulkData => ({...prevBulkData, paymentAmount: loanData.monthlyPayment}));
+    if (step === 2 && loanData.purchaseDate) {
+      // Calculate start date (1 month after purchase date)
+      const purchaseDate = new Date(loanData.purchaseDate);
+      purchaseDate.setMonth(purchaseDate.getMonth() + 1);
+      const startDate = purchaseDate.toISOString().split('T')[0];
+      
+      setBulkData(prevBulkData => ({
+        ...prevBulkData,
+        startDate: prevBulkData.startDate || startDate,
+        numberOfPayments: prevBulkData.numberOfPayments || loanData.termMonths || 12,
+        paymentAmount: prevBulkData.paymentAmount || loanData.monthlyPayment || ''
+      }));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [step, loanData.monthlyPayment]);
+  }, [step, loanData.purchaseDate, loanData.termMonths, loanData.monthlyPayment]);
 
   const loadData = async () => {
     try {

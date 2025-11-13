@@ -617,7 +617,7 @@ function AdminLoans() {
                           </select>
                           <button
                             onClick={async () => {
-                              if (!window.confirm('Generate contract and send to customer for signature?')) return;
+                              if (!window.confirm('Generate contract for admin review and signature?')) return;
                               try {
                                 const response = await fetch(`${process.env.REACT_APP_API_URL}/admin/loans/${loan.id}/generate-contract`, {
                                   method: 'POST',

@@ -1448,7 +1448,7 @@ app.post('/api/loans', authenticateToken, async (req, res) => {
     const { result } = await squareClient.paymentsApi.createPayment({
       sourceId: paymentNonce,
       amountMoney: {
-        amount: Math.round(financing.downPayment * 100),
+        amount: Math.round((financing.downPayment + financing.processingFee) * 100),
         currency: 'USD',
       },
       locationId: process.env.SQUARE_LOCATION_ID,

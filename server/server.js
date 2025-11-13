@@ -1102,7 +1102,7 @@ app.post('/api/admin/loans/import', authenticateAdmin, async (req, res) => {
 });
 
 // Delete loan (admin only)
-app.delete('/admin/loans/:loanId', authenticateAdmin, async (req, res) => {
+app.delete('/api/admin/loans/:loanId', authenticateAdmin, async (req, res) => {
   const { loanId } = req.params;
 
   try {

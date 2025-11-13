@@ -124,26 +124,50 @@ function ImportLoan() {
       return;
     }
 
+    // Check if we have loan amount and interest rate from Step 1
+    if (!loanData.loanAmount || !loanData.interestRate) {
+      alert('Please complete Step 1 first (Loan Amount and Interest Rate are required for automatic calculations)');
+      return;
+    }
+
     const newPayments = [];
     let currentDate = new Date(bulkData.startDate + 'T12:00:00');
+    let remainingBalance = parseFloat(loanData.loanAmount);
+    const paymentAmount = parseFloat(bulkData.paymentAmount);
+    const monthlyInterestRate = parseFloat(loanData.interestRate) / 100 / 12;
+    
+    // Subtract any existing payments from the starting balance
+    payments.forEach(payment => {
+      const principal = parseFloat(payment.principalAmount) || 0;
+      remainingBalance -= principal;
+    });
     
     for (let i = 0; i < parseInt(bulkData.numberOfPayments); i++) {
+      // Calculate interest on remaining balance
+      const interestAmount = remainingBalance * monthlyInterestRate;
+      
+      // Calculate principal (payment minus interest)
+      const principalAmount = Math.min(paymentAmount - interestAmount, remainingBalance);
+      
       newPayments.push({
         paymentDate: currentDate.toISOString().split('T')[0],
         amount: bulkData.paymentAmount,
-        principalAmount: bulkData.principalAmount || '',
-        interestAmount: bulkData.interestAmount || '',
+        principalAmount: principalAmount.toFixed(2),
+        interestAmount: interestAmount.toFixed(2),
         taxAmount: bulkData.taxAmount || '',
         hoaAmount: bulkData.hoaAmount || '',
         lateFeeAmount: ''
       });
+      
+      // Update remaining balance
+      remainingBalance -= principalAmount;
       
       // Add one month to the date
       currentDate.setMonth(currentDate.getMonth() + 1);
     }
     
     setPayments([...payments, ...newPayments]);
-    alert(`✅ Generated ${bulkData.numberOfPayments} payments!`);
+    alert(`✅ Generated ${bulkData.numberOfPayments} payments with automatic principal/interest calculation!`);
     
     // Reset bulk form
     setBulkData({

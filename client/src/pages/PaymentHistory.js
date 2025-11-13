@@ -141,46 +141,46 @@ useEffect(() => {
         <>
         {/* Desktop Table View */}
         <div className="payments-table desktop-only">
-          <table>
+          <table style={{ fontSize: '14px' }}>
             <thead>
               <tr>
-                <th>Date</th>
-                <th>Type</th>
-                <th>Amount</th>
-                <th>Principal</th>
-                <th>Interest</th>
-                <th>Tax</th>
-                <th>HOA</th>
-                <th>Method</th>
-                <th>Status</th>
-                <th>Receipt</th>
+                <th style={{ minWidth: '90px' }}>Date</th>
+                <th style={{ minWidth: '100px' }}>Type</th>
+                <th style={{ minWidth: '80px', textAlign: 'right' }}>Amount</th>
+                <th style={{ minWidth: '75px', textAlign: 'right' }}>Principal</th>
+                <th style={{ minWidth: '75px', textAlign: 'right' }}>Interest</th>
+                <th style={{ minWidth: '65px', textAlign: 'right' }}>Tax</th>
+                <th style={{ minWidth: '65px', textAlign: 'right' }}>HOA</th>
+                <th style={{ minWidth: '80px' }}>Method</th>
+                <th style={{ minWidth: '90px', textAlign: 'center' }}>Status</th>
+                <th style={{ minWidth: '80px', textAlign: 'center' }}>Receipt</th>
               </tr>
             </thead>
             <tbody>
               {payments.map((payment) => (
                 <tr key={payment.id}>
-                  <td>
+                  <td style={{ fontSize: '13px' }}>
                     {new Date(payment.payment_date).toLocaleDateString()}
                   </td>
-                  <td>
+                  <td style={{ fontSize: '13px' }}>
                     {payment.payment_type === 'down_payment' ? 'Down Payment' : payment.payment_type === 'processing_fee' ? 'Processing Fee' : 'Monthly Payment'}
                   </td>
-                  <td className="amount">
+                  <td className="amount" style={{ textAlign: 'right', fontSize: '14px', fontWeight: '600' }}>
                     ${formatCurrency(payment.amount)}
                   </td>
-                  <td style={{ color: 'var(--forest-green)' }}>
+                  <td style={{ color: 'var(--forest-green)', textAlign: 'right', fontSize: '13px' }}>
                     {payment.principal_amount ? `$${formatCurrency(payment.principal_amount)}` : '—'}
                   </td>
-                  <td style={{ color: '#f59e0b' }}>
+                  <td style={{ color: '#f59e0b', textAlign: 'right', fontSize: '13px' }}>
                     {payment.interest_amount ? `$${formatCurrency(payment.interest_amount)}` : '—'}
                   </td>
-                  <td style={{ color: '#3b82f6' }}>
+                  <td style={{ color: '#3b82f6', textAlign: 'right', fontSize: '13px' }}>
                     {payment.tax_amount ? `$${formatCurrency(payment.tax_amount)}` : '—'}
                   </td>
-                  <td style={{ color: '#8b5cf6' }}>
+                  <td style={{ color: '#8b5cf6', textAlign: 'right', fontSize: '13px' }}>
                     {payment.hoa_amount ? `$${formatCurrency(payment.hoa_amount)}` : '—'}
                   </td>
-                  <td style={{ textTransform: 'capitalize' }}>
+                  <td style={{ textTransform: 'capitalize', fontSize: '13px' }}>
                     {payment.payment_method || 'Square'}
                   </td>
                   <td>

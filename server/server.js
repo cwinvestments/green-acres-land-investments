@@ -1101,6 +1101,156 @@ app.post('/api/admin/loans/import', authenticateAdmin, async (req, res) => {
   }
 });
 
+// Admin - Create custom loan (for loyal customers, special deals)
+app.post('/api/admin/loans/create-custom', authenticateAdmin, async (req, res) => {
+  try {
+    const { 
+      userId, 
+      propertyId, 
+      purchasePrice,
+      downPayment,
+      processingFee,
+      interestRate,
+      termMonths,
+      monthlyPayment,
+      paymentDueDay,
+      notes
+    } = req.body;
+
+    // Validate required fields
+    if (!userId || !propertyId || !purchasePrice || !monthlyPayment || !termMonths) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
+
+    // Get property
+    const propertyResult = await db.pool.query(
+      'SELECT * FROM properties WHERE id = $1',
+      [propertyId]
+    );
+
+    if (propertyResult.rows.length === 0) {
+      return res.status(404).json({ error: 'Property not found' });
+    }
+
+    const property = propertyResult.rows[0];
+
+    if (property.status !== 'available') {
+      return res.status(400).json({ error: 'Property not available' });
+    }
+
+    // Calculate loan amount
+    const loanAmount = parseFloat(purchasePrice) - parseFloat(downPayment || 0) + parseFloat(processingFee || 0);
+    
+    // Calculate total amount
+    const totalAmount = parseFloat(monthlyPayment) * parseInt(termMonths);
+
+    // Calculate first payment date
+    const today = new Date();
+    const currentMonth = today.getMonth();
+    const currentYear = today.getFullYear();
+    const currentDay = today.getDate();
+    
+    let firstPaymentDate;
+    if (parseInt(paymentDueDay) === 1) {
+      firstPaymentDate = new Date(currentYear, currentMonth + 1, 1);
+    } else {
+      if (currentDay < 15) {
+        firstPaymentDate = new Date(currentYear, currentMonth, 15);
+      } else {
+        firstPaymentDate = new Date(currentYear, currentMonth + 1, 15);
+      }
+    }
+    
+    const firstPaymentDateStr = firstPaymentDate.toISOString().split('T')[0];
+
+    // Start transaction
+    await db.pool.query('BEGIN');
+
+    // Create loan
+    const loanResult = await db.pool.query(`
+      INSERT INTO loans (
+        user_id, property_id, purchase_price, down_payment, processing_fee,
+        loan_amount, interest_rate, term_months, monthly_payment, total_amount,
+        balance_remaining, status, next_payment_date, payment_due_day, created_at
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, NOW())
+      RETURNING *
+    `, [
+      userId,
+      propertyId,
+      purchasePrice,
+      downPayment || 0,
+      processingFee || 0,
+      loanAmount,
+      interestRate,
+      termMonths,
+      monthlyPayment,
+      totalAmount,
+      loanAmount,
+      'active',
+      firstPaymentDateStr,
+      paymentDueDay || 1
+    ]);
+
+    const loan = loanResult.rows[0];
+
+    // Record down payment if any (no Square payment for custom loans)
+    if (parseFloat(downPayment || 0) > 0) {
+      await db.pool.query(`
+        INSERT INTO payments (loan_id, user_id, amount, payment_type, payment_method, status, convenience_fee)
+        VALUES ($1, $2, $3, $4, $5, $6, $7)
+      `, [
+        loan.id,
+        userId,
+        downPayment,
+        'down_payment',
+        'custom_loan',
+        'completed',
+        0
+      ]);
+    }
+
+    // Record processing fee if any
+    if (parseFloat(processingFee || 0) > 0) {
+      await db.pool.query(`
+        INSERT INTO payments (loan_id, user_id, amount, payment_type, payment_method, status, convenience_fee)
+        VALUES ($1, $2, $3, $4, $5, $6, $7)
+      `, [
+        loan.id,
+        userId,
+        processingFee,
+        'processing_fee',
+        'custom_loan',
+        'completed',
+        0
+      ]);
+    }
+
+    // Update property status
+    await db.pool.query('UPDATE properties SET status = $1 WHERE id = $2', ['pending', propertyId]);
+
+    // Add note to loan if provided
+    if (notes) {
+      await db.pool.query(
+        'UPDATE loans SET default_notes = $1 WHERE id = $2',
+        [`CUSTOM LOAN: ${notes}`, loan.id]
+      );
+    }
+
+    await db.pool.query('COMMIT');
+
+    res.status(201).json({
+      success: true,
+      message: 'Custom loan created successfully',
+      loan
+    });
+
+  } catch (error) {
+    await db.pool.query('ROLLBACK');
+    console.error('Create custom loan error:', error);
+    res.status(500).json({ error: 'Failed to create custom loan' });
+  }
+});
+
 // Delete loan (admin only)
 app.delete('/api/admin/loans/:loanId', authenticateAdmin, async (req, res) => {
   const { loanId } = req.params;

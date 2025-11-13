@@ -1109,10 +1109,9 @@ app.delete('/admin/loans/:loanId', authenticateAdmin, async (req, res) => {
     // Start transaction
     await db.pool.query('BEGIN');
 
-    // Delete payments first (foreign key constraint)
+    // Delete all related records first (foreign key constraints)
+    await db.pool.query('DELETE FROM loan_notices WHERE loan_id = $1', [loanId]);
     await db.pool.query('DELETE FROM payments WHERE loan_id = $1', [loanId]);
-
-    // Delete contract if exists
     await db.pool.query('DELETE FROM contracts WHERE loan_id = $1', [loanId]);
 
     // Delete the loan

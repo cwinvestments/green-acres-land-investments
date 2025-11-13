@@ -681,6 +681,42 @@ function AdminLoans() {
                             🗑️ Delete Contract
                           </button>
                         )}
+
+			{/* Delete Loan Button */}
+                        <button
+                          onClick={async () => {
+                            if (!window.confirm(`⚠️ DELETE ENTIRE LOAN?\n\nThis will permanently delete:\n• The loan record\n• All payment history\n• All associated data\n\nThe customer account will remain.\n\nThis action CANNOT be undone!`)) return;
+                            
+                            if (!window.confirm(`Are you absolutely sure? Type the loan ID (${loan.id}) to confirm.`) || prompt('Enter loan ID to confirm:') !== loan.id.toString()) {
+                              alert('Deletion cancelled');
+                              return;
+                            }
+                            
+                            try {
+                              const response = await fetch(`${process.env.REACT_APP_API_URL}/admin/loans/${loan.id}`, {
+                                method: 'DELETE',
+                                headers: {
+                                  'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+                                }
+                              });
+                              if (!response.ok) throw new Error('Failed');
+                              alert('Loan deleted successfully');
+                              loadLoans();
+                            } catch (err) {
+                              alert('Failed to delete loan');
+                            }
+                          }}
+                          className="btn btn-small"
+                          style={{
+                            backgroundColor: '#dc3545',
+                            color: 'white',
+                            width: '100%',
+                            fontSize: '12px',
+                            marginTop: '5px'
+                          }}
+                        >
+                          🗑️ Delete Loan
+                        </button>
                       </>
                     )}
                     {loan.status === 'defaulted' && (

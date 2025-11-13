@@ -1101,6 +1101,37 @@ app.post('/api/admin/loans/import', authenticateAdmin, async (req, res) => {
   }
 });
 
+// Delete loan (admin only)
+app.delete('/admin/loans/:loanId', authenticateAdmin, async (req, res) => {
+  const { loanId } = req.params;
+
+  try {
+    // Start transaction
+    await db.pool.query('BEGIN');
+
+    // Delete payments first (foreign key constraint)
+    await db.pool.query('DELETE FROM payments WHERE loan_id = $1', [loanId]);
+
+    // Delete contract if exists
+    await db.pool.query('DELETE FROM contracts WHERE loan_id = $1', [loanId]);
+
+    // Delete the loan
+    const result = await db.pool.query('DELETE FROM loans WHERE id = $1 RETURNING *', [loanId]);
+
+    if (result.rowCount === 0) {
+      await db.pool.query('ROLLBACK');
+      return res.status(404).json({ error: 'Loan not found' });
+    }
+
+    await db.pool.query('COMMIT');
+    res.json({ message: 'Loan deleted successfully' });
+  } catch (err) {
+    await db.pool.query('ROLLBACK');
+    console.error('Delete loan error:', err);
+    res.status(500).json({ error: 'Failed to delete loan' });
+  }
+});
+
 // Admin - Mark loan as defaulted
 app.patch('/api/admin/loans/:id/default', authenticateAdmin, async (req, res) => {
   try {

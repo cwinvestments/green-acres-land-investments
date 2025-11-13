@@ -10,6 +10,8 @@ function PaymentTracking() {
   const [searchTerm, setSearchTerm] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  const [paymentMethodFilter, setPaymentMethodFilter] = useState('all');
+  const [customerFilter, setCustomerFilter] = useState('all');
   const loadPayments = useCallback(async () => {
     try {
       const token = localStorage.getItem('adminToken');
@@ -36,6 +38,12 @@ function PaymentTracking() {
   const filteredPayments = payments.filter(payment => {
     // Filter by payment type
     if (filter !== 'all' && payment.payment_type !== filter) return false;
+
+    // Filter by payment method
+    if (paymentMethodFilter !== 'all' && payment.payment_method !== paymentMethodFilter) return false;
+
+    // Filter by customer
+    if (customerFilter !== 'all' && payment.customer_name !== customerFilter) return false;
 
     // Filter by search term (customer name, email, or property)
     if (searchTerm) {
@@ -147,6 +155,57 @@ function PaymentTracking() {
             </select>
           </div>
 
+          {/* Payment Method Filter */}
+          <div>
+            <label style={{ display: 'block', marginBottom: '5px', fontSize: '14px', fontWeight: '600' }}>
+              Payment Method
+            </label>
+            <select
+              value={paymentMethodFilter}
+              onChange={(e) => setPaymentMethodFilter(e.target.value)}
+              style={{
+                width: '100%',
+                padding: '8px',
+                borderRadius: '4px',
+                border: '1px solid #ddd'
+              }}
+            >
+              <option value="all">All Methods</option>
+              <option value="square">Square</option>
+              <option value="cash">Cash</option>
+              <option value="check">Check</option>
+              <option value="venmo">Venmo</option>
+              <option value="zelle">Zelle</option>
+              <option value="wire_transfer">Wire Transfer</option>
+              <option value="money_order">Money Order</option>
+              <option value="custom_loan">Custom Loan</option>
+              <option value="imported">Imported</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
+          {/* Customer Filter */}
+          <div>
+            <label style={{ display: 'block', marginBottom: '5px', fontSize: '14px', fontWeight: '600' }}>
+              Customer
+            </label>
+            <select
+              value={customerFilter}
+              onChange={(e) => setCustomerFilter(e.target.value)}
+              style={{
+                width: '100%',
+                padding: '8px',
+                borderRadius: '4px',
+                border: '1px solid #ddd'
+              }}
+            >
+              <option value="all">All Customers</option>
+              {[...new Set(payments.map(p => p.customer_name))].filter(Boolean).sort().map(name => (
+                <option key={name} value={name}>{name}</option>
+              ))}
+            </select>
+          </div>
+
           {/* Search */}
           <div>
             <label style={{ display: 'block', marginBottom: '5px', fontSize: '14px', fontWeight: '600' }}>
@@ -204,10 +263,12 @@ function PaymentTracking() {
         </div>
 
         {/* Clear Filters */}
-        {(filter !== 'all' || searchTerm || startDate || endDate) && (
+        {(filter !== 'all' || paymentMethodFilter !== 'all' || customerFilter !== 'all' || searchTerm || startDate || endDate) && (
           <button
             onClick={() => {
               setFilter('all');
+              setPaymentMethodFilter('all');
+              setCustomerFilter('all');
               setSearchTerm('');
               setStartDate('');
               setEndDate('');

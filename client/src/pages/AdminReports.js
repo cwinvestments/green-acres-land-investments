@@ -170,6 +170,12 @@ function AdminReports() {
                   </td>
                 </tr>
                 <tr style={{ borderBottom: '1px solid #eee' }}>
+                  <td style={{ padding: '12px 0' }}>Loan Payments</td>
+                  <td style={{ padding: '12px 0', textAlign: 'right', fontWeight: 'bold', color: 'var(--forest-green)' }}>
+                    ${formatCurrency(revenue.loan_payments || 0)}
+                  </td>
+                </tr>
+                <tr style={{ borderBottom: '1px solid #eee' }}>
                   <td style={{ padding: '12px 0' }}>Tax Collected (Escrow)</td>
                   <td style={{ padding: '12px 0', textAlign: 'right', fontWeight: 'bold' }}>
                     ${formatCurrency(revenue.tax_collected || 0)}

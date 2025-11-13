@@ -1477,7 +1477,11 @@ app.post('/api/admin/loans/:id/record-payment', authenticateAdmin, async (req, r
       [newBalance, status, nextDueDate.toISOString().split('T')[0], id]
     );
 
-    // Record payment
+    // Record payment (store notes in square_payment_id if provided)
+    const paymentIdField = transaction_id 
+      ? (notes ? `${transaction_id} | Notes: ${notes}` : transaction_id)
+      : (notes ? `Manual Payment | Notes: ${notes}` : null);
+
     await db.pool.query(`
       INSERT INTO payments (
         loan_id, 
@@ -1505,21 +1509,9 @@ app.post('/api/admin/loans/:id/record-payment', authenticateAdmin, async (req, r
       paymentAmount,
       principalAmount,
       interestAmount,
-      transaction_id || null,  // Store transaction ID in square_payment_id field
+      paymentIdField,
       0  // No convenience fee for manual payments
     ]);
-
-    // Add notes to payment if provided
-    if (notes) {
-      await db.pool.query(
-        `UPDATE payments 
-         SET square_payment_id = COALESCE(square_payment_id, '') || ' | Notes: ' || $1
-         WHERE loan_id = $2 
-         ORDER BY payment_date DESC 
-         LIMIT 1`,
-        [notes, id]
-      );
-    }
 
     await db.pool.query('COMMIT');
 

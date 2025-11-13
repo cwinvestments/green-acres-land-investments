@@ -153,10 +153,22 @@ function AdminReports() {
             </div>
           </div>
 
-          <h2>Fee Breakdown</h2>
+          <h2>Revenue Breakdown</h2>
           <div className="card" style={{ padding: '20px', marginBottom: '40px' }}>
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
               <tbody>
+                <tr style={{ borderBottom: '1px solid #eee' }}>
+                  <td style={{ padding: '12px 0' }}>Down Payments</td>
+                  <td style={{ padding: '12px 0', textAlign: 'right', fontWeight: 'bold', color: 'var(--forest-green)' }}>
+                    ${formatCurrency(revenue.down_payments || 0)}
+                  </td>
+                </tr>
+                <tr style={{ borderBottom: '1px solid #eee' }}>
+                  <td style={{ padding: '12px 0' }}>Processing Fees (Doc Fees)</td>
+                  <td style={{ padding: '12px 0', textAlign: 'right', fontWeight: 'bold', color: 'var(--forest-green)' }}>
+                    ${formatCurrency(revenue.processing_fees || 0)}
+                  </td>
+                </tr>
                 <tr style={{ borderBottom: '1px solid #eee' }}>
                   <td style={{ padding: '12px 0' }}>Tax Collected (Escrow)</td>
                   <td style={{ padding: '12px 0', textAlign: 'right', fontWeight: 'bold' }}>

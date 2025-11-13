@@ -763,7 +763,7 @@ function AdminLoans() {
                             </button>
                           </>
                         )}
-                        {(loan.contract_status === 'pending_admin_signature' || loan.contract_status === 'pending_client_signature' || loan.contract_status === 'fully_executed') && (&& (
+                        {(loan.contract_status === 'pending_admin_signature' || loan.contract_status === 'pending_client_signature' || loan.contract_status === 'fully_executed') && (
                           <button
                             onClick={async () => {
                               if (!window.confirm(`Delete contract for ${loan.property_title}?\n\nThis cannot be undone. Customer will no longer see this contract.`)) return;

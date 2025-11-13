@@ -3471,14 +3471,14 @@ app.post('/api/admin/loans/:id/generate-contract', authenticateAdmin, async (req
     // Save contract to database
     const contractResult = await db.pool.query(
       `INSERT INTO contracts (loan_id, contract_text, status)
-       VALUES ($1, $2, 'pending')
+       VALUES ($1, $2, 'pending_admin_signature')
        RETURNING id`,
       [id, contract]
     );
 
     res.json({ 
       success: true, 
-      message: 'Contract generated and ready for customer signature',
+      message: 'Contract generated and ready for admin review and signature',
       contractId: contractResult.rows[0].id
     });
 

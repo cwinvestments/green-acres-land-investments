@@ -1109,18 +1109,26 @@ app.delete('/api/admin/loans/:loanId', authenticateAdmin, async (req, res) => {
     // Start transaction
     await db.pool.query('BEGIN');
 
+    // Get loan details to find property
+    const loanResult = await db.pool.query('SELECT property_id FROM loans WHERE id = $1', [loanId]);
+    
+    if (loanResult.rowCount === 0) {
+      await db.pool.query('ROLLBACK');
+      return res.status(404).json({ error: 'Loan not found' });
+    }
+
+    const propertyId = loanResult.rows[0].property_id;
+
     // Delete all related records first (foreign key constraints)
     await db.pool.query('DELETE FROM loan_notices WHERE loan_id = $1', [loanId]);
     await db.pool.query('DELETE FROM payments WHERE loan_id = $1', [loanId]);
     await db.pool.query('DELETE FROM contracts WHERE loan_id = $1', [loanId]);
 
     // Delete the loan
-    const result = await db.pool.query('DELETE FROM loans WHERE id = $1 RETURNING *', [loanId]);
+    await db.pool.query('DELETE FROM loans WHERE id = $1', [loanId]);
 
-    if (result.rowCount === 0) {
-      await db.pool.query('ROLLBACK');
-      return res.status(404).json({ error: 'Loan not found' });
-    }
+    // Set property back to available
+    await db.pool.query('UPDATE properties SET status = $1 WHERE id = $2', ['available', propertyId]);
 
     await db.pool.query('COMMIT');
     res.json({ message: 'Loan deleted successfully' });

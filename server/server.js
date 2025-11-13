@@ -3407,6 +3407,16 @@ app.post('/api/admin/loans/:id/generate-contract', authenticateAdmin, async (req
     }
 
     const loan = result.rows[0];
+    
+    // Check if this is an imported loan (has payment history)
+    const paymentsResult = await db.pool.query(
+      'SELECT COUNT(*) as payment_count, COALESCE(SUM(principal_amount), 0) as total_principal_paid FROM payments WHERE loan_id = $1',
+      [id]
+    );
+    
+    const paymentCount = parseInt(paymentsResult.rows[0].payment_count);
+    const totalPrincipalPaid = parseFloat(paymentsResult.rows[0].total_principal_paid);
+    const isImportedLoan = paymentCount > 0;
 
     // Read contract template
     const templatePath = path.join(__dirname, 'contract-template.txt');
@@ -3414,6 +3424,12 @@ app.post('/api/admin/loans/:id/generate-contract', authenticateAdmin, async (req
 
     // Format dates
     const contractDate = new Date().toLocaleDateString('en-US', { 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    });
+    
+    const originalContractDate = new Date(loan.purchase_date || loan.created_at).toLocaleDateString('en-US', { 
       year: 'numeric', 
       month: 'long', 
       day: 'numeric' 

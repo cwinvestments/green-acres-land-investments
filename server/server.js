@@ -1118,7 +1118,7 @@ app.post('/api/admin/loans/create-custom', authenticateAdmin, async (req, res) =
     } = req.body;
 
     // Validate required fields
-    if (!userId || !propertyId || !purchasePrice || !monthlyPayment || !termMonths) {
+    if (!userId || !propertyId || !purchasePrice || !monthlyPayment) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
 
@@ -1138,11 +1138,37 @@ app.post('/api/admin/loans/create-custom', authenticateAdmin, async (req, res) =
       return res.status(400).json({ error: 'Property not available' });
     }
 
-    // Calculate loan amount
-    const loanAmount = parseFloat(purchasePrice) - parseFloat(downPayment || 0) + parseFloat(processingFee || 0);
+    // Use exact processing fee provided (don't recalculate)
+    const exactProcessingFee = parseFloat(processingFee || 0);
     
-    // Calculate total amount
-    const totalAmount = parseFloat(monthlyPayment) * parseInt(termMonths);
+    // Calculate loan amount
+    const loanAmount = parseFloat(purchasePrice) - parseFloat(downPayment || 0) + exactProcessingFee;
+    
+    // Auto-calculate term from monthly payment using amortization formula
+    const principal = loanAmount;
+    const payment = parseFloat(monthlyPayment);
+    const rate = parseFloat(interestRate) / 100 / 12; // Monthly interest rate
+    
+    let calculatedTerm;
+    if (rate === 0) {
+      // No interest: simple division
+      calculatedTerm = Math.ceil(principal / payment);
+    } else {
+      // With interest: use amortization formula
+      // N = -log(1 - (P × r) / M) / log(1 + r)
+      const numerator = 1 - (principal * rate) / payment;
+      
+      if (numerator <= 0) {
+        return res.status(400).json({ 
+          error: 'Monthly payment is too low to pay off the loan with this interest rate. Minimum payment required: $' + Math.ceil((principal * rate) / (1 - Math.pow(1 + rate, -360))) 
+        });
+      }
+      
+      calculatedTerm = Math.ceil(-Math.log(numerator) / Math.log(1 + rate));
+    }
+    
+    // Calculate total amount based on calculated term
+    const totalAmount = parseFloat(monthlyPayment) * calculatedTerm;
 
     // Calculate first payment date
     const today = new Date();
@@ -1179,10 +1205,10 @@ app.post('/api/admin/loans/create-custom', authenticateAdmin, async (req, res) =
       propertyId,
       purchasePrice,
       downPayment || 0,
-      processingFee || 0,
+      exactProcessingFee,
       loanAmount,
       interestRate,
-      termMonths,
+      calculatedTerm,
       monthlyPayment,
       totalAmount,
       loanAmount,

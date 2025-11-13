@@ -67,6 +67,21 @@ function AdminLoans() {
     }
   };
 
+  const loadContract = async (loanId) => {
+    try {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/admin/loans/${loanId}/contract`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+        }
+      });
+      if (!response.ok) return null;
+      return await response.json();
+    } catch (err) {
+      console.error('Failed to load contract:', err);
+      return null;
+    }
+  };
+
   const filterLoans = useCallback(() => {
     let filtered = [...loans];
 
@@ -647,26 +662,70 @@ function AdminLoans() {
                         {loan.contract_status === 'pending_admin_signature' && (
                           <button
                             onClick={async () => {
-                              const signature = prompt('Sign this contract by typing your full legal name:\n\nBy typing your name, you agree to the terms and conditions of this Contract for Deed.');
-                              if (!signature || !signature.trim()) return;
-                              
-                              if (!window.confirm(`Sign as: ${signature.trim()}?\n\nThis signature will be legally binding.`)) return;
-                              
-                              try {
-                                const response = await fetch(`${process.env.REACT_APP_API_URL}/admin/loans/${loan.id}/sign-contract`, {
-                                  method: 'POST',
-                                  headers: {
-                                    'Content-Type': 'application/json',
-                                    'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
-                                  },
-                                  body: JSON.stringify({ signature: signature.trim() })
-                                });
-                                if (!response.ok) throw new Error('Failed');
-                                alert('Contract signed! Now awaiting customer signature.');
-                                loadLoans();
-                              } catch (err) {
-                                alert('Failed to sign contract');
+                              const contract = await loadContract(loan.id);
+                              if (!contract) {
+                                alert('Failed to load contract');
+                                return;
                               }
+                              
+                              // Show contract modal
+                              const modal = document.createElement('div');
+                              modal.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;z-index:9999;padding:20px;';
+                              modal.innerHTML = `
+                                <div style="background:white;border-radius:10px;max-width:900px;width:100%;max-height:90vh;display:flex;flex-direction:column;">
+                                  <div style="padding:20px;border-bottom:2px solid var(--forest-green);">
+                                    <h2 style="margin:0;color:var(--forest-green);">📄 Contract for Deed - Admin Review</h2>
+                                  </div>
+                                  <div style="padding:20px;overflow-y:auto;flex:1;white-space:pre-wrap;font-family:monospace;font-size:12px;line-height:1.6;background:#f5f5f5;">
+${contract.contract_text}
+                                  </div>
+                                  <div style="padding:20px;border-top:2px solid #e0e0e0;display:flex;flex-direction:column;gap:15px;">
+                                    <div style="background:#fff3cd;padding:15px;border-radius:5px;border:2px solid #ffc107;">
+                                      <strong>⚠️ Admin Electronic Signature Agreement</strong><br/>
+                                      By typing your name below, you agree to sign this Contract for Deed electronically as the seller. This signature will be legally binding.
+                                    </div>
+                                    <input type="text" id="adminSignatureInput" placeholder="Type your full legal name here" style="padding:12px;border:2px solid var(--forest-green);border-radius:5px;font-size:16px;width:100%;box-sizing:border-box;" />
+                                    <div style="display:flex;gap:10px;">
+                                      <button id="adminSignBtn" style="flex:1;padding:12px;background:var(--forest-green);color:white;border:none;border-radius:5px;font-size:16px;cursor:pointer;font-weight:600;">
+                                        ✍️ Sign Contract
+                                      </button>
+                                      <button id="adminCancelBtn" style="flex:1;padding:12px;background:#6c757d;color:white;border:none;border-radius:5px;font-size:16px;cursor:pointer;font-weight:600;">
+                                        Cancel
+                                      </button>
+                                    </div>
+                                  </div>
+                                </div>
+                              `;
+                              document.body.appendChild(modal);
+                              
+                              document.getElementById('adminCancelBtn').onclick = () => {
+                                document.body.removeChild(modal);
+                              };
+                              
+                              document.getElementById('adminSignBtn').onclick = async () => {
+                                const signature = document.getElementById('adminSignatureInput').value.trim();
+                                if (!signature) {
+                                  alert('Please enter your full legal name');
+                                  return;
+                                }
+                                
+                                try {
+                                  document.body.removeChild(modal);
+                                  const response = await fetch(`${process.env.REACT_APP_API_URL}/admin/loans/${loan.id}/sign-contract`, {
+                                    method: 'POST',
+                                    headers: {
+                                      'Content-Type': 'application/json',
+                                      'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+                                    },
+                                    body: JSON.stringify({ signature })
+                                  });
+                                  if (!response.ok) throw new Error('Failed');
+                                  alert('Contract signed! Now awaiting customer signature.');
+                                  loadLoans();
+                                } catch (err) {
+                                  alert('Failed to sign contract');
+                                }
+                              };
                             }}
                             className="btn btn-small"
                             style={{
@@ -678,7 +737,7 @@ function AdminLoans() {
                               fontWeight: 'bold'
                             }}
                           >
-                            ✍️ Review & Sign Contract
+                            📄 Review & Sign Contract
                           </button>
                         )}
                         {loan.contract_status === 'pending_client_signature' && (

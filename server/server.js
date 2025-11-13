@@ -3488,6 +3488,28 @@ app.post('/api/admin/loans/:id/generate-contract', authenticateAdmin, async (req
   }
 });
 
+// Admin views contract
+app.get('/api/admin/loans/:id/contract', authenticateAdmin, async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Get contract
+    const result = await db.pool.query(
+      'SELECT * FROM contracts WHERE loan_id = $1',
+      [id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Contract not found' });
+    }
+
+    res.json(result.rows[0]);
+  } catch (error) {
+    console.error('Admin get contract error:', error);
+    res.status(500).json({ error: 'Failed to fetch contract' });
+  }
+});
+
 // Customer views their contract
 app.get('/api/loans/:id/contract', authenticateToken, async (req, res) => {
   try {

@@ -93,9 +93,17 @@ function AccountSettings() {
 
   const handleDeedEdit = (loan) => {
     setEditingLoan(loan.loan_id);
+    
+    // Auto-fill from user profile if deed info is empty
+    const defaultName = loan.deed_name || `${profile.first_name} ${profile.last_name}`;
+    const defaultAddress = loan.deed_mailing_address || 
+      (profile.mailing_address ? 
+        `${profile.mailing_address}\n${profile.mailing_city}, ${profile.mailing_state} ${profile.mailing_zip}` 
+        : '');
+    
     setDeedFormData({
-      deed_name: loan.deed_name || '',
-      deed_mailing_address: loan.deed_mailing_address || ''
+      deed_name: defaultName,
+      deed_mailing_address: defaultAddress
     });
   };
 

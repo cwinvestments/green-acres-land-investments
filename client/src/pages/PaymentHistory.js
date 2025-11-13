@@ -149,6 +149,8 @@ useEffect(() => {
                 <th>Amount</th>
                 <th>Principal</th>
                 <th>Interest</th>
+                <th>Tax</th>
+                <th>HOA</th>
                 <th>Method</th>
                 <th>Status</th>
                 <th>Receipt</th>
@@ -171,6 +173,12 @@ useEffect(() => {
                   </td>
                   <td style={{ color: '#f59e0b' }}>
                     {payment.interest_amount ? `$${formatCurrency(payment.interest_amount)}` : '—'}
+                  </td>
+                  <td style={{ color: '#3b82f6' }}>
+                    {payment.tax_amount ? `$${formatCurrency(payment.tax_amount)}` : '—'}
+                  </td>
+                  <td style={{ color: '#8b5cf6' }}>
+                    {payment.hoa_amount ? `$${formatCurrency(payment.hoa_amount)}` : '—'}
                   </td>
                   <td style={{ textTransform: 'capitalize' }}>
                     {payment.payment_method || 'Square'}
@@ -209,6 +217,8 @@ useEffect(() => {
                                 <tr><td class="label">Payment Type:</td><td class="value">${payment.payment_type === 'down_payment' ? 'Down Payment' : payment.payment_type === 'processing_fee' ? 'Processing Fee' : 'Monthly Payment'}</td></tr> Payment'}</td></tr>
                                 ${payment.principal_amount ? `<tr><td class="label">Principal:</td><td class="value">$${formatCurrency(payment.principal_amount)}</td></tr>` : ''}
                                 ${payment.interest_amount ? `<tr><td class="label">Interest:</td><td class="value">$${formatCurrency(payment.interest_amount)}</td></tr>` : ''}
+                                ${payment.tax_amount ? `<tr><td class="label">Property Tax:</td><td class="value">$${formatCurrency(payment.tax_amount)}</td></tr>` : ''}
+                                ${payment.hoa_amount ? `<tr><td class="label">HOA Fee:</td><td class="value">$${formatCurrency(payment.hoa_amount)}</td></tr>` : ''}
                                 <tr class="total"><td class="label">Total Amount:</td><td class="value">$${formatCurrency(payment.amount)}</td></tr>
                                 <tr><td class="label">Payment Method:</td><td class="value">${payment.payment_method || 'Square'}</td></tr>
                                 <tr><td class="label">Status:</td><td class="value">${payment.status}</td></tr>
@@ -274,6 +284,20 @@ useEffect(() => {
                   <br />
                   <span style={{ color: '#f59e0b' }}>
                     {payment.interest_amount ? `$${formatCurrency(payment.interest_amount)}` : '—'}
+                  </span>
+                </div>
+                <div>
+                  <strong>Tax:</strong>
+                  <br />
+                  <span style={{ color: '#3b82f6' }}>
+                    {payment.tax_amount ? `$${formatCurrency(payment.tax_amount)}` : '—'}
+                  </span>
+                </div>
+                <div>
+                  <strong>HOA:</strong>
+                  <br />
+                  <span style={{ color: '#8b5cf6' }}>
+                    {payment.hoa_amount ? `$${formatCurrency(payment.hoa_amount)}` : '—'}
                   </span>
                 </div>
                 <div>

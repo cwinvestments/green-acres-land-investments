@@ -282,7 +282,19 @@ function PaymentTracking() {
                   </td>
                   <td style={{ padding: '15px', fontSize: '13px', lineHeight: '1.5' }}>
                     {payment.loan_payment_amount > 0 && (
-                      <div>💰 Loan: ${parseFloat(payment.loan_payment_amount).toFixed(2)}</div>
+                      <>
+                        <div>💰 Loan: ${parseFloat(payment.loan_payment_amount).toFixed(2)}</div>
+                        {payment.principal_amount > 0 && (
+                          <div style={{ paddingLeft: '20px', color: '#059669' }}>
+                            ↳ Principal: ${parseFloat(payment.principal_amount).toFixed(2)}
+                          </div>
+                        )}
+                        {payment.interest_amount > 0 && (
+                          <div style={{ paddingLeft: '20px', color: '#f59e0b' }}>
+                            ↳ Interest: ${parseFloat(payment.interest_amount).toFixed(2)}
+                          </div>
+                        )}
+                      </>
                     )}
                     {payment.tax_amount > 0 && (
                       <div>🏛️ Tax: ${parseFloat(payment.tax_amount).toFixed(2)}</div>

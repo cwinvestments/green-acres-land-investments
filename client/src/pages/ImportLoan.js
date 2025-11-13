@@ -212,14 +212,6 @@ function ImportLoan() {
     setEditingPayment(null);
   };
 
-const saveEditPayment = () => {
-    const updatedPayments = [...payments];
-    updatedPayments[editingIndex] = editingPayment;
-    setPayments(updatedPayments);
-    setEditingIndex(null);
-    setEditingPayment(null);
-  };
-
   const recalculatePayment = () => {
     if (!loanData.loanAmount || !loanData.interestRate) {
       alert('Loan amount and interest rate are required for calculation');

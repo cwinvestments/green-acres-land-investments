@@ -1548,7 +1548,7 @@ app.post('/api/loans', authenticateToken, async (req, res) => {
     const loanId = loanResult.rows[0].id;
     console.log('Loan created:', loanId);
 
-    // Record payment
+    // Record down payment
     await db.pool.query(`
       INSERT INTO payments (loan_id, user_id, amount, payment_type, square_payment_id, status)
       VALUES ($1, $2, $3, $4, $5, $6)
@@ -1557,6 +1557,19 @@ app.post('/api/loans', authenticateToken, async (req, res) => {
       req.user.id,
       financing.downPayment,
       'down_payment',
+      result.payment.id,
+      'completed'
+    ]);
+
+    // Record processing fee
+    await db.pool.query(`
+      INSERT INTO payments (loan_id, user_id, amount, payment_type, square_payment_id, status)
+      VALUES ($1, $2, $3, $4, $5, $6)
+    `, [
+      loanId,
+      req.user.id,
+      financing.processingFee,
+      'processing_fee',
       result.payment.id,
       'completed'
     ]);

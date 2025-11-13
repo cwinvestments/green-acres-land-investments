@@ -1523,7 +1523,7 @@ app.post('/api/admin/loans/:id/record-payment', authenticateAdmin, async (req, r
       'monthly_payment',
       payment_method,
       'completed',
-      payment_date,
+      payment_date + 'T12:00:00',
       loanPayment,
       monthlyTax,
       monthlyHoa,

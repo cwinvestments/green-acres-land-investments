@@ -152,7 +152,6 @@ useEffect(() => {
                 <th style={{ minWidth: '65px', textAlign: 'right' }}>Tax</th>
                 <th style={{ minWidth: '65px', textAlign: 'right' }}>HOA</th>
                 <th style={{ minWidth: '80px' }}>Method</th>
-                <th style={{ minWidth: '90px', textAlign: 'center' }}>Status</th>
                 <th style={{ minWidth: '80px', textAlign: 'center' }}>Receipt</th>
               </tr>
             </thead>
@@ -183,12 +182,7 @@ useEffect(() => {
                   <td style={{ textTransform: 'capitalize', fontSize: '13px' }}>
                     {payment.payment_method || 'Square'}
                   </td>
-                  <td>
-                    <span className={`status-badge status-${payment.status}`}>
-                      {payment.status === 'completed' ? 'Completed' : payment.status}
-                    </span>
-                  </td>
-                  <td>
+                  <td style={{ textAlign: 'center' }}>
                     <button
                       onClick={() => {
                         const printWindow = window.open('', '_blank', 'width=600,height=700,left=300,top=100');

@@ -396,6 +396,24 @@ function LoanDetail() {
                 </span>
               </div>
               
+              {paymentBreakdown && paymentBreakdown.monthlyTax > 0 && (
+                <div className="info-row">
+                  <span>Property Tax:</span>
+                  <span style={{ color: '#3b82f6' }}>
+                    ${formatCurrency(paymentBreakdown.monthlyTax)}
+                  </span>
+                </div>
+              )}
+              
+              {paymentBreakdown && paymentBreakdown.monthlyHoa > 0 && (
+                <div className="info-row">
+                  <span>HOA Fee:</span>
+                  <span style={{ color: '#8b5cf6' }}>
+                    ${formatCurrency(paymentBreakdown.monthlyHoa)}
+                  </span>
+                </div>
+              )}
+              
               <p style={{ marginTop: '15px', fontSize: '14px', color: '#666', fontStyle: 'italic' }}>
                 💡 Tip: Pay extra to reduce interest and own your land faster!
               </p>

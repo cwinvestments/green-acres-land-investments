@@ -95,7 +95,7 @@ useEffect(() => {
                         <tr>
                           <td>${new Date(payment.payment_date).toLocaleDateString()}</td>
                           <td>$${formatCurrency(payment.amount)}</td>
-                          <td>${payment.payment_type === 'down_payment' ? 'Down Payment' : 'Monthly Payment'}</td>
+                          <td>${payment.payment_type === 'down_payment' ? 'Down Payment' : payment.payment_type === 'processing_fee' ? 'Processing Fee' : 'Monthly Payment'}</td>
                           <td>${payment.status}</td>
                         </tr>
                       `).join('')}
@@ -161,7 +161,7 @@ useEffect(() => {
                     {new Date(payment.payment_date).toLocaleDateString()}
                   </td>
                   <td>
-                    {payment.payment_type === 'down_payment' ? 'Down Payment' : 'Monthly Payment'}
+                    {payment.payment_type === 'down_payment' ? 'Down Payment' : payment.payment_type === 'processing_fee' ? 'Processing Fee' : 'Monthly Payment'}
                   </td>
                   <td className="amount">
                     ${formatCurrency(payment.amount)}
@@ -206,7 +206,7 @@ useEffect(() => {
                               <p><strong>Property:</strong> ${loan?.property_title || ''}</p>
                               <table>
                                 <tr><td class="label">Payment Date:</td><td class="value">${new Date(payment.payment_date).toLocaleDateString()}</td></tr>
-                                <tr><td class="label">Payment Type:</td><td class="value">${payment.payment_type === 'down_payment' ? 'Down Payment' : 'Monthly Payment'}</td></tr>
+                                <tr><td class="label">Payment Type:</td><td class="value">${payment.payment_type === 'down_payment' ? 'Down Payment' : payment.payment_type === 'processing_fee' ? 'Processing Fee' : 'Monthly Payment'}</td></tr> Payment'}</td></tr>
                                 ${payment.principal_amount ? `<tr><td class="label">Principal:</td><td class="value">$${formatCurrency(payment.principal_amount)}</td></tr>` : ''}
                                 ${payment.interest_amount ? `<tr><td class="label">Interest:</td><td class="value">$${formatCurrency(payment.interest_amount)}</td></tr>` : ''}
                                 <tr class="total"><td class="label">Total Amount:</td><td class="value">$${formatCurrency(payment.amount)}</td></tr>
@@ -248,7 +248,7 @@ useEffect(() => {
                   <strong>{new Date(payment.payment_date).toLocaleDateString()}</strong>
                   <br />
                   <span style={{ fontSize: '14px', color: '#666' }}>
-                    {payment.payment_type === 'down_payment' ? 'Down Payment' : 'Monthly Payment'}
+                    {payment.payment_type === 'down_payment' ? 'Down Payment' : payment.payment_type === 'processing_fee' ? 'Processing Fee' : 'Monthly Payment'}
                   </span>
                 </div>
                 <div style={{ textAlign: 'right' }}>

@@ -1556,30 +1556,32 @@ app.post('/api/loans', authenticateToken, async (req, res) => {
     const loanId = loanResult.rows[0].id;
     console.log('Loan created:', loanId);
 
-    // Record down payment
+    // Record down payment (with convenience fee since this is the main transaction record)
     await db.pool.query(`
-      INSERT INTO payments (loan_id, user_id, amount, payment_type, square_payment_id, status)
-      VALUES ($1, $2, $3, $4, $5, $6)
+      INSERT INTO payments (loan_id, user_id, amount, payment_type, square_payment_id, status, convenience_fee)
+      VALUES ($1, $2, $3, $4, $5, $6, $7)
     `, [
       loanId,
       req.user.id,
       financing.downPayment,
       'down_payment',
       result.payment.id,
-      'completed'
+      'completed',
+      5.00
     ]);
 
-    // Record processing fee
+    // Record processing fee (no convenience fee - already recorded above)
     await db.pool.query(`
-      INSERT INTO payments (loan_id, user_id, amount, payment_type, square_payment_id, status)
-      VALUES ($1, $2, $3, $4, $5, $6)
+      INSERT INTO payments (loan_id, user_id, amount, payment_type, square_payment_id, status, convenience_fee)
+      VALUES ($1, $2, $3, $4, $5, $6, $7)
     `, [
       loanId,
       req.user.id,
       financing.processingFee,
       'processing_fee',
       result.payment.id,
-      'completed'
+      'completed',
+      0.00
     ]);
 
     // Update property status

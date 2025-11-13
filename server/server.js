@@ -1236,14 +1236,14 @@ app.post('/api/admin/loans/create-custom', authenticateAdmin, async (req, res) =
     }
 
     // Record processing fee if any
-    if (parseFloat(processingFee || 0) > 0) {
+    if (parseFloat(exactProcessingFee || 0) > 0) {
       await db.pool.query(`
         INSERT INTO payments (loan_id, user_id, amount, payment_type, payment_method, status, convenience_fee)
         VALUES ($1, $2, $3, $4, $5, $6, $7)
       `, [
         loan.id,
         userId,
-        processingFee,
+        exactProcessingFee,
         'processing_fee',
         'custom_loan',
         'completed',

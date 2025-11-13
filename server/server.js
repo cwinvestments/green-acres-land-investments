@@ -1427,11 +1427,13 @@ app.post('/api/admin/loans/:id/record-payment', authenticateAdmin, async (req, r
       return res.status(400).json({ error: 'Amount, payment date, and payment method are required' });
     }
 
-    // Get loan details
-    const loanResult = await db.pool.query(
-      'SELECT * FROM loans WHERE id = $1',
-      [id]
-    );
+    // Get loan and property details
+    const loanResult = await db.pool.query(`
+      SELECT l.*, p.annual_tax_amount, p.monthly_hoa_fee
+      FROM loans l
+      JOIN properties p ON l.property_id = p.id
+      WHERE l.id = $1
+    `, [id]);
 
     if (loanResult.rows.length === 0) {
       return res.status(404).json({ error: 'Loan not found' });
@@ -1443,21 +1445,35 @@ app.post('/api/admin/loans/:id/record-payment', authenticateAdmin, async (req, r
       return res.status(400).json({ error: 'Loan already paid off' });
     }
 
-    // Validate amount doesn't exceed balance
-    const paymentAmount = parseFloat(amount);
-    if (paymentAmount > loan.balance_remaining) {
+    const totalPayment = parseFloat(amount);
+
+    // Calculate monthly tax and HOA
+    const monthlyTax = loan.annual_tax_amount ? parseFloat(loan.annual_tax_amount) / 12 : 0;
+    const monthlyHoa = loan.monthly_hoa_fee ? parseFloat(loan.monthly_hoa_fee) : 0;
+
+    // Calculate loan payment portion (total - tax - HOA)
+    const loanPayment = totalPayment - monthlyTax - monthlyHoa;
+
+    if (loanPayment <= 0) {
       return res.status(400).json({ 
-        error: `Payment amount ($${paymentAmount}) exceeds remaining balance ($${loan.balance_remaining})` 
+        error: `Payment amount must be greater than tax ($${monthlyTax.toFixed(2)}) + HOA ($${monthlyHoa.toFixed(2)})` 
+      });
+    }
+
+    // Validate loan payment doesn't exceed balance
+    if (loanPayment > loan.balance_remaining) {
+      return res.status(400).json({ 
+        error: `Loan payment portion ($${loanPayment.toFixed(2)}) exceeds remaining balance ($${loan.balance_remaining})` 
       });
     }
 
     // Calculate interest and principal breakdown
     const monthlyInterestRate = (loan.interest_rate / 100) / 12;
     const interestAmount = loan.balance_remaining * monthlyInterestRate;
-    const principalAmount = Math.min(paymentAmount - interestAmount, loan.balance_remaining);
+    const principalAmount = Math.min(loanPayment - interestAmount, loan.balance_remaining);
 
-    // Calculate new balance
-    const newBalance = Math.max(0, loan.balance_remaining - paymentAmount);
+    // Calculate new balance (only loan payment reduces balance)
+    const newBalance = Math.max(0, loan.balance_remaining - loanPayment);
     const status = newBalance === 0 ? 'paid_off' : 'active';
 
     // Calculate next payment due date (30 days from payment date)
@@ -1492,21 +1508,25 @@ app.post('/api/admin/loans/:id/record-payment', authenticateAdmin, async (req, r
         status, 
         payment_date,
         loan_payment_amount,
+        tax_amount,
+        hoa_amount,
         principal_amount,
         interest_amount,
         square_payment_id,
         convenience_fee
       )
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
     `, [
       id,
       loan.user_id,
-      paymentAmount,
+      totalPayment,
       'monthly_payment',
       payment_method,
       'completed',
       payment_date,
-      paymentAmount,
+      loanPayment,
+      monthlyTax,
+      monthlyHoa,
       principalAmount,
       interestAmount,
       paymentIdField,
@@ -1519,7 +1539,13 @@ app.post('/api/admin/loans/:id/record-payment', authenticateAdmin, async (req, r
       success: true,
       message: 'Manual payment recorded successfully',
       newBalance,
-      paidOff: newBalance === 0
+      paidOff: newBalance === 0,
+      breakdown: {
+        total: totalPayment,
+        loanPayment: loanPayment,
+        tax: monthlyTax,
+        hoa: monthlyHoa
+      }
     });
 
   } catch (error) {

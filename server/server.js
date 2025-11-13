@@ -3551,14 +3551,14 @@ app.post('/api/loans/:id/sign-contract', authenticateToken, async (req, res) => 
            customer_signed_date = NOW(),
            customer_ip_address = $2,
            customer_user_agent = $3,
-           status = 'customer_signed'
-       WHERE loan_id = $4 AND status = 'pending'`,
+           status = 'fully_executed'
+       WHERE loan_id = $4 AND status = 'pending_client_signature'`,
       [signature, ipAddress, userAgent, id]
     );
 
     res.json({ 
       success: true, 
-      message: 'Contract signed successfully. Awaiting admin signature.' 
+      message: 'Contract signed successfully. Fully executed!' 
     });
   } catch (error) {
     console.error('Sign contract error:', error);
@@ -3585,14 +3585,14 @@ app.post('/api/admin/loans/:id/sign-contract', authenticateAdmin, async (req, re
        SET admin_signature = $1,
            admin_signed_date = NOW(),
            admin_ip_address = $2,
-           status = 'fully_signed'
-       WHERE loan_id = $3 AND status = 'customer_signed'
+           status = 'pending_client_signature'
+       WHERE loan_id = $3 AND status = 'pending_admin_signature'
        RETURNING id`,
       [signature, ipAddress, id]
     );
 
     if (result.rows.length === 0) {
-      return res.status(400).json({ error: 'Contract must be signed by customer first' });
+      return res.status(400).json({ error: 'Contract not found or already signed' });
     }
 
     res.json({ 

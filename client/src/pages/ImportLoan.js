@@ -71,8 +71,9 @@ function ImportLoan() {
   // Pre-fill bulk payment amount when moving to Step 2
   useEffect(() => {
     if (step === 2 && loanData.monthlyPayment && !bulkData.paymentAmount) {
-      setBulkData({...bulkData, paymentAmount: loanData.monthlyPayment});
+      setBulkData(prevBulkData => ({...prevBulkData, paymentAmount: loanData.monthlyPayment}));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [step, loanData.monthlyPayment]);
 
   const loadData = async () => {

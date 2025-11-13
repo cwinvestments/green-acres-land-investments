@@ -346,6 +346,7 @@ PORT=5000
 ✅ Tax escrow reconciliation
 ✅ State management (add/edit available states)
 ✅ Configurable tax withholding rate
+✅ Custom Loan Creator - Create flexible financing with custom terms (down payment, interest rate, term length) for loyal customers or special deals
 
 ### Business Logic
 ✅ 5 financing tiers: $99 (18% APR), 20% (12% APR), 25%/35%/50% (8% APR)
@@ -647,7 +648,10 @@ ALTER TABLE table_name ADD COLUMN column_name TYPE;
 - ⚠️ Square needs production credentials for live payments
 
 ### Known Issues
-None - system is working cleanly
+- ⚠️ Tax Summary page not showing custom loan revenue (needs investigation)
+- ⚠️ Financial Reports "Fee Breakdown" missing down payments and processing fees
+- ⚠️ Custom Loan Creator needs mobile-friendly design polish
+- ⚠️ Custom Loan Creator cannot collect Square payment for down payment yet
 
 ### Completed Enhancements (November 12, 2025)
 1. ✅ Drag-and-drop image reordering in admin
@@ -656,6 +660,19 @@ None - system is working cleanly
 4. ✅ PDF export functionality for financial reports
 5. ✅ Enhanced Admin Dashboard with performance indicators
 6. ✅ Smart navigation from dashboard to property tax modals
+
+## Recent Updates
+
+### November 13, 2025
+- ✅ Added Custom Loan Creator for flexible financing terms
+- ✅ Fixed payment convenience fee (only charged once: $5 total)
+- ✅ Fixed payment type labels (Processing Fee now displays as "DOC FEE")
+### November 12, 2025
+- ✅ Added professional PDF export for financial reports
+- ✅ Enhanced Admin Dashboard with trends and clickable alerts
+- ✅ Drag-and-drop image reordering
+- ✅ Featured image priority
+- ✅ Mobile responsive Property Management
 
 ### Planned Enhancements
 1. Email notifications for payments/overdue accounts

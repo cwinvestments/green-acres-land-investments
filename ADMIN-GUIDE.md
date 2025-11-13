@@ -675,16 +675,119 @@ For each loan:
 
 
 \## Loan Management
-
-
-
-\### Loan Management Overview
-
-
-
 The most important admin section for day-to-day operations. Track all loans, send default notices, manage late fees, and monitor payment status.
 
+### Creating Custom Loans ✨
 
+**Purpose:**  
+Create flexible financing for special situations: loyal customers, eBay auction winners, negotiated deals, or testing without real payments.
+
+**When to Use:**
+- eBay auctions where winner bids on down payment amount
+- Loyal customer deserves special terms
+- Negotiated deal outside standard financing tiers
+- Testing system without charging real money
+- Zero down payment promotions
+
+**Step-by-Step Process:**
+
+1. **Navigate to Custom Loan Creator**
+   - Admin Dashboard → Loan Management
+   - Click "✨ Create Custom Loan" button (top right)
+
+2. **Select Customer**
+   - Dropdown shows all registered customers
+   - Search by typing name
+   - Customer must have account already
+
+3. **Select Property**
+   - Dropdown shows only Available properties
+   - Search by typing property title
+   - Property will be set to "Pending" when loan created
+
+4. **Set Purchase Price**
+   - Usually matches property price
+   - Can customize for special deals
+   - Must be greater than $0
+
+5. **Set Down Payment**
+   - Any amount from $0 to full price
+   - Can set to $0 for zero-down deals
+   - For eBay auctions: Use bid amount
+
+6. **Set Processing Fee (Doc Fee)**
+   - Standard is $99
+   - Can set to $0 to waive fee
+   - Or any custom amount
+
+7. **Set Interest Rate**
+   - Any percentage (e.g., 18, 12, 8)
+   - Not restricted to standard tiers
+   - Use for special arrangements
+
+8. **Set Term (Months)**
+   - How many months to pay off loan
+   - Common: 12, 24, 36, 48, 60
+   - Can be any number
+
+9. **Set Monthly Payment**
+   - Minimum $50 required
+   - System enforces minimum
+   - Customer pays this amount monthly
+
+10. **Set Payment Due Day**
+    - 1st of month
+    - 15th of month
+    - Choose based on customer preference
+
+11. **Add Internal Notes**
+    - Document reason for custom terms
+    - Record special arrangements
+    - Example: "eBay auction winner - down payment was bid amount of $247"
+
+12. **Click "Create Custom Loan"**
+
+**System Actions:**
+- Creates loan with custom terms
+- Records down payment (if > $0) with payment_method = 'custom_loan'
+- Records processing fee (if > $0) with payment_method = 'custom_loan'
+- Sets property status to "Pending"
+- Customer can now make monthly payments through normal dashboard
+- **Does NOT charge Square** (no real payment processed)
+
+**Important Notes:**
+- ✅ Great for testing without real money
+- ✅ Perfect for eBay auction workflows
+- ✅ Customer makes monthly payments normally via Square
+- ⚠️ Currently cannot collect down payment via Square at creation time
+- ⚠️ Workaround: Create loan, then customer pays manually, or collect payment separately
+- ⚠️ Mobile design needs polish (works but not as pretty as other pages)
+
+**Tax and HOA:**
+- Custom Loan Creator does NOT set tax/HOA amounts
+- After creating loan, edit the property to add:
+  - Annual Tax Amount
+  - Monthly HOA Fee
+- These will be included in customer's monthly payment breakdown
+
+**Example Use Case - eBay Auction:**
+1. List property on eBay: "Bid on Your Down Payment!"
+2. Winner bids $500 (down payment amount)
+3. After auction ends:
+   - Customer registers on website
+   - You create custom loan:
+     - Down Payment: $500 (bid amount)
+     - Processing Fee: $0 (waived for auction)
+     - Interest Rate: 15% (special rate)
+     - Term: 48 months
+     - Monthly Payment: $75
+     - Notes: "eBay auction winner - Bid #123456789"
+4. Customer makes monthly payments normally
+
+**Known Limitations:**
+- Cannot auto-calculate term based on payment amount (coming soon)
+- Cannot collect Square payment at creation (coming soon)
+- Mobile UI needs improvement (works but not polished)
 
 \### Loan Management Dashboard
 

@@ -129,6 +129,35 @@
 \## 💰 Loan Management - Quick Actions
 
 
+### Create Custom Loan ✨
+**Purpose:** Create special financing for loyal customers, eBay auction winners, or flexible deals
+
+**Steps:**
+1. Click "✨ Create Custom Loan" button
+2. Select existing customer
+3. Select available property
+4. Customize terms:
+   - Down payment (including $0)
+   - Processing fee (including $0 to waive)
+   - Interest rate (any %)
+   - Term length (months)
+   - Monthly payment (min $50)
+   - Payment due day (1st or 15th)
+   - Internal notes
+5. Click "Create Custom Loan"
+
+**Notes:**
+- No Square payment required (for testing or deferred payment)
+- Property automatically set to "pending"
+- Customer can make payments through normal dashboard
+- Use for eBay auctions where bidder bids on down payment amount
+- Good for testing without charging real money
+
+**Known Issues:**
+- Mobile design needs polish (works but not pretty)
+- No Square payment collection yet (coming soon)
+- Add tax/HOA by editing property after creation
+
 
 \### Filter Loans
 

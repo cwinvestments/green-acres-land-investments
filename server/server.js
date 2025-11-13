@@ -3412,11 +3412,11 @@ app.post('/api/admin/loans/:id/generate-contract', authenticateAdmin, async (req
     // Prepare merge data
     const mergeData = {
       CONTRACT_DATE: contractDate,
-      PURCHASER_NAME: `${loan.first_name} ${loan.last_name}`,
-      PURCHASER_ADDRESS: loan.billing_address || '[ADDRESS]',
-      PURCHASER_CITY: loan.billing_city || '[CITY]',
-      PURCHASER_STATE: loan.billing_state || '[ST]',
-      PURCHASER_ZIP: loan.billing_zip || '[ZIP]',
+      PURCHASER_NAME: loan.deed_name || `${loan.first_name} ${loan.last_name}`,
+      PURCHASER_ADDRESS: loan.deed_mailing_address ? loan.deed_mailing_address.split('\n')[0] : '[ADDRESS NOT SET - Customer must update in Account Settings]',
+      PURCHASER_CITY: loan.deed_mailing_address && loan.deed_mailing_address.split('\n')[1] ? loan.deed_mailing_address.split('\n')[1].split(',')[0].trim() : '[CITY]',
+      PURCHASER_STATE: loan.deed_mailing_address && loan.deed_mailing_address.split('\n')[1] ? loan.deed_mailing_address.split('\n')[1].split(',')[1].trim().split(' ')[0] : '[ST]',
+      PURCHASER_ZIP: loan.deed_mailing_address && loan.deed_mailing_address.split('\n')[1] ? loan.deed_mailing_address.split('\n')[1].split(',')[1].trim().split(' ')[1] : '[ZIP]',
       COUNTY: loan.county,
       STATE: loan.state,
       PROPERTY_DESCRIPTION: loan.legal_description || loan.title,

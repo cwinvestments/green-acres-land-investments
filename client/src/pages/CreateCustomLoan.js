@@ -155,7 +155,19 @@ function CreateCustomLoan() {
         No Square payment required.
       </div>
       
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 400px', gap: '20px' }}>
+      <style>{`
+        .loan-creation-layout {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 20px;
+        }
+        @media (min-width: 1024px) {
+          .loan-creation-layout {
+            grid-template-columns: 1fr 400px;
+          }
+        }
+      `}</style>
+      <div className="loan-creation-layout">
         {/* Left Column: Form */}
         <form onSubmit={handleSubmit} style={{ background: 'white', padding: '30px', borderRadius: '8px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
           <div style={{ marginBottom: '30px' }}>

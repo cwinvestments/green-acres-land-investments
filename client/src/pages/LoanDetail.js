@@ -272,9 +272,7 @@ function LoanDetail() {
         </div>
       )}
       
-      {loan.description && (
-        <p style={{ marginTop: '1rem', color: '#666' }}>{loan.description}</p>
-      )}
+      
 
       <div className="loan-detail-grid">
         <div className="loan-info-card">

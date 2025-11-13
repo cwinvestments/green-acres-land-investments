@@ -62,14 +62,6 @@ function ImportLoan() {
   });
   const [editingIndex, setEditingIndex] = useState(null);
   const [editingPayment, setEditingPayment] = useState(null);
-    startDate: '',
-    numberOfPayments: 12,
-    paymentAmount: '',
-    principalAmount: '',
-    interestAmount: '',
-    taxAmount: '',
-    hoaAmount: ''
-  });
 
   useEffect(() => {
     loadData();

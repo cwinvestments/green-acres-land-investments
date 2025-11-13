@@ -551,7 +551,7 @@ app.get('/api/admin/stats', authenticateAdmin, async (req, res) => {
       JOIN loans l ON p.loan_id = l.id
       WHERE p.status = 'completed'
         AND p.payment_type = 'monthly_payment'
-        AND p.payment_date >= CURRENT_DATE - INTERVAL '90 days'
+        AND p.payment_date >= CURRENT_DATE - INTERVAL '30 days'
     `);
     
     const totalPayments = parseInt(onTimeResult.rows[0].total_payments) || 0;

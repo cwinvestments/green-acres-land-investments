@@ -158,7 +158,7 @@ function AdminDashboard() {
               {stats.collectionRate < 75 && '🚨'}
             </span>
           </div>
-          <p style={{ margin: '5px 0 0 0', fontSize: '12px', color: '#999' }}>On-time payment rate (90 days)</p>
+          <p style={{ margin: '5px 0 0 0', fontSize: '12px', color: '#999' }}>On-time payment rate (30 days)</p>
         </div>
 
         <div className="card" style={{ padding: '20px', backgroundColor: stats.overdueLoans > 0 ? '#fff3cd' : 'white', border: stats.overdueLoans > 0 ? '2px solid #ffc107' : '1px solid #ddd' }}>

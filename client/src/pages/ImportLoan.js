@@ -50,6 +50,16 @@ function ImportLoan() {
 
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [bulkMode, setBulkMode] = useState(false);
+  const [bulkData, setBulkData] = useState({
+    startDate: '',
+    numberOfPayments: 12,
+    paymentAmount: '',
+    principalAmount: '',
+    interestAmount: '',
+    taxAmount: '',
+    hoaAmount: ''
+  });
 
   useEffect(() => {
     loadData();
@@ -105,6 +115,45 @@ function ImportLoan() {
       taxAmount: '',
       hoaAmount: '',
       lateFeeAmount: ''
+    });
+  };
+
+  const generateBulkPayments = () => {
+    if (!bulkData.startDate || !bulkData.numberOfPayments || !bulkData.paymentAmount) {
+      alert('Please enter start date, number of payments, and payment amount');
+      return;
+    }
+
+    const newPayments = [];
+    let currentDate = new Date(bulkData.startDate + 'T12:00:00');
+    
+    for (let i = 0; i < parseInt(bulkData.numberOfPayments); i++) {
+      newPayments.push({
+        paymentDate: currentDate.toISOString().split('T')[0],
+        amount: bulkData.paymentAmount,
+        principalAmount: bulkData.principalAmount || '',
+        interestAmount: bulkData.interestAmount || '',
+        taxAmount: bulkData.taxAmount || '',
+        hoaAmount: bulkData.hoaAmount || '',
+        lateFeeAmount: ''
+      });
+      
+      // Add one month to the date
+      currentDate.setMonth(currentDate.getMonth() + 1);
+    }
+    
+    setPayments([...payments, ...newPayments]);
+    alert(`✅ Generated ${bulkData.numberOfPayments} payments!`);
+    
+    // Reset bulk form
+    setBulkData({
+      startDate: '',
+      numberOfPayments: 12,
+      paymentAmount: '',
+      principalAmount: '',
+      interestAmount: '',
+      taxAmount: '',
+      hoaAmount: ''
     });
   };
 
@@ -394,78 +443,189 @@ function ImportLoan() {
             Add all previous payments made on this loan. If you don't have payment history, you can skip this step.
           </p>
 
-          {/* Add Payment Form */}
-          <div style={{ 
-            padding: '20px', 
-            background: 'var(--light-green)', 
-            borderRadius: '8px', 
-            marginBottom: '20px' 
-          }}>
-            <h4 style={{ marginTop: 0 }}>Add Payment</h4>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '15px' }}>
-              <div className="form-group">
-                <label>Payment Date *</label>
-                <input
-                  type="date"
-                  value={newPayment.paymentDate}
-                  onChange={(e) => setNewPayment({...newPayment, paymentDate: e.target.value})}
-                />
-              </div>
-              <div className="form-group">
-                <label>Total Amount *</label>
-                <input
-                  type="number"
-                  step="0.01"
-                  value={newPayment.amount}
-                  onChange={(e) => setNewPayment({...newPayment, amount: e.target.value})}
-                  placeholder="0.00"
-                />
-              </div>
-              <div className="form-group">
-                <label>Principal Amount</label>
-                <input
-                  type="number"
-                  step="0.01"
-                  value={newPayment.principalAmount}
-                  onChange={(e) => setNewPayment({...newPayment, principalAmount: e.target.value})}
-                  placeholder="0.00"
-                />
-              </div>
-              <div className="form-group">
-                <label>Interest Amount</label>
-                <input
-                  type="number"
-                  step="0.01"
-                  value={newPayment.interestAmount}
-                  onChange={(e) => setNewPayment({...newPayment, interestAmount: e.target.value})}
-                  placeholder="0.00"
-                />
-              </div>
-              <div className="form-group">
-                <label>Tax Escrow</label>
-                <input
-                  type="number"
-                  step="0.01"
-                  value={newPayment.taxAmount}
-                  onChange={(e) => setNewPayment({...newPayment, taxAmount: e.target.value})}
-                  placeholder="0.00"
-                />
-              </div>
-              <div className="form-group">
-                <label>HOA Fee</label>
-                <input
-                  type="number"
-                  step="0.01"
-                  value={newPayment.hoaAmount}
-                  onChange={(e) => setNewPayment({...newPayment, hoaAmount: e.target.value})}
-                  placeholder="0.00"
-                />
-              </div>
-            </div>
-            <button onClick={addPayment} className="btn btn-primary" style={{ marginTop: '10px' }}>
-              + Add Payment
+          {/* Mode Toggle */}
+          <div style={{ marginBottom: '20px', display: 'flex', gap: '10px' }}>
+            <button 
+              onClick={() => setBulkMode(false)} 
+              className={`btn ${!bulkMode ? 'btn-primary' : 'btn-secondary'}`}
+            >
+              ➕ Add One Payment
+            </button>
+            <button 
+              onClick={() => setBulkMode(true)} 
+              className={`btn ${bulkMode ? 'btn-primary' : 'btn-secondary'}`}
+            >
+              ⚡ Bulk Generate Payments
             </button>
           </div>
+
+          {/* Bulk Payment Generator */}
+          {bulkMode ? (
+            <div style={{ 
+              padding: '20px', 
+              background: '#e3f2fd', 
+              borderRadius: '8px', 
+              marginBottom: '20px',
+              border: '2px solid #2196f3'
+            }}>
+              <h4 style={{ marginTop: 0, color: '#1976d2' }}>⚡ Bulk Payment Generator</h4>
+              <p style={{ color: '#666', fontSize: '14px', marginBottom: '15px' }}>
+                Quickly generate multiple monthly payments. Perfect for importing a year+ of payment history!
+              </p>
+              
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '15px', marginBottom: '15px' }}>
+                <div className="form-group">
+                  <label>Start Date *</label>
+                  <input
+                    type="date"
+                    value={bulkData.startDate}
+                    onChange={(e) => setBulkData({...bulkData, startDate: e.target.value})}
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Number of Payments *</label>
+                  <input
+                    type="number"
+                    value={bulkData.numberOfPayments}
+                    onChange={(e) => setBulkData({...bulkData, numberOfPayments: e.target.value})}
+                    min="1"
+                    max="120"
+                  />
+                  <small style={{ color: '#666', fontSize: '12px' }}>Monthly payments</small>
+                </div>
+                <div className="form-group">
+                  <label>Payment Amount *</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    value={bulkData.paymentAmount}
+                    onChange={(e) => setBulkData({...bulkData, paymentAmount: e.target.value})}
+                    placeholder="0.00"
+                  />
+                </div>
+              </div>
+              
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '15px' }}>
+                <div className="form-group">
+                  <label>Principal (optional)</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    value={bulkData.principalAmount}
+                    onChange={(e) => setBulkData({...bulkData, principalAmount: e.target.value})}
+                    placeholder="0.00"
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Interest (optional)</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    value={bulkData.interestAmount}
+                    onChange={(e) => setBulkData({...bulkData, interestAmount: e.target.value})}
+                    placeholder="0.00"
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Tax Escrow (optional)</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    value={bulkData.taxAmount}
+                    onChange={(e) => setBulkData({...bulkData, taxAmount: e.target.value})}
+                    placeholder="0.00"
+                  />
+                </div>
+                <div className="form-group">
+                  <label>HOA Fee (optional)</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    value={bulkData.hoaAmount}
+                    onChange={(e) => setBulkData({...bulkData, hoaAmount: e.target.value})}
+                    placeholder="0.00"
+                  />
+                </div>
+              </div>
+              
+              <button onClick={generateBulkPayments} className="btn btn-primary" style={{ marginTop: '10px' }}>
+                ⚡ Generate {bulkData.numberOfPayments} Payments
+              </button>
+            </div>
+          ) : (
+            // Single Payment Form
+            <div style={{ 
+              padding: '20px', 
+              background: 'var(--light-green)', 
+              borderRadius: '8px', 
+              marginBottom: '20px' 
+            }}>
+              <h4 style={{ marginTop: 0 }}>Add Payment</h4>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '15px' }}>
+                <div className="form-group">
+                  <label>Payment Date *</label>
+                  <input
+                    type="date"
+                    value={newPayment.paymentDate}
+                    onChange={(e) => setNewPayment({...newPayment, paymentDate: e.target.value})}
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Total Amount *</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    value={newPayment.amount}
+                    onChange={(e) => setNewPayment({...newPayment, amount: e.target.value})}
+                    placeholder="0.00"
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Principal Amount</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    value={newPayment.principalAmount}
+                    onChange={(e) => setNewPayment({...newPayment, principalAmount: e.target.value})}
+                    placeholder="0.00"
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Interest Amount</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    value={newPayment.interestAmount}
+                    onChange={(e) => setNewPayment({...newPayment, interestAmount: e.target.value})}
+                    placeholder="0.00"
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Tax Escrow</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    value={newPayment.taxAmount}
+                    onChange={(e) => setNewPayment({...newPayment, taxAmount: e.target.value})}
+                    placeholder="0.00"
+                  />
+                </div>
+                <div className="form-group">
+                  <label>HOA Fee</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    value={newPayment.hoaAmount}
+                    onChange={(e) => setNewPayment({...newPayment, hoaAmount: e.target.value})}
+                    placeholder="0.00"
+                  />
+                </div>
+              </div>
+              <button onClick={addPayment} className="btn btn-primary" style={{ marginTop: '10px' }}>
+                + Add Payment
+              </button>
+            </div>
+          )}
 
           {/* Payment List */}
           {payments.length > 0 && (

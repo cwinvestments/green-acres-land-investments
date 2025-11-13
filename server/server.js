@@ -3438,11 +3438,12 @@ app.post('/api/admin/loans/:id/generate-contract', authenticateAdmin, async (req
     // Prepare merge data
     const mergeData = {
       CONTRACT_DATE: contractDate,
-      PURCHASER_NAME: loan.deed_name || `${loan.first_name} ${loan.last_name}`,
-      PURCHASER_ADDRESS: loan.deed_mailing_address ? loan.deed_mailing_address.split('\n')[0] : '[ADDRESS NOT SET - Customer must update in Account Settings]',
-      PURCHASER_CITY: loan.deed_mailing_address && loan.deed_mailing_address.split('\n')[1] ? loan.deed_mailing_address.split('\n')[1].split(',')[0].trim() : '[CITY]',
-      PURCHASER_STATE: loan.deed_mailing_address && loan.deed_mailing_address.split('\n')[1] ? loan.deed_mailing_address.split('\n')[1].split(',')[1].trim().split(' ')[0] : '[ST]',
-      PURCHASER_ZIP: loan.deed_mailing_address && loan.deed_mailing_address.split('\n')[1] ? loan.deed_mailing_address.split('\n')[1].split(',')[1].trim().split(' ')[1] : '[ZIP]',
+      ORIGINAL_CONTRACT_DATE: originalContractDate,
+      PURCHASER_NAME: `${loan.first_name} ${loan.last_name}`,
+      PURCHASER_ADDRESS: loan.mailing_address || '[ADDRESS NOT SET - Customer must update in Account Settings]',
+      PURCHASER_CITY: loan.mailing_city || '[CITY]',
+      PURCHASER_STATE: loan.mailing_state || '[ST]',
+      PURCHASER_ZIP: loan.mailing_zip || '[ZIP]',
       COUNTY: loan.county,
       STATE: loan.state,
       PROPERTY_DESCRIPTION: loan.legal_description || loan.title,
@@ -3453,14 +3454,37 @@ app.post('/api/admin/loans/:id/generate-contract', authenticateAdmin, async (req
       DOWN_PAYMENT: downPayment.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
       BALANCE: loanAmount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
       BALANCE_WORDS: numberToWords(loanAmount) + ' dollars',
+      CURRENT_BALANCE: parseFloat(loan.balance_remaining).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+      CURRENT_BALANCE_WORDS: numberToWords(parseFloat(loan.balance_remaining)) + ' dollars',
       INTEREST_RATE: interestRate.toFixed(2),
       MONTHLY_PAYMENT: monthlyPayment.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
       MONTHLY_PAYMENT_WORDS: numberToWords(monthlyPayment) + ' dollars',
       FIRST_PAYMENT_DATE: firstPaymentDate,
       NUMBER_OF_PAYMENTS: remainingPayments,
+      PAYMENTS_MADE: paymentCount,
+      TOTAL_PAID: totalPrincipalPaid.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
       PROPERTY_COVENANTS: loan.property_covenants || 'None',
-      DEED_TYPE: loan.deed_type || 'Special Warranty Deed'
+      DEED_TYPE: loan.deed_type || 'Special Warranty Deed',
+      IS_AMENDED: isImportedLoan ? 'AMENDED AND RESTATED ' : ''
     };
+
+    // Create payment terms section based on whether loan is imported
+    let paymentTermsSection;
+    if (isImportedLoan) {
+      // Amended contract language for imported loans
+      paymentTermsSection = `This Amended and Restated Contract for Deed amends and restates the original Contract for Deed dated ${originalContractDate}. The original purchase price was ${mergeData.PURCHASE_PRICE_WORDS} ($${mergeData.PURCHASE_PRICE}}), with a down payment of $${mergeData.DOWN_PAYMENT}. The original balance financed was ${mergeData.BALANCE_WORDS} ($${mergeData.BALANCE}}).
+
+The Purchaser has made ${mergeData.PAYMENTS_MADE} payment(s) toward the original balance, totaling $${mergeData.TOTAL_PAID} in principal payments. The remaining balance of ${mergeData.CURRENT_BALANCE_WORDS} ($${mergeData.CURRENT_BALANCE}}) is due and payable as follows:
+
+(b) Remaining balance payable, together with interest on the whole sum that shall be from time to time unpaid at the rate of ${mergeData.INTEREST_RATE}% per annum, payable in the amount of ${mergeData.MONTHLY_PAYMENT_WORDS} ($${mergeData.MONTHLY_PAYMENT}}) per month beginning on ${mergeData.FIRST_PAYMENT_DATE} and continuing on the same day of each month thereafter until fully paid (${mergeData.NUMBER_OF_PAYMENTS} payments remaining).`;
+    } else {
+      // Standard contract language for new loans
+      paymentTermsSection = `The purchase price of the property shall be ${mergeData.PURCHASE_PRICE_WORDS} ($${mergeData.PURCHASE_PRICE}}). The purchaser does hereby agree to pay to the order of the Seller $${mergeData.DOWN_PAYMENT} upon execution of this agreement (this amount has been received as the date of preparation of this contract), with the balance of ${mergeData.BALANCE_WORDS} ($${mergeData.BALANCE}}) being due and payable as follows:
+
+(b) Balance payable, together with interest on the whole sum that shall be from time to time unpaid at the rate of ${mergeData.INTEREST_RATE}% per annum, payable in the amount of ${mergeData.MONTHLY_PAYMENT_WORDS} ($${mergeData.MONTHLY_PAYMENT}}) per month beginning on ${mergeData.FIRST_PAYMENT_DATE} and continuing on the same day of each month thereafter until fully paid (${mergeData.NUMBER_OF_PAYMENTS} payments remaining).`;
+    }
+    
+    mergeData.PAYMENT_TERMS_SECTION = paymentTermsSection;
 
     // Replace all merge fields
     Object.keys(mergeData).forEach(key => {

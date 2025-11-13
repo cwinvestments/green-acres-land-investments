@@ -1,4 +1,4 @@
-CONTRACT FOR DEED
+{{IS_AMENDED}}CONTRACT FOR DEED
 
 THIS DAY {{CONTRACT_DATE}} this agreement is entered into by and between Green Acres Land Investments, LLC, hereinafter referred to as "SELLER", and {{PURCHASER_NAME}}, hereinafter referred to as "PURCHASER", whether one or more, on the terms and conditions and for the purposes hereinafter set forth:
 
@@ -17,9 +17,7 @@ SUBJECT TO all recorded easements, rights-of-way, conditions, encumbrances, and 
 
 2. PURCHASE PRICE AND TERMS
 
-The purchase price of the property shall be {{PURCHASE_PRICE_WORDS}} (${{PURCHASE_PRICE}}). The purchaser does hereby agree to pay to the order of the Seller ${{DOWN_PAYMENT}} upon execution of this agreement (this amount has been received as the date of preparation of this contract), with the balance of {{BALANCE_WORDS}} (${{BALANCE}}) being due and payable as follows:
-
-(b) Balance payable, together with interest on the whole sum that shall be from time to time unpaid at the rate of {{INTEREST_RATE}}% per annum, payable in the amount of {{MONTHLY_PAYMENT_WORDS}} (${{MONTHLY_PAYMENT}}) per month beginning on {{FIRST_PAYMENT_DATE}} and continuing on the same day of each month thereafter until fully paid ({{NUMBER_OF_PAYMENTS}} payments remaining).
+{{PAYMENT_TERMS_SECTION}}
 
 If interest is charged, interest shall be computed monthly and deducted from payment and the balance of payment shall be applied on principal.
 

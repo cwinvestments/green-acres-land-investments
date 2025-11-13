@@ -271,10 +271,10 @@ function PaymentTracking() {
                       borderRadius: '12px',
                       fontSize: '12px',
                       fontWeight: '600',
-                      backgroundColor: payment.payment_type === 'down_payment' ? '#e0f2fe' : '#f0fdf4',
-                      color: payment.payment_type === 'down_payment' ? '#0369a1' : '#15803d'
+                      backgroundColor: payment.payment_type === 'down_payment' ? '#e0f2fe' : payment.payment_type === 'processing_fee' ? '#fef3c7' : '#f0fdf4',
+                      color: payment.payment_type === 'down_payment' ? '#0369a1' : payment.payment_type === 'processing_fee' ? '#92400e' : '#15803d'
                     }}>
-                      {payment.payment_type === 'down_payment' ? 'DOWN' : 'MONTHLY'}
+                      {payment.payment_type === 'down_payment' ? 'DOWN' : payment.payment_type === 'processing_fee' ? 'DOC FEE' : 'MONTHLY'}
                     </span>
                   </td>
                   <td style={{ padding: '15px', textAlign: 'right', fontWeight: 'bold', fontSize: '16px' }}>

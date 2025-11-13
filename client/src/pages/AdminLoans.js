@@ -256,6 +256,9 @@ function AdminLoans() {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
         <h1>Loan Management</h1>
         <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+          <button onClick={() => navigate('/admin/loans/create-custom')} className="btn" style={{ backgroundColor: '#2c5f2d', color: 'white' }}>
+            ✨ Create Custom Loan
+          </button>
           <button onClick={() => navigate('/admin/loans/import')} className="btn" style={{ backgroundColor: '#2e7d32', color: 'white' }}>
             📥 Import Existing Loan
           </button>

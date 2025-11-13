@@ -23,6 +23,14 @@ api.interceptors.request.use((config) => {
   }
   return config;
 });
+
+// Helper for admin config
+const adminConfig = () => ({
+  headers: {
+    Authorization: `Bearer ${localStorage.getItem('adminToken')}`
+  }
+});
+
 // Auth API
 export const register = (userData) => api.post('/register', userData);
 export const login = (credentials) => api.post('/login', credentials);
@@ -39,6 +47,11 @@ export const createLoan = (loanData) => api.post('/loans', loanData);
 // Payments API
 export const createPayment = (paymentData) => api.post('/payments', paymentData);
 export const getPaymentHistory = (loanId) => api.get(`/loans/${loanId}/payments`);
+
+// Admin APIs
+export const getAllCustomers = () => api.get('/admin/customers', adminConfig());
+export const getAllProperties = () => api.get('/admin/properties', adminConfig());
+export const createCustomLoan = (loanData) => api.post('/admin/loans/create-custom', loanData, adminConfig());
 
 // Currency formatting helper
 export const formatCurrency = (amount) => {

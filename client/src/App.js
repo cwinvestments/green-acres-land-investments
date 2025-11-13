@@ -23,6 +23,7 @@ import TaxSummary from './pages/TaxSummary';
 import StateManagement from './pages/Admin/StateManagement';
 import AccountSettings from './pages/AccountSettings';
 import ImportLoan from './pages/ImportLoan';
+import CreateCustomLoan from './pages/CreateCustomLoan';
 // Protected route component
 function ProtectedRoute({ children }) {
   const { isAuthenticated } = useAuth();
@@ -59,8 +60,7 @@ function AppContent() {
                   <LoanDetail />
                 </ProtectedRoute>
               } 
-            />import AdminLoans from './pages/AdminLoans';
-              import DefaultedLoansReport from './pages/DefaultedLoansReport';  
+            />
             <Route 
               path="/loans/:id/payments" 
               element={
@@ -90,6 +90,7 @@ function AppContent() {
             <Route path="/admin/tax-summary" element={<TaxSummary />} />
             <Route path="/admin/states" element={<StateManagement />} />
             <Route path="/admin/loans/import" element={<ImportLoan />} />
+            <Route path="/admin/loans/create-custom" element={<CreateCustomLoan />} />
           </Routes>
         </div>
   );

@@ -1410,6 +1410,133 @@ app.post('/api/admin/loans/:id/waive-late-fee', authenticateAdmin, async (req, r
   }
 });
 
+// Record manual payment (cash, check, Venmo, etc.)
+app.post('/api/admin/loans/:id/record-payment', authenticateAdmin, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { 
+      amount, 
+      payment_date, 
+      payment_method, 
+      transaction_id, 
+      notes 
+    } = req.body;
+
+    // Validate required fields
+    if (!amount || !payment_date || !payment_method) {
+      return res.status(400).json({ error: 'Amount, payment date, and payment method are required' });
+    }
+
+    // Get loan details
+    const loanResult = await db.pool.query(
+      'SELECT * FROM loans WHERE id = $1',
+      [id]
+    );
+
+    if (loanResult.rows.length === 0) {
+      return res.status(404).json({ error: 'Loan not found' });
+    }
+
+    const loan = loanResult.rows[0];
+
+    if (loan.balance_remaining <= 0) {
+      return res.status(400).json({ error: 'Loan already paid off' });
+    }
+
+    // Validate amount doesn't exceed balance
+    const paymentAmount = parseFloat(amount);
+    if (paymentAmount > loan.balance_remaining) {
+      return res.status(400).json({ 
+        error: `Payment amount ($${paymentAmount}) exceeds remaining balance ($${loan.balance_remaining})` 
+      });
+    }
+
+    // Calculate interest and principal breakdown
+    const monthlyInterestRate = (loan.interest_rate / 100) / 12;
+    const interestAmount = loan.balance_remaining * monthlyInterestRate;
+    const principalAmount = Math.min(paymentAmount - interestAmount, loan.balance_remaining);
+
+    // Calculate new balance
+    const newBalance = Math.max(0, loan.balance_remaining - paymentAmount);
+    const status = newBalance === 0 ? 'paid_off' : 'active';
+
+    // Calculate next payment due date (30 days from payment date)
+    const nextDueDate = new Date(payment_date);
+    nextDueDate.setDate(nextDueDate.getDate() + 30);
+
+    // Start transaction
+    await db.pool.query('BEGIN');
+
+    // Update loan balance and status
+    await db.pool.query(
+      `UPDATE loans 
+       SET balance_remaining = $1, 
+           status = $2, 
+           next_payment_date = $3
+       WHERE id = $4`,
+      [newBalance, status, nextDueDate.toISOString().split('T')[0], id]
+    );
+
+    // Record payment
+    await db.pool.query(`
+      INSERT INTO payments (
+        loan_id, 
+        user_id, 
+        amount, 
+        payment_type, 
+        payment_method,
+        status, 
+        payment_date,
+        loan_payment_amount,
+        principal_amount,
+        interest_amount,
+        square_payment_id,
+        convenience_fee
+      )
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+    `, [
+      id,
+      loan.user_id,
+      paymentAmount,
+      'monthly_payment',
+      payment_method,
+      'completed',
+      payment_date,
+      paymentAmount,
+      principalAmount,
+      interestAmount,
+      transaction_id || null,  // Store transaction ID in square_payment_id field
+      0  // No convenience fee for manual payments
+    ]);
+
+    // Add notes to payment if provided
+    if (notes) {
+      await db.pool.query(
+        `UPDATE payments 
+         SET square_payment_id = COALESCE(square_payment_id, '') || ' | Notes: ' || $1
+         WHERE loan_id = $2 
+         ORDER BY payment_date DESC 
+         LIMIT 1`,
+        [notes, id]
+      );
+    }
+
+    await db.pool.query('COMMIT');
+
+    res.json({
+      success: true,
+      message: 'Manual payment recorded successfully',
+      newBalance,
+      paidOff: newBalance === 0
+    });
+
+  } catch (error) {
+    await db.pool.query('ROLLBACK');
+    console.error('Record manual payment error:', error);
+    res.status(500).json({ error: 'Failed to record payment' });
+  }
+});
+
 // Update deed type for a loan
 app.patch('/api/admin/loans/:id/deed-type', authenticateAdmin, async (req, res) => {
   try {

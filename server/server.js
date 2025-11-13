@@ -2456,13 +2456,22 @@ app.get('/api/admin/reports/tax-summary', authenticateAdmin, async (req, res) =>
         EXTRACT(MONTH FROM payment_date) as month,
         EXTRACT(QUARTER FROM payment_date) as quarter,
         -- Revenue streams
+        SUM(CASE WHEN payment_type = 'down_payment' THEN amount ELSE 0 END) as down_payments,
+        SUM(CASE WHEN payment_type = 'processing_fee' THEN amount ELSE 0 END) as processing_fees,
         SUM(loan_payment_amount) as loan_payments,
         SUM(late_fee_amount) as late_fees,
         SUM(notice_fee_amount) as notice_fees,
         SUM(convenience_fee) as convenience_fees,
         SUM(postal_fee_amount) as postal_reimbursements,
-        -- Total revenue
-        SUM(loan_payment_amount + late_fee_amount + notice_fee_amount + convenience_fee + postal_fee_amount) as total_revenue
+        -- Total revenue (includes down payments and processing fees)
+        SUM(
+          COALESCE(loan_payment_amount, 0) + 
+          COALESCE(late_fee_amount, 0) + 
+          COALESCE(notice_fee_amount, 0) + 
+          COALESCE(convenience_fee, 0) + 
+          COALESCE(postal_fee_amount, 0) +
+          CASE WHEN payment_type IN ('down_payment', 'processing_fee') THEN COALESCE(amount, 0) ELSE 0 END
+        ) as total_revenue
       FROM payments
       WHERE status = 'completed'
         AND EXTRACT(YEAR FROM payment_date) = $1

@@ -152,6 +152,7 @@ function PaymentTracking() {
               <option value="all">All Payments</option>
               <option value="down_payment">Down Payments</option>
               <option value="monthly_payment">Monthly Payments</option>
+              <option value="processing_fee">Processing Fees</option>
             </select>
           </div>
 

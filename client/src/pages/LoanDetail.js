@@ -334,8 +334,15 @@ function LoanDetail() {
           
           <div className="info-row">
             <span>Status:</span>
-            <span className={`status-badge status-${loan.status}`}>
-              {loan.status === 'active' ? 'Active' : 'Paid Off'}
+            <span className={`status-badge status-${loan.status}`} style={{ 
+              padding: '4px 12px', 
+              borderRadius: '12px', 
+              fontSize: '14px',
+              fontWeight: '600',
+              backgroundColor: loan.status === 'active' ? '#d4edda' : '#d1ecf1',
+              color: loan.status === 'active' ? '#155724' : '#0c5460'
+            }}>
+              {loan.status === 'active' ? 'Active' : loan.status === 'paid_off' ? 'Paid Off' : loan.status}
             </span>
           </div>
           

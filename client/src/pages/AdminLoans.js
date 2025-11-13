@@ -26,6 +26,15 @@ function AdminLoans() {
     tracking_number: '',
     notes: ''
   });
+  const [showManualPaymentModal, setShowManualPaymentModal] = useState(false);
+  const [manualPaymentLoan, setManualPaymentLoan] = useState(null);
+  const [manualPaymentData, setManualPaymentData] = useState({
+    amount: '',
+    payment_date: new Date().toISOString().split('T')[0],
+    payment_method: 'cash',
+    transaction_id: '',
+    notes: ''
+  });
 
   useEffect(() => {
     loadLoans();
@@ -227,6 +236,56 @@ function AdminLoans() {
       loadLoans();
     } catch (err) {
       alert('Failed to waive late fee');
+    }
+  };
+
+  const openManualPaymentModal = (loan) => {
+    setManualPaymentLoan(loan);
+    setManualPaymentData({
+      amount: loan.monthly_payment || '',
+      payment_date: new Date().toISOString().split('T')[0],
+      payment_method: 'cash',
+      transaction_id: '',
+      notes: ''
+    });
+    setShowManualPaymentModal(true);
+  };
+
+  const handleManualPaymentSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!manualPaymentData.amount || parseFloat(manualPaymentData.amount) <= 0) {
+      alert('Please enter a valid payment amount');
+      return;
+    }
+
+    if (!window.confirm(`Record ${manualPaymentData.payment_method} payment of $${parseFloat(manualPaymentData.amount).toFixed(2)} for ${manualPaymentLoan.property_title}?`)) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/admin/loans/${manualPaymentLoan.id}/record-payment`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+        },
+        body: JSON.stringify(manualPaymentData)
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to record payment');
+      }
+
+      const result = await response.json();
+      alert(`Payment recorded successfully!\n\nNew Balance: $${result.newBalance.toFixed(2)}${result.paidOff ? '\n\n🎉 LOAN PAID OFF!' : ''}`);
+      setShowManualPaymentModal(false);
+      setManualPaymentLoan(null);
+      loadLoans();
+    } catch (err) {
+      alert(err.message || 'Failed to record payment');
+      console.error(err);
     }
   };
 
@@ -506,6 +565,19 @@ function AdminLoans() {
                             Waive Late Fee
                           </button>
                         )}
+                        <button
+                          onClick={() => openManualPaymentModal(loan)}
+                          className="btn btn-small"
+                          style={{
+                            backgroundColor: '#28a745',
+                            color: 'white',
+                            width: '100%',
+                            fontSize: '12px',
+                            marginBottom: '5px'
+                          }}
+                        >
+                          💵 Record Payment
+                        </button>
                         <button
                           onClick={() => openDefaultModal(loan)}
                           className="btn btn-small"
@@ -1078,6 +1150,151 @@ function AdminLoans() {
           </div>
         </div>
       )}
+
+      {/* Manual Payment Modal */}
+      {showManualPaymentModal && manualPaymentLoan && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0,0,0,0.5)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 1000,
+          padding: '20px'
+        }}>
+          <div style={{
+            backgroundColor: 'white',
+            padding: '30px',
+            borderRadius: '10px',
+            maxWidth: '500px',
+            width: '100%',
+            maxHeight: '90vh',
+            overflow: 'auto'
+          }}>
+            <h2 style={{ marginTop: 0, marginBottom: '20px' }}>💵 Record Manual Payment</h2>
+            
+            <div style={{ 
+              padding: '15px', 
+              backgroundColor: '#f8f9fa', 
+              borderRadius: '5px', 
+              marginBottom: '20px',
+              fontSize: '14px'
+            }}>
+              <strong>Customer:</strong> {manualPaymentLoan.first_name} {manualPaymentLoan.last_name}<br/>
+              <strong>Property:</strong> {manualPaymentLoan.property_title}<br/>
+              <strong>Current Balance:</strong> ${formatCurrency(manualPaymentLoan.balance_remaining)}<br/>
+              <strong>Monthly Payment:</strong> ${formatCurrency(manualPaymentLoan.monthly_payment)}
+            </div>
+
+            <form onSubmit={handleManualPaymentSubmit}>
+              <div className="form-group">
+                <label>Payment Amount *</label>
+                <input
+                  type="number"
+                  step="0.01"
+                  placeholder="0.00"
+                  value={manualPaymentData.amount}
+                  onChange={(e) => setManualPaymentData({...manualPaymentData, amount: e.target.value})}
+                  required
+                  style={{ width: '100%', padding: '10px', fontSize: '16px' }}
+                />
+                <small style={{ color: '#666', fontSize: '12px' }}>
+                  Cannot exceed current balance (${formatCurrency(manualPaymentLoan.balance_remaining)})
+                </small>
+              </div>
+
+              <div className="form-group">
+                <label>Payment Date *</label>
+                <input
+                  type="date"
+                  value={manualPaymentData.payment_date}
+                  onChange={(e) => setManualPaymentData({...manualPaymentData, payment_date: e.target.value})}
+                  required
+                  style={{ width: '100%', padding: '10px' }}
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Payment Method *</label>
+                <select
+                  value={manualPaymentData.payment_method}
+                  onChange={(e) => setManualPaymentData({...manualPaymentData, payment_method: e.target.value})}
+                  required
+                  style={{ width: '100%', padding: '10px' }}
+                >
+                  <option value="cash">Cash</option>
+                  <option value="check">Check</option>
+                  <option value="venmo">Venmo</option>
+                  <option value="zelle">Zelle</option>
+                  <option value="wire_transfer">Wire Transfer</option>
+                  <option value="money_order">Money Order</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label>Transaction ID / Check Number</label>
+                <input
+                  type="text"
+                  placeholder="Check #1234, Venmo ID, etc."
+                  value={manualPaymentData.transaction_id}
+                  onChange={(e) => setManualPaymentData({...manualPaymentData, transaction_id: e.target.value})}
+                  style={{ width: '100%', padding: '10px' }}
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Notes</label>
+                <textarea
+                  rows="3"
+                  placeholder="Additional details about this payment..."
+                  value={manualPaymentData.notes}
+                  onChange={(e) => setManualPaymentData({...manualPaymentData, notes: e.target.value})}
+                  style={{ width: '100%', padding: '10px', resize: 'vertical' }}
+                />
+              </div>
+
+              <div style={{
+                padding: '15px',
+                backgroundColor: '#d1ecf1',
+                borderRadius: '6px',
+                marginBottom: '20px',
+                fontSize: '13px',
+                color: '#0c5460'
+              }}>
+                <strong>ℹ️ Note:</strong> This payment will be recorded immediately and will reduce the loan balance. 
+                The next payment due date will be automatically calculated (30 days from payment date).
+              </div>
+
+              <div style={{ display: 'flex', gap: '10px' }}>
+                <button 
+                  type="submit" 
+                  className="btn btn-primary" 
+                  style={{ flex: 1, backgroundColor: '#28a745' }}
+                >
+                  Record Payment
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowManualPaymentModal(false);
+                    setManualPaymentLoan(null);
+                  }}
+                  className="btn btn-secondary"
+                  style={{ flex: 1 }}
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }

@@ -60,6 +60,16 @@ function ImportLoan() {
     taxAmount: '',
     hoaAmount: ''
   });
+  const [editingIndex, setEditingIndex] = useState(null);
+  const [editingPayment, setEditingPayment] = useState(null);
+    startDate: '',
+    numberOfPayments: 12,
+    paymentAmount: '',
+    principalAmount: '',
+    interestAmount: '',
+    taxAmount: '',
+    hoaAmount: ''
+  });
 
   useEffect(() => {
     loadData();
@@ -183,6 +193,24 @@ function ImportLoan() {
 
   const removePayment = (index) => {
     setPayments(payments.filter((_, i) => i !== index));
+  };
+
+  const startEditPayment = (index) => {
+    setEditingIndex(index);
+    setEditingPayment({...payments[index]});
+  };
+
+  const cancelEditPayment = () => {
+    setEditingIndex(null);
+    setEditingPayment(null);
+  };
+
+  const saveEditPayment = () => {
+    const updatedPayments = [...payments];
+    updatedPayments[editingIndex] = editingPayment;
+    setPayments(updatedPayments);
+    setEditingIndex(null);
+    setEditingPayment(null);
   };
 
   const addTaxPayment = () => {
@@ -667,25 +695,90 @@ function ImportLoan() {
                 </thead>
                 <tbody>
                   {payments.map((payment, index) => (
-                    <tr key={index} style={{ borderBottom: '1px solid #eee' }}>
-                      <td style={{ padding: '10px' }}>{new Date(payment.paymentDate + 'T12:00:00').toLocaleDateString()}</td>
-                      <td style={{ padding: '10px', textAlign: 'right' }}>${parseFloat(payment.amount).toFixed(2)}</td>
-                      <td style={{ padding: '10px', textAlign: 'right' }}>
-                        ${payment.principalAmount ? parseFloat(payment.principalAmount).toFixed(2) : '0.00'}
-                      </td>
-                      <td style={{ padding: '10px', textAlign: 'right' }}>
-                        ${payment.interestAmount ? parseFloat(payment.interestAmount).toFixed(2) : '0.00'}
-                      </td>
-                      <td style={{ padding: '10px', textAlign: 'center' }}>
-                        <button
-                          onClick={() => removePayment(index)}
-                          className="btn"
-                          style={{ padding: '5px 10px', fontSize: '12px', backgroundColor: '#dc3545', color: 'white' }}
-                        >
-                          Delete
-                        </button>
-                      </td>
-                    </tr>
+                    editingIndex === index ? (
+                      // Editing row
+                      <tr key={index} style={{ borderBottom: '1px solid #eee', backgroundColor: '#fff3cd' }}>
+                        <td style={{ padding: '10px' }}>
+                          <input
+                            type="date"
+                            value={editingPayment.paymentDate}
+                            onChange={(e) => setEditingPayment({...editingPayment, paymentDate: e.target.value})}
+                            style={{ width: '100%', padding: '5px' }}
+                          />
+                        </td>
+                        <td style={{ padding: '10px' }}>
+                          <input
+                            type="number"
+                            step="0.01"
+                            value={editingPayment.amount}
+                            onChange={(e) => setEditingPayment({...editingPayment, amount: e.target.value})}
+                            style={{ width: '100%', padding: '5px', textAlign: 'right' }}
+                          />
+                        </td>
+                        <td style={{ padding: '10px' }}>
+                          <input
+                            type="number"
+                            step="0.01"
+                            value={editingPayment.principalAmount}
+                            onChange={(e) => setEditingPayment({...editingPayment, principalAmount: e.target.value})}
+                            style={{ width: '100%', padding: '5px', textAlign: 'right' }}
+                          />
+                        </td>
+                        <td style={{ padding: '10px' }}>
+                          <input
+                            type="number"
+                            step="0.01"
+                            value={editingPayment.interestAmount}
+                            onChange={(e) => setEditingPayment({...editingPayment, interestAmount: e.target.value})}
+                            style={{ width: '100%', padding: '5px', textAlign: 'right' }}
+                          />
+                        </td>
+                        <td style={{ padding: '10px', textAlign: 'center' }}>
+                          <button
+                            onClick={saveEditPayment}
+                            className="btn"
+                            style={{ padding: '5px 10px', fontSize: '12px', backgroundColor: '#28a745', color: 'white', marginRight: '5px' }}
+                          >
+                            Save
+                          </button>
+                          <button
+                            onClick={cancelEditPayment}
+                            className="btn"
+                            style={{ padding: '5px 10px', fontSize: '12px', backgroundColor: '#6c757d', color: 'white' }}
+                          >
+                            Cancel
+                          </button>
+                        </td>
+                      </tr>
+                    ) : (
+                      // Display row
+                      <tr key={index} style={{ borderBottom: '1px solid #eee' }}>
+                        <td style={{ padding: '10px' }}>{new Date(payment.paymentDate + 'T12:00:00').toLocaleDateString()}</td>
+                        <td style={{ padding: '10px', textAlign: 'right' }}>${parseFloat(payment.amount).toFixed(2)}</td>
+                        <td style={{ padding: '10px', textAlign: 'right' }}>
+                          ${payment.principalAmount ? parseFloat(payment.principalAmount).toFixed(2) : '0.00'}
+                        </td>
+                        <td style={{ padding: '10px', textAlign: 'right' }}>
+                          ${payment.interestAmount ? parseFloat(payment.interestAmount).toFixed(2) : '0.00'}
+                        </td>
+                        <td style={{ padding: '10px', textAlign: 'center' }}>
+                          <button
+                            onClick={() => startEditPayment(index)}
+                            className="btn"
+                            style={{ padding: '5px 10px', fontSize: '12px', backgroundColor: '#007bff', color: 'white', marginRight: '5px' }}
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={() => removePayment(index)}
+                            className="btn"
+                            style={{ padding: '5px 10px', fontSize: '12px', backgroundColor: '#dc3545', color: 'white' }}
+                          >
+                            Delete
+                          </button>
+                        </td>
+                      </tr>
+                    )
                   ))}
                 </tbody>
               </table>

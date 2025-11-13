@@ -68,6 +68,13 @@ function ImportLoan() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Pre-fill bulk payment amount when moving to Step 2
+  useEffect(() => {
+    if (step === 2 && loanData.monthlyPayment && !bulkData.paymentAmount) {
+      setBulkData({...bulkData, paymentAmount: loanData.monthlyPayment});
+    }
+  }, [step, loanData.monthlyPayment]);
+
   const loadData = async () => {
     try {
       const token = localStorage.getItem('adminToken');
@@ -203,6 +210,46 @@ function ImportLoan() {
     setPayments(updatedPayments);
     setEditingIndex(null);
     setEditingPayment(null);
+  };
+
+const saveEditPayment = () => {
+    const updatedPayments = [...payments];
+    updatedPayments[editingIndex] = editingPayment;
+    setPayments(updatedPayments);
+    setEditingIndex(null);
+    setEditingPayment(null);
+  };
+
+  const recalculatePayment = () => {
+    if (!loanData.loanAmount || !loanData.interestRate) {
+      alert('Loan amount and interest rate are required for calculation');
+      return;
+    }
+
+    // Calculate remaining balance up to this payment
+    let remainingBalance = parseFloat(String(loanData.loanAmount).replace(/\s/g, ''));
+    
+    // Subtract all payments before this one
+    for (let i = 0; i < editingIndex; i++) {
+      const principal = parseFloat(payments[i].principalAmount) || 0;
+      remainingBalance -= principal;
+    }
+
+    const paymentAmount = parseFloat(editingPayment.amount);
+    const monthlyInterestRate = parseFloat(String(loanData.interestRate).replace(/\s/g, '')) / 100 / 12;
+    
+    // Calculate interest on remaining balance
+    const interestAmount = remainingBalance * monthlyInterestRate;
+    
+    // Calculate principal (payment minus interest)
+    const principalAmount = Math.min(paymentAmount - interestAmount, remainingBalance);
+    
+    // Update the editing payment
+    setEditingPayment({
+      ...editingPayment,
+      principalAmount: principalAmount.toFixed(2),
+      interestAmount: interestAmount.toFixed(2)
+    });
   };
 
   const addTaxPayment = () => {
@@ -726,6 +773,14 @@ function ImportLoan() {
                           />
                         </td>
                         <td style={{ padding: '10px', textAlign: 'center' }}>
+                          <button
+                            onClick={recalculatePayment}
+                            className="btn"
+                            style={{ padding: '5px 10px', fontSize: '12px', backgroundColor: '#17a2b8', color: 'white', marginRight: '5px' }}
+                            title="Recalculate principal and interest based on current amount"
+                          >
+                            🔄
+                          </button>
                           <button
                             onClick={saveEditPayment}
                             className="btn"

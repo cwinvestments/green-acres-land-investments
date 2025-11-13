@@ -132,9 +132,9 @@ function ImportLoan() {
 
     const newPayments = [];
     let currentDate = new Date(bulkData.startDate + 'T12:00:00');
-    let remainingBalance = parseFloat(loanData.loanAmount);
+    let remainingBalance = parseFloat(String(loanData.loanAmount).replace(/\s/g, ''));
     const paymentAmount = parseFloat(bulkData.paymentAmount);
-    const monthlyInterestRate = parseFloat(loanData.interestRate) / 100 / 12;
+    const monthlyInterestRate = parseFloat(String(loanData.interestRate).replace(/\s/g, '')) / 100 / 12;
     
     // Subtract any existing payments from the starting balance
     payments.forEach(payment => {

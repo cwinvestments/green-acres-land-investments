@@ -869,6 +869,49 @@ app.get('/api/admin/customers/:id', authenticateAdmin, async (req, res) => {
   }
 });
 
+// Admin reset customer password
+app.post('/api/admin/customers/:id/reset-password', authenticateAdmin, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { tempPassword } = req.body;
+
+    if (!tempPassword) {
+      return res.status(400).json({ error: 'Temporary password is required' });
+    }
+
+    if (tempPassword.length < 6) {
+      return res.status(400).json({ error: 'Password must be at least 6 characters' });
+    }
+
+    // Check if customer exists
+    const customerResult = await db.pool.query(
+      'SELECT id, email, first_name, last_name FROM users WHERE id = $1',
+      [id]
+    );
+
+    if (customerResult.rows.length === 0) {
+      return res.status(404).json({ error: 'Customer not found' });
+    }
+
+    // Hash the temporary password
+    const hashedPassword = await bcrypt.hash(tempPassword, 10);
+
+    // Update customer's password
+    await db.pool.query(
+      'UPDATE users SET password = $1 WHERE id = $2',
+      [hashedPassword, id]
+    );
+
+    res.json({
+      success: true,
+      message: 'Password reset successfully'
+    });
+  } catch (error) {
+    console.error('Admin reset password error:', error);
+    res.status(500).json({ error: 'Failed to reset password' });
+  }
+});
+
 // ==================== ADMIN LOAN ROUTES ====================
 
 // Get all loans across all customers

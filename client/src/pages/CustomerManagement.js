@@ -10,6 +10,10 @@ function CustomerManagement() {
   const [error, setError] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCustomer, setSelectedCustomer] = useState(null);
+  const [showResetModal, setShowResetModal] = useState(false);
+  const [resetCustomer, setResetCustomer] = useState(null);
+  const [tempPassword, setTempPassword] = useState('');
+  const [resetting, setResetting] = useState(false);
 
   const loadCustomers = useCallback(async () => {
     try {
@@ -68,6 +72,43 @@ function CustomerManagement() {
       setSelectedCustomer(response.data);
     } catch (err) {
       alert('Failed to load customer details');
+    }
+  };
+
+  const generateTempPassword = () => {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
+    let password = '';
+    for (let i = 0; i < 12; i++) {
+      password += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return password;
+  };
+
+  const handleResetPassword = (customer) => {
+    setResetCustomer(customer);
+    setTempPassword(generateTempPassword());
+    setShowResetModal(true);
+  };
+
+  const confirmResetPassword = async () => {
+    if (!window.confirm(`Are you sure you want to reset password for ${resetCustomer.first_name} ${resetCustomer.last_name}?`)) {
+      return;
+    }
+
+    setResetting(true);
+    try {
+      const token = localStorage.getItem('adminToken');
+      await axios.post(
+        `${process.env.REACT_APP_API_URL}/admin/customers/${resetCustomer.id}/reset-password`,
+        { tempPassword },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      
+      alert('Password reset successfully! Make sure to give the customer their temporary password.');
+    } catch (err) {
+      alert('Failed to reset password: ' + (err.response?.data?.error || err.message));
+    } finally {
+      setResetting(false);
     }
   };
 
@@ -216,14 +257,23 @@ function CustomerManagement() {
                     ${formatCurrency(customer.total_balance)}
                   </strong>
                 </td>
-                <td style={{ padding: '15px', textAlign: 'center' }}>
-                  <button
-                    onClick={() => loadCustomerDetails(customer.id)}
-                    className="btn btn-primary"
-                    style={{ padding: '8px 16px', fontSize: '14px' }}
-                  >
-                    View Details
-                  </button>
+               <td style={{ padding: '15px', textAlign: 'center' }}>
+                  <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+                    <button
+                      onClick={() => loadCustomerDetails(customer.id)}
+                      className="btn btn-primary"
+                      style={{ padding: '8px 16px', fontSize: '14px' }}
+                    >
+                      View Details
+                    </button>
+                    <button
+                      onClick={() => handleResetPassword(customer)}
+                      className="btn"
+                      style={{ padding: '8px 16px', fontSize: '14px', backgroundColor: '#f59e0b', color: 'white' }}
+                    >
+                      🔑 Reset Password
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}
@@ -236,6 +286,74 @@ function CustomerManagement() {
           </div>
         )}
       </div>
+
+      {/* Password Reset Modal */}
+      {showResetModal && resetCustomer && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'rgba(0,0,0,0.5)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 1001
+        }}>
+          <div className="card" style={{ maxWidth: '500px', margin: '20px' }}>
+            <h2 style={{ marginTop: 0, color: 'var(--forest-green)' }}>Reset Password</h2>
+            
+            <div style={{ marginBottom: '20px' }}>
+              <p><strong>Customer:</strong> {resetCustomer.first_name} {resetCustomer.last_name}</p>
+              <p><strong>Email:</strong> {resetCustomer.email}</p>
+            </div>
+
+            <div style={{ 
+              padding: '15px', 
+              backgroundColor: '#fff3cd', 
+              border: '1px solid #ffc107',
+              borderRadius: '5px',
+              marginBottom: '20px'
+            }}>
+              <p style={{ margin: '0 0 10px 0', fontWeight: '600' }}>Temporary Password:</p>
+              <div style={{
+                padding: '10px',
+                backgroundColor: 'white',
+                border: '2px solid #ffc107',
+                borderRadius: '5px',
+                fontFamily: 'monospace',
+                fontSize: '18px',
+                fontWeight: 'bold',
+                textAlign: 'center',
+                userSelect: 'all'
+              }}>
+                {tempPassword}
+              </div>
+              <p style={{ margin: '10px 0 0 0', fontSize: '14px', color: '#666' }}>
+                Copy this password and provide it to the customer. They can change it in Account Settings.
+              </p>
+            </div>
+
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <button
+                onClick={() => setShowResetModal(false)}
+                className="btn"
+                disabled={resetting}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmResetPassword}
+                className="btn btn-primary"
+                disabled={resetting}
+              >
+                {resetting ? 'Resetting...' : 'Confirm Reset'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Customer Detail Modal */}
       {selectedCustomer && (

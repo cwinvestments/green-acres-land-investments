@@ -231,8 +231,8 @@ useEffect(() => {
 
       {/* Quarterly Summary */}
       <h2>Quarterly Breakdown</h2>
-      <div className="card" style={{ padding: '20px', marginBottom: '40px', overflowX: 'auto' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '600px' }}>
+      <div className="card desktop-only" style={{ padding: '20px', marginBottom: '40px' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
           <thead>
             <tr style={{ borderBottom: '2px solid var(--forest-green)' }}>
               <th style={{ padding: '12px', textAlign: 'left' }}>Quarter</th>
@@ -262,6 +262,35 @@ useEffect(() => {
             ))}
           </tbody>
         </table>
+      </div>
+
+      {/* Quarterly Mobile Cards */}
+      <div className="mobile-only" style={{ marginBottom: '40px' }}>
+        {['Q1', 'Q2', 'Q3', 'Q4'].map(q => (
+          <div key={q} className="card" style={{ padding: '15px', marginBottom: '15px' }}>
+            <div style={{ fontWeight: 'bold', fontSize: '16px', marginBottom: '10px', color: 'var(--forest-green)' }}>
+              Quarter {q.substring(1)}
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+              <div>
+                <div style={{ fontSize: '12px', color: '#666' }}>Revenue</div>
+                <div style={{ fontWeight: 'bold' }}>${formatCurrency(data.quarterly[q].revenue)}</div>
+              </div>
+              <div>
+                <div style={{ fontSize: '12px', color: '#666' }}>Expenses</div>
+                <div style={{ fontWeight: 'bold', color: '#dc3545' }}>${formatCurrency(data.quarterly[q].expenses)}</div>
+              </div>
+              <div>
+                <div style={{ fontSize: '12px', color: '#666' }}>Net Profit</div>
+                <div style={{ fontWeight: 'bold', color: 'var(--forest-green)' }}>${formatCurrency(data.quarterly[q].net_profit)}</div>
+              </div>
+              <div>
+                <div style={{ fontSize: '12px', color: '#666' }}>Est. Tax ({taxRate}%)</div>
+                <div style={{ fontWeight: 'bold', color: '#ffc107' }}>${formatCurrency(data.quarterly[q].net_profit * (taxRate / 100))}</div>
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
 
       {/* Monthly Detail */}

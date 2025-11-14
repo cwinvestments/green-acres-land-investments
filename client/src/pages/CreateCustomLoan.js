@@ -142,7 +142,7 @@ function CreateCustomLoan() {
   
   return (
     <div className="admin-container">
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '1rem' }}>
         <h1>Create Custom Loan</h1>
         <button onClick={() => navigate('/admin/loans')} className="btn btn-secondary">
           ← Back to Loans

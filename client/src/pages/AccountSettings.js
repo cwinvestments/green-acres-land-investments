@@ -200,7 +200,7 @@ function AccountSettings() {
 
   return (
     <div style={{ padding: '20px', maxWidth: '800px', margin: '0 auto' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px', flexWrap: 'wrap', gap: '1rem' }}>
         <h1>⚙️ Account Settings</h1>
         <button onClick={() => navigate('/dashboard')} className="btn btn-secondary">
           ← Back to Dashboard

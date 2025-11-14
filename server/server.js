@@ -869,6 +869,40 @@ app.get('/api/admin/customers/:id', authenticateAdmin, async (req, res) => {
   }
 });
 
+// Delete customer (admin only)
+app.delete('/api/admin/customers/:id', authenticateAdmin, async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    // Check if customer has any loans
+    const loanCheck = await db.pool.query(
+      'SELECT COUNT(*) FROM loans WHERE user_id = $1',
+      [id]
+    );
+    
+    if (parseInt(loanCheck.rows[0].count) > 0) {
+      return res.status(400).json({ 
+        error: 'Cannot delete customer with existing loans' 
+      });
+    }
+    
+    // Delete customer
+    const result = await db.pool.query(
+      'DELETE FROM users WHERE id = $1 RETURNING *',
+      [id]
+    );
+    
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Customer not found' });
+    }
+    
+    res.json({ message: 'Customer deleted successfully' });
+  } catch (error) {
+    console.error('Delete customer error:', error);
+    res.status(500).json({ error: 'Failed to delete customer' });
+  }
+});
+
 // Admin reset customer password
 app.post('/api/admin/customers/:id/reset-password', authenticateAdmin, async (req, res) => {
   try {

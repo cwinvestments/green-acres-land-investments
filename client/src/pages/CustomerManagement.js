@@ -105,10 +105,38 @@ function CustomerManagement() {
       );
       
       alert('Password reset successfully! Make sure to give the customer their temporary password.');
+      setShowResetModal(false);
+      setResetCustomer(null);
+      setTempPassword('');
     } catch (err) {
       alert('Failed to reset password: ' + (err.response?.data?.error || err.message));
     } finally {
       setResetting(false);
+    }
+  };
+
+  const handleDeleteCustomer = async (customer) => {
+    if (customer.loan_count > 0) {
+      alert(`Cannot delete customer with existing loans. ${customer.first_name} ${customer.last_name} has ${customer.loan_count} loan(s).`);
+      return;
+    }
+
+    if (!window.confirm(`Are you sure you want to permanently delete ${customer.first_name} ${customer.last_name}? This cannot be undone.`)) {
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem('adminToken');
+      await axios.delete(
+        `${process.env.REACT_APP_API_URL}/admin/customers/${customer.id}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      
+      alert('Customer deleted successfully');
+      setSelectedCustomer(null);
+      loadCustomers();
+    } catch (err) {
+      alert('Failed to delete customer: ' + (err.response?.data?.error || err.message));
     }
   };
 
@@ -210,9 +238,9 @@ function CustomerManagement() {
         )}
       </div>
 
-      {/* Customer Table */}
-      <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+      {/* Customer List - Desktop Table */}
+      <div className="card desktop-only" style={{ padding: 0, overflow: 'auto', maxWidth: '100%' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '800px' }}>
           <thead>
             <tr style={{ backgroundColor: 'var(--light-green)' }}>
               <th style={{ padding: '15px', textAlign: 'left', borderBottom: '2px solid var(--forest-green)' }}>Customer</th>
@@ -257,7 +285,7 @@ function CustomerManagement() {
                     ${formatCurrency(customer.total_balance)}
                   </strong>
                 </td>
-               <td style={{ padding: '15px', textAlign: 'center' }}>
+                <td style={{ padding: '15px', textAlign: 'center' }}>
                   <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
                     <button
                       onClick={() => loadCustomerDetails(customer.id)}
@@ -282,6 +310,70 @@ function CustomerManagement() {
 
         {filteredCustomers.length === 0 && (
           <div style={{ padding: '40px', textAlign: 'center', color: '#666' }}>
+            {searchTerm ? 'No customers found matching your search' : 'No customers yet'}
+          </div>
+        )}
+      </div>
+
+      {/* Customer List - Mobile Cards */}
+      <div className="mobile-only" style={{ display: 'grid', gap: '15px' }}>
+        {filteredCustomers.map(customer => (
+          <div key={customer.id} className="card" style={{ padding: '15px' }}>
+            <div style={{ marginBottom: '12px' }}>
+              <strong style={{ fontSize: '1.1rem', color: 'var(--forest-green)' }}>
+                {customer.first_name} {customer.last_name}
+              </strong>
+              <div style={{ fontSize: '0.85rem', color: '#666' }}>ID: {customer.id}</div>
+            </div>
+
+            <div style={{ marginBottom: '12px', fontSize: '0.9rem' }}>
+              <div>{customer.email}</div>
+              {customer.phone && <div style={{ color: '#666' }}>{customer.phone}</div>}
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '12px', fontSize: '0.9rem' }}>
+              <div>
+                <div style={{ color: '#666', fontSize: '0.85rem' }}>Loans</div>
+                <div style={{ fontWeight: '600', color: 'var(--forest-green)' }}>
+                  {customer.active_loans} Active / {customer.loan_count} Total
+                </div>
+              </div>
+              <div style={{ textAlign: 'right' }}>
+                <div style={{ color: '#666', fontSize: '0.85rem' }}>Monthly</div>
+                <div style={{ fontWeight: '600', color: 'var(--forest-green)' }}>
+                  ${formatCurrency(customer.total_monthly_payment || 0)}
+                </div>
+              </div>
+            </div>
+
+            <div style={{ marginBottom: '15px', paddingTop: '12px', borderTop: '1px solid #eee' }}>
+              <div style={{ color: '#666', fontSize: '0.85rem' }}>Total Balance</div>
+              <div style={{ fontSize: '1.3rem', fontWeight: '700', color: 'var(--forest-green)' }}>
+                ${formatCurrency(customer.total_balance)}
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <button
+                onClick={() => loadCustomerDetails(customer.id)}
+                className="btn btn-primary"
+                style={{ flex: 1, padding: '10px', fontSize: '14px' }}
+              >
+                View Details
+              </button>
+              <button
+                onClick={() => handleResetPassword(customer)}
+                className="btn"
+                style={{ padding: '10px 12px', fontSize: '14px', backgroundColor: '#f59e0b', color: 'white' }}
+              >
+                🔑
+              </button>
+            </div>
+          </div>
+        ))}
+
+        {filteredCustomers.length === 0 && (
+          <div className="card" style={{ padding: '40px', textAlign: 'center', color: '#666' }}>
             {searchTerm ? 'No customers found matching your search' : 'No customers yet'}
           </div>
         )}
@@ -375,22 +467,41 @@ function CustomerManagement() {
             overflow: 'auto',
             margin: '20px'
           }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-              <h2 style={{ margin: 0, color: 'var(--forest-green)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '10px' }}>
+              <h2 style={{ margin: 0, color: 'var(--forest-green)', fontSize: 'clamp(1.2rem, 4vw, 1.5rem)' }}>
                 {selectedCustomer.first_name} {selectedCustomer.last_name}
               </h2>
-              <button
-                onClick={() => setSelectedCustomer(null)}
-                style={{
-                  padding: '8px 16px',
-                  background: '#ddd',
-                  border: 'none',
-                  borderRadius: '5px',
-                  cursor: 'pointer'
-                }}
-              >
-                Close
-              </button>
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <button
+                  onClick={() => handleDeleteCustomer(selectedCustomer)}
+                  className="btn"
+                  style={{
+                    padding: '8px 16px',
+                    backgroundColor: '#dc3545',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '5px',
+                    cursor: 'pointer',
+                    fontSize: '14px'
+                  }}
+                  disabled={selectedCustomer.loans && selectedCustomer.loans.length > 0}
+                >
+                  🗑️ Delete
+                </button>
+                <button
+                  onClick={() => setSelectedCustomer(null)}
+                  style={{
+                    padding: '8px 16px',
+                    background: '#ddd',
+                    border: 'none',
+                    borderRadius: '5px',
+                    cursor: 'pointer',
+                    fontSize: '14px'
+                  }}
+                >
+                  Close
+                </button>
+              </div>
             </div>
 
             {/* Customer Info */}

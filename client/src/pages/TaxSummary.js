@@ -95,7 +95,7 @@ useEffect(() => {
   return (
     <div style={{ padding: '20px', maxWidth: '1400px', margin: '0 auto' }}>
       {/* Header - Hide when printing */}
-      <div className="no-print" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px', flexWrap: 'wrap', gap: '1rem' }}> }}>
+      <div className="no-print" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px', flexWrap: 'wrap', gap: '1rem' }}>
         <h1>💼 Income Tax Summary</h1>
         <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
           <select

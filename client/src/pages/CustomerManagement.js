@@ -163,7 +163,7 @@ function CustomerManagement() {
     <div style={{ padding: '20px', maxWidth: '1400px', margin: '0 auto' }}>
       {/* Header */}
       <div style={{ marginBottom: '30px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '1rem' }}>
           <h1 style={{ margin: 0 }}>👥 Customer Management</h1>
           <button
             onClick={() => navigate('/admin/dashboard')}
@@ -174,7 +174,7 @@ function CustomerManagement() {
         </div>
 
         {/* Summary Stats */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px', marginTop: '20px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '20px', marginTop: '20px' }}>
           <div className="card" style={{ padding: '20px', textAlign: 'center' }}>
             <div style={{ fontSize: '0.9rem', color: '#666', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '1px' }}>
               Total Customers

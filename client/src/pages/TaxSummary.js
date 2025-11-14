@@ -97,7 +97,7 @@ useEffect(() => {
       {/* Header - Hide when printing */}
       <div className="no-print" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px', flexWrap: 'wrap', gap: '1rem' }}> }}>
         <h1>💼 Income Tax Summary</h1>
-        <div style={{ display: 'flex', gap: '10px' }}>
+        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
           <select
             value={selectedYear}
             onChange={(e) => setSelectedYear(parseInt(e.target.value))}
@@ -232,7 +232,7 @@ useEffect(() => {
       {/* Quarterly Summary */}
       <h2>Quarterly Breakdown</h2>
       <div className="card" style={{ padding: '20px', marginBottom: '40px', overflowX: 'auto' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '600px' }}>
           <thead>
             <tr style={{ borderBottom: '2px solid var(--forest-green)' }}>
               <th style={{ padding: '12px', textAlign: 'left' }}>Quarter</th>

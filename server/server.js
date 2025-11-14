@@ -513,18 +513,34 @@ app.get('/api/admin/stats', authenticateAdmin, async (req, res) => {
     `);
     const loansInDefault = parseInt(defaultResult.rows[0].count);
 
-    // Revenue last 30 days
+    // Revenue last 30 days (excluding tax/HOA pass-through items)
     const revenueResult = await db.pool.query(`
-      SELECT COALESCE(SUM(amount), 0) as revenue
+      SELECT COALESCE(
+        SUM(CASE WHEN payment_type = 'down_payment' THEN amount ELSE 0 END) +
+        SUM(CASE WHEN payment_type = 'processing_fee' THEN amount ELSE 0 END) +
+        SUM(loan_payment_amount) +
+        SUM(late_fee_amount) +
+        SUM(notice_fee_amount) +
+        SUM(convenience_fee) +
+        SUM(postal_fee_amount), 0
+      ) as revenue
       FROM payments
       WHERE status = 'completed'
         AND payment_date >= CURRENT_DATE - INTERVAL '30 days'
     `);
     const revenueLast30Days = parseFloat(revenueResult.rows[0].revenue);
 
-    // Revenue previous 30 days (for trend comparison)
+    // Revenue previous 30 days (for trend comparison, excluding tax/HOA pass-through items)
     const prevRevenueResult = await db.pool.query(`
-      SELECT COALESCE(SUM(amount), 0) as revenue
+      SELECT COALESCE(
+        SUM(CASE WHEN payment_type = 'down_payment' THEN amount ELSE 0 END) +
+        SUM(CASE WHEN payment_type = 'processing_fee' THEN amount ELSE 0 END) +
+        SUM(loan_payment_amount) +
+        SUM(late_fee_amount) +
+        SUM(notice_fee_amount) +
+        SUM(convenience_fee) +
+        SUM(postal_fee_amount), 0
+      ) as revenue
       FROM payments
       WHERE status = 'completed'
         AND payment_date >= CURRENT_DATE - INTERVAL '60 days'

@@ -176,33 +176,38 @@ function AdminReports() {
                   </td>
                 </tr>
                 <tr style={{ borderBottom: '1px solid #eee' }}>
-                  <td style={{ padding: '12px 0' }}>Tax Collected (Escrow)</td>
-                  <td style={{ padding: '12px 0', textAlign: 'right', fontWeight: 'bold' }}>
-                    ${formatCurrency(revenue.tax_collected || 0)}
-                  </td>
-                </tr>
-                <tr style={{ borderBottom: '1px solid #eee' }}>
-                  <td style={{ padding: '12px 0' }}>HOA Fees Collected</td>
-                  <td style={{ padding: '12px 0', textAlign: 'right', fontWeight: 'bold' }}>
-                    ${formatCurrency(revenue.hoa_collected || 0)}
-                  </td>
-                </tr>
-                <tr style={{ borderBottom: '1px solid #eee' }}>
                   <td style={{ padding: '12px 0' }}>Convenience Fees</td>
                   <td style={{ padding: '12px 0', textAlign: 'right', fontWeight: 'bold', color: 'var(--forest-green)' }}>
                     ${formatCurrency(revenue.convenience_fees || 0)}
                   </td>
                 </tr>
                 <tr style={{ borderBottom: '1px solid #eee' }}>
+                  <td style={{ padding: '12px 0' }}>Late Fees</td>
+                  <td style={{ padding: '12px 0', textAlign: 'right', fontWeight: 'bold', color: '#ffc107' }}>
+                    ${formatCurrency(revenue.late_fees || 0)}
+                  </td>
+                </tr>
+                <tr style={{ borderBottom: '1px solid #eee' }}>
+                  <td style={{ padding: '12px 0' }}>Notice Fees</td>
+                  <td style={{ padding: '12px 0', textAlign: 'right', fontWeight: 'bold', color: '#dc3545' }}>
+                    ${formatCurrency(revenue.notice_fees || 0)}
+                  </td>
+                </tr>
+                <tr style={{ borderBottom: '1px solid #eee' }}>
                   <td style={{ padding: '12px 0' }}>Postal Fees (Reimbursed)</td>
-                  <td style={{ padding: '12px 0', textAlign: 'right', fontWeight: 'bold' }}>
+                  <td style={{ padding: '12px 0', textAlign: 'right', fontWeight: 'bold', color: 'var(--forest-green)' }}>
                     ${formatCurrency(revenue.postal_fees || 0)}
                   </td>
                 </tr>
-                <tr style={{ borderBottom: '2px solid #ddd' }}>
-                  <td style={{ padding: '12px 0', color: '#dc3545' }}>Square Processing Fees (Expense)</td>
-                  <td style={{ padding: '12px 0', textAlign: 'right', fontWeight: 'bold', color: '#dc3545' }}>
-                    -${formatCurrency(revenue.square_fees || 0)}
+                <tr style={{ borderBottom: '2px solid var(--forest-green)', backgroundColor: '#f0f8f0' }}>
+                  <td style={{ padding: '12px 0', fontWeight: 'bold', fontSize: '16px' }}>Total Revenue</td>
+                  <td style={{ padding: '12px 0', textAlign: 'right', fontWeight: 'bold', fontSize: '16px', color: 'var(--forest-green)' }}>
+                    ${formatCurrency(revenue.total_revenue || 0)}
+                  </td>
+                </tr>
+                <tr style={{ borderTop: '1px solid #eee' }}>
+                  <td colSpan="2" style={{ padding: '12px 0', fontSize: '13px', color: '#666', fontStyle: 'italic' }}>
+                    Note: Tax and HOA fees are pass-through items (not revenue) and are tracked separately in their respective tabs.
                   </td>
                 </tr>
               </tbody>

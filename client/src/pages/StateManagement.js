@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getAdminStates, createState, updateState, deleteState } from '../../api';
+import { getAdminStates, createState, updateState, deleteState } from '../api';
 
 function StateManagement() {
   const navigate = useNavigate();

@@ -316,7 +316,7 @@ function CustomerManagement() {
       </div>
 
       {/* Customer List - Mobile Cards */}
-      <div className="mobile-only" style={{ display: 'grid', gap: '15px' }}>
+      <div className="mobile-only" style={{ gap: '15px' }}>
         {filteredCustomers.map(customer => (
           <div key={customer.id} className="card" style={{ padding: '15px' }}>
             <div style={{ marginBottom: '12px' }}>

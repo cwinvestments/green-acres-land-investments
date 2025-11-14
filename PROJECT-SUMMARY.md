@@ -64,6 +64,7 @@
   - Update mailing address (per user account)
   - View/edit deed information (per property/loan)
   - Separate deed name and mailing address fields for each loan
+  - Change password (validates current password, requires 6+ characters)
 - ✅ Contract viewing and signing
 - ✅ Payment breakdown display (principal, interest, tax, HOA, fees)
 
@@ -135,7 +136,11 @@
   - Revenue trends (30-day comparison)
   - Collection rate tracking
   - Upcoming tax deadlines (60-day view)
-- ✅ Customer management with loan summaries
+- ✅ **Customer management:**
+  - View all customers with loan summaries
+  - Reset customer passwords (generates 12-char temp password)
+  - Delete customers (prevents if loans exist)
+  - Fully mobile-responsive (table on desktop, cards on mobile)
 - ✅ Loan management across all customers
 - ✅ Payment tracking system
 - ✅ Property management
@@ -180,6 +185,22 @@
   - Notes field for special circumstances
 
 ## Recent Updates (November 2025)
+
+### Customer Password Management & Admin Controls (November 13, 2025) ✅
+- **Feature:** Complete password and account management system
+- **Customer Features (Account Settings):**
+  - Change Password functionality
+  - Validates current password before allowing change
+  - Requires 6+ character new password
+  - Backend endpoint: POST /api/user/change-password
+- **Admin Features (Customer Management):**
+  - Reset Password for customers
+  - Generates random 12-character temporary password
+  - Modal displays temp password for admin to copy and share
+  - Delete Customer functionality
+  - Prevents deletion if customer has active loans
+  - Backend endpoints: POST /api/admin/customers/:id/reset-password, DELETE /api/admin/customers/:id
+- **UI Enhancement:** Customer Management page now fully mobile-responsive (table on desktop, cards on mobile)
 
 ### Amended Contract Support (November 13, 2025) ✅
 - **Feature:** Automatic generation of "Amended and Restated" contracts for imported loans
@@ -280,7 +301,10 @@
 ### API Structure
 - **Public routes:** `/api/properties`, `/api/states`
 - **Customer routes:** `/api/loans`, `/api/payments`, `/api/user/*` (JWT auth)
+  - `/api/user/change-password` - Customer password change
 - **Admin routes:** `/api/admin/*` (Admin JWT auth)
+  - `/api/admin/customers/:id/reset-password` - Reset customer password
+  - `/api/admin/customers/:id` - Delete customer (DELETE)
 - **Authentication:** JWT tokens with role-based access
 
 ### Security
@@ -380,22 +404,3 @@
 - **Email:** claudeweidner2013@gmail.com
 
 ## Repository Structure
-```
-C:\Projects\GreenAcres\
-├── server/
-│   ├── server.js (main backend application)
-│   ├── database.js (PostgreSQL connection and init)
-│   ├── contract-template.txt (mail merge template)
-│   └── package.json
-├── src/ (React frontend)
-├── public/
-├── PROJECT-SUMMARY.md (this file)
-├── SESSION-HANDOFF-*.md (session documentation)
-└── package.json
-```
-
----
-
-**Last Updated:** November 13, 2025  
-**Version:** 2.1  
-**Status:** Production - All core features complete and operational

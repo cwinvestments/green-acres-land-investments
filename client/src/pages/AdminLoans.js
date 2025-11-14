@@ -424,7 +424,6 @@ function AdminLoans() {
               <th style={{ textAlign: 'right' }}>Cure Amount</th>
               <th style={{ textAlign: 'right' }}>Monthly</th>
               <th style={{ textAlign: 'center' }}>Due Date</th>
-              <th style={{ textAlign: 'right' }}>Profit</th>
               <th style={{ textAlign: 'center' }}>ROI</th>
               <th style={{ textAlign: 'center' }}>Alerts</th>
             </tr>
@@ -476,18 +475,10 @@ function AdminLoans() {
                       </div>
                     ) : '—'}
                   </td>
-                  <td style={{ textAlign: 'right' }}>
-                    {loan.property_acquisition_cost ? (
-                      <span style={{ 
-                        color: (loan.property_price - loan.property_acquisition_cost) >= 0 ? '#10b981' : '#ef4444',
-                        fontWeight: 'bold'
-                      }}>
-                        ${formatCurrency(loan.property_price - loan.property_acquisition_cost)}
-                      </span>
-                    ) : '—'}
-                  </td>
                   <td style={{ textAlign: 'center' }}>
-                    {loan.property_acquisition_cost ? (
+                    {loan.status === 'defaulted' ? (
+                      <span style={{ color: '#999' }}>—</span>
+                    ) : loan.property_acquisition_cost ? (
                       <span style={{ fontWeight: '600', color: 'var(--sandy-gold)' }}>
                         {(((loan.property_price - loan.property_acquisition_cost) / loan.property_acquisition_cost) * 100).toFixed(1)}%
                       </span>
@@ -980,24 +971,13 @@ ${contract.contract_text}
                     </div>
                   </>
                 )}
-                {loan.property_acquisition_cost && (
-                  <>
-                    <div>
-                      <div style={{ fontSize: '12px', color: '#666' }}>Profit</div>
-                      <div style={{ 
-                        fontWeight: '600',
-                        color: (loan.property_price - loan.property_acquisition_cost) >= 0 ? '#10b981' : '#ef4444'
-                      }}>
-                        ${formatCurrency(loan.property_price - loan.property_acquisition_cost)}
-                      </div>
+                {loan.property_acquisition_cost && loan.status !== 'defaulted' && (
+                  <div>
+                    <div style={{ fontSize: '12px', color: '#666' }}>ROI</div>
+                    <div style={{ fontWeight: '600', color: 'var(--sandy-gold)' }}>
+                      {(((loan.property_price - loan.property_acquisition_cost) / loan.property_acquisition_cost) * 100).toFixed(1)}%
                     </div>
-                    <div>
-                      <div style={{ fontSize: '12px', color: '#666' }}>ROI</div>
-                      <div style={{ fontWeight: '600', color: 'var(--sandy-gold)' }}>
-                        {(((loan.property_price - loan.property_acquisition_cost) / loan.property_acquisition_cost) * 100).toFixed(1)}%
-                      </div>
-                    </div>
-                  </>
+                  </div>
                 )}
               </div>
 

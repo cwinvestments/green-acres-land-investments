@@ -201,7 +201,7 @@ function DefaultedLoansReport() {
                           color: propertyProfit >= 0 ? 'var(--forest-green)' : '#dc3545',
                           fontWeight: '600'
                         }}>
-                          {propertyProfit >= 0 ? '+' : ''}${formatCurrency(Math.abs(propertyProfit))} profit
+                          {propertyProfit >= 0 ? '+' : '-'}${formatCurrency(Math.abs(propertyProfit))} {propertyProfit >= 0 ? 'profit' : 'loss'}
                         </div>
                       )}
                     </td>

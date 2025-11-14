@@ -2671,7 +2671,13 @@ app.get('/api/admin/reports/financial', authenticateAdmin, async (req, res) => {
     // Total revenue breakdown
     const revenueResult = await db.pool.query(`
       SELECT 
-        SUM(amount) as total_revenue,
+        SUM(CASE WHEN payment_type = 'down_payment' THEN amount ELSE 0 END) +
+        SUM(CASE WHEN payment_type = 'processing_fee' THEN amount ELSE 0 END) +
+        SUM(loan_payment_amount) +
+        SUM(convenience_fee) +
+        SUM(late_fee_amount) +
+        SUM(notice_fee_amount) +
+        SUM(postal_fee_amount) as total_revenue,
         SUM(CASE WHEN payment_type = 'down_payment' THEN amount ELSE 0 END) as down_payments,
         SUM(CASE WHEN payment_type = 'processing_fee' THEN amount ELSE 0 END) as processing_fees,
         SUM(loan_payment_amount) as loan_payments,

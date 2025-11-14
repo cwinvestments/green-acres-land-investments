@@ -2,7 +2,7 @@
 
 
 
-**Last Updated:** November 12, 2025  
+**Last Updated:** November 13, 2025 (Updated with Amended Contract & Import features)  
 **For:** Admin Dashboard v2.1
 
 
@@ -158,6 +158,38 @@
 - No Square payment collection yet (coming soon)
 - Add tax/HOA by editing property after creation
 
+### Import Existing Loan 📥
+**Purpose:** Import loans from previous systems with complete payment history
+
+**Steps:**
+1. Click "Import Existing Loan" button
+2. Select existing customer
+3. Select property
+4. Enter loan details:
+   - Original purchase price
+   - Down payment made
+   - Interest rate, term, monthly payment
+   - Current balance remaining
+   - Next payment date
+   - Original contract/purchase date
+5. Enter payment history (each payment):
+   - Date, principal, interest, tax, HOA
+6. Enter tax payment history (if applicable)
+7. Click "Import Loan"
+
+**Notes:**
+- System automatically populates loan_payment_amount field
+- **Contract generation uses AMENDED template automatically**
+- Shows original contract date, payments made, total paid
+- Customer can make payments immediately
+- Property set to "Sold"
+
+**Amended Contracts:**
+When generating contracts for imported loans:
+- System detects payment history automatically
+- Generates "Amended and Restated Contract for Deed"
+- Shows: Original date, payments made, amount paid, remaining balance
+- No manual selection needed - completely automatic
 
 \### Filter Loans
 
@@ -559,6 +591,10 @@
 \- Use "Waive Late Fee" sparingly but when appropriate
 
 \- Always get tracking numbers for certified mail
+
+\- Imported loans automatically get amended contracts (no action needed)
+
+\- Verify customer mailing address before generating any contract
 
 
 

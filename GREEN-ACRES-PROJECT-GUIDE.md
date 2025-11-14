@@ -1,6 +1,6 @@
 # 🌿 Green Acres Land Investments - Technical Reference Guide
 
-**Last Updated:** November 12, 2025 
+**Last Updated:** November 13, 2025
 **Purpose:** Technical reference for code architecture, development patterns, and setup instructions
 
 > **📋 For Current Project Status:** See [PROJECT-SUMMARY.md] for features completed, session history, and what's next.
@@ -94,6 +94,123 @@ Financing options that traditional lenders don't offer:
 ### Future Integrations
 - **Email Notifications:** SendGrid/Mailgun for payment reminders and alerts
 - **File Processing:** KML/KMZ/GPX import for property boundaries
+
+---
+
+---
+
+## 🆕 Recent Technical Additions (November 2025)
+
+### Amended Contract System (November 13, 2025)
+
+**Feature:** Automatic detection and generation of amended contracts for imported loans
+
+**Technical Implementation:**
+
+**Detection Logic:**
+```javascript
+// In /api/admin/loans/:id/generate-contract
+const paymentsResult = await db.pool.query(
+  'SELECT COUNT(*) as payment_count, 
+   COALESCE(SUM(principal_amount), 0) as total_principal_paid 
+   FROM payments WHERE loan_id = $1',
+  [loanId]
+);
+
+const paymentCount = parseInt(paymentsResult.rows[0].payment_count);
+const isImportedLoan = paymentCount > 0;
+```
+
+**Template System:**
+- File: `/server/contract-template.txt`
+- Dynamic placeholder: `{{PAYMENT_TERMS_SECTION}}`
+- Conditional variable: `{{IS_AMENDED}}`
+- Automatic selection based on payment history
+
+**Contract Types:**
+1. **Standard:** `isImportedLoan === false` → Full purchase terms
+2. **Amended:** `isImportedLoan === true` → Historical reference + remaining balance
+
+**Database Requirements:**
+- Requires `loans.created_at` or import date for original contract date
+- Queries `payments` table for history
+- Uses `loans.balance_remaining` for current balance
+
+**Number-to-Words Conversion:**
+```javascript
+function numberToWords(num) {
+  // Converts: $5,000.00 → "Five Thousand dollars"
+  // Handles: thousands, hundreds, tens, ones
+  // Format: dollars as words + "and XX/100" for cents
+}
+```
+
+---
+
+### Imported Loan Payment System (November 13, 2025)
+
+**Feature:** Import existing loans with complete payment history and automatic revenue calculation
+
+**Critical Field: loan_payment_amount**
+
+**Problem Solved:**
+Financial reports were showing $0 revenue for imported loans because `loan_payment_amount` field was NULL.
+
+**Solution:**
+```javascript
+// In /api/admin/loans/import endpoint
+for (const payment of payments) {
+  const principalAmount = parseFloat(payment.principalAmount) || 0;
+  const interestAmount = parseFloat(payment.interestAmount) || 0;
+  const loanPaymentAmount = principalAmount + interestAmount; // CRITICAL
+  
+  await db.pool.query(`
+    INSERT INTO payments (
+      loan_id, user_id, amount, payment_type, payment_method,
+      status, payment_date, principal_amount, interest_amount,
+      tax_amount, hoa_amount, late_fee_amount, 
+      loan_payment_amount  // ← Auto-calculated field
+    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+  `, [...values, loanPaymentAmount]);
+}
+```
+
+**Database Schema Addition:**
+```sql
+ALTER TABLE payments 
+ADD COLUMN loan_payment_amount DECIMAL(10, 2);
+
+-- For existing imported payments:
+UPDATE payments 
+SET loan_payment_amount = COALESCE(principal_amount, 0) + COALESCE(interest_amount, 0)
+WHERE payment_method = 'imported' 
+  AND loan_payment_amount IS NULL;
+```
+
+**Why This Matters:**
+- Financial reports query: `SUM(loan_payment_amount)` for revenue
+- Missing values caused underreporting
+- Tax summaries require accurate loan payment amounts
+- Monthly trends depend on this field
+
+**Payment Method Values:**
+- `imported` - Historical payments from import
+- `square` - Credit card payments via Square
+- `cash`, `check`, `venmo`, `zelle` - Manual payments
+- `custom_loan` - Custom loan down payments
+
+**Revenue Reporting:**
+All reports now correctly aggregate:
+```sql
+SELECT 
+  payment_method,
+  SUM(loan_payment_amount) as revenue,
+  SUM(tax_amount) as tax_collected,
+  SUM(hoa_amount) as hoa_collected
+FROM payments
+WHERE status = 'completed'
+GROUP BY payment_method;
+```
 
 ---
 

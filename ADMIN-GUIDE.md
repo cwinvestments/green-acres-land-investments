@@ -3,7 +3,7 @@
 
 
 **Version:** 2.1  
-**Last Updated:** November 12, 2025  
+**Last Updated:** November 13, 2025 
 **System Status:** Fully Operational - Mobile Responsive with PDF Export
 
 
@@ -672,7 +672,7 @@ For each loan:
 
 ---
 
-
+\### Loan Management Dashboard
 
 \## Loan Management
 The most important admin section for day-to-day operations. Track all loans, send default notices, manage late fees, and monitor payment status.
@@ -788,6 +788,156 @@ Create flexible financing for special situations: loyal customers, eBay auction 
 - Cannot auto-calculate term based on payment amount (coming soon)
 - Cannot collect Square payment at creation (coming soon)
 - Mobile UI needs improvement (works but not polished)
+
+### Importing Existing Loans with Payment History
+
+**Purpose:**  
+Import loans from previous systems, portfolio acquisitions, or when taking over existing financing from another seller.
+
+**When to Use:**
+- Acquiring properties with existing financing
+- Portfolio purchases with payment history
+- Consolidating loans from previous systems
+- Taking over seller financing from another party
+
+**What Gets Imported:**
+- Loan details (amount, rate, term, payment)
+- Complete payment history (principal, interest, tax, HOA breakdown)
+- Property tax payment history
+- Current balance and next payment date
+- Original contract date
+
+**Important: Amended Contracts**
+
+When you import a loan with payment history, the system automatically generates an "Amended and Restated Contract for Deed" instead of a standard contract.
+
+**Amended Contract Features:**
+- References original contract date
+- Shows number of payments made
+- Displays total principal paid to date
+- Shows current remaining balance
+- Uses legal language acknowledging the original agreement
+
+**Example Amended Contract Language:**
+```
+AMENDED AND RESTATED CONTRACT FOR DEED
+
+This Amended and Restated Contract for Deed amends and restates the 
+original Contract for Deed dated June 15, 2021. The Purchaser has made 
+42 payment(s) toward the original balance, totaling $4,378.34 in 
+principal payments. The remaining balance of Three Thousand Five Hundred 
+Twenty and 66/100 dollars ($3,520.66) is due and payable...
+```
+
+**How It Works:**
+1. System checks if loan has existing payment history
+2. If payments exist → Generates amended contract automatically
+3. If no payments → Generates standard contract
+4. You don't have to do anything - it's automatic
+
+**Importing Process:**
+
+1. **Navigate to Import Tool**
+   - Admin Dashboard → Loan Management
+   - Click "Import Existing Loan" button
+
+2. **Enter Loan Details**
+   - Select customer (must be registered)
+   - Select property
+   - Purchase price
+   - Down payment amount
+   - Processing fee paid
+   - Interest rate
+   - Term in months
+   - Monthly payment
+   - Current balance remaining
+   - Next payment date
+   - Payment due day (1st or 15th)
+   - Original purchase/contract date
+
+3. **Enter Payment History**
+   - For each payment made:
+     - Payment date
+     - Principal amount
+     - Interest amount
+     - Tax amount (if collected)
+     - HOA amount (if collected)
+     - Late fee (if any)
+   - System calculates total payment automatically
+
+4. **Enter Tax Payment History** (if applicable)
+   - For each tax payment made to county:
+     - Payment date
+     - Amount paid
+     - Tax year
+     - Payment method (check, wire, etc.)
+     - Notes
+
+5. **Click "Import Loan"**
+
+**System Actions:**
+- Creates loan with all details
+- Imports all payment history with proper breakdowns
+- **Automatically populates `loan_payment_amount` field** (principal + interest)
+- Imports tax payment history
+- Sets property status to "Sold"
+- Customer can immediately make payments
+- **Contract generation will automatically use amended template**
+
+**Critical Technical Note:**
+The system automatically calculates and stores `loan_payment_amount = principal + interest` for each imported payment. This ensures accurate revenue reporting across all financial reports.
+
+**Contract Generation After Import:**
+1. Import the loan (as described above)
+2. Navigate to Loan Management
+3. Find the imported loan
+4. Click "Generate Contract"
+5. **System automatically detects payment history**
+6. **Generates Amended and Restated Contract** with:
+   - Original contract date from import
+   - Number of payments made
+   - Total principal paid
+   - Current balance
+7. Review the contract
+8. Sign as admin when ready
+9. Customer can view and sign
+
+**Customer Mailing Address Requirement:**
+- Customer MUST update their mailing address in Account Settings
+- If address is missing, contract shows placeholder text
+- Delete and regenerate contract after customer updates address
+
+**Best Practices:**
+- Import all historical payments for accurate records
+- Include tax payments for escrow reconciliation
+- Verify customer has updated their mailing address before generating contract
+- Document source of imported data in loan notes
+- Double-check current balance calculation
+- Test payment processing after import
+
+**Example Use Case:**
+
+You purchase a portfolio of 5 properties from another seller. Each property has an existing loan with 2 years of payment history.
+
+1. Register each customer on your system
+2. Import each property into Property Management
+3. For each loan:
+   - Import loan details and payment history
+   - Import tax payment records
+   - Verify current balance
+4. Ask customers to update mailing addresses in Account Settings
+5. Generate amended contracts for each loan
+6. Customers sign new contracts
+7. Customers continue making payments to you
+
+**Revenue Reporting:**
+All imported payments appear correctly in:
+- Financial Reports → Overview
+- Tax Summary Reports
+- Payment Tracking
+- Monthly revenue breakdowns
+
+The `loan_payment_amount` field is automatically populated, so imported revenue shows accurately alongside new payments.
 
 \### Loan Management Dashboard
 

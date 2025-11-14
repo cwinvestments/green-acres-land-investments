@@ -1,705 +1,401 @@
 # Green Acres Land Investments - Project Summary
-**Last Updated: November 12, 2025**
 
 ## Project Overview
-Green Acres Land Investments, LLC is a land financing platform that enables customers to purchase raw land with flexible owner financing options. The platform features a React frontend, Node.js/Express backend, PostgreSQL database, and integrates with Square for payments and Cloudinary for image storage.
+**Business:** Green Acres Land Investments, LLC  
+**Tagline:** "Your Land. Your Terms."  
+**Purpose:** Land investment business purchasing raw land at auctions and reselling with flexible owner financing
 
----
+## Business Model
+- **Target Properties:** $2,000-$10,000 raw land parcels
+- **Financing Tiers:** 5 options from $99 down (18% APR) to 50% down (8% APR)
+- **Terms:** 1-5 years with $50 minimum monthly payments
+- **Coordinates:** Properties use GPS coordinate systems (raw land, no traditional addresses)
+- **Expansion:** Planning multi-state expansion (Arizona, Colorado, Arkansas)
 
 ## Technology Stack
-
 ### Frontend
-- **Framework**: React 18
-- **Routing**: React Router DOM
-- **HTTP Client**: Axios
-- **Payment**: Square Web SDK
-- **Deployment**: Netlify
-- **URL**: https://greenacreslandinvestments.com
+- **Framework:** React
+- **Hosting:** Netlify
+- **Deployment:** Automatic from GitHub main branch
 
 ### Backend
-- **Runtime**: Node.js
-- **Framework**: Express
-- **Authentication**: JWT + bcrypt
-- **Payment Processing**: Square API (Sandbox mode)
-- **Image Storage**: Cloudinary
-- **Deployment**: Railway
-- **API URL**: https://green-acres-land-investments-production.up.railway.app
+- **Runtime:** Node.js with Express
+- **Hosting:** Railway
+- **Database:** PostgreSQL via Supabase
+- **Payment Processing:** Square API (currently sandbox mode)
+- **File Storage:** Cloudinary (for property images)
 
-### Database
-- **System**: PostgreSQL
-- **Host**: Supabase
-- **ORM**: None (direct pg pool queries)
+### Development Environment
+- **Location:** C:\Projects\GreenAcres
+- **Editor:** VS Code (with Notepad for critical edits due to caching issues)
+- **Terminal:** Command Prompt (not PowerShell)
+- **Version Control:** GitHub
+- **Setup:** Four-monitor workstation
 
----
+## Core Features - COMPLETED ✅
 
-## Project Structure
-```
-C:\Projects\GreenAcres\
-├── client/                          # React frontend
-│   ├── public/
-│   │   └── green-acres-logo-*.png   # Logo files
-│   ├── src/
-│   │   ├── api.js                   # API integration layer
-│   │   ├── index.css                # Global styles
-│   │   ├── context/
-│   │   │   └── AuthContext.js       # Authentication state
-│   │   ├── pages/
-│   │   │   ├── Home.js              # Landing page
-│   │   │   ├── Properties.js        # Property listings (Cloudinary integrated)
-│   │   │   ├── PropertyDetail.js    # Property detail + purchase (Cloudinary integrated)
-│   │   │   ├── Login.js             # Customer login
-│   │   │   ├── Register.js          # Customer registration (reCAPTCHA)
-│   │   │   ├── Dashboard.js         # Customer dashboard
-│   │   │   ├── LoanDetail.js        # Loan details + payments
-│   │   │   ├── PaymentHistory.js    # Payment history
-│   │   │   ├── SoldProperties.js    # Showcase sold properties
-│   │   │   ├── AccountSettings.js   # Customer profile settings
-│   │   │   ├── AdminLogin.js        # Admin authentication
-│   │   │   ├── AdminDashboard.js    # Admin overview
-│   │   │   ├── PropertyManagement.js # Admin property CRUD (Cloudinary upload)
-│   │   │   ├── CustomerManagement.js # Admin customer view
-│   │   │   ├── AdminLoans.js        # Admin loan management
-│   │   │   ├── PaymentTracking.js   # Admin payment view
-│   │   │   ├── AdminReports.js      # Financial reports
-│   │   │   ├── TaxSummary.js        # CPA tax report
-│   │   │   ├── DefaultedLoansReport.js # Default tracking
-│   │   │   └── StateManagement.js   # Manage available states
-│   │   └── App.js                   # Main app component
-│   ├── package.json
-│   └── .env                         # Frontend environment variables
-│
-├── server/                          # Node.js backend
-│   ├── server.js                    # Main Express app (Cloudinary configured)
-│   ├── database.js                  # PostgreSQL connection
-│   ├── contract-template.txt        # Contract for Deed template
-│   ├── package.json
-│   └── .env                         # Backend environment variables
-│
-├── .git/                            # Git repository
-├── .gitignore
-└── PROJECT-SUMMARY.md               # This file
-```
+### Property Management
+- ✅ Full CRUD for properties with multiple statuses (available, coming_soon, pending, sold)
+- ✅ GPS coordinate system for raw land
+- ✅ Legal descriptions and APN tracking
+- ✅ Property covenant management
+- ✅ Tax escrow tracking with dual payment dates
+- ✅ HOA fee tracking (monthly + contact info)
+- ✅ Acquisition cost tracking
+- ✅ Selling expense tracking by category
+- ✅ Property tax payment recording to counties
+- ✅ State management system (active/coming soon states)
+- ✅ **Property image management with Cloudinary:**
+  - Direct file upload (drag-and-drop)
+  - Image reordering
+  - Captions
+  - Delete functionality
+  - Preview thumbnails
+  - Featured image selection
+  - Maximum 10 images per property
 
----
+### Customer Portal
+- ✅ User registration with reCAPTCHA v3
+- ✅ Secure authentication (JWT tokens)
+- ✅ Dashboard showing all active loans
+- ✅ Payment history viewing
+- ✅ **Account Settings page:**
+  - Update contact information (phone, email)
+  - Update mailing address (per user account)
+  - View/edit deed information (per property/loan)
+  - Separate deed name and mailing address fields for each loan
+- ✅ Contract viewing and signing
+- ✅ Payment breakdown display (principal, interest, tax, HOA, fees)
 
-## Database Schema
+### Loan Management
+- ✅ Standard loan creation from property purchases
+- ✅ **Import existing loans with complete payment history:**
+  - Original contract date tracking
+  - Payment history import (principal, interest, tax, HOA breakdown)
+  - Tax payment history import
+  - Current balance calculation
+  - Proper loan_payment_amount field population
+- ✅ **Custom loan creation:**
+  - Flexible terms for special deals
+  - Custom down payment, interest rate, term
+  - Auto-calculated payment schedule
+  - Processing fee customization
+- ✅ Payment due day selection (1st or 15th)
+- ✅ Balance tracking and payment application
+- ✅ Late fee automation (7-day grace period, $75 fee)
+- ✅ Notice system (default/cure notices with 14-day cure period)
+- ✅ Default tracking with recovery costs
+- ✅ Alert system with toggle (enable/disable per loan)
+- ✅ Deed type selection (Special Warranty vs Quitclaim)
 
-### Core Tables
+### Contract System
+- ✅ **Dynamic contract generation from template:**
+  - Mail merge with loan/property/customer data
+  - Number-to-words conversion
+  - Professional formatting
+- ✅ **Amended and Restated Contracts:**
+  - Automatic detection of imported loans with payment history
+  - Shows original contract date
+  - Displays number of payments made
+  - Shows total principal paid to date
+  - References remaining balance
+  - Different language for new vs. imported loans
+- ✅ Digital signature collection (admin + customer)
+- ✅ IP address and timestamp logging
+- ✅ Download signed contracts
+- ✅ Customer mailing address integration
+- ✅ Contract deletion and regeneration
 
-#### users
-```sql
-id SERIAL PRIMARY KEY
-email VARCHAR(255) UNIQUE NOT NULL
-password TEXT NOT NULL
-first_name VARCHAR(100)
-last_name VARCHAR(100)
-phone VARCHAR(20)
-mailing_address TEXT
-mailing_city VARCHAR(100)
-mailing_state VARCHAR(2)
-mailing_zip VARCHAR(10)
-created_at TIMESTAMP DEFAULT NOW()
-```
+### Payment Processing
+- ✅ Square API integration (sandbox mode)
+- ✅ **Comprehensive payment breakdown:**
+  - Loan payment (principal + interest)
+  - Tax escrow collection (annual ÷ 12)
+  - HOA fees
+  - Late fees (after 7-day grace)
+  - Notice fees ($75 + postal costs)
+  - Square processing fees (2.9% + $0.30)
+  - Convenience fees ($5.00)
+- ✅ **Manual payment recording:**
+  - Cash, check, Venmo, Zelle, wire transfer
+  - Full breakdown calculation
+  - Transaction ID and notes tracking
+  - Balance update automation
+- ✅ Payment history with complete audit trail
+- ✅ Balance recalculation after each payment
+- ✅ Auto-advance next payment date (30 days)
 
-#### admin_users
-```sql
-id SERIAL PRIMARY KEY
-email VARCHAR(255) UNIQUE NOT NULL
-password TEXT NOT NULL
-first_name VARCHAR(100)
-last_name VARCHAR(100)
-role VARCHAR(50) DEFAULT 'admin'
-tax_withholding_rate NUMERIC(5,2) DEFAULT 30.00
-created_at TIMESTAMP DEFAULT NOW()
-```
+### Admin Dashboard
+- ✅ **Statistics overview:**
+  - Total properties
+  - Active loans
+  - Total customers
+  - Overdue loans (7+ days)
+  - Loans in default (notice sent)
+  - Revenue trends (30-day comparison)
+  - Collection rate tracking
+  - Upcoming tax deadlines (60-day view)
+- ✅ Customer management with loan summaries
+- ✅ Loan management across all customers
+- ✅ Payment tracking system
+- ✅ Property management
+- ✅ **Tax withholding rate setting** (default 30%, customizable per admin)
 
-#### states
-```sql
-id SERIAL PRIMARY KEY
-name VARCHAR(100) NOT NULL
-abbreviation VARCHAR(2) NOT NULL
-is_active BOOLEAN DEFAULT FALSE
-coming_soon BOOLEAN DEFAULT FALSE
-sort_order INTEGER DEFAULT 0
-```
+### Financial Reporting
+- ✅ **Comprehensive financial reports:**
+  - Revenue breakdown (down payments, processing fees, loan payments, late fees, notice fees)
+  - Tax escrow tracking by property (collected vs paid to counties)
+  - HOA fee tracking by property
+  - Monthly revenue trends (12-month view)
+  - Outstanding balances report
+  - Defaulted loans report with recovery analysis
+- ✅ **Tax Summary Report for CPA:**
+  - Annual summary with monthly breakdown
+  - Quarterly summaries (Q1-Q4)
+  - Revenue streams (loan payments, fees, reimbursements)
+  - Expenses (Square fees, acquisition costs, selling expenses, recovery costs)
+  - Net profit calculation
+  - Year selection (defaults to current year)
+- ✅ **PDF Export functionality:**
+  - Overview reports (portfolio + property-level revenue)
+  - Tax escrow reports (collected vs paid by property)
+  - HOA tracking reports
+  - Outstanding balances with customer details
+  - Professional formatting with Green Acres branding
+- ✅ **Property-level profit tracking:**
+  - Acquisition cost vs sale price
+  - Revenue generated from financing
+  - Selling expenses by category
+  - Net profit per property
 
-#### properties
-```sql
-id SERIAL PRIMARY KEY
-title VARCHAR(255) NOT NULL
-description TEXT
-location VARCHAR(255)
-state VARCHAR(100)
-county VARCHAR(100)
-acres NUMERIC(10,2)
-price NUMERIC(10,2)
-acquisition_cost NUMERIC(10,2)
-apn VARCHAR(100)
-coordinates TEXT (JSON string with ne_corner, se_corner, sw_corner, nw_corner, center)
-legal_description TEXT
-status VARCHAR(50) DEFAULT 'available'
-  -- Values: available, coming_soon, pending, under_contract, sold
-annual_tax_amount NUMERIC(10,2)
-tax_payment_1_date DATE
-tax_payment_1_amount NUMERIC(10,2)
-tax_payment_2_date DATE
-tax_payment_2_amount NUMERIC(10,2)
-tax_notes TEXT
-monthly_hoa_fee NUMERIC(10,2)
-hoa_name VARCHAR(255)
-hoa_contact VARCHAR(255)
-hoa_notes TEXT
-property_covenants TEXT
-created_at TIMESTAMP DEFAULT NOW()
-```
+### Tax Escrow System
+- ✅ **Advanced reconciliation tracking:**
+  - Tax collected from customers (monthly portions)
+  - Tax paid to counties (actual payments)
+  - Balance held in escrow
+  - Property-level tracking
+  - Payment history with check numbers
+  - Funded vs. collecting status
+  - Annual tax amount with dual payment dates
+  - Notes field for special circumstances
 
-#### property_images ⭐ UPDATED
-```sql
-id SERIAL PRIMARY KEY
-property_id INTEGER REFERENCES properties(id)
-cloudinary_public_id VARCHAR(255)  -- NEW: Cloudinary ID for deletion
-url TEXT NOT NULL                   -- NEW: Full Cloudinary URL
-caption TEXT
-display_order INTEGER DEFAULT 0
-is_featured BOOLEAN DEFAULT FALSE   -- NEW: Mark featured image
-created_at TIMESTAMP DEFAULT NOW()
-```
+## Recent Updates (November 2025)
 
-#### loans
-```sql
-id SERIAL PRIMARY KEY
-user_id INTEGER REFERENCES users(id)
-property_id INTEGER REFERENCES properties(id)
-purchase_price NUMERIC(10,2)
-down_payment NUMERIC(10,2)
-processing_fee NUMERIC(10,2) DEFAULT 99
-loan_amount NUMERIC(10,2)
-interest_rate NUMERIC(5,2)
-term_months INTEGER
-monthly_payment NUMERIC(10,2)
-total_amount NUMERIC(10,2)
-balance_remaining NUMERIC(10,2)
-next_payment_date DATE
-payment_due_day INTEGER DEFAULT 1  -- 1 or 15
-status VARCHAR(50) DEFAULT 'active'
-  -- Values: active, paid_off, defaulted
-alerts_disabled BOOLEAN DEFAULT FALSE
-default_date DATE
-recovery_costs NUMERIC(10,2)
-net_recovery NUMERIC(10,2)
-default_notes TEXT
-notice_sent_date DATE
-notice_tracking_number VARCHAR(100)
-notice_postal_cost NUMERIC(10,2)
-notice_notes TEXT
-cure_deadline_date DATE
-late_fee_amount NUMERIC(10,2) DEFAULT 75
-deed_type VARCHAR(100) DEFAULT 'Special Warranty Deed'
-deed_name VARCHAR(255)
-deed_mailing_address TEXT
-created_at TIMESTAMP DEFAULT NOW()
-```
+### Amended Contract Support (November 13, 2025) ✅
+- **Feature:** Automatic generation of "Amended and Restated" contracts for imported loans
+- **Implementation:**
+  - Contract system detects loans with existing payment history
+  - Shows original contract date, payments made, and total paid
+  - Uses different legal language for amended vs. new contracts
+  - Maintains all standard contract features (signatures, download, etc.)
+- **Use Case:** When importing existing loans from previous systems or portfolio acquisitions
 
-#### payments
-```sql
-id SERIAL PRIMARY KEY
-loan_id INTEGER REFERENCES loans(id)
-user_id INTEGER REFERENCES users(id)
-amount NUMERIC(10,2)
-payment_type VARCHAR(50)
-  -- Values: down_payment, monthly_payment
-payment_method VARCHAR(50) DEFAULT 'square'
-square_payment_id VARCHAR(255)
-status VARCHAR(50) DEFAULT 'completed'
-payment_date TIMESTAMP DEFAULT NOW()
--- Payment breakdown fields
-loan_payment_amount NUMERIC(10,2)
-tax_amount NUMERIC(10,2)
-hoa_amount NUMERIC(10,2)
-late_fee_amount NUMERIC(10,2)
-notice_fee_amount NUMERIC(10,2)
-postal_fee_amount NUMERIC(10,2)
-square_processing_fee NUMERIC(10,2)
-convenience_fee NUMERIC(10,2)
-principal_amount NUMERIC(10,2)
-interest_amount NUMERIC(10,2)
-```
+### Imported Payment Revenue Fix (November 13, 2025) ✅
+- **Issue:** Imported payment history not showing correctly in revenue reports
+- **Fix:** Updated import process to populate `loan_payment_amount` field
+- **Impact:** Financial reports now accurately show all revenue including imported loan history
+- **Verification:** All 42 imported payments ($6,147.50) now appear correctly in breakdowns
 
-#### contracts
-```sql
-id SERIAL PRIMARY KEY
-loan_id INTEGER REFERENCES loans(id)
-contract_text TEXT
-status VARCHAR(50) DEFAULT 'pending'
-  -- Values: pending, customer_signed, fully_signed
-customer_signature VARCHAR(255)
-customer_signed_date TIMESTAMP
-customer_ip_address VARCHAR(100)
-customer_user_agent TEXT
-admin_signature VARCHAR(255)
-admin_signed_date TIMESTAMP
-admin_ip_address VARCHAR(100)
-created_at TIMESTAMP DEFAULT NOW()
-```
+### Photo Management System (November 2025) ✅
+- **Feature:** Complete property image management with Cloudinary integration
+- **Capabilities:**
+  - Direct file upload with drag-and-drop
+  - Reorder images by drag-and-drop
+  - Add/edit captions
+  - Delete images (removes from Cloudinary and database)
+  - Preview thumbnails
+  - Set featured image
+  - Maximum 10 images per property
 
-#### selling_expenses
-```sql
-id SERIAL PRIMARY KEY
-property_id INTEGER REFERENCES properties(id)
-expense_date DATE NOT NULL
-category VARCHAR(100)
-  -- Values: Postal/Mailing, Deed Transfer, Legal Fees, Marketing, Property Cleanup, Travel, Miscellaneous
-description TEXT
-amount NUMERIC(10,2) NOT NULL
-created_at TIMESTAMP DEFAULT NOW()
-```
+### Account Settings Enhancement (October-November 2025) ✅
+- **Feature:** Comprehensive customer account management
+- **Sections:**
+  1. Contact Information (phone, stored per user)
+  2. Mailing Address (street, city, state, zip - stored per user)
+  3. Deed Information (name and mailing address - stored per loan/property)
+- **Auto-fill:** Deed information automatically pre-fills from user profile when empty
+- **Contract Integration:** Mailing address from Account Settings populates contracts
 
-#### property_tax_payments
-```sql
-id SERIAL PRIMARY KEY
-property_id INTEGER REFERENCES properties(id)
-payment_date DATE NOT NULL
-amount NUMERIC(10,2) NOT NULL
-tax_year INTEGER NOT NULL
-payment_method VARCHAR(50)
-check_number VARCHAR(100)
-notes TEXT
-created_at TIMESTAMP DEFAULT NOW()
-```
+### Tax Escrow Reconciliation (October 2025) ✅
+- **Feature:** Track taxes collected from customers vs. taxes paid to counties
+- **Reports:** Show escrow balance held for each property
+- **Payment Recording:** Full audit trail of county tax payments
 
-#### loan_notices
-```sql
-id SERIAL PRIMARY KEY
-loan_id INTEGER REFERENCES loans(id)
-notice_type VARCHAR(50)
-  -- Values: default_cure, final_notice
-notice_date DATE NOT NULL
-postal_method VARCHAR(100)
-postal_cost NUMERIC(10,2)
-tracking_number VARCHAR(255)
-notice_fee NUMERIC(10,2) DEFAULT 75
-notes TEXT
-created_at TIMESTAMP DEFAULT NOW()
-```
-
----
-
-## Environment Variables
-
-### Frontend (.env in client/)
-```
-REACT_APP_API_URL=https://green-acres-land-investments-production.up.railway.app/api
-REACT_APP_SQUARE_APPLICATION_ID=[Square App ID]
-REACT_APP_SQUARE_LOCATION_ID=[Square Location ID]
-REACT_APP_SQUARE_ENVIRONMENT=sandbox
-REACT_APP_RECAPTCHA_SITE_KEY=[reCAPTCHA Site Key]
-```
-
-### Backend (.env in server/ and Railway)
-```
-DATABASE_URL=[Supabase PostgreSQL URL]
-JWT_SECRET=[Random secret string]
-SQUARE_ACCESS_TOKEN=[Square Sandbox Access Token]
-SQUARE_LOCATION_ID=[Square Location ID]
-SQUARE_ENVIRONMENT=sandbox
-RECAPTCHA_SECRET_KEY=[reCAPTCHA Secret Key]
-CLOUDINARY_CLOUD_NAME=dxd4ef2tc
-CLOUDINARY_API_KEY=[Cloudinary API Key]
-CLOUDINARY_API_SECRET=[Cloudinary API Secret]
-PORT=5000
-```
-
----
-
-## Key Features Implemented
-
-### Customer Features
-✅ Property browsing with state filtering
-✅ Property detail view with GPS coordinates
-✅ Interactive financing calculator
-✅ Owner financing with 5 payment tiers ($99 down to 50% down)
-✅ Square payment integration (Sandbox mode)
-✅ Loan dashboard with payment tracking
-✅ Payment history with detailed breakdowns
-✅ Contract generation and e-signing
-✅ Account settings (contact info, deed information per property)
-✅ reCAPTCHA on registration
-
-### Admin Features
-✅ Admin authentication (separate from customers)
-✅ Property CRUD operations
-✅ **Cloudinary image upload (direct file upload, max 10 per property)**
-✅ **Image management (captions, featured images, deletion)**
-✅ Coming Soon property status
-✅ Customer management view
-✅ Loan management and tracking
-✅ Payment due day selection (1st or 15th)
-✅ Late fee tracking (7-day grace period, $75 fee)
-✅ Default/cure notice system with tracking
-✅ Deed type selection (Special Warranty or Quitclaim)
-✅ Payment tracking and reporting
-✅ Financial reports (revenue, tax escrow, HOA)
-✅ Tax summary for CPA (monthly/quarterly/annual)
-✅ Defaulted loans report
-✅ Selling expense tracking
-✅ Property tax payment recording
-✅ Tax escrow reconciliation
-✅ State management (add/edit available states)
-✅ Configurable tax withholding rate
-✅ Custom Loan Creator - Create flexible financing with custom terms (down payment, interest rate, term length) for loyal customers or special deals
-
-### Business Logic
-✅ 5 financing tiers: $99 (18% APR), 20% (12% APR), 25%/35%/50% (8% APR)
-✅ $99 processing fee on all purchases
-✅ $50 minimum monthly payment
-✅ 1-5 year loan terms
-✅ Automatic interest/principal calculation
-✅ Property tax escrowed in monthly payment
-✅ HOA fees escrowed in monthly payment
-✅ Payment breakdown (principal, interest, tax, HOA, fees)
-✅ Square processing fee + $5 convenience fee
-✅ Notice fees ($75 + postal costs)
-✅ Contract for Deed generation with mail-merge
-✅ Property covenants included in contracts
-
----
-
-## Cloudinary Integration ⭐ NEW
-
-### Implementation Details
-- **Folder**: green-acres-properties
-- **Upload**: Admin can upload images directly from computer
-- **Storage**: Images stored with `cloudinary_public_id` for management
-- **Display**: All images referenced by Cloudinary URL
-- **Deletion**: Removes image from both Cloudinary and database
-- **Features**: Captions, display order, featured image marking
-- **Limit**: Maximum 10 images per property
-- **Placeholder**: Custom "Images Coming Soon" image for properties without photos
-
-### Endpoints
-```
-POST   /api/admin/properties/:id/images/upload  (multipart/form-data with 'image' field)
-GET    /api/properties/:propertyId/images
-PATCH  /api/admin/properties/:propertyId/images/:imageId (caption, order, featured)
-PATCH  /api/admin/properties/:id/images/reorder
-DELETE /api/admin/properties/:propertyId/images/:imageId (deletes from Cloudinary too)
-```
-
----
-
-## API Endpoints
-
-### Authentication
-```
-POST   /api/register           (Customer registration with reCAPTCHA)
-POST   /api/login              (Customer login)
-POST   /api/admin/login        (Admin login)
-```
-
-### Properties (Public)
-```
-GET    /api/properties         (Available + Coming Soon)
-GET    /api/properties/sold    (Sold/Under Contract showcase)
-GET    /api/properties/:id     (Single property detail)
-GET    /api/properties/:propertyId/images  (Property images)
-GET    /api/states             (Active + Coming Soon states)
-```
-
-### Loans (Customer - Auth Required)
-```
-GET    /api/loans                              (User's loans)
-GET    /api/loans/:id                          (Single loan detail)
-GET    /api/loans/:id/payments                 (Payment history)
-GET    /api/loans/:id/payment-breakdown        (Current payment breakdown)
-GET    /api/loans/:id/contract                 (View contract)
-POST   /api/loans                              (Create loan = Purchase)
-POST   /api/payments                           (Make payment)
-POST   /api/loans/:id/sign-contract            (Customer signs)
-GET    /api/loans/:loanId/download-contract    (Download signed contract)
-```
-
-### User Account (Customer - Auth Required)
-```
-GET    /api/user/profile                       (Get profile)
-PATCH  /api/user/profile                       (Update contact info)
-GET    /api/user/deed-info                     (Get deed info for all loans)
-PATCH  /api/user/loans/:loanId/deed-info       (Update deed info per loan)
-```
-
-### Admin - Properties
-```
-GET    /api/admin/properties                   (All properties)
-POST   /api/admin/properties                   (Create property)
-PUT    /api/admin/properties/:id               (Update property)
-PATCH  /api/admin/properties/:id/status        (Update status only)
-DELETE /api/admin/properties/:id               (Delete property)
-POST   /api/admin/properties/:id/images/upload (Upload image - Cloudinary)
-PATCH  /api/admin/properties/:propertyId/images/:imageId (Update image)
-DELETE /api/admin/properties/:propertyId/images/:imageId (Delete image)
-```
-
-### Admin - Customers
-```
-GET    /api/admin/customers                    (All customers with loan summaries)
-GET    /api/admin/customers/:id                (Single customer detail)
-```
-
-### Admin - Loans
-```
-GET    /api/admin/loans                        (All loans across customers)
-PATCH  /api/admin/loans/:id/toggle-alert       (Toggle alerts on/off)
-PATCH  /api/admin/loans/:id/payment-due-day    (Change payment due day)
-PATCH  /api/admin/loans/:id/default            (Mark as defaulted)
-PATCH  /api/admin/loans/:id/deed-type          (Update deed type)
-POST   /api/admin/loans/:id/send-notice        (Record notice sent)
-POST   /api/admin/loans/:id/waive-late-fee     (Waive late fee)
-POST   /api/admin/loans/:id/generate-contract  (Generate contract)
-POST   /api/admin/loans/:id/sign-contract      (Admin signs contract)
-DELETE /api/admin/loans/:id/contract           (Delete contract)
-```
-
-### Admin - Expenses
-```
-GET    /api/admin/properties/:propertyId/expenses       (Property expenses)
-POST   /api/admin/properties/:propertyId/expenses       (Add expense)
-DELETE /api/admin/expenses/:id                          (Delete expense)
-```
-
-### Admin - Tax Payments
-```
-GET    /api/admin/properties/:propertyId/tax-payments   (Property tax payments)
-POST   /api/admin/properties/:propertyId/pay-taxes      (Record tax payment)
-DELETE /api/admin/tax-payments/:id                      (Delete tax payment)
-```
-
-### Admin - Reports
-```
-GET    /api/admin/stats                        (Dashboard statistics - enhanced with trends)
-GET    /api/admin/payments                     (All payments)
-GET    /api/admin/reports/financial            (Financial reports)
-GET    /api/admin/reports/outstanding          (Outstanding balances)
-GET    /api/admin/reports/tax-summary          (Tax summary for CPA)
-GET    /api/admin/reports/export               (PDF export with filters)
-```
-
-### Admin - States
-```
-GET    /api/admin/states                       (All states)
-POST   /api/admin/states                       (Create state)
-PATCH  /api/admin/states/:id                   (Update state)
-DELETE /api/admin/states/:id                   (Delete state)
-```
-
-### Admin - Settings
-```
-GET    /api/admin/tax-rate                     (Get tax withholding rate)
-PATCH  /api/admin/tax-rate                     (Update tax rate)
-```
-
----
-
-## Payment Flow
-
-1. Customer selects property and financing terms
-2. Customer enters billing info and payment details
-3. Customer enters deed information (name and mailing address)
-4. Square tokenizes card (client-side)
-5. Backend creates loan record
-6. Backend processes down payment via Square API
-7. Backend records payment in database
-8. Backend updates property status to "pending"
-9. Customer redirected to dashboard
-
-### Monthly Payment Flow
-1. System calculates payment breakdown:
-   - Loan payment (principal + interest)
-   - Monthly tax escrow (annual_tax / 12)
-   - Monthly HOA fee
-   - Late fee (if > 7 days overdue)
-   - Notice fee + postal cost (if sent)
-   - Subtotal
-   - Square processing fee (2.9% + $0.30)
-   - $5 convenience fee
-   - **Total due**
-2. Customer makes payment via Square
-3. Payment allocated to: principal, interest, tax, HOA, fees
-4. Tax/HOA amounts tracked for reconciliation
-5. Next payment date set to 30 days out
-
----
-
-## Contract System
-
-### Contract Generation
-- Admin triggers contract generation for a loan
-- Backend reads `contract-template.txt`
-- Mail-merge replaces placeholders with actual data
-- Stores generated contract in `contracts` table with status "pending"
-
-### Contract Signing
-1. Customer views contract and types their name
-2. System records: signature, date, IP, user agent
-3. Status changes to "customer_signed"
-4. Admin views and types their name
-5. System records: signature, date, IP
-6. Status changes to "fully_signed"
-
-### Contract Merge Fields
-```
-{{CONTRACT_DATE}}, {{PURCHASER_NAME}}, {{PURCHASER_ADDRESS}},
-{{COUNTY}}, {{STATE}}, {{PROPERTY_DESCRIPTION}}, {{ACRES}},
-{{APN}}, {{PURCHASE_PRICE}}, {{PURCHASE_PRICE_WORDS}},
-{{DOWN_PAYMENT}}, {{BALANCE}}, {{BALANCE_WORDS}},
-{{INTEREST_RATE}}, {{MONTHLY_PAYMENT}}, {{MONTHLY_PAYMENT_WORDS}},
-{{FIRST_PAYMENT_DATE}}, {{NUMBER_OF_PAYMENTS}},
-{{PROPERTY_COVENANTS}}, {{DEED_TYPE}}
-```
-
----
-
-## Tax Escrow System
-
-### How It Works
-- Properties have `annual_tax_amount` field
-- Monthly payment includes 1/12 of annual tax
-- Customer payments tracked with `tax_amount` field
-- Admin records actual tax payments to county via "Pay Taxes" button
-- System tracks: tax collected vs. tax paid
-- Reports show escrow balance per property
-
-### Reconciliation
-- Financial Reports show tax escrow balances
-- Tax Summary shows tax collected in revenue
-- Property tax payments tracked separately
-- System calculates: collected - paid = escrow balance
-
----
-
-## Deployment
-
-### Frontend (Netlify)
-1. Push to GitHub main branch
-2. Netlify auto-deploys from `client/` directory
-3. Build command: `npm run build`
-4. Publish directory: `client/build`
-5. Environment variables set in Netlify dashboard
-
-### Backend (Railway)
-1. Push to GitHub main branch
-2. Railway auto-deploys from `server/` directory
-3. Start command: `node server.js`
-4. Environment variables set in Railway dashboard
-5. Monitor logs in Railway dashboard
-
-### Database (Supabase)
-- Hosted PostgreSQL
-- SQL Editor for manual queries/migrations
-- Connection string in `DATABASE_URL`
-
----
+### Payment Breakdown Enhancement (October 2025) ✅
+- **Feature:** Detailed breakdown of every payment component
+- **Components:** Loan payment, tax escrow, HOA, late fees, notice fees, processing fees
+- **Display:** Shows breakdown before payment and in payment history
 
 ## Development Workflow
 
 ### Making Changes
+1. **Local Development:**
+   - Work in `C:\Projects\GreenAcres`
+   - Test locally before committing
+   - Use Command Prompt for git operations
+
+2. **Version Control:**
 ```bash
-cd C:\Projects\GreenAcres
-
-# Edit files in VS Code or Notepad
-
-# Test locally (optional)
-cd client
-npm start  # Frontend on localhost:3000
-
-cd ../server
-node server.js  # Backend on localhost:5000
-
-# Commit and deploy
-git add .
-git commit -m "Description of changes"
-git push origin main
-
-# Monitor deployments
-# - Railway logs for backend
-# - Netlify build logs for frontend
-
-# Always hard refresh after deployment (Ctrl+Shift+R)
+   git add -A
+   git commit -m "Description of changes"
+   git push origin main
 ```
 
-### Database Migrations
-```bash
-# Run SQL in Supabase SQL Editor
-# Example: Add column
-ALTER TABLE table_name ADD COLUMN column_name TYPE;
+3. **Deployment:**
+   - Railway: Automatic from GitHub push (backend)
+   - Netlify: Automatic from GitHub push (frontend)
+   - Monitor deployment logs for errors
 
-# Always test queries before running
-# Backup critical data before major changes
-```
+4. **Database Changes:**
+   - Always backup before schema changes
+   - Test queries in Supabase SQL editor first
+   - Update both production and understanding of schema
 
----
-
-## Current Status
-
-### Production
-- ✅ Frontend deployed and accessible
-- ✅ Backend deployed and running
-- ✅ Database connected and operational
-- ✅ Square payments in Sandbox mode
-- ✅ Cloudinary image storage active
-- ⚠️ Square needs production credentials for live payments
-
-### Known Issues
-- ⚠️ Tax Summary page not showing custom loan revenue (needs investigation)
-- ⚠️ Financial Reports "Fee Breakdown" missing down payments and processing fees
-- ⚠️ Custom Loan Creator needs mobile-friendly design polish
-- ⚠️ Custom Loan Creator cannot collect Square payment for down payment yet
-
-### Completed Enhancements (November 12, 2025)
-1. ✅ Drag-and-drop image reordering in admin
-2. ✅ Featured image priority on public site
-3. ✅ Mobile responsive Property Management page
-4. ✅ PDF export functionality for financial reports
-5. ✅ Enhanced Admin Dashboard with performance indicators
-6. ✅ Smart navigation from dashboard to property tax modals
-
-## Recent Updates
-
-### November 13, 2025
-- ✅ Added Custom Loan Creator for flexible financing terms
-- ✅ Fixed payment convenience fee (only charged once: $5 total)
-- ✅ Fixed payment type labels (Processing Fee now displays as "DOC FEE")
-### November 12, 2025
-- ✅ Added professional PDF export for financial reports
-- ✅ Enhanced Admin Dashboard with trends and clickable alerts
-- ✅ Drag-and-drop image reordering
-- ✅ Featured image priority
-- ✅ Mobile responsive Property Management
-
-### Planned Enhancements
-1. Email notifications for payments/overdue accounts
-2. Cloudinary image transformations for thumbnails
-3. Move Square from Sandbox to Production mode
-
----
-
-## Support & Resources
-
-### External Services
-- **Supabase**: https://supabase.com/dashboard
-- **Railway**: https://railway.app/dashboard
-- **Netlify**: https://app.netlify.com/
-- **Square Dashboard**: https://developer.squareup.com/apps
-- **Cloudinary Dashboard**: https://cloudinary.com/console
-- **GitHub**: https://github.com/[your-repo]
+### File Editing Best Practices
+- **Critical files:** Use Notepad (VS Code has caching issues)
+- **Code snippets:** Request complete FIND/REPLACE blocks
+- **No explanatory text:** Just code blocks for copy-paste
+- **One task at a time:** Prevents overwhelming workflow
 
 ### Documentation
-- PROJECT-SUMMARY.md (this file)
-- QUICKSTART.md (quick reference)
-- ADMIN-GUIDE.md (admin features)
-- UI-IMPROVEMENT-PLAN.md (future UI enhancements)
-- GREEN-ACRES-PROJECT-GUIDE.md (comprehensive guide)
-- PAYMENT-SYSTEM-GUIDE.md (payment details)
+- **Session handoffs:** Create detailed markdown files after major work
+- **Update PROJECT-SUMMARY.md:** After completing features
+- **Git commits:** Descriptive messages for tracking changes
+
+## System Architecture
+
+### Database Schema (Key Tables)
+- **users:** Customer accounts with mailing addresses
+- **admin_users:** Admin accounts with tax withholding rates
+- **properties:** Land parcels with full details and tax/HOA info
+- **property_images:** Cloudinary-hosted images with captions and ordering
+- **loans:** Financing agreements with payment schedules
+- **payments:** Transaction history with complete breakdowns
+- **contracts:** Generated and signed agreements
+- **loan_notices:** Default/cure notice tracking
+- **property_tax_payments:** County tax payment records
+- **selling_expenses:** Property-level expense tracking
+- **states:** State management (active/coming soon)
+
+### API Structure
+- **Public routes:** `/api/properties`, `/api/states`
+- **Customer routes:** `/api/loans`, `/api/payments`, `/api/user/*` (JWT auth)
+- **Admin routes:** `/api/admin/*` (Admin JWT auth)
+- **Authentication:** JWT tokens with role-based access
+
+### Security
+- **reCAPTCHA v3:** Registration protection
+- **Password hashing:** bcrypt (10 rounds)
+- **JWT tokens:** 24-hour expiration
+- **Environment variables:** Stored in Railway/Netlify, never in code
+- **Admin separation:** Separate admin_users table with role verification
+
+## Business Rules
+
+### Financing Tiers
+1. **$99 Down:** 18% APR, 5 years max
+2. **20% Down:** 12% APR, 5 years max  
+3. **50% Down:** 8% APR, 1-5 years
+
+### Payment Rules
+- **Minimum Payment:** $50/month
+- **Processing Fee:** $99 (added to loan amount)
+- **Late Fee:** $75 (after 7-day grace period)
+- **First Payment:** No grace period, late fee applies immediately
+- **Payment by Mail:** Must be postmarked by due date
+
+### Default Process
+1. Payment overdue 7+ days: Late fee applied
+2. Payment overdue 30+ days: Default notice sent by certified mail
+3. Notice fee: $75 + actual postal costs
+4. Cure period: 14 days from notice receipt
+5. Failure to cure: Acceleration option or eviction proceedings
+
+### Tax Escrow
+- Collected monthly (annual amount ÷ 12)
+- Paid to counties on schedule (dual payment dates supported)
+- Balance tracked per property
+- Reconciliation reports for admin
+
+## Known Issues & Solutions
+
+### VS Code Caching
+- **Issue:** File changes not reflecting properly during critical edits
+- **Solution:** Use Notepad for important file modifications
+- **Impact:** Contract template, server.js critical sections
+
+### Square API
+- **Current State:** Sandbox mode
+- **Production:** Will need Square production credentials
+- **Testing:** Use Square test card numbers
+
+### Database Connection
+- **Provider:** Supabase PostgreSQL
+- **Connection:** Environment variables on Railway
+- **Backup:** Regular exports recommended
+
+## Future Enhancements (Planned)
+
+### Near-Term
+- [ ] Advanced property search/filtering by state, price, acres
+- [ ] Customer payment portal improvements (scheduled payments)
+- [ ] Email notifications for payment due dates
+- [ ] SMS reminders for payments
+- [ ] Photo disclaimer system for property images
+
+### Medium-Term
+- [ ] Mobile app for customer portal
+- [ ] Automated late fee assessment
+- [ ] Automated default notice generation
+- [ ] Lien release processing automation
+- [ ] Multi-language support
+
+### Long-Term
+- [ ] Portfolio analytics and projections
+- [ ] Property acquisition tracking (auction bids)
+- [ ] Marketing automation for available properties
+- [ ] Customer referral program
+- [ ] Integration with county tax systems
+
+## Support & Maintenance
+
+### Regular Tasks
+- [ ] Monitor payment processing (daily)
+- [ ] Review late fees and notices (weekly)
+- [ ] Tax escrow reconciliation (monthly)
+- [ ] Generate tax reports (quarterly)
+- [ ] Database backups (weekly)
+- [ ] Review error logs (daily)
+
+### Troubleshooting
+- **Payment fails:** Check Square sandbox status
+- **Contract won't generate:** Verify template file exists, check loan data
+- **Reports showing $0:** Check payment dates and field population
+- **Deploy fails:** Check Railway logs, verify environment variables
+
+## Contact Information
+- **Business:** Green Acres Land Investments, LLC
+- **Mailing:** P.O. Box 43, Kimberly, WI 54136-0043
+- **Owner:** Claude Weidner
+- **Email:** claudeweidner2013@gmail.com
+
+## Repository Structure
+```
+C:\Projects\GreenAcres\
+├── server/
+│   ├── server.js (main backend application)
+│   ├── database.js (PostgreSQL connection and init)
+│   ├── contract-template.txt (mail merge template)
+│   └── package.json
+├── src/ (React frontend)
+├── public/
+├── PROJECT-SUMMARY.md (this file)
+├── SESSION-HANDOFF-*.md (session documentation)
+└── package.json
+```
 
 ---
 
-**Last Major Update**: Enhanced reporting and dashboard analytics November 12, 2025
-**System Status**: Fully operational with mobile-responsive admin interfaces and comprehensive PDF reporting
+**Last Updated:** November 13, 2025  
+**Version:** 2.1  
+**Status:** Production - All core features complete and operational

@@ -974,8 +974,10 @@ app.get('/api/admin/loans', authenticateAdmin, async (req, res) => {
         p.location as property_location,
         p.price as property_price,
         p.acquisition_cost as property_acquisition_cost,
+        p.apn as property_apn,
         p.annual_tax_amount,
         p.monthly_hoa_fee,
+        p.status as property_status,
         u.first_name,
         u.last_name,
         u.email,
@@ -987,7 +989,9 @@ app.get('/api/admin/loans', authenticateAdmin, async (req, res) => {
         COALESCE(p.monthly_hoa_fee, 0) +
         COALESCE(l.late_fee_amount, 0) +
         CASE WHEN l.notice_sent_date IS NOT NULL THEN 75.00 ELSE 0 END +
-        COALESCE(l.notice_postal_cost, 0) as cure_amount
+        COALESCE(l.notice_postal_cost, 0) as cure_amount,
+        -- Calculate total paid by this customer
+        (SELECT COALESCE(SUM(amount), 0) FROM payments WHERE loan_id = l.id AND status = 'completed') as total_paid
       FROM loans l
       JOIN properties p ON l.property_id = p.id
       JOIN users u ON l.user_id = u.id

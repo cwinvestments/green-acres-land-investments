@@ -117,7 +117,7 @@ function Dashboard() {
         </div>
         <div className="summary-card">
           <h3>Total Properties</h3>
-          <p className="summary-number">{loans.length}</p>
+          <p className="summary-number">{loans.filter(l => l.status !== 'defaulted').length}</p>
         </div>
         <div className="summary-card">
           <h3>Paid Off</h3>
@@ -127,7 +127,7 @@ function Dashboard() {
 
       <h2>Your Properties</h2>
       
-      {loans.length === 0 ? (
+      {loans.filter(l => l.status !== 'defaulted').length === 0 ? (
         <div className="empty-state">
           <p>You don't have any properties yet.</p>
           <Link to="/properties" className="btn btn-primary">
@@ -136,7 +136,7 @@ function Dashboard() {
         </div>
       ) : (
         <div className="loans-grid">
-          {loans.map(loan => {
+          {loans.filter(l => l.status !== 'defaulted').map(loan => {
             const percentPaid = ((parseFloat(loan.loan_amount) - parseFloat(loan.balance_remaining)) / parseFloat(loan.loan_amount)) * 100;
             const remainingPayments = Math.ceil(parseFloat(loan.balance_remaining) / parseFloat(loan.monthly_payment));
             

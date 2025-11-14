@@ -3423,7 +3423,7 @@ app.post('/api/admin/loans/:id/generate-contract', authenticateAdmin, async (req
       SELECT 
         l.*,
         p.title, p.location, p.state, p.county, p.acres, p.apn, p.legal_description, p.property_covenants,
-        u.first_name, u.last_name, u.email
+        u.first_name, u.last_name, u.email, u.mailing_address, u.mailing_city, u.mailing_state, u.mailing_zip
       FROM loans l
       JOIN properties p ON l.property_id = p.id
       JOIN users u ON l.user_id = u.id

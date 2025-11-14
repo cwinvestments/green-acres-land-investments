@@ -1040,12 +1040,16 @@ app.post('/api/admin/loans/import', authenticateAdmin, async (req, res) => {
 
     // Insert payment history
     for (const payment of payments) {
+      const principalAmount = parseFloat(payment.principalAmount) || 0;
+      const interestAmount = parseFloat(payment.interestAmount) || 0;
+      const loanPaymentAmount = principalAmount + interestAmount;
+      
       await db.pool.query(
         `INSERT INTO payments (
           loan_id, user_id, amount, payment_type, payment_method,
           status, payment_date, principal_amount, interest_amount,
-          tax_amount, hoa_amount, late_fee_amount
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`,
+          tax_amount, hoa_amount, late_fee_amount, loan_payment_amount
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)`,
         [
           loan.id,
           loanData.userId,
@@ -1054,11 +1058,12 @@ app.post('/api/admin/loans/import', authenticateAdmin, async (req, res) => {
           'imported',
           'completed',
           payment.paymentDate,
-          payment.principalAmount || 0,
-          payment.interestAmount || 0,
+          principalAmount,
+          interestAmount,
           payment.taxAmount || 0,
           payment.hoaAmount || 0,
-          payment.lateFeeAmount || 0
+          payment.lateFeeAmount || 0,
+          loanPaymentAmount
         ]
       );
     }
@@ -1098,6 +1103,29 @@ app.post('/api/admin/loans/import', authenticateAdmin, async (req, res) => {
     await db.pool.query('ROLLBACK');
     console.error('Loan import error:', error);
     res.status(500).json({ error: 'Failed to import loan' });
+  }
+});
+
+// Fix imported payments - one-time migration (admin only)
+app.post('/api/admin/fix-imported-payments', authenticateAdmin, async (req, res) => {
+  try {
+    // Update all imported payments to set loan_payment_amount
+    const result = await db.pool.query(`
+      UPDATE payments 
+      SET loan_payment_amount = COALESCE(principal_amount, 0) + COALESCE(interest_amount, 0)
+      WHERE payment_method = 'imported' 
+        AND loan_payment_amount IS NULL
+      RETURNING id
+    `);
+    
+    res.json({ 
+      success: true, 
+      message: `Fixed ${result.rows.length} imported payments`,
+      fixed_count: result.rows.length
+    });
+  } catch (error) {
+    console.error('Fix imported payments error:', error);
+    res.status(500).json({ error: 'Failed to fix imported payments' });
   }
 });
 

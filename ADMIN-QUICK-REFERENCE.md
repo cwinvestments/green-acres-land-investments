@@ -122,6 +122,33 @@
 
 
 
+
+### Reset Customer Password
+
+1. Open customer detail modal
+
+2. Click "Reset Password" button
+
+3. Copy the 12-character temporary password shown
+
+4. Share with customer (email/phone)
+
+5. Customer updates password in Account Settings
+
+
+
+### Delete Customer
+
+1. Open customer detail modal
+
+2. Click "Delete Customer" button
+
+3. Confirm deletion
+
+4. **Note:** Cannot delete if customer has loans
+
+
+
 ---
 
 

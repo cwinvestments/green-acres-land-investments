@@ -1165,6 +1165,9 @@ npm start
 - Never store plain text passwords
 - Never log passwords
 - Strong password requirements encouraged
+- Customer password change: validates current password before update (POST /api/user/change-password)
+- Admin password reset: generates 12-character secure temp password (POST /api/admin/customers/:id/reset-password)
+- Minimum 6 characters required for all passwords
 
 ### reCAPTCHA Integration
 

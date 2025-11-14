@@ -604,6 +604,69 @@ For each loan:
 
 
 
+
+### Customer Password Management
+
+
+
+**Reset Customer Password:**
+
+1. Open customer detail modal
+
+2. Click "Reset Password" button
+
+3. System generates secure 12-character temporary password
+
+4. Modal displays temp password - copy and share with customer
+
+5. Customer can change password in Account Settings
+
+
+
+**Important Notes:**
+
+- Temporary password is shown only once
+
+- Customer must use Account Settings to set new password
+
+- System validates current password before allowing change
+
+- Minimum 6 characters required
+
+
+
+### Delete Customer Account
+
+
+
+**Delete Customer Process:**
+
+1. Open customer detail modal
+
+2. Click "Delete Customer" button (bottom of modal)
+
+3. System checks for active loans
+
+4. If customer has loans: deletion prevented with error message
+
+5. If no loans: confirmation dialog appears
+
+6. Confirm deletion to permanently remove customer
+
+
+
+**Safety Features:**
+
+- Cannot delete customers with active loans
+
+- Confirmation required before deletion
+
+- Permanent action - cannot be undone
+
+- Use only for test accounts or duplicate registrations
+
+
+
 \### Customer Search
 
 

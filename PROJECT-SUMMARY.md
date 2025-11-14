@@ -404,3 +404,22 @@
 - **Email:** claudeweidner2013@gmail.com
 
 ## Repository Structure
+```
+C:\Projects\GreenAcres\
+├── server/
+│   ├── server.js (main backend application)
+│   ├── database.js (PostgreSQL connection and init)
+│   ├── contract-template.txt (mail merge template)
+│   └── package.json
+├── src/ (React frontend)
+├── public/
+├── PROJECT-SUMMARY.md (this file)
+├── SESSION-HANDOFF-*.md (session documentation)
+└── package.json
+```
+
+---
+
+**Last Updated:** November 13, 2025  
+**Version:** 2.2  
+**Status:** Production - All core features complete and operational

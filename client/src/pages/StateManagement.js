@@ -231,8 +231,8 @@ function StateManagement() {
                 <td style={{ padding: '15px', textAlign: 'center' }}>
                   {state.sort_order}
                 </td>
-                <td style={{ padding: '15px', textAlign: 'center' }}>
-                  <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', justifyContent: 'center' }}>
+                <td style={{ padding: '15px', textAlign: 'left' }}>
+                  <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', justifyContent: 'flex-start' }}>
                     <button
                       onClick={() => handleToggleActive(state)}
                       style={{

@@ -20,7 +20,7 @@ import PaymentTracking from './pages/PaymentTracking';
 import DefaultedLoansReport from './pages/DefaultedLoansReport';
 import AdminReports from './pages/AdminReports';
 import TaxSummary from './pages/TaxSummary';
-import StateManagement from './pages/Admin/StateManagement';
+import StateManagement from './pages/StateManagement';
 import AccountSettings from './pages/AccountSettings';
 import ImportLoan from './pages/ImportLoan';
 import CreateCustomLoan from './pages/CreateCustomLoan';

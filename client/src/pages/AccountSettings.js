@@ -27,6 +27,14 @@ function AccountSettings() {
     deed_mailing_address: ''
   });
 
+  const [passwordData, setPasswordData] = useState({
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: ''
+  });
+  const [passwordMessage, setPasswordMessage] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+
   useEffect(() => {
     loadProfile();
     loadDeedInfo();
@@ -91,12 +99,61 @@ function AccountSettings() {
     }
   };
 
+  const handlePasswordSubmit = async (e) => {
+    e.preventDefault();
+    setSaving(true);
+    setPasswordMessage('');
+    setPasswordError('');
+
+    // Validate passwords match
+    if (passwordData.newPassword !== passwordData.confirmPassword) {
+      setPasswordError('New passwords do not match');
+      setSaving(false);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    // Validate password length
+    if (passwordData.newPassword.length < 6) {
+      setPasswordError('Password must be at least 6 characters');
+      setSaving(false);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem('token');
+      await axios.post(
+        `${process.env.REACT_APP_API_URL}/user/change-password`,
+        {
+          currentPassword: passwordData.currentPassword,
+          newPassword: passwordData.newPassword
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      
+      setPasswordMessage('✅ Password changed successfully!');
+      setPasswordData({
+        currentPassword: '',
+        newPassword: '',
+        confirmPassword: ''
+      });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } catch (err) {
+      console.error('Failed to change password:', err);
+      setPasswordError(err.response?.data?.error || 'Failed to change password');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } finally {
+      setSaving(false);
+    }
+  };
+
   const handleDeedEdit = (loan) => {
     setEditingLoan(loan.loan_id);
     
     // Auto-fill from user profile if deed info is empty
     const defaultName = loan.deed_name || `${profile.first_name} ${profile.last_name}`;
-    const defaultAddress = loan.deed_mailing_address || 
+    const defaultAddress = loan.deed_mailing_address ||
       (profile.mailing_address ? 
         `${profile.mailing_address}\n${profile.mailing_city}, ${profile.mailing_state} ${profile.mailing_zip}` 
         : '');
@@ -365,6 +422,106 @@ function AccountSettings() {
             disabled={saving}
           >
             {saving ? 'Saving...' : '💾 Save Contact Information'}
+          </button>
+        </form>
+      </div>
+
+      {/* Change Password */}
+      <div className="card">
+        <h2 style={{ marginTop: 0 }}>🔒 Change Password</h2>
+        <p style={{ color: '#666', marginBottom: '20px' }}>
+          Update your account password
+        </p>
+
+        {passwordMessage && (
+          <div style={{
+            padding: '15px',
+            backgroundColor: '#d4edda',
+            border: '1px solid #c3e6cb',
+            borderRadius: '5px',
+            color: '#155724',
+            marginBottom: '20px'
+          }}>
+            {passwordMessage}
+          </div>
+        )}
+
+        {passwordError && (
+          <div style={{
+            padding: '15px',
+            backgroundColor: '#f8d7da',
+            border: '1px solid #f5c6cb',
+            borderRadius: '5px',
+            color: '#721c24',
+            marginBottom: '20px'
+          }}>
+            {passwordError}
+          </div>
+        )}
+
+        <form onSubmit={handlePasswordSubmit}>
+          <div style={{ marginBottom: '15px' }}>
+            <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600' }}>
+              Current Password *
+            </label>
+            <input
+              type="password"
+              value={passwordData.currentPassword}
+              onChange={(e) => setPasswordData({...passwordData, currentPassword: e.target.value})}
+              required
+              style={{
+                width: '100%',
+                padding: '10px',
+                border: '2px solid var(--border-color)',
+                borderRadius: '5px'
+              }}
+            />
+          </div>
+
+          <div style={{ marginBottom: '15px' }}>
+            <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600' }}>
+              New Password *
+            </label>
+            <input
+              type="password"
+              value={passwordData.newPassword}
+              onChange={(e) => setPasswordData({...passwordData, newPassword: e.target.value})}
+              required
+              minLength="6"
+              style={{
+                width: '100%',
+                padding: '10px',
+                border: '2px solid var(--border-color)',
+                borderRadius: '5px'
+              }}
+            />
+            <small style={{ color: '#666', fontSize: '12px' }}>Minimum 6 characters</small>
+          </div>
+
+          <div style={{ marginBottom: '20px' }}>
+            <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600' }}>
+              Confirm New Password *
+            </label>
+            <input
+              type="password"
+              value={passwordData.confirmPassword}
+              onChange={(e) => setPasswordData({...passwordData, confirmPassword: e.target.value})}
+              required
+              style={{
+                width: '100%',
+                padding: '10px',
+                border: '2px solid var(--border-color)',
+                borderRadius: '5px'
+              }}
+            />
+          </div>
+
+          <button 
+            type="submit" 
+            className="btn btn-primary"
+            disabled={saving}
+          >
+            {saving ? 'Changing Password...' : '🔒 Change Password'}
           </button>
         </form>
       </div>

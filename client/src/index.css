@@ -902,7 +902,7 @@ body {
 .properties-page {
   background: var(--light-green);
   min-height: calc(100vh - 80px);
-  padding: 3rem 0;
+  padding: 3rem 20px;
 }
 
 .properties-page > h1,
@@ -912,8 +912,8 @@ body {
   max-width: 1200px;
   margin-left: auto;
   margin-right: auto;
-  padding-left: 2rem;
-  padding-right: 2rem;
+  padding-left: 0;
+  padding-right: 0;
 }
 
 .properties-page h1 {
@@ -964,12 +964,6 @@ body {
   object-fit: cover;
   display: block;
   flex-shrink: 0;
-}
-
-/* Override for placeholder images to prevent cropping text */
-.property-card img[src*="IMAGES-COMING-SOON"] {
-  object-fit: contain;
-  background: #2c5f2d;
 }
 
 /* Property Content */
@@ -1058,7 +1052,7 @@ body {
 /* Mobile Responsive */
 @media (max-width: 768px) {
   .properties-page {
-    padding: 2rem 1rem;
+    padding: 20px;
   }
   
   .properties-page h1 {

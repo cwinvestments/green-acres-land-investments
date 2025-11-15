@@ -1312,4 +1312,21 @@ For quick setup instructions, see [QUICKSTART.md](QUICKSTART.md)
 
 ---
 
+## Recent Updates - November 15, 2025
+
+### Mobile Responsive Fixes
+**Status:** In Progress
+**Documentation:** See `MOBILE-FIXES-PROGRESS.md` and `MOBILE-RESPONSIVE-CLEANUP.md`
+
+**Completed:**
+- ✅ Terms of Service modals fixed for mobile (PropertyDetail.js, Register.js)
+- ✅ Root cause analysis of border cutoff issues
+- ✅ Comprehensive refactor plan created
+
+**Outstanding:**
+- ⚠️ Property card borders cut off on mobile (Properties page, PropertyDetail page)
+- ⚠️ Need professional CSS refactor (estimated 2-3 hours)
+
+**Next Session Priority:** Follow `MOBILE-RESPONSIVE-CLEANUP.md` implementation plan - do it professionally, not with quick fixes.
+
 *This guide is a technical reference. For project status, features, and session history, see PROJECT-SUMMARY.md*

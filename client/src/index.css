@@ -312,6 +312,7 @@ body {
   transform: translateX(-50%);
   font-weight: bold;
   font-size: 0.9rem;
+  white-space: nowrap;
 }
 
 .financing-card h3 {
@@ -749,6 +750,7 @@ label:has(.required-asterisk)::after {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  white-space: nowrap;
 }
 
 .status-badge.status-active {
@@ -2002,6 +2004,7 @@ label:has(.required-asterisk)::after {
   z-index: 10;
   box-shadow: 0 2px 8px rgba(0,0,0,0.2);
   text-align: center;
+  white-space: nowrap;
 }
 
 .badge-contract {
@@ -2018,6 +2021,7 @@ label:has(.required-asterisk)::after {
   z-index: 10;
   box-shadow: 0 2px 8px rgba(0,0,0,0.2);
   text-align: center;
+  white-space: nowrap;
 }
 
 .sale-date {

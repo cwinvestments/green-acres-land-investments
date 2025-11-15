@@ -257,7 +257,7 @@ function TermsOfService() {
                 <strong>Email:</strong> <a href="mailto:GreenAcresLandInvestments@gmail.com" style={{ color: 'var(--forest-green)' }}>GreenAcresLandInvestments@gmail.com</a>
               </p>
               <p style={{ lineHeight: '1.8', marginBottom: '0.5rem' }}>
-                <strong>Phone:</strong> (555) 123-4567
+                <strong>Phone:</strong> 920.716.6107
               </p>
               <p style={{ lineHeight: '1.8' }}>
                 <strong>Green Acres Land Investments, LLC</strong>

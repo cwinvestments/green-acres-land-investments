@@ -121,7 +121,7 @@ function PrivacyPolicy() {
                 <li><strong>Opt-Out:</strong> You can opt out of marketing communications at any time</li>
               </ul>
               <p style={{ lineHeight: '1.8' }}>
-                To exercise these rights, please contact us at <a href="mailto:privacy@greenacreslandinvestments.com" style={{ color: 'var(--forest-green)' }}>privacy@greenacreslandinvestments.com</a>
+                To exercise these rights, please contact us at <a href="mailto:GreenAcresLandInvestments@gmail.com" style={{ color: 'var(--forest-green)' }}>GreenAcresLandInvestments@gmail.com</a>
               </p>
             </div>
 
@@ -175,10 +175,10 @@ function PrivacyPolicy() {
                 If you have questions or concerns about this Privacy Policy, please contact us:
               </p>
               <p style={{ lineHeight: '1.8', marginBottom: '0.5rem' }}>
-                <strong>Email:</strong> <a href="mailto:privacy@greenacreslandinvestments.com" style={{ color: 'var(--forest-green)' }}>privacy@greenacreslandinvestments.com</a>
+                <strong>Email:</strong> <a href="mailto:GreenAcresLandInvestments@gmail.com" style={{ color: 'var(--forest-green)' }}>GreenAcresLandInvestments@gmail.com</a>
               </p>
               <p style={{ lineHeight: '1.8', marginBottom: '0.5rem' }}>
-                <strong>Phone:</strong> (555) 123-4567
+                <strong>Phone:</strong> 920.716.6107
               </p>
               <p style={{ lineHeight: '1.8' }}>
                 <strong>Green Acres Land Investments, LLC</strong>

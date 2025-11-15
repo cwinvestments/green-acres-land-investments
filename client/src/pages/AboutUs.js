@@ -68,8 +68,9 @@ function AboutUs() {
               <div className="step-number">2020</div>
               <h3>The Beginning</h3>
               <p>
-                Private Property Investments was founded with a simple vision: make land ownership accessible to everyone. 
-                We saw too many people being turned away by traditional lenders and knew there had to be a better way.
+                Green Acres Land Investments, LLC (formerly Private Property Investments) was founded with a simple vision: 
+                make land ownership accessible to everyone. We saw too many people being turned away by traditional lenders 
+                and knew there had to be a better way.
               </p>
             </div>
 

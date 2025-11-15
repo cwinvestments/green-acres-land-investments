@@ -531,11 +531,11 @@ navigate('/dashboard');
         </div>
 
         <div>
-          <div style={{ background: '#e8f5e9', padding: '2rem', borderRadius: '10px', marginBottom: '2rem' }}>
-            <h2 style={{ color: '#2e7d32', marginBottom: '0.5rem' }}>
-  ${formatCurrency(property.price)}
-</h2>
-            <p style={{ color: '#666' }}>{property.acres} acres</p>
+          <div style={{ background: '#e8f5e9', padding: '2rem', borderRadius: '10px', marginBottom: '2rem', textAlign: 'center', border: '2px solid var(--forest-green)' }}>
+            <h2 style={{ color: '#2e7d32', marginBottom: '0.5rem', fontSize: '2.5rem' }}>
+              ${formatCurrency(property.price)}
+            </h2>
+            <p style={{ color: '#666', margin: 0 }}>{property.acres} acres</p>
           </div>
 
           {property.status === 'coming_soon' ? (

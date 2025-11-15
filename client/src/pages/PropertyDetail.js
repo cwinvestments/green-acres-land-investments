@@ -339,9 +339,9 @@ function PropertyDetail() {
             📷 Note: Photos shown are representative of the surrounding area and may not depict the exact parcel for sale.
           </div>
           
-          <div className="card" style={{ marginTop: '2rem' }}>
-            <h2 style={{ color: 'var(--forest-green)', marginTop: 0 }}>Property Details</h2>
-            <p style={{ marginTop: '1rem', lineHeight: '1.8', color: '#666' }}>{property.description}</p>
+          <div className="card">
+            <h2>Property Details</h2>
+            <p>{property.description}</p>
             
             <div className="property-info-grid">
               <div className="property-info-item">
@@ -473,7 +473,7 @@ function PropertyDetail() {
             {property.features && property.features.length > 0 && (
               <div style={{ marginTop: '1.5rem' }}>
                 <strong>Features:</strong>
-                <div className="property-features" style={{ marginTop: '0.5rem' }}>
+                <div className="property-features">
                   {property.features.map((feature, index) => (
                     <span key={index} className="feature-tag">{feature}</span>
                   ))}
@@ -492,36 +492,19 @@ function PropertyDetail() {
           {property.status === 'coming_soon' ? (
             <div className="calculator">
               <h3>🎉 Coming Soon!</h3>
-              <div style={{ 
-                padding: '2rem', 
-                background: 'var(--light-green)', 
-                borderRadius: '8px',
-                textAlign: 'center',
-                border: '3px solid var(--sandy-gold)'
-              }}>
-                <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📍</div>
-                <h4 style={{ color: 'var(--forest-green)', marginBottom: '1rem' }}>
-                  This Property is Coming Soon!
-                </h4>
-                <p style={{ color: '#666', marginBottom: '1.5rem', lineHeight: '1.6' }}>
+              <div className="coming-soon-container">
+                <div className="coming-soon-icon">📍</div>
+                <h4 className="coming-soon-title">This Property is Coming Soon!</h4>
+                <p className="coming-soon-text">
                   We've recently acquired this property and are currently waiting for the deed transfer to complete. 
                   This property will be available for purchase soon!
                 </p>
-                <div style={{ 
-                  padding: '1rem', 
-                  background: 'white', 
-                  borderRadius: '8px',
-                  marginBottom: '1rem'
-                }}>
-                  <div style={{ fontSize: '0.9rem', color: '#666', marginBottom: '0.5rem' }}>
-                    Estimated Price
-                  </div>
-                  <div style={{ fontSize: '2rem', fontWeight: '700', color: 'var(--forest-green)' }}>
-                    ${formatCurrency(property.price)}
-                  </div>
+                <div className="coming-soon-price-box">
+                  <div className="coming-soon-price-label">Estimated Price</div>
+                  <div className="coming-soon-price">${formatCurrency(property.price)}</div>
                 </div>
-                <p style={{ fontSize: '0.9rem', color: '#666' }}>
-                  💡 Check back soon or <a href="mailto:greenacreslandinvestments@gmail.com" style={{ color: 'var(--forest-green)' }}>contact us</a> to be notified when this property becomes available!
+                <p className="coming-soon-footer">
+                  💡 Check back soon or <a href="mailto:greenacreslandinvestments@gmail.com">contact us</a> to be notified when this property becomes available!
                 </p>
               </div>
             </div>
@@ -542,7 +525,6 @@ function PropertyDetail() {
                       step="1"
                       value={desiredPayment}
                       onChange={(e) => setDesiredPayment(e.target.value)}
-                      style={{ paddingLeft: '2.5rem' }}
                     />
                   </div>
                   <small style={{ display: 'block', color: '#666', fontSize: '0.85rem', marginTop: '0.25rem' }}>
@@ -565,7 +547,7 @@ function PropertyDetail() {
                 </div>
               </div>
 
-              {/* SELECTED PLAN SUMMARY - RIGHT AFTER INPUTS */}
+              {/* SELECTED PLAN SUMMARY */}
               {calculation && (
                 <div className="plan-summary-box">
                   <div className="plan-summary-title">Your Selected Plan:</div>
@@ -578,7 +560,7 @@ function PropertyDetail() {
                 </div>
               )}
 
-              {/* PAYMENT OPTIONS - BELOW SUMMARY */}
+              {/* PAYMENT OPTIONS */}
               <div style={{ marginTop: '1.5rem', marginBottom: '1rem' }}>
                 <h4 style={{ color: 'var(--forest-green)', marginBottom: '1rem' }}>Choose Your Down Payment Option:</h4>
                 {desiredPayment && desiredPayment >= 50 && closestOption && (() => {
@@ -691,26 +673,11 @@ function PropertyDetail() {
                 );
               })}
 
-              {/* READY TO PURCHASE SECTION - AT BOTTOM */}
+              {/* READY TO PURCHASE SECTION */}
               {calculation && (
                 <>
-                  <div style={{ 
-                    marginTop: '2rem', 
-                    padding: '1.5rem', 
-                    background: 'white',
-                    border: '3px solid var(--forest-green)',
-                    borderRadius: '12px'
-                  }}>
-                    <h4 style={{ 
-                      color: 'var(--forest-green)', 
-                      marginBottom: '1rem',
-                      fontSize: '1.3rem',
-                      textAlign: 'center',
-                      borderBottom: '2px solid var(--sandy-gold)',
-                      paddingBottom: '0.5rem'
-                    }}>
-                      Ready to Purchase?
-                    </h4>
+                  <div className="purchase-summary-container">
+                    <h4 className="purchase-summary-title">Ready to Purchase?</h4>
                     
                     <div style={{ marginBottom: '1rem' }}>
                       <div className="cost-today-box">
@@ -723,35 +690,27 @@ function PropertyDetail() {
                         </div>
                       </div>
                       
-                      <div style={{ fontWeight: '600', marginBottom: '0.75rem', color: '#333' }}>Your Selected Plan:</div>
-                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', fontSize: '1rem' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                          <span style={{ color: '#666' }}>Down Payment:</span>
-                          <strong style={{ color: 'var(--forest-green)' }}>${formatCurrency(calculation.downPayment)}</strong>
+                      <div className="purchase-plan-details">Your Selected Plan:</div>
+                      <div className="purchase-plan-grid">
+                        <div className="purchase-plan-item">
+                          <span className="purchase-plan-label">Down Payment:</span>
+                          <strong className="purchase-plan-value">${formatCurrency(calculation.downPayment)}</strong>
                         </div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                          <span style={{ color: '#666' }}>Processing Fee:</span>
+                        <div className="purchase-plan-item">
+                          <span className="purchase-plan-label">Processing Fee:</span>
                           <strong>$99</strong>
                         </div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                          <span style={{ color: '#666' }}>Monthly Payment:</span>
-                          <strong style={{ color: 'var(--forest-green)' }}>${formatCurrency(calculation.monthlyPayment)}</strong>
+                        <div className="purchase-plan-item">
+                          <span className="purchase-plan-label">Monthly Payment:</span>
+                          <strong className="purchase-plan-value">${formatCurrency(calculation.monthlyPayment)}</strong>
                         </div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                          <span style={{ color: '#666' }}>Total Cost (Includes Loan Interest):</span>
+                        <div className="purchase-plan-item">
+                          <span className="purchase-plan-label">Total Cost (Includes Loan Interest):</span>
                           <strong>${formatCurrency(calculation.totalAmount)}</strong>
                         </div>
                       </div>
                       
-                      <div style={{ 
-                        marginTop: '1rem', 
-                        padding: '0.75rem', 
-                        background: 'var(--light-green)', 
-                        borderRadius: '5px',
-                        textAlign: 'center',
-                        fontSize: '0.9rem',
-                        color: '#666'
-                      }}>
+                      <div className="payment-schedule-note">
                         📅 <strong>{calculation.termMonths} monthly payments</strong> of ${formatCurrency(calculation.monthlyPayment)}
                       </div>
                     </div>

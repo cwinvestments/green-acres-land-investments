@@ -50,8 +50,8 @@ function ContactUs() {
               <div className="feature-icon">📧</div>
               <h3>Email</h3>
               <p style={{ wordBreak: 'break-word' }}>
-                <a href="mailto:info@greenacreslandinvestments.com" style={{ color: 'var(--forest-green)' }}>
-                  info@greenacreslandinvestments.com
+                <a href="mailto:GreenAcresLandInvestments@gmail.com" style={{ color: 'var(--forest-green)' }}>
+                  GreenAcresLandInvestments@gmail.com
                 </a>
               </p>
             </div>
@@ -60,8 +60,8 @@ function ContactUs() {
               <div className="feature-icon">📞</div>
               <h3>Phone</h3>
               <p>
-                <a href="tel:+15551234567" style={{ color: 'var(--forest-green)' }}>
-                  (555) 123-4567
+                <a href="tel:+19207166107" style={{ color: 'var(--forest-green)' }}>
+                  920.716.6107
                 </a>
               </p>
               <p style={{ fontSize: '0.9rem', color: '#666' }}>Mon-Fri 9AM-5PM CST</p>

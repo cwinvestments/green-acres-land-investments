@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import Navbar from './components/Navbar';
+import Footer from './components/Footer';
 import Home from './pages/Home';
 import Properties from './pages/Properties';
 import PropertyDetail from './pages/PropertyDetail';
@@ -100,6 +101,7 @@ function AppContent() {
             <Route path="/admin/loans/import" element={<ImportLoan />} />
             <Route path="/admin/loans/create-custom" element={<CreateCustomLoan />} />
           </Routes>
+	  <Footer />
         </div>
   );
 }

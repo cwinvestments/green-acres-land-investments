@@ -68,7 +68,7 @@ function AboutUs() {
               <div className="step-number">2020</div>
               <h3>The Beginning</h3>
               <p>
-                Green Acres Land Investments, LLC was founded with a simple vision: make land ownership accessible to everyone. 
+                Private Property Investments was founded with a simple vision: make land ownership accessible to everyone. 
                 We saw too many people being turned away by traditional lenders and knew there had to be a better way.
               </p>
             </div>
@@ -86,17 +86,17 @@ function AboutUs() {
               <div className="step-number">2023</div>
               <h3>Digital Innovation</h3>
               <p>
-                We launched our online platform, making it easier than ever to browse properties, manage payments, 
-                and track your land ownership journey from anywhere.
+                We began developing our proprietary land financing platform, focusing on creating a seamless 
+                online experience for property management and customer service.
               </p>
             </div>
 
             <div className="step">
-              <div className="step-number">Today</div>
-              <h3>Your Partner in Land Ownership</h3>
+              <div className="step-number">2025</div>
+              <h3>Green Acres Land Investments, LLC</h3>
               <p>
-                We continue to help families achieve their dreams of land ownership with flexible financing, 
-                transparent pricing, and dedicated support every step of the way.
+                We rebranded as Green Acres Land Investments, LLC and launched our new website and proprietary system, 
+                making it easier than ever to browse properties, manage payments, and track your land ownership journey online.
               </p>
             </div>
           </div>
@@ -138,13 +138,7 @@ function AboutUs() {
               <h3>Clear Contracts</h3>
               <p>Easy-to-understand contracts for deed with no legal jargon. You'll know exactly what you're agreeing to.</p>
             </div>
-
-            <div className="feature-card">
-              <div className="feature-icon">🎓</div>
-              <h3>Education</h3>
-              <p>We help you understand land ownership, from property taxes to development potential.</p>
-            </div>
-          </div>
+	  </div>
         </div>
       </section>
 

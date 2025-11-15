@@ -185,7 +185,7 @@ function Dashboard() {
             return (
               <div key={loan.id} className="loan-card">
                 {/* Contract Section */}
-                {loan.contract_status === 'pending' && (
+                {loan.contract_status === 'pending_client_signature' && (
                   <div style={{
                     backgroundColor: '#fff3cd',
                     border: '2px solid #ffc107',

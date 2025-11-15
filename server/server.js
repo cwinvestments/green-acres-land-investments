@@ -1627,9 +1627,11 @@ app.post('/api/admin/loans/:id/record-payment', authenticateAdmin, async (req, r
     const newBalance = Math.max(0, loan.balance_remaining - loanPayment);
     const status = newBalance === 0 ? 'paid_off' : 'active';
 
-    // Calculate next payment due date (30 days from payment date)
-    const nextDueDate = new Date(payment_date);
-    nextDueDate.setDate(nextDueDate.getDate() + 30);
+    // Calculate next payment due date (respects payment_due_day: 1st or 15th)
+    const dueDay = loan.payment_due_day || 1;
+    let nextDueDate = new Date(payment_date);
+    nextDueDate.setMonth(nextDueDate.getMonth() + 1);
+    nextDueDate.setDate(dueDay);
 
     // Start transaction
     await db.pool.query('BEGIN');

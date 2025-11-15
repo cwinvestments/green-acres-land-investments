@@ -19,6 +19,7 @@ function CreateCustomLoan() {
     interestRate: '18',
     monthlyPayment: '50',
     paymentDueDay: '1',
+    paymentMethod: 'cash',
     notes: ''
   });
   
@@ -278,16 +279,35 @@ function CreateCustomLoan() {
               <small style={{ color: '#666', fontSize: '12px' }}>Minimum $50</small>
             </div>
             
-            <div style={{ marginBottom: '15px' }}>
-              <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600' }}>Payment Due Day</label>
-              <select
-                value={formData.paymentDueDay}
-                onChange={(e) => setFormData({ ...formData, paymentDueDay: e.target.value })}
-                style={{ width: '100%', padding: '10px', borderRadius: '4px', border: '1px solid #ddd' }}
-              >
-                <option value="1">1st of month</option>
-                <option value="15">15th of month</option>
-              </select>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginBottom: '15px' }}>
+              <div>
+                <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600' }}>Payment Due Day</label>
+                <select
+                  value={formData.paymentDueDay}
+                  onChange={(e) => setFormData({ ...formData, paymentDueDay: e.target.value })}
+                  style={{ width: '100%', padding: '10px', borderRadius: '4px', border: '1px solid #ddd' }}
+                >
+                  <option value="1">1st of month</option>
+                  <option value="15">15th of month</option>
+                </select>
+              </div>
+              
+              <div>
+                <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600' }}>Payment Method</label>
+                <select
+                  value={formData.paymentMethod}
+                  onChange={(e) => setFormData({ ...formData, paymentMethod: e.target.value })}
+                  style={{ width: '100%', padding: '10px', borderRadius: '4px', border: '1px solid #ddd' }}
+                >
+                  <option value="cash">Cash</option>
+                  <option value="check">Check</option>
+                  <option value="venmo">Venmo</option>
+                  <option value="zelle">Zelle</option>
+                  <option value="wire_transfer">Wire Transfer</option>
+                  <option value="money_order">Money Order</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
             </div>
             
             <div>

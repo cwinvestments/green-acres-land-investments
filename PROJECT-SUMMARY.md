@@ -58,7 +58,10 @@
 ### Customer Portal
 - ✅ User registration with reCAPTCHA v3
 - ✅ Secure authentication (JWT tokens)
-- ✅ Dashboard showing all active loans
+- ✅ **Dashboard showing active loans only:**
+  - Defaulted loans hidden from customer view
+  - Only active and paid-off loans displayed
+  - Clean UX while admin retains full access
 - ✅ Payment history viewing
 - ✅ **Account Settings page:**
   - Update contact information (phone, email)
@@ -84,11 +87,17 @@
   - Processing fee customization
 - ✅ Payment due day selection (1st or 15th)
 - ✅ Balance tracking and payment application
-- ✅ Late fee automation (7-day grace period, $75 fee)
+- ✅ Late fee automation (7-day grace period, $75 fee - standardized via database)
 - ✅ Notice system (default/cure notices with 14-day cure period)
-- ✅ Default tracking with recovery costs
+- ✅ **Default loan management:**
+  - Default loan modal with cure amount calculation
+  - Recovery cost tracking
+  - Default notes
+  - Property lifecycle analysis across multiple customers
 - ✅ Alert system with toggle (enable/disable per loan)
 - ✅ Deed type selection (Special Warranty vs Quitclaim)
+- ✅ **Delete loan functionality** (admin cleanup tool)
+- ✅ ROI % display (profit column removed, defaulted loans show "—")
 
 ### Contract System
 - ✅ **Dynamic contract generation from template:**
@@ -119,7 +128,7 @@
   - Square processing fees (2.9% + $0.30)
   - Convenience fees ($5.00)
 - ✅ **Manual payment recording:**
-  - Cash, check, Venmo, Zelle, wire transfer
+  - Payment methods: Cash, Check, Venmo, Zelle, Wire Transfer, Money Order, Other
   - Full breakdown calculation
   - Transaction ID and notes tracking
   - Balance update automation
@@ -154,7 +163,13 @@
   - HOA fee tracking by property
   - Monthly revenue trends (12-month view)
   - Outstanding balances report
-  - Defaulted loans report with recovery analysis
+- ✅ **Defaulted Loans Report:**
+  - Summary cards (total defaulted, recovery costs, net recovery, balance lost)
+  - Property lifecycle tracking across multiple customers
+  - Customer history per property with resale tracking
+  - Financial analysis (default rate, recovery rate, average recovery cost)
+  - Property status badges with profit/loss indicators
+  - Enhanced table showing acquisition cost, total paid, balance lost, recovery costs, net recovery
 - ✅ **Tax Summary Report for CPA:**
   - Annual summary with monthly breakdown
   - Quarterly summaries (Q1-Q4)
@@ -186,6 +201,29 @@
   - Notes field for special circumstances
 
 ## Recent Updates (November 2025)
+
+### November 14, 2025 - Part 2: Defaulted Loans & Database Fixes
+- ✅ **Defaulted Loans Report System:**
+  - Summary cards showing total defaulted, recovery costs, net recovery, balance lost
+  - Property lifecycle tracking across multiple customers
+  - Customer history per property with resale tracking
+  - Financial analysis (default rate, recovery rate, average recovery cost)
+  - Property status badges with profit/loss indicators
+- ✅ **Admin Loan Management Enhancements:**
+  - Default loan modal with cure amount, recovery costs, notes
+  - Manual payment recording with expanded payment methods (Cash, Check, Venmo, Zelle, Wire, Money Order, Other)
+  - Delete loan functionality for admin cleanup
+  - Profit column removed - shows only ROI % (defaulted loans show "—")
+- ✅ **Customer Dashboard Update:**
+  - Defaulted loans hidden from customer view
+  - Only active and paid-off loans displayed
+  - Clean UX while admin retains full access
+- ✅ **Database Standardization:**
+  - Late fee fixed to $75 via SQL (database default + all existing loans updated)
+  - Property lifecycle accounting corrected for accurate profit/loss tracking
+- ⚠️ **Outstanding Issues:**
+  - Next payment date calculation needs fix (must respect 1st/15th, not +30 days)
+  - Add payment method dropdown to Create Custom Loan page
 
 ### November 14, 2025 - Mobile Responsiveness Overhaul
 - ✅ All admin pages now fully responsive on mobile devices
@@ -354,6 +392,18 @@
 
 ## Known Issues & Solutions
 
+### Payment Date Calculation ⚠️ CRITICAL
+- **Issue:** Manual payments advance next payment date by +30 days instead of respecting payment_due_day (1st/15th)
+- **Impact:** Payment schedules don't align with customer's chosen payment day
+- **Fix Needed:** Update server.js manual payment logic to calculate next due date based on payment_due_day field
+- **Priority:** High - affects payment scheduling accuracy
+
+### Create Custom Loan - Payment Method ⚠️ TO DO
+- **Issue:** Payment method dropdown missing from Create Custom Loan page
+- **Impact:** Cannot record payment method when creating custom loans
+- **Fix Needed:** Add payment method dropdown matching manual payment recording options
+- **Priority:** Medium - workflow improvement
+
 ### VS Code Caching
 - **Issue:** File changes not reflecting properly during critical edits
 - **Solution:** Use Notepad for important file modifications
@@ -431,6 +481,6 @@ C:\Projects\GreenAcres\
 
 ---
 
-**Version:** 2.2
-**Last Updated:** November 14, 2025
+**Version:** 2.3
+**Last Updated:** November 14, 2025 (Part 2)
 **Status:** Production - All core features complete and operational

@@ -24,6 +24,10 @@ import StateManagement from './pages/StateManagement';
 import AccountSettings from './pages/AccountSettings';
 import ImportLoan from './pages/ImportLoan';
 import CreateCustomLoan from './pages/CreateCustomLoan';
+import AboutUs from './pages/AboutUs';
+import ContactUs from './pages/ContactUs';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import TermsOfService from './pages/TermsOfService';
 // Protected route component
 function ProtectedRoute({ children }) {
   const { isAuthenticated } = useAuth();
@@ -45,6 +49,10 @@ function AppContent() {
             <Route path="/properties/:id" element={<PropertyDetail />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+	    <Route path="/about" element={<AboutUs />} />
+            <Route path="/contact" element={<ContactUs />} />
+            <Route path="/privacy" element={<PrivacyPolicy />} />
+            <Route path="/terms" element={<TermsOfService />} /> 
             <Route 
               path="/dashboard" 
               element={

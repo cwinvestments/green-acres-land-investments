@@ -31,6 +31,8 @@ function Navbar() {
           <Link to="/" className="nav-link">Home</Link>
           <Link to="/properties" className="nav-link">Properties</Link>
           <Link to="/sold-properties" className="nav-link">Recent Sales</Link>
+          <Link to="/about" className="nav-link">About</Link>
+          <Link to="/contact" className="nav-link">Contact</Link>
           
           {user ? (
             <>

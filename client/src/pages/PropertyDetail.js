@@ -34,13 +34,13 @@ function PropertyDetail() {
   const [calculation, setCalculation] = useState(null);
   const [desiredPayment, setDesiredPayment] = useState('');
   const [billingInfo, setBillingInfo] = useState({
-  name: '',
-  phone: '',
-  address: '',
-  city: '',
-  state: '',
-  zip: ''
-});
+    name: '',
+    phone: '',
+    address: '',
+    city: '',
+    state: '',
+    zip: ''
+  });
   const [deedInfo, setDeedInfo] = useState({
     deedName: '',
     deedMailingAddress: ''
@@ -49,52 +49,53 @@ function PropertyDetail() {
   const [dueDiligenceAgreed, setDueDiligenceAgreed] = useState(false);
   const [showTermsModal, setShowTermsModal] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
+  
   // Find closest payment option to desired payment
-const findClosestOption = () => {
-  if (!desiredPayment || desiredPayment < 50) return null;
-  
-  const desired = parseFloat(desiredPayment);
-  const options = [];
-  
-  // Calculate $99 down payment
-  const principal99 = (property.price - 99) + 99;
-  const monthlyRate99 = 0.18 / 12;
-  const payment99 = Math.max(
-    principal99 * (monthlyRate99 * Math.pow(1 + monthlyRate99, termMonths)) / (Math.pow(1 + monthlyRate99, termMonths) - 1),
-    50
-  );
-  options.push({ option: '99', payment: payment99 });
-  
-  // Calculate other options
-  ['20', '25', '35', '50'].forEach(opt => {
-    const dpOption = parseFloat(opt);
-    const downPayment = property.price * (dpOption / 100);
-    const interestRate = dpOption === 20 ? 12 : 8;
-    const principal = (property.price - downPayment) + 99;
-    const monthlyRate = interestRate / 100 / 12;
-    const payment = Math.max(
-      principal * (monthlyRate * Math.pow(1 + monthlyRate, termMonths)) / (Math.pow(1 + monthlyRate, termMonths) - 1),
+  const findClosestOption = () => {
+    if (!desiredPayment || desiredPayment < 50) return null;
+    
+    const desired = parseFloat(desiredPayment);
+    const options = [];
+    
+    // Calculate $99 down payment
+    const principal99 = (property.price - 99) + 99;
+    const monthlyRate99 = 0.18 / 12;
+    const payment99 = Math.max(
+      principal99 * (monthlyRate99 * Math.pow(1 + monthlyRate99, termMonths)) / (Math.pow(1 + monthlyRate99, termMonths) - 1),
       50
     );
-    options.push({ option: opt, payment });
-  });
-  
-  // Find closest
-  let closest = options[0];
-  let minDiff = Math.abs(options[0].payment - desired);
-  
-  options.forEach(opt => {
-    const diff = Math.abs(opt.payment - desired);
-    if (diff < minDiff) {
-      minDiff = diff;
-      closest = opt;
-    }
-  });
-  
-  return closest.option;
-};
+    options.push({ option: '99', payment: payment99 });
+    
+    // Calculate other options
+    ['20', '25', '35', '50'].forEach(opt => {
+      const dpOption = parseFloat(opt);
+      const downPayment = property.price * (dpOption / 100);
+      const interestRate = dpOption === 20 ? 12 : 8;
+      const principal = (property.price - downPayment) + 99;
+      const monthlyRate = interestRate / 100 / 12;
+      const payment = Math.max(
+        principal * (monthlyRate * Math.pow(1 + monthlyRate, termMonths)) / (Math.pow(1 + monthlyRate, termMonths) - 1),
+        50
+      );
+      options.push({ option: opt, payment });
+    });
+    
+    // Find closest
+    let closest = options[0];
+    let minDiff = Math.abs(options[0].payment - desired);
+    
+    options.forEach(opt => {
+      const diff = Math.abs(opt.payment - desired);
+      if (diff < minDiff) {
+        minDiff = diff;
+        closest = opt;
+      }
+    });
+    
+    return closest.option;
+  };
 
-const closestOption = findClosestOption();
+  const closestOption = findClosestOption();
   
   // Purchase state
   const [purchasing, setPurchasing] = useState(false);
@@ -254,7 +255,7 @@ const closestOption = findClosestOption();
         });
 
         alert('✅ Purchase Successful!\n\nYour property purchase has been completed and your loan has been created.\n\nRedirecting to your dashboard...');
-navigate('/dashboard');
+        navigate('/dashboard');
       } else {
         setPurchaseError(result.errors?.[0]?.message || 'Payment failed');
       }
@@ -297,22 +298,12 @@ navigate('/dashboard');
                 src={getCloudinaryTransform(images[selectedImageIndex].url, 800, 400)}
                 alt={images[selectedImageIndex].caption || property.title}
                 loading="eager"
-                style={{
-                  width: '100%',
-                  height: '400px',
-                  objectFit: 'cover',
-                  borderRadius: '10px',
-                  marginBottom: '1rem'
-                }}
+                className="property-main-image"
               />
               
               {/* Thumbnail Gallery */}
               {images.length > 1 && (
-                <div style={{ 
-                  display: 'grid', 
-                  gridTemplateColumns: 'repeat(auto-fill, minmax(80px, 1fr))', 
-                  gap: '10px' 
-                }}>
+                <div className="property-thumbnail-grid">
                   {images.map((image, index) => (
                     <img
                       key={image.id}
@@ -320,16 +311,7 @@ navigate('/dashboard');
                       alt={image.caption || `View ${index + 1}`}
                       onClick={() => setSelectedImageIndex(index)}
                       loading="lazy"
-                      style={{
-                        width: '100%',
-                        height: '80px',
-                        objectFit: 'cover',
-                        borderRadius: '5px',
-                        cursor: 'pointer',
-                        border: selectedImageIndex === index ? '3px solid var(--forest-green)' : '2px solid #ddd',
-                        opacity: selectedImageIndex === index ? 1 : 0.6,
-                        transition: 'all 0.3s ease'
-                      }}
+                      className={`property-thumbnail ${selectedImageIndex === index ? 'selected' : ''}`}
                     />
                   ))}
                 </div>
@@ -337,13 +319,7 @@ navigate('/dashboard');
               
               {/* Caption */}
               {images[selectedImageIndex].caption && (
-                <p style={{ 
-                  textAlign: 'center', 
-                  color: '#666', 
-                  fontSize: '0.9rem', 
-                  marginTop: '0.5rem',
-                  fontStyle: 'italic'
-                }}>
+                <p className="image-caption">
                   {images[selectedImageIndex].caption}
                 </p>
               )}
@@ -353,81 +329,58 @@ navigate('/dashboard');
               src={getCloudinaryTransform("https://res.cloudinary.com/dxd4ef2tc/image/upload/IMAGES-COMING-SOON_tbspdc.png", 800, 400)}
               alt="Images Coming Soon"
               loading="lazy"
-              style={{
-                width: '100%',
-                height: '400px',
-                objectFit: 'contain',
-                borderRadius: '10px',
-                background: '#f5f5f5',
-                marginBottom: '1rem'
-              }}
+              className="property-main-image"
+              style={{ objectFit: 'contain', background: '#f5f5f5' }}
             />
           )}
           
           {/* Photo Disclaimer */}
-          <div style={{
-            padding: '12px 15px',
-            backgroundColor: '#fff3cd',
-            border: '2px solid #ffc107',
-            borderRadius: '8px',
-            marginBottom: '1.5rem',
-            textAlign: 'center'
-          }}>
-            <span style={{ fontSize: '14px', color: '#856404', fontStyle: 'italic' }}>
-              📷 Note: Photos shown are representative of the surrounding area and may not depict the exact parcel for sale.
-            </span>
+          <div className="photo-disclaimer">
+            📷 Note: Photos shown are representative of the surrounding area and may not depict the exact parcel for sale.
           </div>
           
           <div className="card" style={{ marginTop: '2rem' }}>
             <h2 style={{ color: 'var(--forest-green)', marginTop: 0 }}>Property Details</h2>
             <p style={{ marginTop: '1rem', lineHeight: '1.8', color: '#666' }}>{property.description}</p>
             
-            <div style={{ 
-              marginTop: '1.5rem', 
-              display: 'grid', 
-              gridTemplateColumns: '1fr 1fr',
-              gap: '1rem',
-              padding: '1rem',
-              background: 'var(--light-green)',
-              borderRadius: '8px'
-            }}>
-              <div style={{ display: 'flex', flexDirection: 'column' }}>
-                <span style={{ fontSize: '0.85rem', color: '#666', marginBottom: '0.25rem' }}>Location</span>
-                <strong style={{ color: 'var(--forest-green)' }}>{property.location}</strong>
+            <div className="property-info-grid">
+              <div className="property-info-item">
+                <span className="property-info-label">Location</span>
+                <strong className="property-info-value">{property.location}</strong>
               </div>
-              <div style={{ display: 'flex', flexDirection: 'column' }}>
-                <span style={{ fontSize: '0.85rem', color: '#666', marginBottom: '0.25rem' }}>County</span>
-                <strong style={{ color: 'var(--forest-green)' }}>{property.county}</strong>
+              <div className="property-info-item">
+                <span className="property-info-label">County</span>
+                <strong className="property-info-value">{property.county}</strong>
               </div>
-              <div style={{ display: 'flex', flexDirection: 'column' }}>
-                <span style={{ fontSize: '0.85rem', color: '#666', marginBottom: '0.25rem' }}>State</span>
-                <strong style={{ color: 'var(--forest-green)' }}>{property.state}</strong>
+              <div className="property-info-item">
+                <span className="property-info-label">State</span>
+                <strong className="property-info-value">{property.state}</strong>
               </div>
-              <div style={{ display: 'flex', flexDirection: 'column' }}>
-                <span style={{ fontSize: '0.85rem', color: '#666', marginBottom: '0.25rem' }}>Acres</span>
-                <strong style={{ color: 'var(--forest-green)' }}>{property.acres}</strong>
+              <div className="property-info-item">
+                <span className="property-info-label">Acres</span>
+                <strong className="property-info-value">{property.acres}</strong>
               </div>
               {property.annual_tax_amount && (
-                <div style={{ display: 'flex', flexDirection: 'column' }}>
-                  <span style={{ fontSize: '0.85rem', color: '#666', marginBottom: '0.25rem' }}>Annual Property Tax</span>
-                  <strong style={{ color: 'var(--forest-green)' }}>${formatCurrency(property.annual_tax_amount)}</strong>
+                <div className="property-info-item">
+                  <span className="property-info-label">Annual Property Tax</span>
+                  <strong className="property-info-value">${formatCurrency(property.annual_tax_amount)}</strong>
                 </div>
               )}
               {property.monthly_hoa_fee && (
-                <div style={{ display: 'flex', flexDirection: 'column' }}>
-                  <span style={{ fontSize: '0.85rem', color: '#666', marginBottom: '0.25rem' }}>Monthly HOA Fee</span>
-                  <strong style={{ color: 'var(--forest-green)' }}>${formatCurrency(property.monthly_hoa_fee)}</strong>
+                <div className="property-info-item">
+                  <span className="property-info-label">Monthly HOA Fee</span>
+                  <strong className="property-info-value">${formatCurrency(property.monthly_hoa_fee)}</strong>
                 </div>
               )}
               {property.apn && (
-                <div style={{ display: 'flex', flexDirection: 'column' }}>
-                  <span style={{ fontSize: '0.85rem', color: '#666', marginBottom: '0.25rem' }}>APN</span>
-                  <strong style={{ color: 'var(--forest-green)' }}>{property.apn}</strong>
+                <div className="property-info-item">
+                  <span className="property-info-label">APN</span>
+                  <strong className="property-info-value">{property.apn}</strong>
                 </div>
               )}
             </div>
 
-{/* GPS Coordinates Section */}
+            {/* GPS Coordinates Section */}
             {property.coordinates && (() => {
               try {
                 const coords = JSON.parse(property.coordinates);
@@ -531,11 +484,9 @@ navigate('/dashboard');
         </div>
 
         <div>
-          <div style={{ background: '#e8f5e9', padding: '2rem', borderRadius: '10px', marginBottom: '2rem', textAlign: 'center', border: '2px solid var(--forest-green)' }}>
-            <h2 style={{ color: '#2e7d32', marginBottom: '0.5rem', fontSize: '2.5rem' }}>
-              ${formatCurrency(property.price)}
-            </h2>
-            <p style={{ color: '#666', margin: 0 }}>{property.acres} acres</p>
+          <div className="price-box">
+            <h2>${formatCurrency(property.price)}</h2>
+            <p>{property.acres} acres</p>
           </div>
 
           {property.status === 'coming_soon' ? (
@@ -576,692 +527,511 @@ navigate('/dashboard');
             </div>
           ) : (
             <div className="calculator">
-  <h3>💰 Find Your Perfect Payment Plan</h3>
-  
-  {/* INPUTS AT TOP */}
-  <div className="calculator-options">
-    <div>
-      <label>What monthly payment works for you? (Optional)</label>
-      <div className="amount-input-group">
-        <span className="currency-symbol">$</span>
-        <input
-  type="number"
-  placeholder="150"
-  min="50"
-  step="1"
-  value={desiredPayment}
-  onChange={(e) => setDesiredPayment(e.target.value)}
-  style={{ paddingLeft: '2.5rem' }}
-/>
-      </div>
-      <small style={{ display: 'block', color: '#666', fontSize: '0.85rem', marginTop: '0.25rem' }}>
-        Minimum $50/month • Enter your ideal payment to see which option fits best
-      </small>
-    </div>
-
-    <div>
-      <label>Loan Term:</label>
-      <select 
-        value={termMonths}
-        onChange={(e) => setTermMonths(parseInt(e.target.value))}
-      >
-        <option value="12">1 Year</option>
-        <option value="24">2 Years</option>
-        <option value="36">3 Years</option>
-        <option value="48">4 Years</option>
-        <option value="60">5 Years</option>
-      </select>
-    </div>
-  </div>
-
-  {/* SELECTED PLAN SUMMARY - RIGHT AFTER INPUTS */}
-  {calculation && (
-    <div style={{ marginTop: '1.5rem', padding: '1rem', background: 'var(--light-green)', borderRadius: '8px', borderLeft: '4px solid var(--forest-green)' }}>
-      <div style={{ fontWeight: '600', marginBottom: '0.5rem' }}>Your Selected Plan:</div>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', fontSize: '0.9rem' }}>
-        <div>Down Payment: ${formatCurrency(calculation.downPayment)}</div>
-        <div>Processing Fee: $99</div>
-        <div>Monthly Payment: ${formatCurrency(calculation.monthlyPayment)}</div>
-        <div>Total Cost (Includes Loan Interest): ${formatCurrency(calculation.totalAmount)}</div>
-      </div>
-    </div>
-  )}
-
-  {/* PAYMENT OPTIONS - BELOW SUMMARY */}
-  <div style={{ marginTop: '1.5rem', marginBottom: '1rem' }}>
-  <h4 style={{ color: 'var(--forest-green)', marginBottom: '1rem' }}>Choose Your Down Payment Option:</h4>
-  {desiredPayment && desiredPayment >= 50 && closestOption && (() => {
-  // Find the actual payment for closest option
-  let closestPayment;
-  if (closestOption === '99') {
-    const principal99 = (property.price - 99) + 99;
-    const monthlyRate99 = 0.18 / 12;
-    closestPayment = Math.max(
-      principal99 * (monthlyRate99 * Math.pow(1 + monthlyRate99, termMonths)) / (Math.pow(1 + monthlyRate99, termMonths) - 1),
-      50
-    );
-  } else {
-    const dpOption = parseFloat(closestOption);
-    const downPayment = property.price * (dpOption / 100);
-    const interestRate = dpOption === 20 ? 12 : 8;
-    const principal = (property.price - downPayment) + 99;
-    const monthlyRate = interestRate / 100 / 12;
-    closestPayment = Math.max(
-      principal * (monthlyRate * Math.pow(1 + monthlyRate, termMonths)) / (Math.pow(1 + monthlyRate, termMonths) - 1),
-      50
-    );
-  }
-  
-  const difference = Math.abs(parseFloat(desiredPayment) - closestPayment);
-  const isGoodMatch = difference <= 30;
-  const isTooLow = parseFloat(desiredPayment) < closestPayment;
-  
-  if (isGoodMatch) {
-    return (
-      <div style={{ 
-        padding: '0.75rem', 
-        background: '#d4edda', 
-        border: '1px solid #c3e6cb',
-        borderRadius: '5px',
-        color: '#155724',
-        marginBottom: '1rem'
-      }}>
-        ✓ The <strong>{closestOption === '99' ? '$99 Down' : `${closestOption}% Down`}</strong> option is closest to your ${formatCurrency(desiredPayment)}/month goal!
-      </div>
-    );
-  } else {
-    return (
-      <div style={{ 
-        padding: '0.75rem', 
-        background: '#fff3cd', 
-        border: '1px solid #ffc107',
-        borderRadius: '5px',
-        color: '#856404',
-        marginBottom: '1rem'
-      }}>
-        ⚠️ Your desired payment of ${formatCurrency(desiredPayment)}/month is {isTooLow ? 'lower' : 'higher'} than our available options. 
-        The closest we can offer is <strong>${formatCurrency(closestPayment)}/month</strong> with {closestOption === '99' ? '$99 Down' : `${closestOption}% Down`}.
-        {isTooLow && termMonths < 60 && <div style={{ marginTop: '0.5rem' }}>💡 Try selecting a longer loan term to lower your monthly payment!</div>}
-        {!isTooLow && termMonths > 12 && <div style={{ marginTop: '0.5rem' }}>💡 Try selecting a shorter loan term or you may be able to pay off early with no penalty!</div>}
-      </div>
-    );
-  }
-})()}
-</div>
-
-  {/* $99 Down Option */}
-  <div 
-    className={`payment-option ${downPaymentOption === '99' ? 'selected' : ''}`}
-    onClick={() => setDownPaymentOption('99')}
-    style={{
-  padding: '1rem',
-  marginBottom: '0.75rem',
-  border: '2px solid',
-  borderColor: downPaymentOption === '99' ? 'var(--forest-green)' : 'var(--border-color)',
-  borderRadius: '8px',
-  cursor: 'pointer',
-  background: downPaymentOption === '99' ? 'var(--light-green)' : 'white',
-  transition: 'all 0.3s ease',
-  boxShadow: closestOption === '99' && downPaymentOption !== '99' ? '0 0 20px rgba(44, 95, 45, 0.6), 0 0 40px rgba(44, 95, 45, 0.3)' : 'none'
-}}
-  >
-    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-      <div>
-        <div style={{ fontWeight: '600', color: 'var(--forest-green)', fontSize: '1.1rem' }}>
-          $99 Down Payment
-          <span style={{ 
-            background: 'var(--sandy-gold)', 
-            color: 'white', 
-            padding: '0.2rem 0.5rem', 
-            borderRadius: '12px', 
-            fontSize: '0.75rem',
-            marginLeft: '0.5rem'
-          }}>MOST POPULAR</span>
-        </div>
-        <div style={{ color: '#666', fontSize: '0.9rem', marginTop: '0.25rem' }}>18% APR</div>
-      </div>
-      <div style={{ textAlign: 'right' }}>
-        <div style={{ fontSize: '1.5rem', fontWeight: '700', color: 'var(--forest-green)' }}>
-          {calculation && calculation.downPaymentPercentage === 99 
-            ? `$${formatCurrency(calculation.monthlyPayment)}`
-            : `$${formatCurrency((() => {
-                const principal = (property.price - 99) + 99;
-                const monthlyRate = 0.18 / 12;
-                let payment = principal * (monthlyRate * Math.pow(1 + monthlyRate, termMonths)) / (Math.pow(1 + monthlyRate, termMonths) - 1);
-                return Math.max(payment, 50);
-              })())}`
-          }
-        </div>
-        <div style={{ fontSize: '0.85rem', color: '#666' }}>/month</div>
-      </div>
-    </div>
-  </div>
-
-  {/* Other Options */}
-  {['20', '25', '35', '50'].map(option => {
-    const dpOption = parseFloat(option);
-    const downPayment = (property.price * (dpOption / 100));
-    const interestRate = dpOption === 20 ? 12 : 8;
-    const principal = (property.price - downPayment) + 99;
-    const monthlyRate = interestRate / 100 / 12;
-    let monthlyPayment = principal * (monthlyRate * Math.pow(1 + monthlyRate, termMonths)) 
-      / (Math.pow(1 + monthlyRate, termMonths) - 1);
-    monthlyPayment = Math.max(monthlyPayment, 50);
-    
-    return (
-      <div 
-        key={option}
-        className={`payment-option ${downPaymentOption === option ? 'selected' : ''}`}
-        onClick={() => setDownPaymentOption(option)}
-        style={{
-  padding: '1rem',
-  marginBottom: '0.75rem',
-  border: '2px solid',
-  borderColor: downPaymentOption === option ? 'var(--forest-green)' : 'var(--border-color)',
-  borderRadius: '8px',
-  cursor: 'pointer',
-  background: downPaymentOption === option ? 'var(--light-green)' : 'white',
-  transition: 'all 0.3s ease',
-  boxShadow: closestOption === option && downPaymentOption !== option ? '0 0 15px rgba(44, 95, 45, 0.4)' : 'none'
-}}
-      >
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div>
-            <div style={{ fontWeight: '600', color: 'var(--forest-green)', fontSize: '1.1rem' }}>
-              {option}% Down (${formatCurrency(downPayment)})
-            </div>
-            <div style={{ color: '#666', fontSize: '0.9rem', marginTop: '0.25rem' }}>{interestRate}% APR</div>
-          </div>
-          <div style={{ textAlign: 'right' }}>
-            <div style={{ fontSize: '1.5rem', fontWeight: '700', color: 'var(--forest-green)' }}>
-              ${formatCurrency(monthlyPayment)}
-            </div>
-            <div style={{ fontSize: '0.85rem', color: '#666' }}>/month</div>
-          </div>
-        </div>
-      </div>
-    );
-  })}
-
-  {/* READY TO PURCHASE SECTION - AT BOTTOM */}
-  {calculation && (
-    <>
-      <div style={{ 
-        marginTop: '2rem', 
-        padding: '1.5rem', 
-        background: 'white',
-        border: '3px solid var(--forest-green)',
-        borderRadius: '12px'
-      }}>
-        <h4 style={{ 
-          color: 'var(--forest-green)', 
-          marginBottom: '1rem',
-          fontSize: '1.3rem',
-          textAlign: 'center',
-          borderBottom: '2px solid var(--sandy-gold)',
-          paddingBottom: '0.5rem'
-        }}>
-          Ready to Purchase?
-        </h4>
-        
-        <div style={{ marginBottom: '1rem' }}>
-          <div style={{ 
-            padding: '1rem', 
-            background: 'var(--sandy-gold)', 
-            borderRadius: '8px',
-            marginBottom: '1rem',
-            textAlign: 'center'
-          }}>
-            <div style={{ fontSize: '0.9rem', color: 'white', marginBottom: '0.25rem' }}>Your Cost Today</div>
-            <div style={{ fontSize: '2rem', fontWeight: '700', color: 'white' }}>
-              ${formatCurrency(parseFloat(calculation.downPayment) + 99)}
-            </div>
-            <div style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.9)', marginTop: '0.25rem' }}>
-              (${formatCurrency(calculation.downPayment)} down + $99 processing fee)
-            </div>
-          </div>
-          
-          <div style={{ fontWeight: '600', marginBottom: '0.75rem', color: '#333' }}>Your Selected Plan:</div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', fontSize: '1rem' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <span style={{ color: '#666' }}>Down Payment:</span>
-              <strong style={{ color: 'var(--forest-green)' }}>${formatCurrency(calculation.downPayment)}</strong>
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <span style={{ color: '#666' }}>Processing Fee:</span>
-              <strong>$99</strong>
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <span style={{ color: '#666' }}>Monthly Payment:</span>
-              <strong style={{ color: 'var(--forest-green)' }}>${formatCurrency(calculation.monthlyPayment)}</strong>
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <span style={{ color: '#666' }}>Total Cost (Includes Loan Interest):</span>
-                  <strong>${formatCurrency(calculation.totalAmount)}</strong>
+              <h3>💰 Find Your Perfect Payment Plan</h3>
+              
+              {/* INPUTS AT TOP */}
+              <div className="calculator-options">
+                <div>
+                  <label>What monthly payment works for you? (Optional)</label>
+                  <div className="amount-input-group">
+                    <span className="currency-symbol">$</span>
+                    <input
+                      type="number"
+                      placeholder="150"
+                      min="50"
+                      step="1"
+                      value={desiredPayment}
+                      onChange={(e) => setDesiredPayment(e.target.value)}
+                      style={{ paddingLeft: '2.5rem' }}
+                    />
+                  </div>
+                  <small style={{ display: 'block', color: '#666', fontSize: '0.85rem', marginTop: '0.25rem' }}>
+                    Minimum $50/month • Enter your ideal payment to see which option fits best
+                  </small>
                 </div>
-          </div>
-          
-          <div style={{ 
-            marginTop: '1rem', 
-            padding: '0.75rem', 
-            background: 'var(--light-green)', 
-            borderRadius: '5px',
-            textAlign: 'center',
-            fontSize: '0.9rem',
-            color: '#666'
-          }}>
-            📅 <strong>{calculation.termMonths} monthly payments</strong> of ${formatCurrency(calculation.monthlyPayment)}
-          </div>
-        </div>
 
-        {cardInstance && (
-          <div style={{ marginBottom: '1rem' }}>
-            <h5 style={{ marginBottom: '0.5rem', color: 'var(--forest-green)' }}>Billing Information</h5>
-            <p style={{ fontSize: '0.85rem', color: '#666', marginBottom: '1rem' }}>
-              <span style={{ color: '#dc3545', fontWeight: 'bold' }}>*</span> Required fields
-            </p>
-            
-            <div style={{ marginBottom: '1rem', padding: '1rem', background: 'var(--light-green)', borderRadius: '8px', border: '2px solid var(--forest-green)' }}>
-              <label style={{ display: 'block', marginBottom: '0.75rem', fontSize: '1rem', fontWeight: '600', color: 'var(--forest-green)' }}>
-                📅 Choose Your Monthly Payment Date <span style={{ color: '#dc3545', fontWeight: 'bold' }}>*</span>
-              </label>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                <div
-                  onClick={() => setPaymentDueDay('1')}
-                  style={{
-                    padding: '1rem',
-                    border: '2px solid',
-                    borderColor: paymentDueDay === '1' ? 'var(--forest-green)' : '#ccc',
-                    borderRadius: '8px',
-                    cursor: 'pointer',
-                    background: paymentDueDay === '1' ? 'white' : '#f5f5f5',
-                    textAlign: 'center',
-                    fontWeight: paymentDueDay === '1' ? '600' : '400',
-                    transition: 'all 0.3s ease'
-                  }}
-                >
-                  <div style={{ fontSize: '1.5rem', marginBottom: '0.25rem' }}>1st</div>
-                  <div style={{ fontSize: '0.85rem', color: '#666' }}>of Each Month</div>
-                </div>
-                <div
-                  onClick={() => setPaymentDueDay('15')}
-                  style={{
-                    padding: '1rem',
-                    border: '2px solid',
-                    borderColor: paymentDueDay === '15' ? 'var(--forest-green)' : '#ccc',
-                    borderRadius: '8px',
-                    cursor: 'pointer',
-                    background: paymentDueDay === '15' ? 'white' : '#f5f5f5',
-                    textAlign: 'center',
-                    fontWeight: paymentDueDay === '15' ? '600' : '400',
-                    transition: 'all 0.3s ease'
-                  }}
-                >
-                  <div style={{ fontSize: '1.5rem', marginBottom: '0.25rem' }}>15th</div>
-                  <div style={{ fontSize: '0.85rem', color: '#666' }}>of Each Month</div>
+                <div>
+                  <label>Loan Term:</label>
+                  <select 
+                    value={termMonths}
+                    onChange={(e) => setTermMonths(parseInt(e.target.value))}
+                  >
+                    <option value="12">1 Year</option>
+                    <option value="24">2 Years</option>
+                    <option value="36">3 Years</option>
+                    <option value="48">4 Years</option>
+                    <option value="60">5 Years</option>
+                  </select>
                 </div>
               </div>
-              <p style={{ fontSize: '0.85rem', color: '#666', marginTop: '0.75rem', textAlign: 'center' }}>
-                💡 Choose the date that works best with your budget
-              </p>
-            </div>
-            
-            <div style={{ marginBottom: '0.75rem' }}>
-              <label style={{ display: 'block', marginBottom: '0.25rem', fontSize: '0.9rem', color: '#333' }}>
-                Phone Number <span style={{ color: '#dc3545', fontWeight: 'bold' }}>*</span>
-              </label>
-              <input
-                type="tel"
-                value={billingInfo.phone}
-                onChange={(e) => setBillingInfo({...billingInfo, phone: e.target.value})}
-                placeholder="(555) 123-4567"
-                required
-                style={{
-                  width: '100%',
-                  padding: '0.75rem',
-                  border: '2px solid var(--border-color)',
-                  borderRadius: '5px',
-                  fontSize: '1rem'
-                }}
-              />
-            </div>
 
-            <div style={{ marginBottom: '0.75rem' }}>
-              <label style={{ display: 'block', marginBottom: '0.25rem', fontSize: '0.9rem', color: '#333' }}>
-                Cardholder Name <span style={{ color: '#dc3545', fontWeight: 'bold' }}>*</span>
-              </label>
-              <input
-                type="text"
-                value={billingInfo.name}
-                onChange={(e) => setBillingInfo({...billingInfo, name: e.target.value})}
-                placeholder="John Smith"
-                required
-                style={{
-                  width: '100%',
-                  padding: '0.75rem',
-                  border: '2px solid var(--border-color)',
-                  borderRadius: '5px',
-                  fontSize: '1rem'
-                }}
-              />
-            </div>
+              {/* SELECTED PLAN SUMMARY - RIGHT AFTER INPUTS */}
+              {calculation && (
+                <div className="plan-summary-box">
+                  <div className="plan-summary-title">Your Selected Plan:</div>
+                  <div className="plan-summary-grid">
+                    <div>Down Payment: ${formatCurrency(calculation.downPayment)}</div>
+                    <div>Processing Fee: $99</div>
+                    <div>Monthly Payment: ${formatCurrency(calculation.monthlyPayment)}</div>
+                    <div>Total Cost (Includes Loan Interest): ${formatCurrency(calculation.totalAmount)}</div>
+                  </div>
+                </div>
+              )}
 
-            <div style={{ marginBottom: '0.75rem' }}>
-              <label style={{ display: 'block', marginBottom: '0.25rem', fontSize: '0.9rem', color: '#333' }}>
-                Billing Address <span style={{ color: '#dc3545', fontWeight: 'bold' }}>*</span>
-              </label>
-              <input
-                type="text"
-                value={billingInfo.address}
-                onChange={(e) => setBillingInfo({...billingInfo, address: e.target.value})}
-                placeholder="123 Main St"
-                required
-                style={{
-                  width: '100%',
-                  padding: '0.75rem',
-                  border: '2px solid var(--border-color)',
-                  borderRadius: '5px',
-                  fontSize: '1rem'
-                }}
-              />
-            </div>
-
-            <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: '0.75rem', marginBottom: '0.75rem' }}>
-              <div>
-                <label style={{ display: 'block', marginBottom: '0.25rem', fontSize: '0.9rem', color: '#333' }}>
-                  City <span style={{ color: '#dc3545', fontWeight: 'bold' }}>*</span>
-                </label>
-                <input
-                  type="text"
-                  value={billingInfo.city}
-                  onChange={(e) => setBillingInfo({...billingInfo, city: e.target.value})}
-                  placeholder="Appleton"
-                  required
-                  style={{
-                    width: '100%',
-                    padding: '0.75rem',
-                    border: '2px solid var(--border-color)',
-                    borderRadius: '5px',
-                    fontSize: '1rem'
-                  }}
-                />
-              </div>
-              
-              <div>
-                <label style={{ display: 'block', marginBottom: '0.25rem', fontSize: '0.9rem', color: '#333' }}>
-                  State <span style={{ color: '#dc3545', fontWeight: 'bold' }}>*</span>
-                </label>
-                <select
-                  value={billingInfo.state}
-                  onChange={(e) => setBillingInfo({...billingInfo, state: e.target.value})}
-                  required
-                  style={{
-                    width: '100%',
-                    padding: '0.75rem',
-                    border: '2px solid var(--border-color)',
-                    borderRadius: '5px',
-                    fontSize: '1rem'
-                  }}
-                >
-                  <option value="">--</option>
-                  <option value="WI">WI</option>
-                  <option value="AZ">AZ</option>
-                  <option value="AR">AR</option>
-                  <option value="CO">CO</option>
-                  <option value="AL">AL</option>
-                  <option value="AK">AK</option>
-                  <option value="CA">CA</option>
-                  <option value="FL">FL</option>
-                  <option value="GA">GA</option>
-                  <option value="IL">IL</option>
-                  <option value="IN">IN</option>
-                  <option value="IA">IA</option>
-                  <option value="KS">KS</option>
-                  <option value="KY">KY</option>
-                  <option value="LA">LA</option>
-                  <option value="MI">MI</option>
-                  <option value="MN">MN</option>
-                  <option value="MO">MO</option>
-                  <option value="NE">NE</option>
-                  <option value="NV">NV</option>
-                  <option value="NY">NY</option>
-                  <option value="NC">NC</option>
-                  <option value="OH">OH</option>
-                  <option value="OK">OK</option>
-                  <option value="OR">OR</option>
-                  <option value="PA">PA</option>
-                  <option value="TX">TX</option>
-                  <option value="UT">UT</option>
-                  <option value="WA">WA</option>
-                </select>
-              </div>
-              
-              <div>
-                <label style={{ display: 'block', marginBottom: '0.25rem', fontSize: '0.9rem', color: '#333' }}>
-                  ZIP <span style={{ color: '#dc3545', fontWeight: 'bold' }}>*</span>
-                </label>
-                <input
-                  type="text"
-                  value={billingInfo.zip}
-                  onChange={(e) => setBillingInfo({...billingInfo, zip: e.target.value})}
-                  placeholder="54911"
-                  required
-                  maxLength="5"
-                  style={{
-                    width: '100%',
-                    padding: '0.75rem',
-                    border: '2px solid var(--border-color)',
-                    borderRadius: '5px',
-                    fontSize: '1rem'
-                  }}
-                />
-              </div>
-            </div>
-
-            <div style={{ marginTop: '1.5rem', padding: '15px', backgroundColor: '#e8f5e9', borderRadius: '8px', border: '2px solid var(--forest-green)' }}>
-              <h5 style={{ marginBottom: '1rem', color: 'var(--forest-green)' }}>📜 Deed Information</h5>
-              <p style={{ fontSize: '13px', color: '#666', marginBottom: '15px' }}>
-                This information will appear on the property deed when your loan is paid off.
-              </p>
-              
-              <div className="form-group" style={{ marginBottom: '15px' }}>
-                <label style={{ display: 'block', marginBottom: '0.25rem', fontSize: '0.9rem', color: '#333' }}>
-                  Name(s) for Deed <span style={{ color: '#dc3545', fontWeight: 'bold' }}>*</span>
-                </label>
-                <input
-                  type="text"
-                  value={deedInfo.deedName}
-                  onChange={(e) => setDeedInfo({...deedInfo, deedName: e.target.value})}
-                  placeholder="John and Jane Smith"
-                  required
-                  style={{
-                    width: '100%',
-                    padding: '0.75rem',
-                    border: '2px solid var(--border-color)',
-                    borderRadius: '5px',
-                    fontSize: '1rem'
-                  }}
-                />
-                <small style={{ display: 'block', color: '#666', fontSize: '0.85rem', marginTop: '0.25rem' }}>
-                  Enter name(s) exactly as you want them to appear on the deed
-                </small>
+              {/* PAYMENT OPTIONS - BELOW SUMMARY */}
+              <div style={{ marginTop: '1.5rem', marginBottom: '1rem' }}>
+                <h4 style={{ color: 'var(--forest-green)', marginBottom: '1rem' }}>Choose Your Down Payment Option:</h4>
+                {desiredPayment && desiredPayment >= 50 && closestOption && (() => {
+                  // Find the actual payment for closest option
+                  let closestPayment;
+                  if (closestOption === '99') {
+                    const principal99 = (property.price - 99) + 99;
+                    const monthlyRate99 = 0.18 / 12;
+                    closestPayment = Math.max(
+                      principal99 * (monthlyRate99 * Math.pow(1 + monthlyRate99, termMonths)) / (Math.pow(1 + monthlyRate99, termMonths) - 1),
+                      50
+                    );
+                  } else {
+                    const dpOption = parseFloat(closestOption);
+                    const downPayment = property.price * (dpOption / 100);
+                    const interestRate = dpOption === 20 ? 12 : 8;
+                    const principal = (property.price - downPayment) + 99;
+                    const monthlyRate = interestRate / 100 / 12;
+                    closestPayment = Math.max(
+                      principal * (monthlyRate * Math.pow(1 + monthlyRate, termMonths)) / (Math.pow(1 + monthlyRate, termMonths) - 1),
+                      50
+                    );
+                  }
+                  
+                  const difference = Math.abs(parseFloat(desiredPayment) - closestPayment);
+                  const isGoodMatch = difference <= 30;
+                  const isTooLow = parseFloat(desiredPayment) < closestPayment;
+                  
+                  if (isGoodMatch) {
+                    return (
+                      <div className="closest-match-success">
+                        ✓ The <strong>{closestOption === '99' ? '$99 Down' : `${closestOption}% Down`}</strong> option is closest to your ${formatCurrency(desiredPayment)}/month goal!
+                      </div>
+                    );
+                  } else {
+                    return (
+                      <div className="closest-match-warning">
+                        ⚠️ Your desired payment of ${formatCurrency(desiredPayment)}/month is {isTooLow ? 'lower' : 'higher'} than our available options. 
+                        The closest we can offer is <strong>${formatCurrency(closestPayment)}/month</strong> with {closestOption === '99' ? '$99 Down' : `${closestOption}% Down`}.
+                        {isTooLow && termMonths < 60 && <div style={{ marginTop: '0.5rem' }}>💡 Try selecting a longer loan term to lower your monthly payment!</div>}
+                        {!isTooLow && termMonths > 12 && <div style={{ marginTop: '0.5rem' }}>💡 Try selecting a shorter loan term or you may be able to pay off early with no penalty!</div>}
+                      </div>
+                    );
+                  }
+                })()}
               </div>
 
-              <div className="form-group">
-                <label style={{ display: 'block', marginBottom: '0.25rem', fontSize: '0.9rem', color: '#333' }}>
-                  Mailing Address for Deed <span style={{ color: '#dc3545', fontWeight: 'bold' }}>*</span>
-                </label>
-                <textarea
-                  rows="3"
-                  value={deedInfo.deedMailingAddress}
-                  onChange={(e) => setDeedInfo({...deedInfo, deedMailingAddress: e.target.value})}
-                  placeholder="123 Main St&#10;Appleton, WI 54911"
-                  required
-                  style={{
-                    width: '100%',
-                    padding: '0.75rem',
-                    border: '2px solid var(--border-color)',
-                    borderRadius: '5px',
-                    fontSize: '1rem',
-                    resize: 'vertical'
-                  }}
-                />
-                <small style={{ display: 'block', color: '#666', fontSize: '0.85rem', marginTop: '0.25rem' }}>
-                  Full address where the deed should be mailed upon loan payoff
-                </small>
-              </div>
-            </div>
-
-            <div style={{ marginTop: '1rem' }}>
-              <h5 style={{ marginBottom: '0.75rem', color: 'var(--forest-green)' }}>Card Information</h5>
-            </div>
-          </div>
-        )}
-
-	{/* Terms of Service */}
-        {cardInstance && (
-          <div style={{ 
-            marginBottom: '1rem',
-            padding: '15px',
-            backgroundColor: termsAccepted ? '#d4edda' : '#fff3cd',
-            border: '2px solid',
-            borderColor: termsAccepted ? '#28a745' : '#ffc107',
-            borderRadius: '8px'
-          }}>
-            <div style={{ marginBottom: '10px', fontWeight: '600', color: termsAccepted ? '#155724' : '#856404' }}>
-              {termsAccepted ? '✓ Terms Accepted' : '⚠️ Required: Terms of Service'}
-            </div>
-            <button
-              type="button"
-              onClick={() => setShowTermsModal(true)}
-              className="btn"
-              style={{
-                width: '100%',
-                backgroundColor: termsAccepted ? '#28a745' : '#ffc107',
-                color: termsAccepted ? 'white' : '#000',
-                padding: '12px',
-                fontSize: '16px',
-                fontWeight: 'bold'
-              }}
-            >
-              {termsAccepted ? '✓ Terms of Service Accepted' : 'Click to Read & Accept Terms'}
-            </button>
-          </div>
-        )}
-
-	{/* Due Diligence Agreement */}
-        {cardInstance && (
-          <div style={{
-            padding: '1rem',
-            backgroundColor: '#fff3cd',
-            border: '2px solid #ffc107',
-            borderRadius: '8px',
-            marginBottom: '1rem'
-          }}>
-            <h5 style={{ marginTop: 0, marginBottom: '0.75rem', color: '#856404' }}>
-              ⚠️ Due Diligence Statement
-            </h5>
-            <p style={{ fontSize: '0.85rem', color: '#856404', marginBottom: '0.75rem', lineHeight: '1.5' }}>
-              All prospective buyers are urged to conduct their own due diligence to their satisfaction prior to purchasing this property. 
-              Prospective purchasers are strongly encouraged to examine, visit, and thoroughly research the property before buying. 
-              This includes verifying boundaries, utilities, zoning, road access, and suitability for your intended use.
-            </p>
-            <p style={{ fontSize: '0.85rem', color: '#856404', marginBottom: '0.75rem', lineHeight: '1.5' }}>
-              All information contained in this listing has come from reliable sources and is believed to be accurate to the best of our knowledge. 
-              However, <strong>Green Acres Land Investments, LLC</strong> makes no guarantee, expressed or implied, as to the location, condition, 
-              accessibility, terrain, buildability, utility availability, or any other information contained in this listing.
-            </p>
-            <div style={{
-              display: 'flex',
-              alignItems: 'flex-start',
-              gap: '0.5rem',
-              padding: '0.75rem',
-              backgroundColor: 'white',
-              borderRadius: '4px',
-              border: '1px solid #ffc107'
-            }}>
-              <input
-                type="checkbox"
-                id="dueDiligenceCheckbox"
-                checked={dueDiligenceAgreed}
-                onChange={(e) => setDueDiligenceAgreed(e.target.checked)}
-                style={{
-                  marginTop: '0.25rem',
-                  width: '18px',
-                  height: '18px',
-                  cursor: 'pointer'
-                }}
-              />
-              <label 
-                htmlFor="dueDiligenceCheckbox" 
-                style={{ 
-                  fontSize: '0.9rem', 
-                  color: '#333',
-                  cursor: 'pointer',
-                  userSelect: 'none'
-                }}
+              {/* $99 Down Option */}
+              <div 
+                className={`payment-option-card ${downPaymentOption === '99' ? 'selected' : ''} ${closestOption === '99' && downPaymentOption !== '99' ? 'highlighted' : ''}`}
+                onClick={() => setDownPaymentOption('99')}
               >
-                <strong>I acknowledge that I have read and understand the Due Diligence Statement above. 
-                I have conducted adequate due diligence and accept the property in its current condition.</strong>
-              </label>
+                <div className="payment-option-header">
+                  <div>
+                    <div className="payment-option-title">
+                      $99 Down Payment
+                      <span className="payment-option-badge">MOST POPULAR</span>
+                    </div>
+                    <div className="payment-option-rate">18% APR</div>
+                  </div>
+                  <div className="payment-option-amount">
+                    <div className="payment-option-price">
+                      {calculation && calculation.downPaymentPercentage === 99 
+                        ? `$${formatCurrency(calculation.monthlyPayment)}`
+                        : `$${formatCurrency((() => {
+                            const principal = (property.price - 99) + 99;
+                            const monthlyRate = 0.18 / 12;
+                            let payment = principal * (monthlyRate * Math.pow(1 + monthlyRate, termMonths)) / (Math.pow(1 + monthlyRate, termMonths) - 1);
+                            return Math.max(payment, 50);
+                          })())}`
+                      }
+                    </div>
+                    <div className="payment-option-frequency">/month</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Other Options */}
+              {['20', '25', '35', '50'].map(option => {
+                const dpOption = parseFloat(option);
+                const downPayment = (property.price * (dpOption / 100));
+                const interestRate = dpOption === 20 ? 12 : 8;
+                const principal = (property.price - downPayment) + 99;
+                const monthlyRate = interestRate / 100 / 12;
+                let monthlyPayment = principal * (monthlyRate * Math.pow(1 + monthlyRate, termMonths)) 
+                  / (Math.pow(1 + monthlyRate, termMonths) - 1);
+                monthlyPayment = Math.max(monthlyPayment, 50);
+                
+                return (
+                  <div 
+                    key={option}
+                    className={`payment-option-card ${downPaymentOption === option ? 'selected' : ''} ${closestOption === option && downPaymentOption !== option ? 'highlighted' : ''}`}
+                    onClick={() => setDownPaymentOption(option)}
+                  >
+                    <div className="payment-option-header">
+                      <div>
+                        <div className="payment-option-title">
+                          {option}% Down (${formatCurrency(downPayment)})
+                        </div>
+                        <div className="payment-option-rate">{interestRate}% APR</div>
+                      </div>
+                      <div className="payment-option-amount">
+                        <div className="payment-option-price">
+                          ${formatCurrency(monthlyPayment)}
+                        </div>
+                        <div className="payment-option-frequency">/month</div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+
+              {/* READY TO PURCHASE SECTION - AT BOTTOM */}
+              {calculation && (
+                <>
+                  <div style={{ 
+                    marginTop: '2rem', 
+                    padding: '1.5rem', 
+                    background: 'white',
+                    border: '3px solid var(--forest-green)',
+                    borderRadius: '12px'
+                  }}>
+                    <h4 style={{ 
+                      color: 'var(--forest-green)', 
+                      marginBottom: '1rem',
+                      fontSize: '1.3rem',
+                      textAlign: 'center',
+                      borderBottom: '2px solid var(--sandy-gold)',
+                      paddingBottom: '0.5rem'
+                    }}>
+                      Ready to Purchase?
+                    </h4>
+                    
+                    <div style={{ marginBottom: '1rem' }}>
+                      <div className="cost-today-box">
+                        <div className="cost-today-label">Your Cost Today</div>
+                        <div className="cost-today-amount">
+                          ${formatCurrency(parseFloat(calculation.downPayment) + 99)}
+                        </div>
+                        <div className="cost-today-breakdown">
+                          (${formatCurrency(calculation.downPayment)} down + $99 processing fee)
+                        </div>
+                      </div>
+                      
+                      <div style={{ fontWeight: '600', marginBottom: '0.75rem', color: '#333' }}>Your Selected Plan:</div>
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', fontSize: '1rem' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                          <span style={{ color: '#666' }}>Down Payment:</span>
+                          <strong style={{ color: 'var(--forest-green)' }}>${formatCurrency(calculation.downPayment)}</strong>
+                        </div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                          <span style={{ color: '#666' }}>Processing Fee:</span>
+                          <strong>$99</strong>
+                        </div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                          <span style={{ color: '#666' }}>Monthly Payment:</span>
+                          <strong style={{ color: 'var(--forest-green)' }}>${formatCurrency(calculation.monthlyPayment)}</strong>
+                        </div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                          <span style={{ color: '#666' }}>Total Cost (Includes Loan Interest):</span>
+                          <strong>${formatCurrency(calculation.totalAmount)}</strong>
+                        </div>
+                      </div>
+                      
+                      <div style={{ 
+                        marginTop: '1rem', 
+                        padding: '0.75rem', 
+                        background: 'var(--light-green)', 
+                        borderRadius: '5px',
+                        textAlign: 'center',
+                        fontSize: '0.9rem',
+                        color: '#666'
+                      }}>
+                        📅 <strong>{calculation.termMonths} monthly payments</strong> of ${formatCurrency(calculation.monthlyPayment)}
+                      </div>
+                    </div>
+
+                    {cardInstance && (
+                      <div style={{ marginBottom: '1rem' }}>
+                        <h5 style={{ marginBottom: '0.5rem', color: 'var(--forest-green)' }}>Billing Information</h5>
+                        <p style={{ fontSize: '0.85rem', color: '#666', marginBottom: '1rem' }}>
+                          <span style={{ color: '#dc3545', fontWeight: 'bold' }}>*</span> Required fields
+                        </p>
+                        
+                        <div className="payment-date-selector">
+                          <label style={{ display: 'block', marginBottom: '0.75rem', fontSize: '1rem', fontWeight: '600', color: 'var(--forest-green)' }}>
+                            📅 Choose Your Monthly Payment Date <span style={{ color: '#dc3545', fontWeight: 'bold' }}>*</span>
+                          </label>
+                          <div className="payment-date-options">
+                            <div
+                              onClick={() => setPaymentDueDay('1')}
+                              className={`payment-date-option ${paymentDueDay === '1' ? 'selected' : ''}`}
+                            >
+                              <div className="payment-date-number">1st</div>
+                              <div className="payment-date-label">of Each Month</div>
+                            </div>
+                            <div
+                              onClick={() => setPaymentDueDay('15')}
+                              className={`payment-date-option ${paymentDueDay === '15' ? 'selected' : ''}`}
+                            >
+                              <div className="payment-date-number">15th</div>
+                              <div className="payment-date-label">of Each Month</div>
+                            </div>
+                          </div>
+                          <p style={{ fontSize: '0.85rem', color: '#666', marginTop: '0.75rem', textAlign: 'center' }}>
+                            💡 Choose the date that works best with your budget
+                          </p>
+                        </div>
+                        
+                        <div className="form-group">
+                          <label>
+                            Phone Number <span style={{ color: '#dc3545', fontWeight: 'bold' }}>*</span>
+                          </label>
+                          <input
+                            type="tel"
+                            value={billingInfo.phone}
+                            onChange={(e) => setBillingInfo({...billingInfo, phone: e.target.value})}
+                            placeholder="(555) 123-4567"
+                            required
+                          />
+                        </div>
+
+                        <div className="form-group">
+                          <label>
+                            Cardholder Name <span style={{ color: '#dc3545', fontWeight: 'bold' }}>*</span>
+                          </label>
+                          <input
+                            type="text"
+                            value={billingInfo.name}
+                            onChange={(e) => setBillingInfo({...billingInfo, name: e.target.value})}
+                            placeholder="John Smith"
+                            required
+                          />
+                        </div>
+
+                        <div className="form-group">
+                          <label>
+                            Billing Address <span style={{ color: '#dc3545', fontWeight: 'bold' }}>*</span>
+                          </label>
+                          <input
+                            type="text"
+                            value={billingInfo.address}
+                            onChange={(e) => setBillingInfo({...billingInfo, address: e.target.value})}
+                            placeholder="123 Main St"
+                            required
+                          />
+                        </div>
+
+                        <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: '0.75rem', marginBottom: '0.75rem' }}>
+                          <div className="form-group">
+                            <label>
+                              City <span style={{ color: '#dc3545', fontWeight: 'bold' }}>*</span>
+                            </label>
+                            <input
+                              type="text"
+                              value={billingInfo.city}
+                              onChange={(e) => setBillingInfo({...billingInfo, city: e.target.value})}
+                              placeholder="Appleton"
+                              required
+                            />
+                          </div>
+                          
+                          <div className="form-group">
+                            <label>
+                              State <span style={{ color: '#dc3545', fontWeight: 'bold' }}>*</span>
+                            </label>
+                            <select
+                              value={billingInfo.state}
+                              onChange={(e) => setBillingInfo({...billingInfo, state: e.target.value})}
+                              required
+                            >
+                              <option value="">--</option>
+                              <option value="WI">WI</option>
+                              <option value="AZ">AZ</option>
+                              <option value="AR">AR</option>
+                              <option value="CO">CO</option>
+                              <option value="AL">AL</option>
+                              <option value="AK">AK</option>
+                              <option value="CA">CA</option>
+                              <option value="FL">FL</option>
+                              <option value="GA">GA</option>
+                              <option value="IL">IL</option>
+                              <option value="IN">IN</option>
+                              <option value="IA">IA</option>
+                              <option value="KS">KS</option>
+                              <option value="KY">KY</option>
+                              <option value="LA">LA</option>
+                              <option value="MI">MI</option>
+                              <option value="MN">MN</option>
+                              <option value="MO">MO</option>
+                              <option value="NE">NE</option>
+                              <option value="NV">NV</option>
+                              <option value="NY">NY</option>
+                              <option value="NC">NC</option>
+                              <option value="OH">OH</option>
+                              <option value="OK">OK</option>
+                              <option value="OR">OR</option>
+                              <option value="PA">PA</option>
+                              <option value="TX">TX</option>
+                              <option value="UT">UT</option>
+                              <option value="WA">WA</option>
+                            </select>
+                          </div>
+                          
+                          <div className="form-group">
+                            <label>
+                              ZIP <span style={{ color: '#dc3545', fontWeight: 'bold' }}>*</span>
+                            </label>
+                            <input
+                              type="text"
+                              value={billingInfo.zip}
+                              onChange={(e) => setBillingInfo({...billingInfo, zip: e.target.value})}
+                              placeholder="54911"
+                              required
+                              maxLength="5"
+                            />
+                          </div>
+                        </div>
+
+                        <div className="deed-info-box">
+                          <h5>📜 Deed Information</h5>
+                          <p style={{ fontSize: '13px', color: '#666', marginBottom: '15px' }}>
+                            This information will appear on the property deed when your loan is paid off.
+                          </p>
+                          
+                          <div className="form-group">
+                            <label>
+                              Name(s) for Deed <span style={{ color: '#dc3545', fontWeight: 'bold' }}>*</span>
+                            </label>
+                            <input
+                              type="text"
+                              value={deedInfo.deedName}
+                              onChange={(e) => setDeedInfo({...deedInfo, deedName: e.target.value})}
+                              placeholder="John and Jane Smith"
+                              required
+                            />
+                            <small style={{ display: 'block', color: '#666', fontSize: '0.85rem', marginTop: '0.25rem' }}>
+                              Enter name(s) exactly as you want them to appear on the deed
+                            </small>
+                          </div>
+
+                          <div className="form-group">
+                            <label>
+                              Mailing Address for Deed <span style={{ color: '#dc3545', fontWeight: 'bold' }}>*</span>
+                            </label>
+                            <textarea
+                              rows="3"
+                              value={deedInfo.deedMailingAddress}
+                              onChange={(e) => setDeedInfo({...deedInfo, deedMailingAddress: e.target.value})}
+                              placeholder="123 Main St&#10;Appleton, WI 54911"
+                              required
+                            />
+                            <small style={{ display: 'block', color: '#666', fontSize: '0.85rem', marginTop: '0.25rem' }}>
+                              Full address where the deed should be mailed upon loan payoff
+                            </small>
+                          </div>
+                        </div>
+
+                        <div style={{ marginTop: '1rem' }}>
+                          <h5 style={{ marginBottom: '0.75rem', color: 'var(--forest-green)' }}>Card Information</h5>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Terms of Service */}
+                    {cardInstance && (
+                      <div className={`terms-accepted-box ${termsAccepted ? 'accepted' : 'not-accepted'}`}>
+                        <div style={{ marginBottom: '10px', fontWeight: '600' }}>
+                          {termsAccepted ? '✓ Terms Accepted' : '⚠️ Required: Terms of Service'}
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setShowTermsModal(true)}
+                          className="btn"
+                          style={{
+                            width: '100%',
+                            backgroundColor: termsAccepted ? '#28a745' : '#ffc107',
+                            color: termsAccepted ? 'white' : '#000',
+                            padding: '12px',
+                            fontSize: '16px',
+                            fontWeight: 'bold'
+                          }}
+                        >
+                          {termsAccepted ? '✓ Terms of Service Accepted' : 'Click to Read & Accept Terms'}
+                        </button>
+                      </div>
+                    )}
+
+                    {/* Due Diligence Agreement */}
+                    {cardInstance && (
+                      <div className="due-diligence-box">
+                        <h5>⚠️ Due Diligence Statement</h5>
+                        <p style={{ fontSize: '0.85rem', color: '#856404', marginBottom: '0.75rem', lineHeight: '1.5' }}>
+                          All prospective buyers are urged to conduct their own due diligence to their satisfaction prior to purchasing this property. 
+                          Prospective purchasers are strongly encouraged to examine, visit, and thoroughly research the property before buying. 
+                          This includes verifying boundaries, utilities, zoning, road access, and suitability for your intended use.
+                        </p>
+                        <p style={{ fontSize: '0.85rem', color: '#856404', marginBottom: '0.75rem', lineHeight: '1.5' }}>
+                          All information contained in this listing has come from reliable sources and is believed to be accurate to the best of our knowledge. 
+                          However, <strong>Green Acres Land Investments, LLC</strong> makes no guarantee, expressed or implied, as to the location, condition, 
+                          accessibility, terrain, buildability, utility availability, or any other information contained in this listing.
+                        </p>
+                        <div className="due-diligence-checkbox-wrapper">
+                          <input
+                            type="checkbox"
+                            id="dueDiligenceCheckbox"
+                            checked={dueDiligenceAgreed}
+                            onChange={(e) => setDueDiligenceAgreed(e.target.checked)}
+                          />
+                          <label htmlFor="dueDiligenceCheckbox">
+                            <strong>I acknowledge that I have read and understand the Due Diligence Statement above. 
+                            I have conducted adequate due diligence and accept the property in its current condition.</strong>
+                          </label>
+                        </div>
+                      </div>
+                    )}
+
+                    <div id="card-container" style={{ display: cardInstance ? 'block' : 'none', marginBottom: '1rem' }}></div>
+
+                    {purchaseError && (
+                      <div className="error-message" style={{ marginTop: '1rem' }}>
+                        {purchaseError}
+                      </div>
+                    )}
+
+                    <button 
+                      className="btn btn-primary btn-full-width"
+                      onClick={cardInstance ? handlePurchase : initializeSquarePayment}
+                      disabled={purchasing || (cardInstance && (!dueDiligenceAgreed || !termsAccepted))}
+                      style={{ marginTop: '1rem' }}
+                    >
+                      {purchasing 
+                        ? 'Processing...' 
+                        : cardInstance 
+                          ? `Pay $${formatCurrency(parseFloat(calculation.downPayment) + 99)} Now` 
+                          : isAuthenticated 
+                            ? 'Purchase This Property' 
+                            : 'Login to Purchase'
+                      }
+                    </button>
+                  </div>
+                </>
+              )}
             </div>
-          </div>
-        )}
-
-        <div id="card-container" style={{ display: cardInstance ? 'block' : 'none', marginBottom: '1rem' }}></div>
-
-        {purchaseError && (
-          <div className="error-message" style={{ marginTop: '1rem' }}>
-            {purchaseError}
-          </div>
-        )}
-
-        <button 
-          className="btn btn-primary btn-full-width"
-          onClick={cardInstance ? handlePurchase : initializeSquarePayment}
-          disabled={purchasing || (cardInstance && (!dueDiligenceAgreed || !termsAccepted))}
-          style={{ marginTop: '1rem' }}
-        >
-          {purchasing 
-  ? 'Processing...' 
-  : cardInstance 
-    ? `Pay $${formatCurrency(parseFloat(calculation.downPayment) + 99)} Now` 
-    : isAuthenticated 
-      ? 'Purchase This Property' 
-      : 'Login to Purchase'
-}
-        </button>
-      </div>
-    </>
-  )}
-</div>
           )}
         </div>
       </div>
-    {/* Terms of Service Modal */}
+
+      {/* Terms of Service Modal */}
       {showTermsModal && (
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundColor: 'rgba(0,0,0,0.5)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 1000
-        }}>
-          <div style={{
-            backgroundColor: 'white',
-            padding: '30px',
-            borderRadius: '10px',
-            maxWidth: '600px',
-            width: '90%',
-            maxHeight: '90vh',
-            overflow: 'auto'
-          }}>
-            <h2 style={{ marginTop: 0, marginBottom: '20px', color: 'var(--forest-green)' }}>Terms of Service</h2>
+        <div className="terms-modal-overlay">
+          <div className="terms-modal-content">
+            <h2>Terms of Service</h2>
             
             <div style={{ fontSize: '14px', lineHeight: '1.6', color: '#333' }}>
               <h3>Agreement to Terms</h3>

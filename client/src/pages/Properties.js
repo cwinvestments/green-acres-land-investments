@@ -36,6 +36,7 @@ function Properties() {
       console.error('Failed to load states:', err);
     }
   };
+
   const loadProperties = async () => {
     try {
       const response = await getProperties();
@@ -65,9 +66,6 @@ function Properties() {
       setLoading(false);
     }
   };
-  useEffect(() => {
-    loadProperties();
-  }, []);
 
   const filteredProperties = useMemo(() => {
     if (selectedState === 'all') {
@@ -99,26 +97,10 @@ function Properties() {
       
       {/* State Filter Tabs */}
       {states.length > 0 && (
-        <div style={{
-          display: 'flex',
-          justifyContent: 'center',
-          gap: '1rem',
-          marginBottom: '2rem',
-          flexWrap: 'wrap'
-        }}>
+        <div className="state-filter-container">
           <button
             onClick={() => setSelectedState('all')}
-            style={{
-              padding: '0.75rem 1.5rem',
-              border: selectedState === 'all' ? '2px solid var(--forest-green)' : '2px solid var(--border-color)',
-              background: selectedState === 'all' ? 'var(--forest-green)' : 'white',
-              color: selectedState === 'all' ? 'white' : 'var(--text-dark)',
-              borderRadius: '8px',
-              fontSize: '1rem',
-              cursor: 'pointer',
-              transition: 'all 0.3s ease',
-              fontWeight: '500'
-            }}
+            className={`state-filter-button ${selectedState === 'all' ? 'active' : ''}`}
           >
             All States
           </button>
@@ -126,29 +108,11 @@ function Properties() {
             <button
               key={state.id}
               onClick={() => setSelectedState(state.name)}
-              style={{
-                padding: '0.75rem 1.5rem',
-                border: selectedState === state.name ? '2px solid var(--forest-green)' : '2px solid var(--border-color)',
-                background: selectedState === state.name ? 'var(--forest-green)' : 'white',
-                color: selectedState === state.name ? 'white' : 'var(--text-dark)',
-                borderRadius: '8px',
-                fontSize: '1rem',
-                cursor: 'pointer',
-                transition: 'all 0.3s ease',
-                fontWeight: '500'
-              }}
+              className={`state-filter-button ${selectedState === state.name ? 'active' : ''}`}
             >
               {state.name}
               {state.coming_soon && (
-                <span style={{
-                  marginLeft: '8px',
-                  padding: '2px 8px',
-                  backgroundColor: '#8b5cf6',
-                  color: 'white',
-                  borderRadius: '10px',
-                  fontSize: '11px',
-                  fontWeight: '600'
-                }}>
+                <span className="state-coming-soon-badge">
                   COMING SOON
                 </span>
               )}
@@ -157,7 +121,7 @@ function Properties() {
         </div>
       )}
       
-      <p style={{ color: '#666', marginBottom: '2rem', textAlign: 'center' }}>
+      <p className="property-count-text">
         {filteredProperties.length} {filteredProperties.length === 1 ? 'property' : 'properties'} available
       </p>
 
@@ -185,13 +149,8 @@ function Properties() {
                 <img
                   src={getCloudinaryThumbnail("https://res.cloudinary.com/dxd4ef2tc/image/upload/IMAGES-COMING-SOON_tbspdc.png", 400)}
                   alt="Property Coming Soon"
-                  className="property-image"
+                  className="property-image property-placeholder-image"
                   loading="lazy"
-                  style={{
-                    opacity: '0.9',
-                    objectFit: 'cover',
-                    objectPosition: 'center'
-                  }}
                 />
               )}
               <div className="property-content">
@@ -200,26 +159,18 @@ function Properties() {
                   <span>📍 {property.location}</span>
                   <span>📏 {property.acres} acres</span>
                 </div>
-                <p style={{ color: '#666', fontSize: '0.9rem', marginTop: '0.5rem' }}>
+                <p className="property-card-description">
                   {property.description.substring(0, 100)}...
                 </p>
                 <div className="property-price">
                   ${formatCurrency(property.price)}
                   {property.status === 'coming_soon' && (
-                    <span style={{
-                      marginLeft: '10px',
-                      padding: '4px 12px',
-                      backgroundColor: '#8b5cf6',
-                      color: 'white',
-                      borderRadius: '12px',
-                      fontSize: '12px',
-                      fontWeight: '600'
-                    }}>
+                    <span className="property-coming-soon-badge">
                       COMING SOON
                     </span>
                   )}
                 </div>
-                <button className="btn btn-secondary" style={{ marginTop: '1rem' }}>
+                <button className="btn btn-secondary">
                   View Details
                 </button>
               </div>

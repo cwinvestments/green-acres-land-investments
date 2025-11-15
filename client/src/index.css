@@ -1275,7 +1275,13 @@ body {
 
 @media (max-width: 768px) {
   .property-detail {
-    padding: 2rem 1rem;
+    padding: 1rem;
+  }
+  
+  .property-detail .card,
+  .calculator,
+  .property-detail-grid > div > div {
+    max-width: 100%;
   }
   
   .calculator {

@@ -1120,20 +1120,31 @@ navigate('/dashboard');
 
 	{/* Terms of Service */}
         {cardInstance && (
-          <div style={{ marginBottom: '1rem' }}>
+          <div style={{ 
+            marginBottom: '1rem',
+            padding: '15px',
+            backgroundColor: termsAccepted ? '#d4edda' : '#fff3cd',
+            border: '2px solid',
+            borderColor: termsAccepted ? '#28a745' : '#ffc107',
+            borderRadius: '8px'
+          }}>
+            <div style={{ marginBottom: '10px', fontWeight: '600', color: termsAccepted ? '#155724' : '#856404' }}>
+              {termsAccepted ? '✓ Terms Accepted' : '⚠️ Required: Terms of Service'}
+            </div>
             <button
               type="button"
               onClick={() => setShowTermsModal(true)}
               className="btn"
               style={{
                 width: '100%',
-                backgroundColor: termsAccepted ? '#28a745' : 'var(--forest-green)',
-                color: 'white',
+                backgroundColor: termsAccepted ? '#28a745' : '#ffc107',
+                color: termsAccepted ? 'white' : '#000',
                 padding: '12px',
-                fontSize: '16px'
+                fontSize: '16px',
+                fontWeight: 'bold'
               }}
             >
-              {termsAccepted ? '✓ Terms of Service Accepted' : 'Read & Accept Terms of Service'}
+              {termsAccepted ? '✓ Terms of Service Accepted' : 'Click to Read & Accept Terms'}
             </button>
           </div>
         )}
@@ -1263,16 +1274,51 @@ navigate('/dashboard');
               overflowY: 'auto',
               flex: 1
             }}>
-              <iframe 
-                src="/terms" 
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  border: 'none',
-                  minHeight: '400px'
-                }}
-                title="Terms of Service"
-              />
+              <div style={{ 
+                fontSize: '14px', 
+                lineHeight: '1.6',
+                color: '#333',
+                maxHeight: '500px',
+                overflowY: 'auto',
+                padding: '10px'
+              }}>
+                <h3>Agreement to Terms</h3>
+                <p>By purchasing property, you agree to be bound by these Terms of Service.</p>
+                
+                <h3>Contract for Deed</h3>
+                <p>All land purchases are made through a Contract for Deed. Legal title remains with Green Acres Land Investments, LLC until the contract is paid in full. You receive equitable title and can use the property according to contract terms.</p>
+                
+                <h3>Payment Terms</h3>
+                <ul>
+                  <li>Monthly payments must be made on your selected due date (1st or 15th)</li>
+                  <li>Late payments (7+ days past due) incur a late fee</li>
+                  <li>Payments include principal, interest, and may include property taxes and HOA fees</li>
+                  <li>You may prepay without penalty at any time</li>
+                </ul>
+                
+                <h3>Default and Forfeiture</h3>
+                <p><strong style={{ color: '#dc3545' }}>⚠️ CRITICAL:</strong> If you default on payments:</p>
+                <ul>
+                  <li>You will receive written notice providing 7 days to cure the default</li>
+                  <li>If not cured, <strong>all payments made will be forfeited</strong> (considered rent for use of property)</li>
+                  <li>You will immediately lose all rights to the property</li>
+                  <li>No refund of any payments or down payment</li>
+                </ul>
+                
+                <h3>Property "As-Is"</h3>
+                <p><strong>Properties are sold "AS IS" without warranty of any kind.</strong> You are responsible for conducting your own due diligence including property inspections, title searches, and verification of utilities, access, zoning, and buildability.</p>
+                
+                <h3>Governing Law</h3>
+                <p>These Terms shall be governed by the laws of the State of Wisconsin. Any disputes shall be resolved exclusively in the courts of Outagamie County, Appleton, Wisconsin.</p>
+                
+                <p style={{ marginTop: '20px', padding: '10px', background: '#f0f0f0', borderRadius: '5px' }}>
+                  <strong>Contact:</strong> GreenAcresLandInvestments@gmail.com | 920.716.6107
+                </p>
+                
+                <p style={{ textAlign: 'center', marginTop: '15px', fontSize: '12px', color: '#666' }}>
+                  <a href="/terms" target="_blank" style={{ color: 'var(--forest-green)' }}>View Full Terms of Service</a>
+                </p>
+              </div>
             </div>
             
             <div style={{

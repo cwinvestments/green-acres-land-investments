@@ -227,16 +227,47 @@ function Register() {
               overflowY: 'auto',
               flex: 1
             }}>
-              <iframe 
-                src="/terms" 
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  border: 'none',
-                  minHeight: '400px'
-                }}
-                title="Terms of Service"
-              />
+              <div style={{ 
+                fontSize: '14px', 
+                lineHeight: '1.6',
+                color: '#333',
+                maxHeight: '500px',
+                overflowY: 'auto',
+                padding: '10px'
+              }}>
+                <h3>Agreement to Terms</h3>
+                <p>By registering, you agree to be bound by these Terms of Service. These Terms govern your use of our website and services.</p>
+                
+                <h3>Eligibility</h3>
+                <p>You must be at least 18 years of age and have the legal capacity to enter into binding contracts.</p>
+                
+                <h3>Contract for Deed</h3>
+                <p>All land purchases are made through a Contract for Deed. Legal title remains with Green Acres Land Investments, LLC until the contract is paid in full.</p>
+                
+                <h3>Payment Terms</h3>
+                <ul>
+                  <li>Monthly payments must be made on your selected due date (1st or 15th)</li>
+                  <li>Late payments (7+ days past due) incur late fees</li>
+                  <li>You may prepay without penalty at any time</li>
+                </ul>
+                
+                <h3>Default and Forfeiture</h3>
+                <p><strong>Important:</strong> If you default on payments and do not cure within 7 days of written notice, all payments made will be forfeited and you will lose all rights to the property.</p>
+                
+                <h3>Property "As-Is"</h3>
+                <p>Properties are sold "AS IS" without warranty. You are responsible for conducting your own due diligence.</p>
+                
+                <h3>Governing Law</h3>
+                <p>These Terms shall be governed by the laws of the State of Wisconsin. Disputes shall be resolved exclusively in the courts of Outagamie County, Appleton, Wisconsin.</p>
+                
+                <p style={{ marginTop: '20px', padding: '10px', background: '#f0f0f0', borderRadius: '5px' }}>
+                  <strong>Contact:</strong> GreenAcresLandInvestments@gmail.com | 920.716.6107
+                </p>
+                
+                <p style={{ textAlign: 'center', marginTop: '15px', fontSize: '12px', color: '#666' }}>
+                  <a href="/terms" target="_blank" style={{ color: 'var(--forest-green)' }}>View Full Terms of Service</a>
+                </p>
+              </div>
             </div>
             
             <div style={{

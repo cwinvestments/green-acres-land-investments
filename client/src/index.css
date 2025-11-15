@@ -1235,6 +1235,7 @@ label:has(.required-asterisk)::after {
   border-radius: 12px;
   font-size: 0.75rem;
   margin-left: 0.5rem;
+  white-space: nowrap;
 }
 
 .payment-option-rate {

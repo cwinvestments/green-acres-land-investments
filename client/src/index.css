@@ -2052,6 +2052,248 @@ label:has(.required-asterisk)::after {
   margin-bottom: 0 !important;
 }
 
+/* LoanDetail - Additional Styles */
+
+/* Top button container */
+.loan-detail-button-container {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.loan-detail-button-container .btn {
+  flex: 1 1 auto;
+}
+
+/* Next payment date special styling */
+.next-payment-date {
+  font-weight: 600;
+  color: var(--forest-green);
+  font-size: 1.1rem;
+}
+
+/* Section separators */
+.info-section-separator {
+  margin: 20px 0;
+  border: none;
+  border-top: 1px solid #e0e0e0;
+}
+
+/* Section headers */
+.info-section-header {
+  font-size: 18px;
+  margin-bottom: 15px;
+  color: var(--forest-green);
+}
+
+/* Colored info row values */
+.info-value-principal {
+  color: var(--forest-green);
+  font-weight: bold;
+}
+
+.info-value-interest {
+  color: #f59e0b;
+  font-weight: bold;
+}
+
+.info-value-tax {
+  color: #3b82f6;
+}
+
+.info-value-hoa {
+  color: #8b5cf6;
+}
+
+/* Tip paragraph */
+.payment-tip {
+  margin-top: 15px;
+  font-size: 14px;
+  color: #666;
+  font-style: italic;
+}
+
+/* Pay Extra Calculator container */
+.pay-extra-container {
+  padding: 15px;
+  margin-bottom: 20px;
+  background-color: #f0f8f0;
+  border-radius: 8px;
+  border: 2px solid var(--forest-green);
+}
+
+.pay-extra-title {
+  color: var(--forest-green);
+  margin-bottom: 10px;
+  font-size: 18px;
+}
+
+/* Payment breakdown box */
+.payment-breakdown-box {
+  padding: 20px;
+  margin-bottom: 25px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  border: 2px solid var(--forest-green);
+}
+
+.payment-breakdown-title {
+  margin: 0 0 15px 0;
+  color: var(--forest-green);
+}
+
+.payment-breakdown-items {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.payment-breakdown-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+}
+
+.payment-breakdown-row.late-fee,
+.payment-breakdown-row.notice-fee,
+.payment-breakdown-row.postal-fee {
+  color: #dc3545;
+}
+
+.payment-breakdown-row-value {
+  font-weight: 600;
+}
+
+.payment-breakdown-subtotal {
+  border-top: 2px solid #ddd;
+  padding-top: 15px;
+  margin-top: 10px;
+}
+
+.payment-breakdown-subtotal-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+}
+
+.payment-breakdown-subtotal-row.label {
+  font-weight: 600;
+}
+
+.payment-breakdown-fee-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  font-size: 14px;
+  color: #666;
+}
+
+.payment-breakdown-total {
+  border-top: 3px solid var(--forest-green);
+  padding-top: 15px;
+  margin-top: 15px;
+  background-color: white;
+  padding: 15px;
+  border-radius: 6px;
+}
+
+.payment-breakdown-total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.payment-breakdown-total-label {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.payment-breakdown-total-amount {
+  font-size: 24px;
+  font-weight: bold;
+  color: var(--forest-green);
+}
+
+/* Billing info section */
+.billing-info-section {
+  margin-top: 1.5rem;
+}
+
+.billing-info-title {
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  color: var(--forest-green);
+}
+
+.billing-info-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 1rem;
+}
+
+/* PayExtraCalculator - Results display */
+.pay-extra-results {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: white;
+  border-radius: 8px;
+  border: 1px solid var(--forest-green);
+}
+
+.pay-extra-results-title {
+  font-size: 16px;
+  margin-bottom: 15px;
+  color: var(--forest-green);
+}
+
+.pay-extra-monthly {
+  margin-bottom: 10px;
+}
+
+.pay-extra-savings {
+  margin-bottom: 10px;
+  color: var(--forest-green);
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.pay-extra-payoff-date {
+  margin-top: 15px;
+  padding: 10px;
+  background-color: #f0f8f0;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+/* Mobile responsive for LoanDetail additions */
+@media (max-width: 768px) {
+  .loan-detail-button-container {
+    flex-direction: column;
+  }
+  
+  .loan-detail-button-container .btn {
+    width: 100%;
+  }
+  
+  .billing-info-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .payment-breakdown-box {
+    padding: 15px;
+  }
+  
+  .payment-breakdown-total-label {
+    font-size: 16px;
+  }
+  
+  .payment-breakdown-total-amount {
+    font-size: 20px;
+  }
+}
+
 /* ===================
    PAYMENT HISTORY PAGE STYLES
 =================== */

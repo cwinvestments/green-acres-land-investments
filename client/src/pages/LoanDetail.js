@@ -22,6 +22,7 @@ function LoanDetail() {
   const [billingCity, setBillingCity] = useState('');
   const [billingState, setBillingState] = useState('');
   const [billingZip, setBillingZip] = useState('');
+  
   const loadLoan = useCallback(async () => {
     try {
       const response = await getLoan(id);
@@ -192,13 +193,13 @@ function LoanDetail() {
   
   const paymentStatus = getPaymentStatus();
 
- return (
+  return (
     <div className="loan-detail">
-      <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', marginBottom: '20px' }}>
-        <button onClick={() => navigate('/dashboard')} className="btn btn-secondary" style={{ flex: '1 1 auto' }}>
+      <div className="loan-detail-button-container">
+        <button onClick={() => navigate('/dashboard')} className="btn btn-secondary">
           ← Back to Dashboard
         </button>
-        <button onClick={() => navigate(`/loans/${id}/payments`)} className="btn btn-secondary" style={{ flex: '1 1 auto' }}>
+        <button onClick={() => navigate(`/loans/${id}/payments`)} className="btn btn-secondary">
           View Payment History
         </button>
         <button 
@@ -240,8 +241,7 @@ function LoanDetail() {
             printWindow.document.close();
             printWindow.print();
           }} 
-          className="btn btn-primary" 
-          style={{ flex: '1 1 auto' }}
+          className="btn btn-primary"
         >
           🖨️ Print Loan Statement
         </button>
@@ -271,8 +271,6 @@ function LoanDetail() {
           )}
         </div>
       )}
-      
-      
 
       <div className="loan-detail-grid">
         <div className="loan-info-card">
@@ -349,7 +347,7 @@ function LoanDetail() {
           {loan.next_payment_date && loan.status === 'active' && (
             <div className="info-row">
               <span>Next Payment Due:</span>
-              <span style={{ fontWeight: '600', color: 'var(--forest-green)', fontSize: '1.1rem' }}>
+              <span className="next-payment-date">
                 {new Date(loan.next_payment_date.split('T')[0].replace(/-/g, '/')).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
               </span>
             </div>
@@ -367,38 +365,38 @@ function LoanDetail() {
 
           {payments.length > 0 && (
             <>
-              <hr style={{ margin: '20px 0', border: 'none', borderTop: '1px solid #e0e0e0' }} />
+              <hr className="info-section-separator" />
               
-              <h3 style={{ fontSize: '18px', marginBottom: '15px', color: 'var(--forest-green)' }}>💰 Payment Breakdown</h3>
+              <h3 className="info-section-header">💰 Payment Breakdown</h3>
               
               <div className="info-row">
                 <span>Total Principal Paid:</span>
-                <span style={{ color: 'var(--forest-green)', fontWeight: 'bold' }}>
+                <span className="info-value-principal">
                   ${formatCurrency(totalPrincipalPaid)}
                 </span>
               </div>
               
               <div className="info-row">
                 <span>Total Interest Paid:</span>
-                <span style={{ color: '#f59e0b', fontWeight: 'bold' }}>
+                <span className="info-value-interest">
                   ${formatCurrency(totalInterestPaid)}
                 </span>
               </div>
               
-              <hr style={{ margin: '20px 0', border: 'none', borderTop: '1px solid #e0e0e0' }} />
+              <hr className="info-section-separator" />
               
-              <h3 style={{ fontSize: '18px', marginBottom: '15px', color: 'var(--forest-green)' }}>📊 Next Payment Breakdown</h3>
+              <h3 className="info-section-header">📊 Next Payment Breakdown</h3>
               
               <div className="info-row">
                 <span>Principal:</span>
-                <span style={{ color: 'var(--forest-green)' }}>
+                <span className="info-value-principal">
                   ${formatCurrency(nextPrincipal)}
                 </span>
               </div>
               
               <div className="info-row">
                 <span>Interest:</span>
-                <span style={{ color: '#f59e0b' }}>
+                <span className="info-value-interest">
                   ${formatCurrency(nextInterest)}
                 </span>
               </div>
@@ -406,7 +404,7 @@ function LoanDetail() {
               {paymentBreakdown && paymentBreakdown.monthlyTax > 0 && (
                 <div className="info-row">
                   <span>Property Tax:</span>
-                  <span style={{ color: '#3b82f6' }}>
+                  <span className="info-value-tax">
                     ${formatCurrency(paymentBreakdown.monthlyTax)}
                   </span>
                 </div>
@@ -415,13 +413,13 @@ function LoanDetail() {
               {paymentBreakdown && paymentBreakdown.monthlyHoa > 0 && (
                 <div className="info-row">
                   <span>HOA Fee:</span>
-                  <span style={{ color: '#8b5cf6' }}>
+                  <span className="info-value-hoa">
                     ${formatCurrency(paymentBreakdown.monthlyHoa)}
                   </span>
                 </div>
               )}
               
-              <p style={{ marginTop: '15px', fontSize: '14px', color: '#666', fontStyle: 'italic' }}>
+              <p className="payment-tip">
                 💡 Tip: Pay extra to reduce interest and own your land faster!
               </p>
             </>
@@ -432,94 +430,79 @@ function LoanDetail() {
           <div className="payment-card">
             <h2>Make a Payment</h2>
             
-            {/* Pay Extra Calculator */}
-            <div style={{ padding: '15px', marginBottom: '20px', backgroundColor: '#f0f8f0', borderRadius: '8px', border: '2px solid var(--forest-green)' }}>
-              <h3 style={{ color: 'var(--forest-green)', marginBottom: '10px', fontSize: '18px' }}>💡 Pay Extra & Save!</h3>
+            <div className="pay-extra-container">
+              <h3 className="pay-extra-title">💡 Pay Extra & Save!</h3>
               <PayExtraCalculator loan={loan} />
             </div>
             
             <form onSubmit={handlePayment}>
-              {/* Payment Breakdown */}
               {paymentBreakdown && !loadingBreakdown && (
-                <div style={{
-                  padding: '20px',
-                  marginBottom: '25px',
-                  backgroundColor: '#f9f9f9',
-                  borderRadius: '8px',
-                  border: '2px solid var(--forest-green)'
-                }}>
-                  <h3 style={{ margin: '0 0 15px 0', color: 'var(--forest-green)' }}>💳 Payment Breakdown</h3>
+                <div className="payment-breakdown-box">
+                  <h3 className="payment-breakdown-title">💳 Payment Breakdown</h3>
                   
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '15px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0' }}>
+                  <div className="payment-breakdown-items">
+                    <div className="payment-breakdown-row">
                       <span>Monthly Loan Payment:</span>
-                      <span style={{ fontWeight: '600' }}>${paymentBreakdown.loanPayment.toFixed(2)}</span>
+                      <span className="payment-breakdown-row-value">${paymentBreakdown.loanPayment.toFixed(2)}</span>
                     </div>
                     
                     {paymentBreakdown.monthlyTax > 0 && (
-                      <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0' }}>
+                      <div className="payment-breakdown-row">
                         <span>Estimated Monthly Property Tax:</span>
-                        <span style={{ fontWeight: '600' }}>${paymentBreakdown.monthlyTax.toFixed(2)}</span>
+                        <span className="payment-breakdown-row-value">${paymentBreakdown.monthlyTax.toFixed(2)}</span>
                       </div>
                     )}
                     
                     {paymentBreakdown.monthlyHoa > 0 && (
-                      <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0' }}>
+                      <div className="payment-breakdown-row">
                         <span>HOA Fee:</span>
-                        <span style={{ fontWeight: '600' }}>${paymentBreakdown.monthlyHoa.toFixed(2)}</span>
+                        <span className="payment-breakdown-row-value">${paymentBreakdown.monthlyHoa.toFixed(2)}</span>
                       </div>
                     )}
                     
                     {paymentBreakdown.lateFee > 0 && (
-                      <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', color: '#dc3545' }}>
+                      <div className="payment-breakdown-row late-fee">
                         <span>Late Fee ({paymentBreakdown.daysOverdue} days overdue):</span>
-                        <span style={{ fontWeight: '600' }}>${paymentBreakdown.lateFee.toFixed(2)}</span>
+                        <span className="payment-breakdown-row-value">${paymentBreakdown.lateFee.toFixed(2)}</span>
                       </div>
                     )}
                     
                     {paymentBreakdown.noticeFee > 0 && (
-                      <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', color: '#dc3545' }}>
+                      <div className="payment-breakdown-row notice-fee">
                         <span>Default/Cure Notice Fee:</span>
-                        <span style={{ fontWeight: '600' }}>${paymentBreakdown.noticeFee.toFixed(2)}</span>
+                        <span className="payment-breakdown-row-value">${paymentBreakdown.noticeFee.toFixed(2)}</span>
                       </div>
                     )}
                     
                     {paymentBreakdown.postalFee > 0 && (
-                      <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', color: '#dc3545' }}>
+                      <div className="payment-breakdown-row postal-fee">
                         <span>Postal/Certified Mail Fee:</span>
-                        <span style={{ fontWeight: '600' }}>${paymentBreakdown.postalFee.toFixed(2)}</span>
+                        <span className="payment-breakdown-row-value">${paymentBreakdown.postalFee.toFixed(2)}</span>
                       </div>
                     )}
                   </div>
                   
-                  <div style={{ borderTop: '2px solid #ddd', paddingTop: '15px', marginTop: '10px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0' }}>
-                      <span style={{ fontWeight: '600' }}>Subtotal:</span>
-                      <span style={{ fontWeight: '600' }}>${paymentBreakdown.subtotal.toFixed(2)}</span>
+                  <div className="payment-breakdown-subtotal">
+                    <div className="payment-breakdown-subtotal-row label">
+                      <span>Subtotal:</span>
+                      <span>${paymentBreakdown.subtotal.toFixed(2)}</span>
                     </div>
                     
-                    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', fontSize: '14px', color: '#666' }}>
+                    <div className="payment-breakdown-fee-row">
                       <span>Square Processing Fee:</span>
                       <span>${paymentBreakdown.squareFee.toFixed(2)}</span>
                     </div>
                     
-                    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', fontSize: '14px', color: '#666' }}>
+                    <div className="payment-breakdown-fee-row">
                       <span>Credit Card Processing Fee:</span>
                       <span>${paymentBreakdown.convenienceFee.toFixed(2)}</span>
                     </div>
                   </div>
                   
-                  <div style={{ 
-                    borderTop: '3px solid var(--forest-green)', 
-                    paddingTop: '15px', 
-                    marginTop: '15px',
-                    backgroundColor: 'white',
-                    padding: '15px',
-                    borderRadius: '6px'
-                  }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span style={{ fontSize: '18px', fontWeight: 'bold' }}>TOTAL DUE TODAY:</span>
-                      <span style={{ fontSize: '24px', fontWeight: 'bold', color: 'var(--forest-green)' }}>
+                  <div className="payment-breakdown-total">
+                    <div className="payment-breakdown-total-row">
+                      <span className="payment-breakdown-total-label">TOTAL DUE TODAY:</span>
+                      <span className="payment-breakdown-total-amount">
                         ${paymentBreakdown.total.toFixed(2)}
                       </span>
                     </div>
@@ -573,8 +556,8 @@ function LoanDetail() {
                 </p>
               </div>
 
-              <div className="billing-info-section" style={{ marginTop: '1.5rem' }}>
-                <h3 style={{ fontSize: '1.1rem', marginBottom: '1rem', color: 'var(--forest-green)' }}>Billing Information</h3>
+              <div className="billing-info-section">
+                <h3 className="billing-info-title">Billing Information</h3>
                 
                 <div className="form-group">
                   <label>Cardholder Name *</label>
@@ -598,7 +581,7 @@ function LoanDetail() {
                   />
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: '1rem' }}>
+                <div className="billing-info-grid">
                   <div className="form-group">
                     <label>City *</label>
                     <input
@@ -686,10 +669,10 @@ function LoanDetail() {
                 </div>
               </div>
 
-              <div id="payment-card-container" style={{ marginTop: '1rem' }}></div>
+              <div id="payment-card-container"></div>
 
               {paymentError && (
-                <div className="error-message" style={{ marginTop: '1rem' }}>
+                <div className="error-message">
                   {paymentError}
                 </div>
               )}
@@ -700,7 +683,6 @@ function LoanDetail() {
                   className="btn btn-primary btn-full-width"
                   onClick={initializeSquarePayment}
                   disabled={processing}
-                  style={{ marginTop: '1rem' }}
                 >
                   Continue to Payment
                 </button>
@@ -709,7 +691,6 @@ function LoanDetail() {
                   type="submit"
                   className="btn btn-primary btn-full-width"
                   disabled={processing}
-                  style={{ marginTop: '1rem' }}
                 >
                   {processing ? 'Processing...' : `Pay $${formatCurrency(paymentAmount)}`}
                 </button>
@@ -720,7 +701,7 @@ function LoanDetail() {
       </div>
 
       {loan.status === 'paid_off' && (
-        <div className="success-message" style={{ marginTop: '2rem' }}>
+        <div className="success-message">
           🎉 Congratulations! This loan has been paid off!
         </div>
       )}
@@ -774,22 +755,22 @@ function PayExtraCalculator({ loan }) {
       </div>
       
       {extraPayment && parseFloat(extraPayment) > 0 && (
-        <div style={{ marginTop: '20px', padding: '15px', backgroundColor: 'white', borderRadius: '8px', border: '1px solid var(--forest-green)' }}>
-          <h3 style={{ fontSize: '16px', marginBottom: '15px', color: 'var(--forest-green)' }}>💰 Your Savings:</h3>
+        <div className="pay-extra-results">
+          <h3 className="pay-extra-results-title">💰 Your Savings:</h3>
           
-          <div style={{ marginBottom: '10px' }}>
+          <div className="pay-extra-monthly">
             <strong>New Monthly Payment:</strong> ${formatCurrency(newMonthly)}
           </div>
           
-          <div style={{ marginBottom: '10px', color: 'var(--forest-green)', fontWeight: 'bold', fontSize: '18px' }}>
+          <div className="pay-extra-savings">
             ⏱️ Pay off {monthsSaved} months earlier!
           </div>
           
-          <div style={{ marginBottom: '10px', color: 'var(--forest-green)', fontWeight: 'bold', fontSize: '18px' }}>
+          <div className="pay-extra-savings">
             💵 Save ${formatCurrency(interestSaved)} in interest!
           </div>
           
-          <div style={{ marginTop: '15px', padding: '10px', backgroundColor: '#f0f8f0', borderRadius: '4px', fontSize: '14px' }}>
+          <div className="pay-extra-payoff-date">
             <strong>Own your land by:</strong> {new Date(Date.now() + (currentMonths - monthsSaved) * 30 * 24 * 60 * 60 * 1000).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
           </div>
         </div>

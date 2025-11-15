@@ -756,43 +756,7 @@ ${contract.contract_text}
                             ⏳ Awaiting Customer Signature
                           </div>
                         )}
-			{loan.contract_status === 'fully_executed' && (
-                          <button
-                            onClick={async () => {
-                              const signature = prompt('Sign this contract by typing your full legal name:\n\nBy typing your name, you agree to the terms and conditions of this Contract for Deed.');
-                              if (!signature || !signature.trim()) return;
-                              
-                              if (!window.confirm(`Sign as: ${signature.trim()}?\n\nThis signature will be legally binding.`)) return;
-                              
-                              try {
-                                const response = await fetch(`${process.env.REACT_APP_API_URL}/admin/loans/${loan.id}/sign-contract`, {
-                                  method: 'POST',
-                                  headers: {
-                                    'Content-Type': 'application/json',
-                                    'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
-                                  },
-                                  body: JSON.stringify({ signature: signature.trim() })
-                                });
-                                if (!response.ok) throw new Error('Failed');
-                                alert('Contract fully executed!');
-                                loadLoans();
-                              } catch (err) {
-                                alert('Failed to sign contract');
-                              }
-                            }}
-                            className="btn btn-small"
-                            style={{
-                              backgroundColor: '#ffc107',
-                              color: '#000',
-                              width: '100%',
-                              fontSize: '12px',
-                              marginTop: '5px',
-                              fontWeight: 'bold'
-                            }}
-                          >
-                            ✍️ Sign Contract (Customer Signed)
-                          </button>
-                        )}
+			
                         {loan.contract_status === 'fully_executed' && (
                           <>
                             <div style={{

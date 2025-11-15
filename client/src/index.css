@@ -2442,6 +2442,131 @@ label:has(.required-asterisk)::after {
   font-size: 1.1rem;
 }
 
+/* Payment History - Additional Styles */
+
+/* Button container */
+.payment-history-button-container {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.payment-history-button-container .btn {
+  flex: 1 1 auto;
+}
+
+/* Table cell colors for payment breakdown */
+.payment-table-principal {
+  color: var(--forest-green);
+  text-align: right;
+  font-size: 13px;
+}
+
+.payment-table-interest {
+  color: #f59e0b;
+  text-align: right;
+  font-size: 13px;
+}
+
+.payment-table-tax {
+  color: #3b82f6;
+  text-align: right;
+  font-size: 13px;
+}
+
+.payment-table-hoa {
+  color: #8b5cf6;
+  text-align: right;
+  font-size: 13px;
+}
+
+.payment-table-amount {
+  text-align: right;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.payment-table-date {
+  font-size: 13px;
+}
+
+.payment-table-type {
+  font-size: 13px;
+}
+
+.payment-table-method {
+  text-transform: capitalize;
+  font-size: 13px;
+}
+
+.payment-table-receipt-btn {
+  padding: 5px 10px;
+  font-size: 12px;
+}
+
+/* Mobile Card Styles */
+.payment-card-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  border-bottom: 2px solid var(--forest-green);
+  padding-bottom: 10px;
+}
+
+.payment-card-date-section span {
+  font-size: 14px;
+  color: #666;
+}
+
+.payment-card-amount-section {
+  text-align: right;
+}
+
+.payment-card-amount {
+  font-size: 20px;
+  font-weight: bold;
+  color: var(--forest-green);
+}
+
+.payment-card-breakdown {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  font-size: 14px;
+}
+
+.payment-card-breakdown-value-principal {
+  color: var(--forest-green);
+}
+
+.payment-card-breakdown-value-interest {
+  color: #f59e0b;
+}
+
+.payment-card-breakdown-value-tax {
+  color: #3b82f6;
+}
+
+.payment-card-breakdown-value-hoa {
+  color: #8b5cf6;
+}
+
+.payment-card-method {
+  text-transform: capitalize;
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+  .payment-history-button-container {
+    flex-direction: column;
+  }
+  
+  .payment-history-button-container .btn {
+    width: 100%;
+  }
+}
+
 /* ===================
    SOLD PROPERTIES PAGE STYLES
 =================== */

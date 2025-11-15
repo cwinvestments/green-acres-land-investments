@@ -10,26 +10,27 @@ function PaymentHistory() {
   const [loan, setLoan] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  
   const loadData = useCallback(async () => {
-  try {
-    const [paymentsResponse, loanResponse] = await Promise.all([
-      getPaymentHistory(id),
-      getLoan(id)
-    ]);
-    
-    setPayments(paymentsResponse.data);
-    setLoan(loanResponse.data);
-  } catch (err) {
-    setError('Failed to load payment history');
-    console.error(err);
-  } finally {
-    setLoading(false);
-  }
-}, [id]);
+    try {
+      const [paymentsResponse, loanResponse] = await Promise.all([
+        getPaymentHistory(id),
+        getLoan(id)
+      ]);
+      
+      setPayments(paymentsResponse.data);
+      setLoan(loanResponse.data);
+    } catch (err) {
+      setError('Failed to load payment history');
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  }, [id]);
 
-useEffect(() => {
-  loadData();
-}, [loadData]);
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
 
   if (loading) {
     return (
@@ -52,8 +53,8 @@ useEffect(() => {
 
   return (
     <div className="payment-history">
-      <div style={{ display: 'flex', gap: '10px', marginBottom: '20px', flexWrap: 'wrap' }}>
-        <button onClick={() => navigate(`/loans/${id}`)} className="btn btn-secondary" style={{ flex: '1 1 auto' }}>
+      <div className="payment-history-button-container">
+        <button onClick={() => navigate(`/loans/${id}`)} className="btn btn-secondary">
           ← Back to Loan Details
         </button>
         <button 
@@ -108,12 +109,12 @@ useEffect(() => {
             printWindow.document.close();
             printWindow.print();
           }}
-          className="btn btn-primary" 
-          style={{ flex: '1 1 auto' }}
+          className="btn btn-primary"
         >
           🖨️ Print Payment History
         </button>
       </div>
+      
       <h1>Payment History</h1>
       
       {loan && (
@@ -139,176 +140,175 @@ useEffect(() => {
         </div>
       ) : (
         <>
-        {/* Desktop Table View */}
-        <div className="payments-table desktop-only">
-          <table style={{ fontSize: '14px' }}>
-            <thead>
-              <tr>
-                <th style={{ minWidth: '90px' }}>Date</th>
-                <th style={{ minWidth: '100px' }}>Type</th>
-                <th style={{ minWidth: '80px', textAlign: 'right' }}>Amount</th>
-                <th style={{ minWidth: '75px', textAlign: 'right' }}>Principal</th>
-                <th style={{ minWidth: '75px', textAlign: 'right' }}>Interest</th>
-                <th style={{ minWidth: '65px', textAlign: 'right' }}>Tax</th>
-                <th style={{ minWidth: '65px', textAlign: 'right' }}>HOA</th>
-                <th style={{ minWidth: '80px' }}>Method</th>
-                <th style={{ minWidth: '80px', textAlign: 'center' }}>Receipt</th>
-              </tr>
-            </thead>
-            <tbody>
-              {payments.map((payment) => (
-                <tr key={payment.id}>
-                  <td style={{ fontSize: '13px' }}>
-                    {new Date(payment.payment_date).toLocaleDateString()}
-                  </td>
-                  <td style={{ fontSize: '13px' }}>
-                    {payment.payment_type === 'down_payment' ? 'Down Payment' : payment.payment_type === 'processing_fee' ? 'Processing Fee' : 'Monthly Payment'}
-                  </td>
-                  <td className="amount" style={{ textAlign: 'right', fontSize: '14px', fontWeight: '600' }}>
-                    ${formatCurrency(payment.amount)}
-                  </td>
-                  <td style={{ color: 'var(--forest-green)', textAlign: 'right', fontSize: '13px' }}>
-                    {payment.principal_amount ? `$${formatCurrency(payment.principal_amount)}` : '—'}
-                  </td>
-                  <td style={{ color: '#f59e0b', textAlign: 'right', fontSize: '13px' }}>
-                    {payment.interest_amount ? `$${formatCurrency(payment.interest_amount)}` : '—'}
-                  </td>
-                  <td style={{ color: '#3b82f6', textAlign: 'right', fontSize: '13px' }}>
-                    {payment.tax_amount ? `$${formatCurrency(payment.tax_amount)}` : '—'}
-                  </td>
-                  <td style={{ color: '#8b5cf6', textAlign: 'right', fontSize: '13px' }}>
-                    {payment.hoa_amount ? `$${formatCurrency(payment.hoa_amount)}` : '—'}
-                  </td>
-                  <td style={{ textTransform: 'capitalize', fontSize: '13px' }}>
-                    {payment.payment_method || 'Square'}
-                  </td>
-                  <td style={{ textAlign: 'center' }}>
-                    <button
-                      onClick={() => {
-                        const printWindow = window.open('', '_blank', 'width=600,height=700,left=300,top=100');
-                        printWindow.document.write(`
-                          <html>
-                            <head>
-                              <title>Payment Receipt #${payment.id}</title>
-                              <style>
-                                body { font-family: Arial, sans-serif; padding: 30px; }
-                                h1 { color: #2c5f2d; margin-bottom: 5px; }
-                                h2 { color: #666; margin-top: 0; }
-                                table { width: 100%; border-collapse: collapse; margin: 20px 0; }
-                                td { padding: 10px; border-bottom: 1px solid #ddd; }
-                                .label { font-weight: bold; width: 40%; }
-                                .value { text-align: right; }
-                                .total { background: #f0f8f0; font-size: 18px; font-weight: bold; }
-                              </style>
-                            </head>
-                            <body>
-                              <h1>Green Acres Land Investments, LLC</h1>
-                              <h2>Payment Receipt</h2>
-                              <p><strong>Receipt #${payment.id}</strong></p>
-                              <p><strong>Property:</strong> ${loan?.property_title || ''}</p>
-                              <table>
-                                <tr><td class="label">Payment Date:</td><td class="value">${new Date(payment.payment_date).toLocaleDateString()}</td></tr>
-                                <tr><td class="label">Payment Type:</td><td class="value">${payment.payment_type === 'down_payment' ? 'Down Payment' : payment.payment_type === 'processing_fee' ? 'Processing Fee' : 'Monthly Payment'}</td></tr> Payment'}</td></tr>
-                                ${payment.principal_amount ? `<tr><td class="label">Principal:</td><td class="value">$${formatCurrency(payment.principal_amount)}</td></tr>` : ''}
-                                ${payment.interest_amount ? `<tr><td class="label">Interest:</td><td class="value">$${formatCurrency(payment.interest_amount)}</td></tr>` : ''}
-                                ${payment.tax_amount ? `<tr><td class="label">Property Tax:</td><td class="value">$${formatCurrency(payment.tax_amount)}</td></tr>` : ''}
-                                ${payment.hoa_amount ? `<tr><td class="label">HOA Fee:</td><td class="value">$${formatCurrency(payment.hoa_amount)}</td></tr>` : ''}
-                                <tr class="total"><td class="label">Total Amount:</td><td class="value">$${formatCurrency(payment.amount)}</td></tr>
-                                <tr><td class="label">Payment Method:</td><td class="value">${payment.payment_method || 'Square'}</td></tr>
-                                <tr><td class="label">Status:</td><td class="value">${payment.status}</td></tr>
-                              </table>
-                              <p style="margin-top: 40px; font-size: 12px; color: #666;">
-                                Thank you for your payment!<br/>
-                                Generated: ${new Date().toLocaleDateString()}
-                              </p>
-                            </body>
-                          </html>
-                        `);
-                        printWindow.document.close();
-                        printWindow.print();
-                      }}
-                      className="btn btn-small"
-                      style={{ padding: '5px 10px', fontSize: '12px' }}
-                    >
-                      🖨️ Receipt
-                    </button>
-                  </td>
+          {/* Desktop Table View */}
+          <div className="payments-table desktop-only">
+            <table>
+              <thead>
+                <tr>
+                  <th style={{ minWidth: '90px' }}>Date</th>
+                  <th style={{ minWidth: '100px' }}>Type</th>
+                  <th style={{ minWidth: '80px', textAlign: 'right' }}>Amount</th>
+                  <th style={{ minWidth: '75px', textAlign: 'right' }}>Principal</th>
+                  <th style={{ minWidth: '75px', textAlign: 'right' }}>Interest</th>
+                  <th style={{ minWidth: '65px', textAlign: 'right' }}>Tax</th>
+                  <th style={{ minWidth: '65px', textAlign: 'right' }}>HOA</th>
+                  <th style={{ minWidth: '80px' }}>Method</th>
+                  <th style={{ minWidth: '80px', textAlign: 'center' }}>Receipt</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-          
-          <div className="payments-total">
-            <strong>Total Payments:</strong> ${formatCurrency(totalPaid)}
-          </div>
-        </div>
-
-        {/* Mobile Card View */}
-        <div className="payments-cards mobile-only">
-          {payments.map((payment) => (
-            <div key={payment.id} className="payment-card-mobile">
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px', borderBottom: '2px solid var(--forest-green)', paddingBottom: '10px' }}>
-                <div>
-                  <strong>{new Date(payment.payment_date).toLocaleDateString()}</strong>
-                  <br />
-                  <span style={{ fontSize: '14px', color: '#666' }}>
-                    {payment.payment_type === 'down_payment' ? 'Down Payment' : payment.payment_type === 'processing_fee' ? 'Processing Fee' : 'Monthly Payment'}
-                  </span>
-                </div>
-                <div style={{ textAlign: 'right' }}>
-                  <div style={{ fontSize: '20px', fontWeight: 'bold', color: 'var(--forest-green)' }}>
-                    ${formatCurrency(payment.amount)}
-                  </div>
-                  <span className={`status-badge status-${payment.status}`}>
-                    {payment.status === 'completed' ? 'Completed' : payment.status}
-                  </span>
-                </div>
-              </div>
-              
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', fontSize: '14px' }}>
-                <div>
-                  <strong>Principal:</strong>
-                  <br />
-                  <span style={{ color: 'var(--forest-green)' }}>
-                    {payment.principal_amount ? `$${formatCurrency(payment.principal_amount)}` : '—'}
-                  </span>
-                </div>
-                <div>
-                  <strong>Interest:</strong>
-                  <br />
-                  <span style={{ color: '#f59e0b' }}>
-                    {payment.interest_amount ? `$${formatCurrency(payment.interest_amount)}` : '—'}
-                  </span>
-                </div>
-                <div>
-                  <strong>Tax:</strong>
-                  <br />
-                  <span style={{ color: '#3b82f6' }}>
-                    {payment.tax_amount ? `$${formatCurrency(payment.tax_amount)}` : '—'}
-                  </span>
-                </div>
-                <div>
-                  <strong>HOA:</strong>
-                  <br />
-                  <span style={{ color: '#8b5cf6' }}>
-                    {payment.hoa_amount ? `$${formatCurrency(payment.hoa_amount)}` : '—'}
-                  </span>
-                </div>
-                <div>
-                  <strong>Method:</strong>
-                  <br />
-                  <span style={{ textTransform: 'capitalize' }}>
-                    {payment.payment_method || 'Square'}
-                  </span>
-                </div>
-              </div>
+              </thead>
+              <tbody>
+                {payments.map((payment) => (
+                  <tr key={payment.id}>
+                    <td className="payment-table-date">
+                      {new Date(payment.payment_date).toLocaleDateString()}
+                    </td>
+                    <td className="payment-table-type">
+                      {payment.payment_type === 'down_payment' ? 'Down Payment' : payment.payment_type === 'processing_fee' ? 'Processing Fee' : 'Monthly Payment'}
+                    </td>
+                    <td className="payment-table-amount">
+                      ${formatCurrency(payment.amount)}
+                    </td>
+                    <td className="payment-table-principal">
+                      {payment.principal_amount ? `$${formatCurrency(payment.principal_amount)}` : '—'}
+                    </td>
+                    <td className="payment-table-interest">
+                      {payment.interest_amount ? `$${formatCurrency(payment.interest_amount)}` : '—'}
+                    </td>
+                    <td className="payment-table-tax">
+                      {payment.tax_amount ? `$${formatCurrency(payment.tax_amount)}` : '—'}
+                    </td>
+                    <td className="payment-table-hoa">
+                      {payment.hoa_amount ? `$${formatCurrency(payment.hoa_amount)}` : '—'}
+                    </td>
+                    <td className="payment-table-method">
+                      {payment.payment_method || 'Square'}
+                    </td>
+                    <td style={{ textAlign: 'center' }}>
+                      <button
+                        onClick={() => {
+                          const printWindow = window.open('', '_blank', 'width=600,height=700,left=300,top=100');
+                          printWindow.document.write(`
+                            <html>
+                              <head>
+                                <title>Payment Receipt #${payment.id}</title>
+                                <style>
+                                  body { font-family: Arial, sans-serif; padding: 30px; }
+                                  h1 { color: #2c5f2d; margin-bottom: 5px; }
+                                  h2 { color: #666; margin-top: 0; }
+                                  table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+                                  td { padding: 10px; border-bottom: 1px solid #ddd; }
+                                  .label { font-weight: bold; width: 40%; }
+                                  .value { text-align: right; }
+                                  .total { background: #f0f8f0; font-size: 18px; font-weight: bold; }
+                                </style>
+                              </head>
+                              <body>
+                                <h1>Green Acres Land Investments, LLC</h1>
+                                <h2>Payment Receipt</h2>
+                                <p><strong>Receipt #${payment.id}</strong></p>
+                                <p><strong>Property:</strong> ${loan?.property_title || ''}</p>
+                                <table>
+                                  <tr><td class="label">Payment Date:</td><td class="value">${new Date(payment.payment_date).toLocaleDateString()}</td></tr>
+                                  <tr><td class="label">Payment Type:</td><td class="value">${payment.payment_type === 'down_payment' ? 'Down Payment' : payment.payment_type === 'processing_fee' ? 'Processing Fee' : 'Monthly Payment'}</td></tr>
+                                  ${payment.principal_amount ? `<tr><td class="label">Principal:</td><td class="value">$${formatCurrency(payment.principal_amount)}</td></tr>` : ''}
+                                  ${payment.interest_amount ? `<tr><td class="label">Interest:</td><td class="value">$${formatCurrency(payment.interest_amount)}</td></tr>` : ''}
+                                  ${payment.tax_amount ? `<tr><td class="label">Property Tax:</td><td class="value">$${formatCurrency(payment.tax_amount)}</td></tr>` : ''}
+                                  ${payment.hoa_amount ? `<tr><td class="label">HOA Fee:</td><td class="value">$${formatCurrency(payment.hoa_amount)}</td></tr>` : ''}
+                                  <tr class="total"><td class="label">Total Amount:</td><td class="value">$${formatCurrency(payment.amount)}</td></tr>
+                                  <tr><td class="label">Payment Method:</td><td class="value">${payment.payment_method || 'Square'}</td></tr>
+                                  <tr><td class="label">Status:</td><td class="value">${payment.status}</td></tr>
+                                </table>
+                                <p style="margin-top: 40px; font-size: 12px; color: #666;">
+                                  Thank you for your payment!<br/>
+                                  Generated: ${new Date().toLocaleDateString()}
+                                </p>
+                              </body>
+                            </html>
+                          `);
+                          printWindow.document.close();
+                          printWindow.print();
+                        }}
+                        className="btn btn-small payment-table-receipt-btn"
+                      >
+                        🖨️ Receipt
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            
+            <div className="payments-total">
+              <strong>Total Payments:</strong> ${formatCurrency(totalPaid)}
             </div>
-          ))}
-          
-          <div className="payments-total" style={{ marginTop: '20px' }}>
-            <strong>Total Payments:</strong> ${formatCurrency(totalPaid)}
           </div>
-        </div>
+
+          {/* Mobile Card View */}
+          <div className="payments-cards mobile-only">
+            {payments.map((payment) => (
+              <div key={payment.id} className="payment-card-mobile">
+                <div className="payment-card-header">
+                  <div className="payment-card-date-section">
+                    <strong>{new Date(payment.payment_date).toLocaleDateString()}</strong>
+                    <br />
+                    <span>
+                      {payment.payment_type === 'down_payment' ? 'Down Payment' : payment.payment_type === 'processing_fee' ? 'Processing Fee' : 'Monthly Payment'}
+                    </span>
+                  </div>
+                  <div className="payment-card-amount-section">
+                    <div className="payment-card-amount">
+                      ${formatCurrency(payment.amount)}
+                    </div>
+                    <span className={`status-badge status-${payment.status}`}>
+                      {payment.status === 'completed' ? 'Completed' : payment.status}
+                    </span>
+                  </div>
+                </div>
+                
+                <div className="payment-card-breakdown">
+                  <div>
+                    <strong>Principal:</strong>
+                    <br />
+                    <span className="payment-card-breakdown-value-principal">
+                      {payment.principal_amount ? `$${formatCurrency(payment.principal_amount)}` : '—'}
+                    </span>
+                  </div>
+                  <div>
+                    <strong>Interest:</strong>
+                    <br />
+                    <span className="payment-card-breakdown-value-interest">
+                      {payment.interest_amount ? `$${formatCurrency(payment.interest_amount)}` : '—'}
+                    </span>
+                  </div>
+                  <div>
+                    <strong>Tax:</strong>
+                    <br />
+                    <span className="payment-card-breakdown-value-tax">
+                      {payment.tax_amount ? `$${formatCurrency(payment.tax_amount)}` : '—'}
+                    </span>
+                  </div>
+                  <div>
+                    <strong>HOA:</strong>
+                    <br />
+                    <span className="payment-card-breakdown-value-hoa">
+                      {payment.hoa_amount ? `$${formatCurrency(payment.hoa_amount)}` : '—'}
+                    </span>
+                  </div>
+                  <div>
+                    <strong>Method:</strong>
+                    <br />
+                    <span className="payment-card-method">
+                      {payment.payment_method || 'Square'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            ))}
+            
+            <div className="payments-total">
+              <strong>Total Payments:</strong> ${formatCurrency(totalPaid)}
+            </div>
+          </div>
         </>
       )}
     </div>

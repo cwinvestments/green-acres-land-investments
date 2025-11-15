@@ -184,20 +184,14 @@ function Dashboard() {
             
             return (
               <div key={loan.id} className="loan-card">
-                {/* Contract Section */}
+                {/* Contract Section - Only shows pending_client_signature or fully_signed */}
                 {loan.contract_status === 'pending_client_signature' && (
-                  <div style={{
-                    backgroundColor: '#fff3cd',
-                    border: '2px solid #ffc107',
-                    borderRadius: '8px',
-                    padding: '15px',
-                    marginBottom: '15px'
-                  }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
-                      <span style={{ fontSize: '24px' }}>📝</span>
-                      <strong style={{ fontSize: '16px' }}>Contract Ready to Sign</strong>
+                  <div className="contract-pending-box">
+                    <div className="contract-header">
+                      <span className="contract-icon">📝</span>
+                      <strong className="contract-title">Contract Ready to Sign</strong>
                     </div>
-                    <p style={{ margin: '0 0 10px 34px', fontSize: '14px' }}>
+                    <p className="contract-text">
                       Your Contract for Deed is ready for review and signature.
                     </p>
                     <button
@@ -206,26 +200,26 @@ function Dashboard() {
                         if (contract) {
                           // Show contract modal
                           const modal = document.createElement('div');
-                          modal.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;z-index:9999;padding:20px;';
+                          modal.className = 'contract-modal-overlay';
                           modal.innerHTML = `
-                            <div style="background:white;border-radius:10px;max-width:800px;width:100%;max-height:90vh;display:flex;flex-direction:column;">
-                              <div style="padding:20px;border-bottom:2px solid var(--forest-green);">
-                                <h2 style="margin:0;color:var(--forest-green);">Contract for Deed - Review</h2>
+                            <div class="contract-modal-container">
+                              <div class="contract-modal-header">
+                                <h2>Contract for Deed - Review</h2>
                               </div>
-                              <div style="padding:20px;overflow-y:auto;flex:1;white-space:pre-wrap;font-family:monospace;font-size:12px;line-height:1.6;">
+                              <div class="contract-modal-body">
 ${contract.contract_text}
                               </div>
-                              <div style="padding:20px;border-top:2px solid #e0e0e0;display:flex;flex-direction:column;gap:15px;">
-                                <div style="background:#fff3cd;padding:15px;border-radius:5px;border:2px solid #ffc107;">
+                              <div class="contract-modal-footer">
+                                <div class="signature-agreement-notice">
                                   <strong>⚠️ Electronic Signature Agreement</strong><br/>
                                   By typing your name below, you agree to sign this Contract for Deed electronically. This signature will be legally binding.
                                 </div>
-                                <input type="text" id="signatureInput" placeholder="Type your full legal name here" style="padding:12px;border:2px solid var(--forest-green);border-radius:5px;font-size:16px;width:100%;box-sizing:border-box;" />
-                                <div style="display:flex;gap:10px;">
-                                  <button id="signBtn" style="flex:1;padding:12px;background:var(--forest-green);color:white;border:none;border-radius:5px;font-size:16px;cursor:pointer;font-weight:600;">
+                                <input type="text" id="signatureInput" class="signature-input" placeholder="Type your full legal name here" />
+                                <div class="modal-button-group">
+                                  <button id="signBtn" class="btn-sign">
                                     ✍️ Sign Contract
                                   </button>
-                                  <button id="cancelBtn" style="flex:1;padding:12px;background:#6c757d;color:white;border:none;border-radius:5px;font-size:16px;cursor:pointer;font-weight:600;">
+                                  <button id="cancelBtn" class="btn-cancel-modal">
                                     Cancel
                                   </button>
                                 </div>
@@ -249,13 +243,10 @@ ${contract.contract_text}
                           };
                         }
                       }}
-                      className="btn"
+                      className="btn contract-button"
                       style={{
-                        marginLeft: '34px',
                         backgroundColor: 'var(--forest-green)',
-                        color: 'white',
-                        display: 'block',
-                        margin: '0 auto'
+                        color: 'white'
                       }}
                     >
                       📝 Review & Sign Contract
@@ -263,50 +254,19 @@ ${contract.contract_text}
                   </div>
                 )}
 
-                {loan.contract_status === 'customer_signed' && (
-                    <div className="status-box" style={{ border: '2px solid #0dcaf0', backgroundColor: '#e7f6fd' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
-                        <span style={{ fontSize: '32px', marginRight: '15px' }}>✅</span>
-                        <h3 style={{ margin: 0, color: '#0a6375' }}>You've Signed!</h3>
-                      </div>
-                      <p style={{ margin: '0 0 15px 0' }}>
-                        Your signature has been recorded. Awaiting seller's signature.
-                      </p>
-                      <div style={{
-                        padding: '12px',
-                        backgroundColor: '#fff3cd',
-                        border: '2px solid #ffc107',
-                        borderRadius: '12px',
-                        textAlign: 'center',
-                        fontWeight: '600',
-                        color: '#856404'
-                      }}>
-                        ⏳ Awaiting Admin Signature
-                      </div>
-                    </div>
-                  )}
-
                 {loan.contract_status === 'fully_signed' && (
-                  <div style={{
-                    backgroundColor: '#d4edda',
-                    border: '2px solid #28a745',
-                    borderRadius: '8px',
-                    padding: '15px',
-                    marginBottom: '15px'
-                  }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
-                      <span style={{ fontSize: '24px' }}>✅</span>
-                      <strong style={{ fontSize: '16px', color: '#28a745' }}>Contract Fully Executed</strong>
+                  <div className="contract-complete-box">
+                    <div className="contract-header">
+                      <span className="contract-icon">✅</span>
+                      <strong className="contract-title" style={{ color: '#28a745' }}>Contract Fully Executed</strong>
                     </div>
-                    <p style={{ margin: '0 0 10px 34px', fontSize: '14px' }}>
+                    <p className="contract-text">
                       Both parties have signed. Your contract is complete.
                     </p>
                     <button
                       onClick={() => downloadContract(loan.id)}
-                      className="btn"
+                      className="btn contract-button"
                       style={{
-                        display: 'block',
-                        margin: '0 auto',
                         backgroundColor: '#6c757d',
                         color: 'white'
                       }}
@@ -318,21 +278,15 @@ ${contract.contract_text}
 
                 {/* Tier 1: Friendly Reminder (Days 8-14) */}
                 {daysOverdue >= 8 && daysOverdue < 15 && (
-                  <div style={{
-                    backgroundColor: '#fff3cd',
-                    border: '2px solid #ffc107',
-                    borderRadius: '8px',
-                    padding: '15px',
-                    marginBottom: '15px'
-                  }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
-                      <span style={{ fontSize: '24px' }}>⚠️</span>
-                      <strong style={{ fontSize: '16px', color: '#856404' }}>Payment Overdue</strong>
+                  <div className="alert-tier1">
+                    <div className="alert-header">
+                      <span className="alert-icon-tier1">⚠️</span>
+                      <strong className="alert-title-tier1">Payment Overdue</strong>
                     </div>
-                    <p style={{ margin: '0 0 8px 34px', color: '#856404', fontSize: '14px' }}>
+                    <p className="alert-text-tier1">
                       Your payment was due {daysOverdue} days ago. A $75 late fee has been applied.
                     </p>
-                    <p style={{ margin: '0 0 0 34px', color: '#856404', fontSize: '14px', fontWeight: 'bold' }}>
+                    <p className="alert-text-tier1 alert-text-bold">
                       Please make your payment as soon as possible to avoid further action.
                     </p>
                   </div>
@@ -340,24 +294,18 @@ ${contract.contract_text}
 
                 {/* Tier 2: Serious Warning (Days 15-29) */}
                 {daysOverdue >= 15 && daysOverdue < 30 && (
-                  <div style={{
-                    backgroundColor: '#fff3e0',
-                    border: '2px solid #ff9800',
-                    borderRadius: '8px',
-                    padding: '15px',
-                    marginBottom: '15px'
-                  }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
-                      <span style={{ fontSize: '24px' }}>🚨</span>
-                      <strong style={{ fontSize: '16px', color: '#e65100' }}>URGENT: Payment Seriously Overdue</strong>
+                  <div className="alert-tier2">
+                    <div className="alert-header">
+                      <span className="alert-icon-tier2">🚨</span>
+                      <strong className="alert-title-tier2">URGENT: Payment Seriously Overdue</strong>
                     </div>
-                    <p style={{ margin: '0 0 8px 34px', color: '#e65100', fontSize: '14px' }}>
+                    <p className="alert-text-tier2">
                       Your account is now <strong>{daysOverdue} days</strong> past due.
                     </p>
-                    <p style={{ margin: '0 0 8px 34px', color: '#e65100', fontSize: '14px' }}>
+                    <p className="alert-text-tier2">
                       If payment is not received soon, we will send an official Default Notice with additional fees ($75 + postal costs).
                     </p>
-                    <p style={{ margin: '0 0 0 34px', color: '#e65100', fontSize: '14px', fontWeight: 'bold' }}>
+                    <p className="alert-text-tier2 alert-text-bold">
                       Contact us immediately: (920) 555-0100
                     </p>
                   </div>
@@ -365,26 +313,20 @@ ${contract.contract_text}
 
                 {/* Tier 3: Critical Default Notice (Day 30+) */}
                 {daysOverdue >= 30 && (
-                  <div style={{
-                    backgroundColor: '#ffebee',
-                    border: '3px solid #dc3545',
-                    borderRadius: '8px',
-                    padding: '20px',
-                    marginBottom: '15px'
-                  }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
-                      <span style={{ fontSize: '28px' }}>⚠️</span>
-                      <strong style={{ fontSize: '18px', color: '#dc3545' }}>DEFAULT NOTICE - IMMEDIATE ACTION REQUIRED</strong>
+                  <div className="alert-tier3">
+                    <div className="alert-header">
+                      <span className="alert-icon-tier3">⚠️</span>
+                      <strong className="alert-title-tier3">DEFAULT NOTICE - IMMEDIATE ACTION REQUIRED</strong>
                     </div>
-                    <p style={{ margin: '0 0 12px 38px', color: '#dc3545', fontSize: '14px', fontWeight: 'bold' }}>
+                    <p className="alert-text-tier3 alert-text-bold">
                       Your loan is officially in DEFAULT.
                     </p>
                     {daysUntilCure !== null && daysUntilCure > 0 && (
                       <>
-                        <p style={{ margin: '0 0 8px 38px', color: '#dc3545', fontSize: '16px', fontWeight: 'bold' }}>
+                        <p className="alert-cure-deadline">
                           YOU HAVE {daysUntilCure} DAYS TO CURE THE DEFAULT
                         </p>
-                        <p style={{ margin: '0 0 12px 38px', color: '#dc3545', fontSize: '14px' }}>
+                        <p className="alert-text-tier3">
                           Cure Deadline: {new Date(loan.cure_deadline_date).toLocaleDateString('en-US', { 
                             weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
                           })}
@@ -392,20 +334,20 @@ ${contract.contract_text}
                       </>
                     )}
                     {daysUntilCure !== null && daysUntilCure <= 0 && (
-                      <p style={{ margin: '0 0 12px 38px', color: '#dc3545', fontSize: '16px', fontWeight: 'bold' }}>
+                      <p className="alert-cure-deadline">
                         CURE DEADLINE HAS PASSED - REPOSSESSION IMMINENT
                       </p>
                     )}
-                    <p style={{ margin: '0 0 8px 38px', color: '#dc3545', fontSize: '14px', fontWeight: 'bold' }}>
+                    <p className="alert-text-tier3 alert-text-bold">
                       FAILURE TO PAY WILL RESULT IN:
                     </p>
-                    <ul style={{ margin: '0 0 12px 58px', color: '#dc3545', fontSize: '13px', lineHeight: '1.6' }}>
+                    <ul className="alert-list">
                       <li>Forfeiture of all payments made to date</li>
                       <li>Loss of all rights to the property</li>
                       <li>Immediate repossession proceedings</li>
                       <li>Property will be resold</li>
                     </ul>
-                    <p style={{ margin: '0 0 8px 38px', color: '#dc3545', fontSize: '14px', fontWeight: 'bold', wordBreak: 'break-word' }}>
+                    <p className="alert-text-tier3 alert-text-bold" style={{ wordBreak: 'break-word' }}>
                       Contact us IMMEDIATELY:<br />
                       (920) 716-6107<br />
                       greenacreslandinvestments@gmail.com
@@ -414,19 +356,11 @@ ${contract.contract_text}
                 )}
 
                 {paymentStatus && (
-                  <div style={{
-                    backgroundColor: paymentStatus.color,
-                    color: 'white',
-                    padding: '10px 15px',
-                    borderRadius: '8px',
-                    marginBottom: '15px',
-                    fontWeight: 'bold',
-                    textAlign: 'center',
-                    fontSize: '14px'
-                  }}>
+                  <div className="payment-status-badge" style={{ backgroundColor: paymentStatus.color }}>
                     {paymentStatus.icon} {paymentStatus.text}
                   </div>
                 )}
+
                 <h3>{loan.property_title}</h3>
                 <p className="loan-location">{loan.location}</p>
                 

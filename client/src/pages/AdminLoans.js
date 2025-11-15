@@ -86,7 +86,9 @@ function AdminLoans() {
     let filtered = [...loans];
 
     // Apply status filter
-    if (filter === 'active') {
+    if (filter === 'all') {
+      filtered = filtered.filter(loan => loan.status !== 'archived');
+    } else if (filter === 'active') {
       filtered = filtered.filter(loan => loan.status === 'active' && !isOverdue(loan));
     } else if (filter === 'overdue') {
       filtered = filtered.filter(loan => isOverdue(loan));
@@ -94,6 +96,8 @@ function AdminLoans() {
       filtered = filtered.filter(loan => loan.status === 'paid_off');
     } else if (filter === 'defaulted') {
       filtered = filtered.filter(loan => loan.status === 'defaulted');
+    } else if (filter === 'archived') {
+      filtered = filtered.filter(loan => loan.status === 'archived');
     }
 
     // Apply search filter
@@ -395,6 +399,13 @@ function AdminLoans() {
             style={filter === 'defaulted' ? { backgroundColor: '#dc3545' } : {}}
           >
             Defaulted ({loans.filter(l => l.status === 'defaulted').length})
+          </button>
+          <button
+            onClick={() => setFilter('archived')}
+            className={`btn ${filter === 'archived' ? 'btn-primary' : 'btn-secondary'}`}
+            style={filter === 'archived' ? { backgroundColor: '#6c757d' } : {}}
+          >
+            Archived ({loans.filter(l => l.status === 'archived').length})
           </button>
         </div>
 
@@ -882,9 +893,152 @@ ${contract.contract_text}
                       </>
                     )}
                     {loan.status === 'defaulted' && (
-                      <span style={{ color: '#dc3545', fontWeight: 'bold', fontSize: '12px' }}>
-                        Defaulted {loan.default_date && `on ${new Date(loan.default_date).toLocaleDateString()}`}
-                      </span>
+                      <>
+                        <div style={{ color: '#dc3545', fontWeight: 'bold', fontSize: '12px', marginBottom: '5px' }}>
+                          Defaulted {loan.default_date && `on ${new Date(loan.default_date).toLocaleDateString()}`}
+                        </div>
+                        
+                        {/* Archive Button */}
+                        <button
+                          onClick={async () => {
+                            if (!window.confirm(`Archive this defaulted loan?\n\nLoan ID: ${loan.id}\nProperty: ${loan.property_title}\n\nThis will:\n• Hide from active dashboard\n• Keep ALL data for reports/tax purposes\n• Allow you to review later\n• You can still delete permanently later if needed`)) return;
+                            
+                            try {
+                              const response = await fetch(`${process.env.REACT_APP_API_URL}/admin/loans/${loan.id}/archive`, {
+                                method: 'PATCH',
+                                headers: {
+                                  'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+                                }
+                              });
+                              if (!response.ok) throw new Error('Failed');
+                              alert('Loan archived successfully');
+                              loadLoans();
+                            } catch (err) {
+                              alert('Failed to archive loan: ' + err.message);
+                            }
+                          }}
+                          className="btn btn-small"
+                          style={{
+                            backgroundColor: '#6c757d',
+                            color: 'white',
+                            width: '100%',
+                            fontSize: '12px',
+                            marginTop: '5px'
+                          }}
+                        >
+                          📦 Archive Loan
+                        </button>
+                        
+                        {/* Delete Button */}
+                        <button
+                          onClick={async () => {
+                            if (!window.confirm(`⚠️ PERMANENTLY DELETE DEFAULTED LOAN?\n\nLoan ID: ${loan.id}\nProperty: ${loan.property_title}\nCustomer: ${loan.first_name} ${loan.last_name}\n\nThis will permanently delete:\n• The loan record\n• All payment history ($${loan.total_paid || 0})\n• Default information\n• All associated data\n\nThe property will be set back to 'available'.\n\nThis action CANNOT be undone!`)) return;
+                            
+                            if (prompt('Type DELETE to confirm:')?.toUpperCase() !== 'DELETE') {
+                              alert('Deletion cancelled');
+                              return;
+                            }
+                            
+                            try {
+                              const response = await fetch(`${process.env.REACT_APP_API_URL}/admin/loans/${loan.id}`, {
+                                method: 'DELETE',
+                                headers: {
+                                  'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+                                }
+                              });
+                              if (!response.ok) throw new Error('Failed');
+                              alert('Defaulted loan deleted successfully. Property set back to available.');
+                              loadLoans();
+                            } catch (err) {
+                              alert('Failed to delete loan: ' + err.message);
+                            }
+                          }}
+                          className="btn btn-small"
+                          style={{
+                            backgroundColor: '#dc3545',
+                            color: 'white',
+                            width: '100%',
+                            fontSize: '12px',
+                            marginTop: '5px'
+                          }}
+                        >
+                          🗑️ Permanently Delete
+                        </button>
+                      </>
+                    )}
+                    {loan.status === 'archived' && (
+                      <>
+                        <div style={{ color: '#6c757d', fontWeight: 'bold', fontSize: '12px', marginBottom: '5px' }}>
+                          Archived {loan.default_date && `(Defaulted ${new Date(loan.default_date).toLocaleDateString()})`}
+                        </div>
+                        
+                        {/* Unarchive Button */}
+                        <button
+                          onClick={async () => {
+                            if (!window.confirm('Restore this loan to Defaulted status?')) return;
+                            
+                            try {
+                              const response = await fetch(`${process.env.REACT_APP_API_URL}/admin/loans/${loan.id}/unarchive`, {
+                                method: 'PATCH',
+                                headers: {
+                                  'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+                                }
+                              });
+                              if (!response.ok) throw new Error('Failed');
+                              alert('Loan restored to Defaulted status');
+                              loadLoans();
+                            } catch (err) {
+                              alert('Failed to unarchive loan: ' + err.message);
+                            }
+                          }}
+                          className="btn btn-small"
+                          style={{
+                            backgroundColor: '#28a745',
+                            color: 'white',
+                            width: '100%',
+                            fontSize: '12px',
+                            marginTop: '5px'
+                          }}
+                        >
+                          ↩️ Unarchive
+                        </button>
+                        
+                        {/* Delete Button */}
+                        <button
+                          onClick={async () => {
+                            if (!window.confirm(`⚠️ PERMANENTLY DELETE ARCHIVED LOAN?\n\nLoan ID: ${loan.id}\nProperty: ${loan.property_title}\n\nThis will remove ALL data from reports and database.\n\nThis action CANNOT be undone!`)) return;
+                            
+                            if (prompt('Type DELETE to confirm:')?.toUpperCase() !== 'DELETE') {
+                              alert('Deletion cancelled');
+                              return;
+                            }
+                            
+                            try {
+                              const response = await fetch(`${process.env.REACT_APP_API_URL}/admin/loans/${loan.id}`, {
+                                method: 'DELETE',
+                                headers: {
+                                  'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+                                }
+                              });
+                              if (!response.ok) throw new Error('Failed');
+                              alert('Loan permanently deleted');
+                              loadLoans();
+                            } catch (err) {
+                              alert('Failed to delete loan: ' + err.message);
+                            }
+                          }}
+                          className="btn btn-small"
+                          style={{
+                            backgroundColor: '#dc3545',
+                            color: 'white',
+                            width: '100%',
+                            fontSize: '12px',
+                            marginTop: '5px'
+                          }}
+                        >
+                          🗑️ Permanently Delete
+                        </button>
+                      </>
                     )}
                   </td>
                 </tr>

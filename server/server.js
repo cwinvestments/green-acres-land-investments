@@ -1449,6 +1449,40 @@ app.delete('/api/admin/loans/:loanId', authenticateAdmin, async (req, res) => {
   }
 });
 
+// Archive loan (admin only) - keeps data but hides from dashboard
+app.patch('/api/admin/loans/:loanId/archive', authenticateAdmin, async (req, res) => {
+  try {
+    const { loanId } = req.params;
+    
+    await db.pool.query(
+      "UPDATE loans SET status = 'archived' WHERE id = $1 AND status = 'defaulted'",
+      [loanId]
+    );
+    
+    res.json({ success: true, message: 'Loan archived successfully' });
+  } catch (err) {
+    console.error('Archive loan error:', err);
+    res.status(500).json({ error: 'Failed to archive loan' });
+  }
+});
+
+// Unarchive loan (admin only) - restore to defaulted status
+app.patch('/api/admin/loans/:loanId/unarchive', authenticateAdmin, async (req, res) => {
+  try {
+    const { loanId } = req.params;
+    
+    await db.pool.query(
+      "UPDATE loans SET status = 'defaulted' WHERE id = $1 AND status = 'archived'",
+      [loanId]
+    );
+    
+    res.json({ success: true, message: 'Loan unarchived successfully' });
+  } catch (err) {
+    console.error('Unarchive loan error:', err);
+    res.status(500).json({ error: 'Failed to unarchive loan' });
+  }
+});
+
 // Admin - Mark loan as defaulted
 app.patch('/api/admin/loans/:id/default', authenticateAdmin, async (req, res) => {
   try {

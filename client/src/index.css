@@ -1068,7 +1068,7 @@ body {
 .property-detail {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 3rem 20px;
+  padding: 3rem 2rem;
 }
 
 .property-detail h1 {
@@ -1275,7 +1275,7 @@ body {
 
 @media (max-width: 768px) {
   .property-detail {
-    padding: 20px;
+    padding: 2rem 1rem;
   }
   
   .calculator {

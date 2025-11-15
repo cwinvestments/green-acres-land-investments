@@ -73,9 +73,9 @@ function TermsOfService() {
                 All land purchases are made through a Contract for Deed, also known as a Land Contract. This means:
               </p>
               <ul style={{ marginLeft: '2rem', marginBottom: '1rem', lineHeight: '1.8' }}>
-                <li>Legal title remains with Green Acres until the contract is paid in full</li>
+                <li>Legal title remains with Green Acres Land Investments, LLC until the contract is paid in full</li>
                 <li>You receive equitable title and can use the property according to the contract terms</li>
-                <li>Upon full payment, we will transfer legal title via warranty deed or quitclaim deed</li>
+                <li>Upon full payment, we will transfer legal title via Special Warranty deed or Quitclaim deed</li>
                 <li>Default on payments may result in forfeiture of all payments made and loss of property rights</li>
               </ul>
 
@@ -111,7 +111,6 @@ function TermsOfService() {
               </p>
               <ul style={{ marginLeft: '2rem', marginBottom: '1rem', lineHeight: '1.8' }}>
                 <li>You fail to make a payment within the grace period</li>
-                <li>You fail to maintain required property insurance (if applicable)</li>
                 <li>You violate any other material term of your contract</li>
               </ul>
               <p style={{ lineHeight: '1.8', marginBottom: '1rem' }}>
@@ -218,12 +217,13 @@ function TermsOfService() {
             <div className="feature-card" style={{ textAlign: 'left', marginBottom: '2rem' }}>
               <h2 style={{ color: 'var(--forest-green)', marginBottom: '1rem' }}>Dispute Resolution and Governing Law</h2>
               <p style={{ lineHeight: '1.8', marginBottom: '1rem' }}>
-                These Terms shall be governed by and construed in accordance with the laws of the state where the 
-                property is located, without regard to conflict of law principles.
+                These Terms shall be governed by and construed in accordance with the laws of the State of Wisconsin, 
+                without regard to conflict of law principles.
               </p>
               <p style={{ lineHeight: '1.8', marginBottom: '1rem' }}>
-                Any disputes arising from these Terms or our services shall be resolved through binding arbitration 
-                in accordance with the American Arbitration Association rules, except where prohibited by law.
+                Any disputes arising from these Terms or our services shall be resolved exclusively in the courts 
+                of Outagamie County, Appleton, Wisconsin. You consent to the personal jurisdiction and venue of 
+                such courts.
               </p>
             </div>
 
@@ -254,7 +254,7 @@ function TermsOfService() {
                 For questions about these Terms of Service, please contact us:
               </p>
               <p style={{ lineHeight: '1.8', marginBottom: '0.5rem' }}>
-                <strong>Email:</strong> <a href="mailto:legal@greenacreslandinvestments.com" style={{ color: 'var(--forest-green)' }}>legal@greenacreslandinvestments.com</a>
+                <strong>Email:</strong> <a href="mailto:GreenAcresLandInvestments@gmail.com" style={{ color: 'var(--forest-green)' }}>GreenAcresLandInvestments@gmail.com</a>
               </p>
               <p style={{ lineHeight: '1.8', marginBottom: '0.5rem' }}>
                 <strong>Phone:</strong> (555) 123-4567

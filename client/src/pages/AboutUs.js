@@ -6,7 +6,7 @@ function AboutUs() {
       {/* Hero Section */}
       <section className="hero" style={{ minHeight: '300px' }}>
         <div className="hero-content">
-          <h1 className="hero-title">About Green Acres Land Investments</h1>
+          <h1 className="hero-title">About Green Acres Land Investments, LLC</h1>
           <p className="hero-subtitle">
             Making land ownership accessible to everyone through flexible financing and transparent service.
           </p>
@@ -25,7 +25,7 @@ function AboutUs() {
             lineHeight: '1.8',
             color: '#555'
           }}>
-            At Green Acres Land Investments, we believe land ownership shouldn't be limited to those with perfect credit or large cash reserves. 
+            At Green Acres Land Investments, LLC, we believe land ownership shouldn't be limited to those with perfect credit or large cash reserves. 
             Our mission is to help everyday Americans achieve their dream of owning land through accessible financing options and exceptional customer service.
           </p>
 
@@ -68,7 +68,7 @@ function AboutUs() {
               <div className="step-number">2020</div>
               <h3>The Beginning</h3>
               <p>
-                Green Acres Land Investments was founded with a simple vision: make land ownership accessible to everyone. 
+                Green Acres Land Investments, LLC was founded with a simple vision: make land ownership accessible to everyone. 
                 We saw too many people being turned away by traditional lenders and knew there had to be a better way.
               </p>
             </div>

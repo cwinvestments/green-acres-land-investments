@@ -35,7 +35,7 @@ function ContactUs() {
       {/* Hero Section */}
       <section className="hero" style={{ minHeight: '300px' }}>
         <div className="hero-content">
-          <h1 className="hero-title">Contact Us</h1>
+          <h1 className="hero-title">Contact Green Acres Land Investments, LLC</h1>
           <p className="hero-subtitle">
             Have questions? We're here to help. Reach out and we'll get back to you as soon as possible.
           </p>

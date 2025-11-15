@@ -705,7 +705,7 @@ function PropertyDetail() {
                           <strong className="purchase-plan-value">${formatCurrency(calculation.monthlyPayment)}</strong>
                         </div>
                         <div className="purchase-plan-item">
-                          <span className="purchase-plan-label">Total Cost (Includes Loan Interest):</span>
+                          <span className="purchase-plan-label">Total Cost<br />(Includes Loan Interest):</span>
                           <strong>${formatCurrency(calculation.totalAmount)}</strong>
                         </div>
                       </div>

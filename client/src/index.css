@@ -1,3 +1,6 @@
+/* ===================
+   CSS RESET & ROOT VARIABLES
+=================== */
 * {
   margin: 0;
   padding: 0;
@@ -54,28 +57,16 @@ body {
   align-items: center;
 }
 
-/* Desktop logo (horizontal) */
 .nav-logo-desktop {
   height: 50px;
   width: auto;
   display: block;
 }
 
-/* Mobile logo (icon) - hidden by default */
 .nav-logo-mobile {
   height: 50px;
   width: auto;
   display: none;
-}
-
-/* Show icon on mobile, hide horizontal logo */
-@media (max-width: 600px) {
-  .nav-logo-desktop {
-    display: none;
-  }
-  .nav-logo-mobile {
-    display: block;
-  }
 }
 
 .nav-links {
@@ -83,34 +74,6 @@ body {
   gap: 2rem;
   align-items: center;
   flex-wrap: wrap;
-}
-
-@media (max-width: 768px) {
-  .nav-container {
-    flex-wrap: wrap;
-  }
-  
-  .nav-links {
-    width: 100%;
-    justify-content: center;
-    gap: 0.3rem;
-    font-size: 12px;
-    margin-top: 10px;
-  }
-  
-  .nav-link {
-    padding: 0.4rem 0.6rem;
-    white-space: nowrap;
-  }
-  
-  .btn-register, .btn-logout {
-    padding: 0.4rem 0.6rem;
-  }
-  
-  /* Hide Recent Sales on mobile to save space */
-  .nav-link:nth-child(3) {
-    display: none;
-  }
 }
 
 .nav-link {
@@ -155,17 +118,6 @@ body {
   color: white;
 }
 
-@media (max-width: 768px) {
-  .nav-container {
-    padding: 1rem;
-  }
-  
-  .nav-links {
-    gap: 1rem;
-    font-size: 0.9rem;
-  }
-}
-
 /* ===================
    HOME PAGE STYLES
 =================== */
@@ -173,7 +125,6 @@ body {
   min-height: 100vh;
 }
 
-/* Hero Section with Logo */
 .hero {
   background: linear-gradient(135deg, var(--dark-forest) 0%, var(--forest-green) 100%);
   color: white;
@@ -191,13 +142,6 @@ body {
   width: 100%;
   height: auto;
   margin-bottom: 2rem;
-  /* Filter removed - show logo in full color */
-}
-
-@media (max-width: 768px) {
-  .hero-logo {
-    max-width: 300px;
-  }
 }
 
 .hero-title {
@@ -219,21 +163,6 @@ body {
   flex-wrap: wrap;
 }
 
-@media (max-width: 768px) {
-  .hero {
-    padding: 3rem 1.5rem;
-  }
-  
-  .hero-title {
-    font-size: 2rem;
-  }
-  
-  .hero-subtitle {
-    font-size: 1.1rem;
-  }
-}
-
-/* Features Section */
 .features {
   padding: 5rem 2rem;
   background: white;
@@ -295,7 +224,6 @@ body {
   color: var(--text-light);
 }
 
-/* How It Works Section */
 .how-it-works {
   padding: 5rem 2rem;
   background: var(--light-green);
@@ -339,7 +267,6 @@ body {
   color: var(--text-light);
 }
 
-/* Financing Section */
 .financing {
   padding: 5rem 2rem;
   background: white;
@@ -420,7 +347,6 @@ body {
   left: 0;
 }
 
-/* CTA Section */
 .cta {
   padding: 5rem 2rem;
   background: linear-gradient(135deg, var(--forest-green) 0%, var(--dark-forest) 100%);
@@ -440,7 +366,7 @@ body {
 }
 
 .btn-large {
-  padding: 18px 48px;
+  padding: 1.125rem 3rem;
   font-size: 1.2rem;
   background: var(--sandy-gold);
   color: var(--dark-forest);
@@ -534,7 +460,9 @@ body {
   text-decoration: underline;
 }
 
-/* Generic Form Group Styles */
+/* ===================
+   FORM STYLES
+=================== */
 .form-group {
   margin-bottom: 1.5rem;
 }
@@ -564,8 +492,15 @@ body {
   border-color: var(--forest-green);
 }
 
+label .required-asterisk,
+label:has(.required-asterisk)::after {
+  color: #dc3545;
+  font-weight: bold;
+  margin-left: 2px;
+}
+
 /* ===================
-   GENERIC CARD STYLES
+   CARD STYLES
 =================== */
 .card {
   background: white;
@@ -617,14 +552,19 @@ body {
   color: white;
 }
 
-.btn-large {
-  padding: 1rem 3rem;
-  font-size: 1.2rem;
+.btn-small {
+  padding: 0.6rem 1.2rem;
+  font-size: 0.9rem;
 }
 
 .btn-block {
   width: 100%;
   display: block;
+}
+
+.btn-full-width {
+  width: 100%;
+  text-align: center;
 }
 
 .btn:disabled {
@@ -660,6 +600,18 @@ body {
   color: var(--text-light);
 }
 
+.desktop-only {
+  display: block;
+}
+
+.mobile-only {
+  display: none;
+}
+
+.print-only {
+  display: none;
+}
+
 /* ===================
    DASHBOARD STYLES
 =================== */
@@ -681,7 +633,6 @@ body {
   margin: 3rem 0 2rem 0;
 }
 
-/* Summary Cards at Top */
 .dashboard-summary {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -721,7 +672,6 @@ body {
   margin: 0;
 }
 
-/* Loan Cards Grid */
 .loans-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
@@ -764,7 +714,6 @@ body {
   margin-right: 0.5rem;
 }
 
-/* Loan Details Rows */
 .loan-details {
   margin: 1.5rem 0;
   flex-grow: 1;
@@ -793,7 +742,6 @@ body {
   font-size: 1.1rem;
 }
 
-/* Status Badges */
 .status-badge {
   padding: 0.4rem 1rem;
   border-radius: 20px;
@@ -813,7 +761,11 @@ body {
   color: #f57c00;
 }
 
-/* Progress Bar */
+.status-badge.status-completed {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
 .progress-bar {
   width: 100%;
   height: 12px;
@@ -838,7 +790,6 @@ body {
   margin-bottom: 1.5rem;
 }
 
-/* Empty State */
 .empty-state {
   text-align: center;
   padding: 4rem 2rem;
@@ -851,38 +802,6 @@ body {
   color: var(--text-light);
   font-size: 1.2rem;
   margin-bottom: 2rem;
-}
-
-/* Button Full Width */
-.btn-full-width {
-  width: 100%;
-  text-align: center;
-}
-
-/* Mobile Responsive */
-@media (max-width: 768px) {
-  .loan-detail {
-    padding: 2rem 1rem;
-  }
-  
-  .loan-detail > .btn {
-    width: 100%;
-    margin-bottom: 0.5rem;
-    text-align: center;
-  }
-  
-  .dashboard h1 {
-    font-size: 2rem;
-  }
-  
-  .dashboard-summary {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-  
-  .loans-grid {
-    grid-template-columns: 1fr;
-  }
 }
 
 /* ===================
@@ -919,14 +838,12 @@ body {
   text-align: center;
 }
 
-/* Properties Grid */
 .properties-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 2.5rem;
 }
 
-/* Property Card */
 .property-card {
   background: white;
   border-radius: 12px;
@@ -940,13 +857,13 @@ body {
   flex-direction: column;
   width: 100%;
 }
+
 .property-card:hover {
   transform: translateY(-8px);
   box-shadow: var(--shadow-lg);
   border-color: var(--forest-green);
 }
 
-/* Property Image */
 .property-image {
   width: 100%;
   height: 180px;
@@ -955,7 +872,6 @@ body {
   flex-shrink: 0;
 }
 
-/* Property Content */
 .property-content {
   padding: 1.5rem;
   display: flex;
@@ -970,7 +886,6 @@ body {
   line-height: 1.3;
 }
 
-/* Property Info Row */
 .property-info {
   display: flex;
   gap: 1.5rem;
@@ -986,7 +901,6 @@ body {
   gap: 0.3rem;
 }
 
-/* Property Description */
 .property-content p {
   color: var(--text-light);
   font-size: 0.95rem;
@@ -995,7 +909,6 @@ body {
   flex-grow: 1;
 }
 
-/* Property Price */
 .property-price {
   font-size: 2rem;
   font-weight: 700;
@@ -1005,7 +918,6 @@ body {
   border-top: 2px solid var(--border-color);
 }
 
-/* View Details Button in Card */
 .property-card .btn {
   margin-top: auto;
   width: 100%;
@@ -1018,7 +930,6 @@ body {
   transform: none;
 }
 
-/* Empty State for No Properties */
 .properties-page .empty-state {
   text-align: center;
   padding: 5rem 2rem;
@@ -1036,30 +947,6 @@ body {
 .properties-page .empty-state p {
   color: var(--text-light);
   font-size: 1.1rem;
-}
-
-/* Mobile Responsive */
-@media (max-width: 768px) {
-  .properties-page {
-    padding: 20px;
-  }
-  
-  .properties-page h1 {
-    font-size: 2rem;
-  }
-  
-  .properties-grid {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-  }
-  
-  .property-image {
-    height: 200px;
-  }
-  
-  .property-price {
-    font-size: 1.8rem;
-  }
 }
 
 /* ===================
@@ -1083,7 +970,6 @@ body {
   margin-bottom: 1rem;
 }
 
-/* Two Column Grid */
 .property-detail-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -1091,7 +977,6 @@ body {
   margin-top: 2rem;
 }
 
-/* Property Image */
 .property-detail-image {
   width: 100%;
   height: auto;
@@ -1099,17 +984,10 @@ body {
   box-shadow: var(--shadow-lg);
 }
 
-/* Property Details Section */
 .property-detail p {
   line-height: 1.8;
   color: var(--text-dark);
   margin-top: 1rem;
-}
-
-.property-detail > div > div > div {
-  margin-top: 1.5rem;
-  display: grid;
-  gap: 0.75rem;
 }
 
 .property-detail strong {
@@ -1117,7 +995,6 @@ body {
   font-weight: 600;
 }
 
-/* Feature Tags */
 .property-features {
   display: flex;
   flex-wrap: wrap;
@@ -1135,8 +1012,7 @@ body {
   border: 1px solid var(--forest-green);
 }
 
-/* Price Box */
-.property-detail-grid > div > div:first-child {
+.price-box {
   background: #e8f5e9;
   padding: 2rem;
   border-radius: 12px;
@@ -1145,19 +1021,18 @@ body {
   border: 2px solid #2e7d32;
 }
 
-.property-detail-grid > div > div:first-child h2 {
+.price-box h2 {
   color: #2e7d32;
   font-size: 2.5rem;
   margin-bottom: 0.5rem;
 }
 
-.property-detail-grid > div > div:first-child p {
+.price-box p {
   color: var(--text-light);
   font-size: 1.1rem;
   margin: 0;
 }
 
-/* Calculator Box */
 .calculator {
   background: white;
   padding: 2rem;
@@ -1172,7 +1047,6 @@ body {
   margin-bottom: 1.5rem;
 }
 
-/* Calculator Options */
 .calculator-options {
   display: grid;
   gap: 1.5rem;
@@ -1202,7 +1076,6 @@ body {
   border-color: var(--forest-green);
 }
 
-/* Calculator Results */
 .calculator-results {
   background: var(--light-green);
   padding: 1.5rem;
@@ -1235,17 +1108,6 @@ body {
   color: var(--forest-green);
 }
 
-/* Total Cost Banner */
-.calculator > div > small {
-  display: block;
-  padding: 1rem;
-  background: #fff3cd;
-  border-radius: 5px;
-  color: #856404;
-  margin-top: 1rem;
-}
-
-/* Card Container */
 #card-container {
   margin-top: 1rem;
   padding: 1rem;
@@ -1254,39 +1116,10 @@ body {
   border-radius: 8px;
 }
 
-/* Purchase Button */
 .calculator .btn-full-width {
   margin-top: 1.5rem;
   font-size: 1.1rem;
   padding: 1rem;
-}
-
-/* Mobile Responsive */
-@media (max-width: 968px) {
-  .property-detail-grid {
-    grid-template-columns: 1fr;
-    gap: 2rem;
-  }
-  
-  .property-detail h1 {
-    font-size: 2rem;
-  }
-}
-
-@media (max-width: 768px) {
-  .property-detail {
-    padding: 1rem;
-  }
-  
-  .property-detail .card,
-  .calculator,
-  .property-detail-grid > div > div {
-    max-width: 100%;
-  }
-  
-  .calculator {
-    padding: 1.5rem;
-  }
 }
 
 /* ===================
@@ -1310,12 +1143,10 @@ body {
   margin-bottom: 1.5rem;
 }
 
-/* Back Buttons */
 .loan-detail > .btn {
   margin-bottom: 1rem;
 }
 
-/* Two Column Grid */
 .loan-detail-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -1323,7 +1154,6 @@ body {
   margin-top: 2rem;
 }
 
-/* Info Card (Left Column) */
 .loan-info-card {
   background: white;
   padding: 2rem;
@@ -1332,7 +1162,6 @@ body {
   box-shadow: var(--shadow);
 }
 
-/* Payment Card (Right Column) */
 .payment-card {
   background: white;
   padding: 2rem;
@@ -1344,7 +1173,6 @@ body {
   top: 100px;
 }
 
-/* Info Rows */
 .info-row {
   display: flex;
   justify-content: space-between;
@@ -1373,14 +1201,12 @@ body {
   font-weight: 700;
 }
 
-/* Progress Section */
 .progress-section {
   margin-top: 2rem;
   padding-top: 2rem;
   border-top: 2px solid var(--forest-green);
 }
 
-/* Payment Form */
 .payment-amount-section {
   margin-bottom: 2rem;
 }
@@ -1392,7 +1218,6 @@ body {
   margin-bottom: 0.75rem;
 }
 
-/* Amount Input Group */
 .amount-input-group {
   position: relative;
   margin-bottom: 1rem;
@@ -1423,20 +1248,16 @@ body {
   border-color: var(--forest-green);
 }
 
-/* Quick Amount Buttons */
 .quick-amount-buttons {
   display: flex;
   gap: 1rem;
   margin-bottom: 1rem;
 }
 
-.btn-small {
-  padding: 0.6rem 1.2rem;
-  font-size: 0.9rem;
+.quick-amount-buttons .btn-small {
   flex: 1;
 }
 
-/* Payment Note */
 .payment-note {
   font-size: 0.85rem;
   color: var(--text-light);
@@ -1446,7 +1267,6 @@ body {
   margin-top: 0.5rem;
 }
 
-/* Card Container for Square */
 #payment-card-container {
   margin-top: 1rem;
   padding: 1rem 1rem 0.5rem 1rem;
@@ -1455,7 +1275,6 @@ body {
   background: #fafafa;
 }
 
-/* Remove extra space from Square card wrapper */
 .sq-card-wrapper {
   margin-bottom: 0 !important;
   padding-bottom: 0 !important;
@@ -1467,47 +1286,6 @@ body {
 
 .sq-card-message {
   margin-bottom: 0 !important;
-}
-
-/* Mobile Responsive */
-@media (max-width: 968px) {
-  .loan-detail-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .payment-card {
-    position: static;
-  }
-  
-  .quick-amount-buttons {
-    flex-direction: column;
-  }
-}
-
-@media (max-width: 768px) {
-  .loan-detail {
-    padding: 2rem 1rem;
-  }
-  
-  .loan-detail h1 {
-    font-size: 2rem;
-  }
-  
-  .loan-info-card,
-  .payment-card {
-    padding: 1.5rem;
-  }
-  
-  .info-row {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
-  }
-  
-  .loan-detail > .btn {
-    width: 100%;
-    margin-bottom: 0.5rem;
-  }
 }
 
 /* ===================
@@ -1531,12 +1309,10 @@ body {
   margin-bottom: 1rem;
 }
 
-/* Back Button */
 .payment-history > .btn {
   margin-bottom: 1rem;
 }
 
-/* Payment Summary Card */
 .payment-summary {
   background: white;
   padding: 2rem;
@@ -1574,7 +1350,6 @@ body {
   font-weight: 700;
 }
 
-/* Payments Table Container */
 .payments-table {
   background: white;
   border-radius: 12px;
@@ -1583,7 +1358,6 @@ body {
   overflow: hidden;
 }
 
-/* Table Styles */
 .payments-table table {
   width: 100%;
   border-collapse: collapse;
@@ -1627,7 +1401,6 @@ body {
   font-size: 1.1rem;
 }
 
-/* Payments Total */
 .payments-total {
   padding: 1.5rem;
   background: var(--light-green);
@@ -1641,21 +1414,15 @@ body {
   margin-right: 1rem;
 }
 
-/* Status Badges in Table */
-.payments-table .status-badge {
-  padding: 0.4rem 0.8rem;
-  border-radius: 15px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  text-transform: uppercase;
+.payment-card-mobile {
+  background: white;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 15px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-.payments-table .status-badge.status-completed {
-  background: #e8f5e9;
-  color: #2e7d32;
-}
-
-/* Empty State */
 .payment-history .empty-state {
   background: white;
   padding: 4rem 2rem;
@@ -1669,62 +1436,9 @@ body {
   font-size: 1.1rem;
 }
 
-/* Mobile Responsive */
-@media (max-width: 768px) {
-  .payment-history {
-    padding: 2rem 1rem;
-  }
-  
-  .payment-history h1 {
-    font-size: 2rem;
-  }
-  
-  .payment-summary {
-    padding: 1.5rem;
-  }
-  
-  .summary-stats {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-  
-  /* Make table scrollable on mobile */
-  .payments-table {
-    overflow-x: auto;
-  }
-  
-  .payments-table table {
-    min-width: 600px;
-  }
-  
-  .payments-table th,
-  .payments-table td {
-    padding: 0.75rem 0.5rem;
-    font-size: 0.9rem;
-  }
-}
-
 /* ===================
-   RESPONSIVE DESIGN
+   SOLD PROPERTIES PAGE STYLES
 =================== */
-@media (max-width: 768px) {
-  .section-title {
-    font-size: 2rem;
-  }
-  
-  .auth-container {
-    padding: 2rem;
-  }
-  
-  .hero-buttons .btn {
-    width: 100%;
-  }
-}
-
-/* ==========================================
-   SOLD PROPERTIES PAGE
-   ========================================== */
-
 .sold-properties-page {
   max-width: 1200px;
   margin: 0 auto;
@@ -1745,7 +1459,6 @@ body {
   text-align: center;
 }
 
-/* Filter Tabs */
 .filter-tabs {
   display: flex;
   justify-content: center;
@@ -1758,7 +1471,7 @@ body {
   padding: 0.75rem 1.5rem;
   border: 2px solid var(--border-color);
   background: white;
-  color: var(--text-color);
+  color: var(--text-dark);
   border-radius: 8px;
   font-size: 1rem;
   cursor: pointer;
@@ -1776,13 +1489,11 @@ body {
   border-color: var(--forest-green);
 }
 
-/* Sold Properties - Override grid for centering */
 .sold-properties-page .properties-grid {
   grid-template-columns: repeat(auto-fit, minmax(320px, 400px));
   justify-content: center;
 }
 
-/* Sold Property Cards */
 .sold-property-card {
   position: relative;
   opacity: 0.95;
@@ -1795,7 +1506,9 @@ body {
   transform: translateY(-2px);
 }
 
-.status-badge {
+.badge-sold {
+  background: var(--forest-green);
+  color: white;
   position: absolute;
   top: 1rem;
   left: 50%;
@@ -1809,14 +1522,20 @@ body {
   text-align: center;
 }
 
-.badge-sold {
-  background: var(--forest-green);
-  color: white;
-}
-
 .badge-contract {
   background: var(--sandy-gold);
   color: white;
+  position: absolute;
+  top: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  z-index: 10;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  text-align: center;
 }
 
 .sale-date {
@@ -1833,56 +1552,228 @@ body {
   font-size: 1.1rem;
 }
 
-/* Mobile Responsive */
-@media (max-width: 768px) {
-  .sold-properties-page {
-    padding: 2rem 1rem;
-  }
+/* ===================
+   ADMIN TABLE STYLES
+=================== */
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+}
 
-  .sold-properties-page h1 {
-    font-size: 2rem;
-  }
+.admin-table thead {
+  background: var(--forest-green);
+  color: white;
+}
 
-  .filter-tabs button {
-    padding: 0.5rem 1rem;
-    font-size: 0.9rem;
-  }
+.admin-table th {
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+}
+
+.admin-table tbody tr {
+  border-bottom: 1px solid var(--border-color);
+  transition: background-color 0.2s ease;
+}
+
+.admin-table tbody tr:hover {
+  background: var(--light-green);
+}
+
+.admin-table td {
+  padding: 1rem;
 }
 
 /* ===================
-   REQUIRED FIELD STYLING
+   MOBILE RESPONSIVE - CONSOLIDATED
 =================== */
-label .required-asterisk,
-label:has(.required-asterisk)::after {
-  color: #dc3545;
-  font-weight: bold;
-  margin-left: 2px;
-}
-
-/* For labels with * in text */
-label:contains('*') {
-  color: var(--text-dark);
-}
-
-/* Mobile-friendly Payment History */
-.desktop-only {
-  display: block;
-}
-
-.mobile-only {
-  display: none;
-}
-
-.payment-card-mobile {
-  background: white;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  padding: 15px;
-  margin-bottom: 15px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+@media (max-width: 968px) {
+  .property-detail-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  
+  .loan-detail-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .payment-card {
+    position: static;
+  }
+  
+  .quick-amount-buttons {
+    flex-direction: column;
+  }
 }
 
 @media (max-width: 768px) {
+  /* Navigation */
+  .nav-container {
+    flex-wrap: wrap;
+    padding: 1rem;
+  }
+  
+  .nav-links {
+    width: 100%;
+    justify-content: center;
+    gap: 0.3rem;
+    font-size: 12px;
+    margin-top: 10px;
+  }
+  
+  .nav-link {
+    padding: 0.4rem 0.6rem;
+    white-space: nowrap;
+  }
+  
+  .btn-register,
+  .btn-logout {
+    padding: 0.4rem 0.6rem;
+  }
+  
+  .nav-link:nth-child(3) {
+    display: none;
+  }
+  
+  /* Home Page */
+  .hero {
+    padding: 3rem 1.5rem;
+  }
+  
+  .hero-logo {
+    max-width: 300px;
+  }
+  
+  .hero-title {
+    font-size: 2rem;
+  }
+  
+  .hero-subtitle {
+    font-size: 1.1rem;
+  }
+  
+  .hero-buttons .btn {
+    width: 100%;
+  }
+  
+  .section-title {
+    font-size: 2rem;
+  }
+  
+  /* Dashboard */
+  .dashboard {
+    padding: 2rem 1rem;
+  }
+  
+  .dashboard h1 {
+    font-size: 2rem;
+  }
+  
+  .dashboard-summary {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .loans-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .loan-detail {
+    padding: 2rem 1rem;
+  }
+  
+  .loan-detail h1 {
+    font-size: 2rem;
+  }
+  
+  .loan-detail > .btn {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+  
+  .loan-info-card,
+  .payment-card {
+    padding: 1.5rem;
+  }
+  
+  .info-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  
+  /* Properties Page */
+  .properties-page {
+    padding: 20px;
+  }
+  
+  .properties-page h1 {
+    font-size: 2rem;
+  }
+  
+  .properties-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .property-image {
+    height: 200px;
+  }
+  
+  .property-price {
+    font-size: 1.8rem;
+  }
+  
+  /* Property Detail */
+  .property-detail {
+    padding: 20px;
+  }
+  
+  .property-detail h1 {
+    font-size: 2rem;
+  }
+  
+  .property-detail .card,
+  .calculator {
+    max-width: 100%;
+    padding: 1.5rem;
+  }
+  
+  /* Payment History */
+  .payment-history {
+    padding: 2rem 1rem;
+  }
+  
+  .payment-history h1 {
+    font-size: 2rem;
+  }
+  
+  .payment-summary {
+    padding: 1.5rem;
+  }
+  
+  .summary-stats {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .payments-table {
+    overflow-x: auto;
+  }
+  
+  .payments-table table {
+    min-width: 600px;
+  }
+  
+  .payments-table th,
+  .payments-table td {
+    padding: 0.75rem 0.5rem;
+    font-size: 0.9rem;
+  }
+  
   .desktop-only {
     display: none;
   }
@@ -1891,35 +1782,39 @@ label:contains('*') {
     display: block;
   }
   
-  .payments-table table {
-    min-width: 100%;
+  /* Sold Properties */
+  .sold-properties-page {
+    padding: 2rem 1rem;
+  }
+  
+  .sold-properties-page h1 {
+    font-size: 2rem;
+  }
+  
+  .filter-tabs button {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
   }
 }
 
-/* Print Styles */
+@media (max-width: 600px) {
+  .nav-logo-desktop {
+    display: none;
+  }
+  
+  .nav-logo-mobile {
+    display: block;
+  }
+}
+
+/* ===================
+   PRINT STYLES
+=================== */
 @media print {
-  /* Hide interactive elements */
   nav,
   button,
   .btn,
-  input[type="submit"] {
-    display: none !important;
-  }
-
-  /* Clean page setup */
-  body {
-    background: white !important;
-    color: black !important;
-  }
-
-  .card {
-    box-shadow: none !important;
-    border: 1px solid #ddd !important;
-  }
-}
-
-/* Print Styles for Tax Reports */
-@media print {
+  input[type="submit"],
   .no-print {
     display: none !important;
   }
@@ -1929,10 +1824,13 @@ label:contains('*') {
   }
   
   body {
-    background: white;
+    background: white !important;
+    color: black !important;
   }
   
   .card {
+    box-shadow: none !important;
+    border: 1px solid #ddd !important;
     break-inside: avoid;
     page-break-inside: avoid;
   }
@@ -1945,8 +1843,4 @@ label:contains('*') {
     page-break-inside: avoid;
     page-break-after: auto;
   }
-}
-
-.print-only {
-  display: none;
 }

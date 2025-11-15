@@ -1246,87 +1246,63 @@ navigate('/dashboard');
           left: 0,
           right: 0,
           bottom: 0,
-          backgroundColor: 'rgba(0,0,0,0.7)',
+          backgroundColor: 'rgba(0,0,0,0.5)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          zIndex: 9999,
-          padding: '20px'
+          zIndex: 1000
         }}>
           <div style={{
             backgroundColor: 'white',
+            padding: '30px',
             borderRadius: '10px',
-            maxWidth: '900px',
-            width: '100%',
+            maxWidth: '600px',
+            width: '90%',
             maxHeight: '90vh',
-            display: 'flex',
-            flexDirection: 'column'
+            overflow: 'auto'
           }}>
-            <div style={{
-              padding: '20px',
-              borderBottom: '2px solid var(--forest-green)'
-            }}>
-              <h2 style={{ margin: 0, color: 'var(--forest-green)' }}>Terms of Service</h2>
-            </div>
+            <h2 style={{ marginTop: 0, marginBottom: '20px', color: 'var(--forest-green)' }}>Terms of Service</h2>
             
-            <div style={{
-              padding: '20px',
-              overflowY: 'auto',
-              flex: 1
-            }}>
-              <div style={{ 
-                fontSize: '14px', 
-                lineHeight: '1.6',
-                color: '#333',
-                maxHeight: '500px',
-                overflowY: 'auto',
-                padding: '10px'
-              }}>
-                <h3>Agreement to Terms</h3>
-                <p>By purchasing property, you agree to be bound by these Terms of Service.</p>
-                
-                <h3>Contract for Deed</h3>
-                <p>All land purchases are made through a Contract for Deed. Legal title remains with Green Acres Land Investments, LLC until the contract is paid in full. You receive equitable title and can use the property according to contract terms.</p>
-                
-                <h3>Payment Terms</h3>
-                <ul>
-                  <li>Monthly payments must be made on your selected due date (1st or 15th)</li>
-                  <li>Late payments (7+ days past due) incur a late fee</li>
-                  <li>Payments include principal, interest, and may include property taxes and HOA fees</li>
-                  <li>You may prepay without penalty at any time</li>
-                </ul>
-                
-                <h3>Default and Forfeiture</h3>
-                <p><strong style={{ color: '#dc3545' }}>⚠️ CRITICAL:</strong> If you default on payments:</p>
-                <ul>
-                  <li>You will receive written notice providing 7 days to cure the default</li>
-                  <li>If not cured, <strong>all payments made will be forfeited</strong> (considered rent for use of property)</li>
-                  <li>You will immediately lose all rights to the property</li>
-                  <li>No refund of any payments or down payment</li>
-                </ul>
-                
-                <h3>Property "As-Is"</h3>
-                <p><strong>Properties are sold "AS IS" without warranty of any kind.</strong> You are responsible for conducting your own due diligence including property inspections, title searches, and verification of utilities, access, zoning, and buildability.</p>
-                
-                <h3>Governing Law</h3>
-                <p>These Terms shall be governed by the laws of the State of Wisconsin. Any disputes shall be resolved exclusively in the courts of Outagamie County, Appleton, Wisconsin.</p>
-                
-                <p style={{ marginTop: '20px', padding: '10px', background: '#f0f0f0', borderRadius: '5px' }}>
-                  <strong>Contact:</strong> GreenAcresLandInvestments@gmail.com | 920.716.6107
-                </p>
-                
-                <p style={{ textAlign: 'center', marginTop: '15px', fontSize: '12px', color: '#666' }}>
-                  <a href="/terms" target="_blank" style={{ color: 'var(--forest-green)' }}>View Full Terms of Service</a>
-                </p>
-              </div>
+            <div style={{ fontSize: '14px', lineHeight: '1.6', color: '#333' }}>
+              <h3>Agreement to Terms</h3>
+              <p>By purchasing property, you agree to be bound by these Terms of Service.</p>
+              
+              <h3>Contract for Deed</h3>
+              <p>All land purchases are made through a Contract for Deed. Legal title remains with Green Acres Land Investments, LLC until the contract is paid in full. You receive equitable title and can use the property according to contract terms.</p>
+              
+              <h3>Payment Terms</h3>
+              <ul>
+                <li>Monthly payments must be made on your selected due date (1st or 15th)</li>
+                <li>Late payments (7+ days past due) incur a late fee</li>
+                <li>Payments include principal, interest, and may include property taxes and HOA fees</li>
+                <li>You may prepay without penalty at any time</li>
+              </ul>
+              
+              <h3>Default and Forfeiture</h3>
+              <p><strong style={{ color: '#dc3545' }}>⚠️ CRITICAL:</strong> If you default on payments:</p>
+              <ul>
+                <li>You will receive written notice providing 7 days to cure the default</li>
+                <li>If not cured, <strong>all payments made will be forfeited</strong> (considered rent for use of property)</li>
+                <li>You will immediately lose all rights to the property</li>
+                <li>No refund of any payments or down payment</li>
+              </ul>
+              
+              <h3>Property "As-Is"</h3>
+              <p><strong>Properties are sold "AS IS" without warranty of any kind.</strong> You are responsible for conducting your own due diligence including property inspections, title searches, and verification of utilities, access, zoning, and buildability.</p>
+              
+              <h3>Governing Law</h3>
+              <p>These Terms shall be governed by the laws of the State of Wisconsin. Any disputes shall be resolved exclusively in the courts of Outagamie County, Appleton, Wisconsin.</p>
+              
+              <p style={{ marginTop: '20px', padding: '10px', background: '#f0f0f0', borderRadius: '5px' }}>
+                <strong>Contact:</strong> GreenAcresLandInvestments@gmail.com | 920.716.6107
+              </p>
+              
+              <p style={{ textAlign: 'center', marginTop: '15px', fontSize: '12px', color: '#666' }}>
+                <a href="/terms" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--forest-green)' }}>View Full Terms of Service (Opens in New Window)</a>
+              </p>
             </div>
-            
-            <div style={{
-              padding: '20px',
-              borderTop: '2px solid #e0e0e0',
-              display: 'flex',
-              gap: '10px'
-            }}>
+
+            <div style={{ display: 'flex', gap: '10px', marginTop: '20px' }}>
               <button
                 onClick={() => {
                   setTermsAccepted(true);

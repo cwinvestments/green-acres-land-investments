@@ -18,6 +18,9 @@ function Register() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const [showTermsModal, setShowTermsModal] = useState(false);
+  const [termsAccepted, setTermsAccepted] = useState(false);
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -28,6 +31,12 @@ function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+
+    // Validate terms accepted
+    if (!termsAccepted) {
+      setError('You must read and accept the Terms of Service to register');
+      return;
+    }
 
     // Validate passwords match
     if (formData.password !== formData.confirmPassword) {
@@ -146,10 +155,26 @@ function Register() {
 
           {error && <div className="error-message" style={{ marginBottom: '15px' }}>{error}</div>}
           
+          {/* Terms of Service */}
+          <div style={{ marginBottom: '20px' }}>
+            <button
+              type="button"
+              onClick={() => setShowTermsModal(true)}
+              className="btn"
+              style={{
+                width: '100%',
+                backgroundColor: termsAccepted ? '#28a745' : 'var(--forest-green)',
+                color: 'white'
+              }}
+            >
+              {termsAccepted ? '✓ Terms of Service Accepted' : 'Read & Accept Terms of Service'}
+            </button>
+          </div>
+          
           <button 
             type="submit" 
             className="btn btn-primary btn-full-width"
-            disabled={loading}
+            disabled={loading || !termsAccepted}
           >
             {loading ? 'Creating Account...' : 'Register'}
           </button>
@@ -165,6 +190,94 @@ function Register() {
           <a href="https://policies.google.com/terms" target="_blank" rel="noopener noreferrer">Terms of Service</a> apply.
         </div>
       </div>
+
+      {/* Terms of Service Modal */}
+      {showTermsModal && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0,0,0,0.7)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 9999,
+          padding: '20px'
+        }}>
+          <div style={{
+            backgroundColor: 'white',
+            borderRadius: '10px',
+            maxWidth: '900px',
+            width: '100%',
+            maxHeight: '90vh',
+            display: 'flex',
+            flexDirection: 'column'
+          }}>
+            <div style={{
+              padding: '20px',
+              borderBottom: '2px solid var(--forest-green)'
+            }}>
+              <h2 style={{ margin: 0, color: 'var(--forest-green)' }}>Terms of Service</h2>
+            </div>
+            
+            <div style={{
+              padding: '20px',
+              overflowY: 'auto',
+              flex: 1
+            }}>
+              <iframe 
+                src="/terms" 
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  border: 'none',
+                  minHeight: '400px'
+                }}
+                title="Terms of Service"
+              />
+            </div>
+            
+            <div style={{
+              padding: '20px',
+              borderTop: '2px solid #e0e0e0',
+              display: 'flex',
+              gap: '10px'
+            }}>
+              <button
+                onClick={() => {
+                  setTermsAccepted(true);
+                  setShowTermsModal(false);
+                }}
+                className="btn"
+                style={{
+                  flex: 1,
+                  backgroundColor: 'var(--forest-green)',
+                  color: 'white',
+                  padding: '12px',
+                  fontSize: '16px'
+                }}
+              >
+                ✓ I Accept the Terms of Service
+              </button>
+              <button
+                onClick={() => setShowTermsModal(false)}
+                className="btn"
+                style={{
+                  flex: 1,
+                  backgroundColor: '#6c757d',
+                  color: 'white',
+                  padding: '12px',
+                  fontSize: '16px'
+                }}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

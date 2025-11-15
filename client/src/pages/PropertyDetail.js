@@ -47,6 +47,8 @@ function PropertyDetail() {
   });
   const [paymentDueDay, setPaymentDueDay] = useState('1');
   const [dueDiligenceAgreed, setDueDiligenceAgreed] = useState(false);
+  const [showTermsModal, setShowTermsModal] = useState(false);
+  const [termsAccepted, setTermsAccepted] = useState(false);
   // Find closest payment option to desired payment
 const findClosestOption = () => {
   if (!desiredPayment || desiredPayment < 50) return null;
@@ -205,6 +207,12 @@ const closestOption = findClosestOption();
   const handlePurchase = async () => {
     if (!isAuthenticated) {
       navigate('/login');
+      return;
+    }
+
+    // Validate terms accepted
+    if (!termsAccepted) {
+      setPurchaseError('You must read and accept the Terms of Service to complete this purchase');
       return;
     }
 
@@ -1110,6 +1118,26 @@ navigate('/dashboard');
           </div>
         )}
 
+	{/* Terms of Service */}
+        {cardInstance && (
+          <div style={{ marginBottom: '1rem' }}>
+            <button
+              type="button"
+              onClick={() => setShowTermsModal(true)}
+              className="btn"
+              style={{
+                width: '100%',
+                backgroundColor: termsAccepted ? '#28a745' : 'var(--forest-green)',
+                color: 'white',
+                padding: '12px',
+                fontSize: '16px'
+              }}
+            >
+              {termsAccepted ? '✓ Terms of Service Accepted' : 'Read & Accept Terms of Service'}
+            </button>
+          </div>
+        )}
+
 	{/* Due Diligence Agreement */}
         {cardInstance && (
           <div style={{
@@ -1180,7 +1208,7 @@ navigate('/dashboard');
         <button 
           className="btn btn-primary btn-full-width"
           onClick={cardInstance ? handlePurchase : initializeSquarePayment}
-          disabled={purchasing || (cardInstance && !dueDiligenceAgreed)}
+          disabled={purchasing || (cardInstance && (!dueDiligenceAgreed || !termsAccepted))}
           style={{ marginTop: '1rem' }}
         >
           {purchasing 
@@ -1199,6 +1227,93 @@ navigate('/dashboard');
           )}
         </div>
       </div>
+    {/* Terms of Service Modal */}
+      {showTermsModal && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0,0,0,0.7)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 9999,
+          padding: '20px'
+        }}>
+          <div style={{
+            backgroundColor: 'white',
+            borderRadius: '10px',
+            maxWidth: '900px',
+            width: '100%',
+            maxHeight: '90vh',
+            display: 'flex',
+            flexDirection: 'column'
+          }}>
+            <div style={{
+              padding: '20px',
+              borderBottom: '2px solid var(--forest-green)'
+            }}>
+              <h2 style={{ margin: 0, color: 'var(--forest-green)' }}>Terms of Service</h2>
+            </div>
+            
+            <div style={{
+              padding: '20px',
+              overflowY: 'auto',
+              flex: 1
+            }}>
+              <iframe 
+                src="/terms" 
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  border: 'none',
+                  minHeight: '400px'
+                }}
+                title="Terms of Service"
+              />
+            </div>
+            
+            <div style={{
+              padding: '20px',
+              borderTop: '2px solid #e0e0e0',
+              display: 'flex',
+              gap: '10px'
+            }}>
+              <button
+                onClick={() => {
+                  setTermsAccepted(true);
+                  setShowTermsModal(false);
+                }}
+                className="btn"
+                style={{
+                  flex: 1,
+                  backgroundColor: 'var(--forest-green)',
+                  color: 'white',
+                  padding: '12px',
+                  fontSize: '16px'
+                }}
+              >
+                ✓ I Accept the Terms of Service
+              </button>
+              <button
+                onClick={() => setShowTermsModal(false)}
+                className="btn"
+                style={{
+                  flex: 1,
+                  backgroundColor: '#6c757d',
+                  color: 'white',
+                  padding: '12px',
+                  fontSize: '16px'
+                }}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

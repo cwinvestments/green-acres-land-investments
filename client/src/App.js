@@ -29,6 +29,18 @@ import AboutUs from './pages/AboutUs';
 import ContactUs from './pages/ContactUs';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfService from './pages/TermsOfService';
+// Scroll to top on route change
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  
+  React.useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+  
+  return null;
+}
+
+// Protected route component
 // Protected route component
 function ProtectedRoute({ children }) {
   const { isAuthenticated } = useAuth();
@@ -41,6 +53,7 @@ function AppContent() {
 
   return (
     <div className="App">
+      <ScrollToTop />	
       {!isAdminRoute && <Navbar />}
       <Routes>
             {/* Customer Routes */}

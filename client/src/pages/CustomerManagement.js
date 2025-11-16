@@ -163,15 +163,14 @@ function CustomerManagement() {
     <div style={{ padding: '20px', maxWidth: '1400px', margin: '0 auto' }}>
       {/* Header */}
       <div style={{ marginBottom: '30px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '1rem' }}>
-          <h1 style={{ margin: 0 }}>👥 Customer Management</h1>
-          <button
-            onClick={() => navigate('/admin/dashboard')}
-            className="btn btn-secondary"
-          >
-            ← Back to Dashboard
-          </button>
-        </div>
+        <h1 className="admin-page-title">👥 Customer Management</h1>
+        <button
+          onClick={() => navigate('/admin/dashboard')}
+          className="btn btn-secondary"
+          style={{ width: '100%' }}
+        >
+          ← Back to Dashboard
+        </button>
 
         {/* Summary Stats */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '20px', marginTop: '20px' }}>

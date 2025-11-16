@@ -79,23 +79,18 @@ function AdminReports() {
   return (
     <div className="admin-reports-container">
       {/* Header */}
-      <div className="admin-reports-header">
-        <h1>📊 Financial Reports</h1>
-        <div className="admin-reports-header-buttons">
-          <button 
-            onClick={() => setShowExportModal(true)} 
-            className="btn btn-primary"
-          >
-            📄 Export PDF
-          </button>
-          <button onClick={() => navigate('/admin/dashboard')} className="btn btn-secondary">
-            ← Back to Dashboard
-          </button>
-        </div>
+      <div style={{ marginBottom: '30px' }}>
+        <h1 className="admin-page-title">📊 Financial Reports</h1>
+        <button onClick={handleExportPDF} className="btn" style={{ backgroundColor: 'var(--forest-green)', color: 'white', width: '100%', marginBottom: '10px' }}>
+          📄 Export PDF
+        </button>
+        <button onClick={() => navigate('/admin/dashboard')} className="btn btn-secondary" style={{ width: '100%' }}>
+          ← Back to Dashboard
+        </button>
       </div>
 
       {/* Tabs */}
-      <div className="admin-reports-tabs">
+      <div className="admin-reports-tabs" style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '30px' }}>
         <button
           onClick={() => setActiveTab('overview')}
           className={`btn ${activeTab === 'overview' ? 'btn-primary' : 'btn-secondary'}`}

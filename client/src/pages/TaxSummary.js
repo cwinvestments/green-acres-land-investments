@@ -95,25 +95,30 @@ useEffect(() => {
   return (
     <div style={{ padding: '20px', maxWidth: '1400px', margin: '0 auto' }}>
       {/* Header - Hide when printing */}
-      <div className="no-print" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px', flexWrap: 'wrap', gap: '1rem' }}>
-        <h1>💼 Income Tax Summary</h1>
-        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-          <select
-            value={selectedYear}
-            onChange={(e) => setSelectedYear(parseInt(e.target.value))}
-            style={{ padding: '8px', fontSize: '16px' }}
-          >
-            {Array.from({ length: 10 }, (_, i) => new Date().getFullYear() - i).map(year => (
-              <option key={year} value={year}>{year}</option>
-            ))}
-          </select>
-          <button onClick={printReport} className="btn btn-primary">
-            🖨️ Print Report
-          </button>
-          <button onClick={() => navigate('/admin/dashboard')} className="btn btn-secondary">
-            ← Back to Dashboard
-          </button>
-        </div>
+      <div style={{ marginBottom: '30px' }}>
+        <h1 className="admin-page-title">💼 Income Tax Summary</h1>
+        <select
+          value={selectedYear}
+          onChange={(e) => setSelectedYear(parseInt(e.target.value))}
+          style={{
+            width: '100%',
+            padding: '8px',
+            border: '2px solid var(--border-color)',
+            borderRadius: '5px',
+            fontSize: '16px',
+            marginBottom: '10px'
+          }}
+        >
+          {years.map(year => (
+            <option key={year} value={year}>{year}</option>
+          ))}
+        </select>
+        <button onClick={handlePrintReport} className="btn btn-primary" style={{ width: '100%', marginBottom: '10px' }}>
+          🖨️ Print Report
+        </button>
+        <button onClick={() => navigate('/admin/dashboard')} className="btn btn-secondary" style={{ width: '100%' }}>
+          ← Back to Dashboard
+        </button>
       </div>
 
       {/* Print Header - Only shows when printing */}

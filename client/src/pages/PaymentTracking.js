@@ -84,21 +84,15 @@ function PaymentTracking() {
   return (
     <div style={{ padding: '20px', maxWidth: '1400px', margin: '0 auto' }}>
       {/* Header */}
-      <div style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: '30px'
-      }}>
-        <div>
-          <h1 style={{ margin: '0 0 5px 0' }}>💳 Payment Tracking</h1>
-          <p style={{ margin: 0, color: '#666' }}>
-            {filteredPayments.length} payments shown
-          </p>
-        </div>
+      <div style={{ marginBottom: '30px' }}>
+        <h1 className="admin-page-title" style={{ margin: '0 0 5px 0' }}>💳 Payment Tracking</h1>
+        <p style={{ margin: '0 0 20px 0', color: '#666', textAlign: 'center' }}>
+          {filteredPayments.length} payments shown
+        </p>
         <button
           onClick={() => navigate('/admin/dashboard')}
           className="btn btn-secondary"
+          style={{ width: '100%' }}
         >
           ← Back to Dashboard
         </button>

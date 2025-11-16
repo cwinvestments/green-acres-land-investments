@@ -138,33 +138,25 @@ function StateManagement() {
   return (
     <div style={{ padding: '20px', maxWidth: '1400px', margin: '0 auto' }}>
       {/* Header */}
-      <div style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: '30px'
-      }}>
-        <div>
-          <h1 style={{ margin: '0 0 5px 0' }}>🗺️ State Management</h1>
-          <p style={{ margin: 0, color: '#666' }}>
-            Manage which states appear on the public website
-          </p>
-        </div>
-        <div>
-          <button
-            onClick={() => handleOpenModal()}
-            className="btn btn-primary"
-            style={{ marginRight: '10px' }}
-          >
-            + Add New State
-          </button>
-          <button
-            onClick={() => navigate('/admin/dashboard')}
-            className="btn btn-secondary"
-          >
-            ← Back to Dashboard
-          </button>
-        </div>
+      <div style={{ marginBottom: '30px' }}>
+        <h1 className="admin-page-title" style={{ margin: '0 0 5px 0' }}>🗺️ State Management</h1>
+        <p style={{ margin: '0 0 20px 0', color: '#666', textAlign: 'center' }}>
+          Manage which states appear on the public website
+        </p>
+        <button
+          onClick={() => handleOpenModal()}
+          className="btn btn-primary"
+          style={{ width: '100%', marginBottom: '10px' }}
+        >
+          + Add New State
+        </button>
+        <button
+          onClick={() => navigate('/admin/dashboard')}
+          className="btn btn-secondary"
+          style={{ width: '100%' }}
+        >
+          ← Back to Dashboard
+        </button>
       </div>
 
       {/* Summary Cards */}

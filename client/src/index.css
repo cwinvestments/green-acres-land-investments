@@ -3194,35 +3194,76 @@ label:has(.required-asterisk)::after {
   font-size: 18px;
 }
 
-.admin-reports-trends-card {
+.admin-reports-trends-desktop {
   padding: 20px;
-  margin-bottom: 40px;
 }
 
-.admin-reports-trends-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 15px;
+.admin-reports-trends-header {
+  border-bottom: 2px solid #ddd;
 }
 
-.admin-reports-trend-item {
-  padding: 15px;
-  background-color: #f9f9f9;
-  border-radius: 8px;
+.admin-reports-trends-header th {
+  padding: 12px;
+}
+
+.admin-reports-trends-header th:first-child {
+  text-align: left;
+}
+
+.admin-reports-trends-header th:not(:first-child) {
+  text-align: right;
+}
+
+.admin-reports-trends-header th:last-child {
   text-align: center;
-  border: 1px solid #eee;
 }
 
-.admin-reports-trend-month {
-  font-size: 14px;
-  color: #666;
-  margin-bottom: 8px;
-}
-
-.admin-reports-trend-amount {
-  font-size: 20px;
+.admin-reports-trends-revenue {
+  padding: 12px;
+  text-align: right;
   font-weight: bold;
+}
+
+.admin-reports-trends-value {
+  padding: 12px;
+  text-align: right;
+}
+
+.admin-reports-trends-center {
+  padding: 12px;
+  text-align: center;
+}
+
+.admin-reports-trends-empty {
+  text-align: center;
+  color: #666;
+}
+
+.admin-reports-trend-mobile-card {
+  padding: 15px;
+  margin-bottom: 15px;
+}
+
+.admin-reports-trend-mobile-month {
+  font-weight: bold;
+  font-size: 16px;
+  margin-bottom: 10px;
   color: var(--forest-green);
+}
+
+.admin-reports-trend-mobile-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.admin-reports-trend-mobile-label {
+  font-size: 12px;
+  color: #666;
+}
+
+.admin-reports-trend-mobile-value {
+  font-weight: bold;
 }
 
 .admin-reports-escrow-card {

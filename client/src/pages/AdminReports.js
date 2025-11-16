@@ -209,18 +209,79 @@ function AdminReports() {
             </table>
           </div>
 
-          <h2>Monthly Trends</h2>
-          <div className="card admin-reports-trends-card">
-            <div className="admin-reports-trends-grid">
-              {trends.map((trend, idx) => (
-                <div key={idx} className="admin-reports-trend-item">
-                  <div className="admin-reports-trend-month">{trend.month}</div>
-                  <div className="admin-reports-trend-amount">
-                    ${formatCurrency(trend.total || 0)}
+          <h2>Monthly Trends (Last 12 Months)</h2>
+          
+          {/* Desktop Table */}
+          <div className="card desktop-only admin-reports-trends-desktop">
+            {trends.length > 0 ? (
+              <table className="admin-reports-table">
+                <thead>
+                  <tr className="admin-reports-trends-header">
+                    <th>Month</th>
+                    <th>Total Revenue</th>
+                    <th>Loan Payments</th>
+                    <th>Fees</th>
+                    <th>Payments</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {trends.map((trend, idx) => (
+                    <tr key={idx}>
+                      <td>
+                        {new Date(trend.month).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+                      </td>
+                      <td className="admin-reports-trends-revenue">
+                        ${formatCurrency(trend.total_revenue)}
+                      </td>
+                      <td className="admin-reports-trends-value">
+                        ${formatCurrency(trend.loan_revenue)}
+                      </td>
+                      <td className="admin-reports-trends-value">
+                        ${formatCurrency(trend.fee_revenue)}
+                      </td>
+                      <td className="admin-reports-trends-center">
+                        {trend.payment_count}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <p className="admin-reports-trends-empty">No payment data yet</p>
+            )}
+          </div>
+
+          {/* Mobile Cards */}
+          <div className="mobile-only">
+            {trends.length > 0 ? (
+              trends.map((trend, idx) => (
+                <div key={idx} className="card admin-reports-trend-mobile-card">
+                  <div className="admin-reports-trend-mobile-month">
+                    {new Date(trend.month).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+                  </div>
+                  <div className="admin-reports-trend-mobile-grid">
+                    <div>
+                      <div className="admin-reports-trend-mobile-label">Total Revenue</div>
+                      <div className="admin-reports-trend-mobile-value">${formatCurrency(trend.total_revenue)}</div>
+                    </div>
+                    <div>
+                      <div className="admin-reports-trend-mobile-label">Loan Payments</div>
+                      <div className="admin-reports-trend-mobile-value">${formatCurrency(trend.loan_revenue)}</div>
+                    </div>
+                    <div>
+                      <div className="admin-reports-trend-mobile-label">Fees</div>
+                      <div className="admin-reports-trend-mobile-value">${formatCurrency(trend.fee_revenue)}</div>
+                    </div>
+                    <div>
+                      <div className="admin-reports-trend-mobile-label">Payments</div>
+                      <div className="admin-reports-trend-mobile-value">{trend.payment_count}</div>
+                    </div>
                   </div>
                 </div>
-              ))}
-            </div>
+              ))
+            ) : (
+              <p className="admin-reports-trends-empty">No payment data yet</p>
+            )}
           </div>
         </>
       )}

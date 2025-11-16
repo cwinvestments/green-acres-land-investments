@@ -319,7 +319,7 @@ function AdminLoans() {
 
   if (error) {
     return (
-    <div style={{ padding: '20px', maxWidth: '95%', margin: '0 auto' }}>
+    <div className="admin-loans-error-container">
         <div className="error-message">{error}</div>
       </div>
     );
@@ -330,17 +330,17 @@ function AdminLoans() {
   const paidOffCount = loans.filter(l => l.status === 'paid_off').length;
 
   return (
-    <div style={{ padding: '20px', maxWidth: '1400px', margin: '0 auto' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
+    <div className="admin-loans-container">
+      <div className="admin-loans-header">
         <h1>Loan Management</h1>
-        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-          <button onClick={() => navigate('/admin/loans/create-custom')} className="btn" style={{ backgroundColor: '#2c5f2d', color: 'white' }}>
+        <div className="admin-loans-header-buttons">
+          <button onClick={() => navigate('/admin/loans/create-custom')} className="btn admin-loans-btn-create">
             ✨ Create Custom Loan
           </button>
-          <button onClick={() => navigate('/admin/loans/import')} className="btn" style={{ backgroundColor: '#2e7d32', color: 'white' }}>
+          <button onClick={() => navigate('/admin/loans/import')} className="btn admin-loans-btn-import">
             📥 Import Existing Loan
           </button>
-          <button onClick={() => navigate('/admin/loans/defaulted')} className="btn" style={{ backgroundColor: '#dc3545', color: 'white' }}>
+          <button onClick={() => navigate('/admin/loans/defaulted')} className="btn admin-loans-btn-defaulted">
             📊 Defaulted Loans Report
           </button>
           <button onClick={() => navigate('/admin/dashboard')} className="btn btn-secondary">
@@ -350,7 +350,7 @@ function AdminLoans() {
       </div>
 
       {/* Summary Cards */}
-      <div className="dashboard-summary" style={{ marginBottom: '2rem' }}>
+      <div className="dashboard-summary admin-loans-summary">
         <div className="summary-card">
           <h3>Active Loans</h3>
           <p className="summary-number">{activeCount}</p>
@@ -366,7 +366,7 @@ function AdminLoans() {
       </div>
 
       {/* Filters */}
-      <div style={{ marginBottom: '2rem', display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'center' }}>
+      <div className="admin-loans-filters">
         <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
           <button
             onClick={() => setFilter('all')}
@@ -425,8 +425,8 @@ function AdminLoans() {
       </div>
 
       {/* Desktop Table View */}
-      <div className="desktop-only" style={{ width: '100%', overflowX: 'auto' }}>
-        <table className="admin-table" style={{ width: '100%', minWidth: '1200px' }}>
+      <div className="desktop-only admin-loans-table-container">
+        <table className="admin-table admin-loans-table">
           <thead>
             <tr>
               <th style={{ textAlign: 'left' }}>Customer</th>

@@ -503,6 +503,14 @@ const loadTaxPayments = async (propertyId) => {
       coming_soon: { backgroundColor: '#8b5cf6', color: 'white' }
     };
 
+    const labels = {
+      available: 'AVAILABLE',
+      pending: 'PENDING',
+      under_contract: 'CONTRACT',
+      sold: 'SOLD',
+      coming_soon: 'COMING SOON'
+    };
+
     return (
       <span style={{
         ...styles[status],
@@ -511,7 +519,7 @@ const loadTaxPayments = async (propertyId) => {
         fontSize: '14px',
         fontWeight: '500'
       }}>
-        {status.replace('_', ' ').toUpperCase()}
+        {labels[status]}
       </span>
     );
   };
@@ -523,29 +531,25 @@ const loadTaxPayments = async (propertyId) => {
   return (
     <div style={{ padding: '20px', maxWidth: '1400px', margin: '0 auto', width: '100%', boxSizing: 'border-box' }}>
       {/* Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px', flexWrap: 'wrap', gap: '1rem' }}>
-        <div>
-          <h1 className="admin-page-title" style={{ margin: '0 0 5px 0' }}>🏘️ Property Management</h1>
-          <p style={{ margin: 0, color: '#666' }}>
-            {properties.length} total properties
-          </p>
-        </div>
-        <div>
-          <button
-            onClick={() => setShowAddForm(!showAddForm)}
-            className="btn btn-primary"
-            style={{ width: '100%', marginBottom: '10px' }}
-          >
-            {showAddForm ? 'Cancel' : '+ Add Property'}
-          </button>
-          <button
-            onClick={() => navigate('/admin/dashboard')}
-            className="btn btn-secondary"
-            style={{ width: '100%' }}
-          >
-            ← Back to Dashboard
-          </button>
-        </div>
+      <div style={{ marginBottom: '30px' }}>
+        <h1 className="admin-page-title" style={{ margin: '0 0 5px 0' }}>🏘️ Property Management</h1>
+        <p style={{ margin: '0 0 20px 0', color: '#666', textAlign: 'center' }}>
+          {properties.length} total properties
+        </p>
+        <button
+          onClick={() => setShowAddForm(!showAddForm)}
+          className="btn btn-primary"
+          style={{ width: '100%', marginBottom: '10px' }}
+        >
+          {showAddForm ? 'Cancel' : '+ Add Property'}
+        </button>
+        <button
+          onClick={() => navigate('/admin/dashboard')}
+          className="btn btn-secondary"
+          style={{ width: '100%' }}
+        >
+          ← Back to Dashboard
+        </button>
       </div>
 
       {/* Profit Summary Cards */}
@@ -842,7 +846,7 @@ const loadTaxPayments = async (propertyId) => {
                 <option value="available">Available</option>
                 <option value="coming_soon">Coming Soon</option>
                 <option value="pending">Pending</option>
-                <option value="under_contract">Under Contract</option>
+                <option value="under_contract">Contract</option>
                 <option value="sold">Sold</option>
               </select>
 

@@ -289,101 +289,144 @@ function AdminReports() {
       {/* Tax Escrow Tab */}
       {activeTab === 'tax' && (
         <>
-          <h2>Tax Escrow Tracking</h2>
-          <div className="card admin-reports-escrow-card">
-            <div className="admin-reports-escrow-header">
-              <div className="admin-reports-escrow-property">Property</div>
-              <div className="admin-reports-escrow-value">Collected</div>
-              <div className="admin-reports-escrow-value">Paid</div>
-              <div className="admin-reports-escrow-value">Balance</div>
-            </div>
-            {taxEscrow.map((item, idx) => (
-              <div key={idx} className="admin-reports-escrow-row">
-                <div className="admin-reports-escrow-property">
-                  {item.property_title}
+          <h2>Property Tax Escrow Tracking</h2>
+          
+          {/* Desktop Table */}
+          <div className="card desktop-only admin-reports-tax-desktop">
+            {taxEscrow.length > 0 ? (
+              <table className="admin-reports-table">
+                <thead>
+                  <tr className="admin-reports-tax-header">
+                    <th>Property</th>
+                    <th>Annual Tax</th>
+                    <th>Collected</th>
+                    <th>Taxes Paid</th>
+                    <th>Balance</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {taxEscrow.map((prop) => (
+                    <tr key={prop.property_id}>
+                      <td>{prop.title}</td>
+                      <td className="admin-reports-tax-value">
+                        ${formatCurrency(prop.annual_tax_amount)}
+                      </td>
+                      <td className="admin-reports-tax-collected">
+                        ${formatCurrency(prop.tax_collected)}
+                      </td>
+                      <td className="admin-reports-tax-paid">
+                        ${formatCurrency(prop.taxes_paid || 0)}
+                      </td>
+                      <td className="admin-reports-tax-balance">
+                        ${formatCurrency(prop.tax_balance)}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <p className="admin-reports-tax-empty">No properties with tax tracking</p>
+            )}
+          </div>
+
+          {/* Mobile Cards */}
+          <div className="mobile-only">
+            {taxEscrow.length > 0 ? (
+              taxEscrow.map((prop) => (
+                <div key={prop.property_id} className="card admin-reports-tax-mobile-card">
+                  <div className="admin-reports-tax-mobile-title">
+                    {prop.title}
+                  </div>
+                  <div className="admin-reports-tax-mobile-grid">
+                    <div>
+                      <div className="admin-reports-tax-mobile-label">Annual Tax</div>
+                      <div className="admin-reports-tax-mobile-value">${formatCurrency(prop.annual_tax_amount)}</div>
+                    </div>
+                    <div>
+                      <div className="admin-reports-tax-mobile-label">Collected</div>
+                      <div className="admin-reports-tax-mobile-collected">${formatCurrency(prop.tax_collected)}</div>
+                    </div>
+                    <div>
+                      <div className="admin-reports-tax-mobile-label">Balance</div>
+                      <div className="admin-reports-tax-mobile-value">${formatCurrency(prop.tax_balance)}</div>
+                    </div>
+                  </div>
                 </div>
-                <div className="admin-reports-escrow-value">
-                  ${formatCurrency(item.total_collected || 0)}
-                </div>
-                <div className="admin-reports-escrow-value">
-                  ${formatCurrency(item.total_paid || 0)}
-                </div>
-                <div className="admin-reports-escrow-value">
-                  ${formatCurrency(item.balance || 0)}
-                </div>
-              </div>
-            ))}
-            <div className="admin-reports-escrow-row admin-reports-escrow-total">
-              <div className="admin-reports-escrow-property">Total</div>
-              <div className="admin-reports-escrow-value admin-reports-escrow-total-amount">
-                ${formatCurrency(taxEscrow.reduce((sum, item) => sum + parseFloat(item.total_collected || 0), 0))}
-              </div>
-              <div className="admin-reports-escrow-value admin-reports-escrow-total-amount">
-                ${formatCurrency(taxEscrow.reduce((sum, item) => sum + parseFloat(item.total_paid || 0), 0))}
-              </div>
-              <div className="admin-reports-escrow-value admin-reports-escrow-total-amount">
-                ${formatCurrency(taxEscrow.reduce((sum, item) => sum + parseFloat(item.balance || 0), 0))}
-              </div>
-            </div>
+              ))
+            ) : (
+              <p className="admin-reports-tax-empty">No properties with tax tracking</p>
+            )}
           </div>
         </>
       )}
 
-      {/* HOA Tracking Tab */}
+      {/* HOA Tab */}
       {activeTab === 'hoa' && (
         <>
-          <h2>HOA Tracking</h2>
-          {hoaTracking.length === 0 ? (
-            <div className="card admin-reports-breakdown-card">
-              <p>No properties with HOA fees.</p>
-            </div>
-          ) : (
-            <div className="admin-reports-hoa-grid">
-              {hoaTracking.map((item, idx) => (
-                <div key={idx} className="card admin-reports-hoa-property-card">
-                  <div className="admin-reports-hoa-property-title">
-                    {item.property_title}
-                  </div>
-                  
-                  <div className="admin-reports-hoa-details-grid">
-                    <div className="admin-reports-hoa-detail-item">
-                      <div className="admin-reports-hoa-detail-label">HOA Name</div>
-                      <div className="admin-reports-hoa-detail-value">{item.hoa_name || 'N/A'}</div>
-                    </div>
-                    <div className="admin-reports-hoa-detail-item">
-                      <div className="admin-reports-hoa-detail-label">Monthly Fee</div>
-                      <div className="admin-reports-hoa-detail-value">${formatCurrency(item.hoa_monthly_fee || 0)}</div>
-                    </div>
-                    <div className="admin-reports-hoa-detail-item">
-                      <div className="admin-reports-hoa-detail-label">Contact</div>
-                      <div className="admin-reports-hoa-detail-value">{item.hoa_contact || 'N/A'}</div>
-                    </div>
-                  </div>
+          <h2>HOA Fee Tracking</h2>
+          
+          {/* Desktop Table */}
+          <div className="card desktop-only admin-reports-hoa-desktop">
+            {hoaTracking.length > 0 ? (
+              <table className="admin-reports-table">
+                <thead>
+                  <tr className="admin-reports-hoa-header">
+                    <th>Property</th>
+                    <th>Monthly Fee</th>
+                    <th>Total Collected</th>
+                    <th>Payments</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {hoaTracking.map((prop) => (
+                    <tr key={prop.property_id}>
+                      <td>{prop.title}</td>
+                      <td className="admin-reports-hoa-table-value">
+                        ${formatCurrency(prop.hoa_monthly_fee)}
+                      </td>
+                      <td className="admin-reports-hoa-table-value">
+                        ${formatCurrency(prop.total_collected)}
+                      </td>
+                      <td className="admin-reports-hoa-table-center">
+                        {prop.payment_count}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <p className="admin-reports-hoa-empty">No properties with HOA fees</p>
+            )}
+          </div>
 
-                  <div className="admin-reports-hoa-payment-grid">
-                    <div className="admin-reports-hoa-payment-item">
-                      <div className="admin-reports-hoa-payment-label">Total Collected</div>
-                      <div className="admin-reports-hoa-payment-value">
-                        ${formatCurrency(item.total_collected || 0)}
-                      </div>
+          {/* Mobile Cards */}
+          <div className="mobile-only">
+            {hoaTracking.length > 0 ? (
+              hoaTracking.map((prop) => (
+                <div key={prop.property_id} className="card admin-reports-hoa-mobile-card">
+                  <div className="admin-reports-hoa-mobile-title">
+                    {prop.title}
+                  </div>
+                  <div className="admin-reports-hoa-mobile-grid">
+                    <div>
+                      <div className="admin-reports-hoa-mobile-label">Monthly Fee</div>
+                      <div className="admin-reports-hoa-mobile-value">${formatCurrency(prop.hoa_monthly_fee)}</div>
                     </div>
-                    <div className="admin-reports-hoa-payment-item">
-                      <div className="admin-reports-hoa-payment-label">Total Paid</div>
-                      <div className="admin-reports-hoa-payment-value">
-                        ${formatCurrency(item.total_paid || 0)}
-                      </div>
+                    <div>
+                      <div className="admin-reports-hoa-mobile-label">Total Collected</div>
+                      <div className="admin-reports-hoa-mobile-value">${formatCurrency(prop.total_collected)}</div>
                     </div>
-                    <div className="admin-reports-hoa-payment-item">
-                      <div className="admin-reports-hoa-payment-label">Balance</div>
-                      <div className="admin-reports-hoa-payment-value">
-                        ${formatCurrency(item.balance || 0)}
-                      </div>
+                    <div>
+                      <div className="admin-reports-hoa-mobile-label">Payments</div>
+                      <div className="admin-reports-hoa-mobile-value">{prop.payment_count}</div>
                     </div>
                   </div>
                 </div>
-              ))}
-            </div>
-          )}
+              ))
+            ) : (
+              <p className="admin-reports-hoa-empty">No properties with HOA fees</p>
+            )}
+          </div>
         </>
       )}
 
@@ -394,60 +437,121 @@ function AdminReports() {
           <div className="admin-reports-outstanding-summary">
             <div className="card admin-reports-outstanding-card">
               <h3>Total Outstanding</h3>
-              <p>${formatCurrency(outstanding.total_outstanding || 0)}</p>
+              <p>${formatCurrency(outstanding.total_balance || 0)}</p>
             </div>
             <div className="card admin-reports-outstanding-card">
-              <h3>Total Principal</h3>
-              <p>${formatCurrency(outstanding.total_principal || 0)}</p>
+              <h3>Overdue Loans</h3>
+              <p>{outstanding.overdue_count || 0}</p>
             </div>
             <div className="card admin-reports-outstanding-card">
-              <h3>Total Interest</h3>
-              <p>${formatCurrency(outstanding.total_interest || 0)}</p>
+              <h3>In Default</h3>
+              <p>{outstanding.default_count || 0}</p>
             </div>
             <div className="card admin-reports-outstanding-card">
-              <h3>Active Loans</h3>
-              <p>{outstanding.active_loans || 0}</p>
+              <h3>Total Loans</h3>
+              <p>{outstanding.total_loans || 0}</p>
             </div>
           </div>
 
           <h2>Loan Details</h2>
-          <div className="card admin-reports-loans-card">
-            <table className="admin-reports-loans-table">
+          
+          {/* Desktop Table */}
+          <div className="card desktop-only admin-reports-outstanding-desktop">
+            <table className="admin-reports-table">
               <thead>
-                <tr>
+                <tr className="admin-reports-outstanding-header">
                   <th>Customer</th>
                   <th>Property</th>
-                  <th>Original Amount</th>
-                  <th>Principal Remaining</th>
-                  <th>Interest Remaining</th>
-                  <th>Total Outstanding</th>
-                  <th>% Paid</th>
+                  <th>Balance</th>
+                  <th>Days Overdue</th>
+                  <th>Status</th>
                 </tr>
               </thead>
               <tbody>
-                {loans.map((loan, idx) => (
-                  <tr key={idx}>
-                    <td>{loan.customer_name}</td>
+                {loans.map((loan) => (
+                  <tr key={loan.loan_id}>
+                    <td className="admin-reports-outstanding-customer">
+                      <div className="admin-reports-outstanding-customer-name">{loan.customer_name}</div>
+                      <div className="admin-reports-outstanding-customer-email">{loan.email}</div>
+                    </td>
                     <td>{loan.property_title}</td>
-                    <td className="admin-reports-loans-table-right">
-                      ${formatCurrency(loan.original_amount || 0)}
+                    <td className="admin-reports-outstanding-balance">
+                      ${formatCurrency(loan.balance_remaining)}
                     </td>
-                    <td className="admin-reports-loans-table-right admin-reports-loans-table-bold admin-reports-loans-table-green">
-                      ${formatCurrency(loan.principal_remaining || 0)}
+                    <td className="admin-reports-outstanding-days">
+                      {loan.days_overdue > 0 ? (
+                        <span className="admin-reports-outstanding-badge" style={{
+                          backgroundColor: loan.days_overdue >= 30 ? '#dc3545' : '#ffc107'
+                        }}>
+                          {loan.days_overdue} days
+                        </span>
+                      ) : (
+                        '—'
+                      )}
                     </td>
-                    <td className="admin-reports-loans-table-right admin-reports-loans-table-bold">
-                      ${formatCurrency(loan.interest_remaining || 0)}
-                    </td>
-                    <td className="admin-reports-loans-table-right admin-reports-loans-table-bold">
-                      ${formatCurrency(loan.total_outstanding || 0)}
-                    </td>
-                    <td className="admin-reports-loans-table-right">
-                      {loan.percent_paid || 0}%
+                    <td className="admin-reports-outstanding-status">
+                      {loan.notice_sent_date ? (
+                        <span className="admin-reports-outstanding-status-default">
+                          IN DEFAULT
+                        </span>
+                      ) : loan.days_overdue > 0 ? (
+                        <span className="admin-reports-outstanding-status-overdue">OVERDUE</span>
+                      ) : (
+                        <span className="admin-reports-outstanding-status-current">CURRENT</span>
+                      )}
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
+          </div>
+
+          {/* Mobile Cards */}
+          <div className="mobile-only">
+            {loans.map((loan) => (
+              <div key={loan.loan_id} className="card admin-reports-outstanding-mobile-card">
+                <div className="admin-reports-outstanding-mobile-header">
+                  <div>
+                    <div className="admin-reports-outstanding-mobile-name">{loan.customer_name}</div>
+                    <div className="admin-reports-outstanding-mobile-email">{loan.email}</div>
+                  </div>
+                  <div className="admin-reports-outstanding-mobile-status">
+                    {loan.notice_sent_date ? (
+                      <span className="admin-reports-outstanding-status-default">
+                        IN DEFAULT
+                      </span>
+                    ) : loan.days_overdue > 0 ? (
+                      <span className="admin-reports-outstanding-status-overdue">OVERDUE</span>
+                    ) : (
+                      <span className="admin-reports-outstanding-status-current">CURRENT</span>
+                    )}
+                  </div>
+                </div>
+
+                <div className="admin-reports-outstanding-mobile-property">
+                  {loan.property_title}
+                </div>
+
+                <div className="admin-reports-outstanding-mobile-grid">
+                  <div>
+                    <div className="admin-reports-outstanding-mobile-label">Balance</div>
+                    <div className="admin-reports-outstanding-mobile-value">${formatCurrency(loan.balance_remaining)}</div>
+                  </div>
+                  <div>
+                    <div className="admin-reports-outstanding-mobile-label">Days Overdue</div>
+                    {loan.days_overdue > 0 ? (
+                      <span className="admin-reports-outstanding-badge" style={{
+                        backgroundColor: loan.days_overdue >= 30 ? '#dc3545' : '#ffc107'
+                      }}>
+                        {loan.days_overdue} days
+                      </span>
+                    ) : (
+                      <div className="admin-reports-outstanding-mobile-value">—</div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </>
       )}

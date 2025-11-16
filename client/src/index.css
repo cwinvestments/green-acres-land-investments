@@ -3266,188 +3266,293 @@ label:has(.required-asterisk)::after {
   font-weight: bold;
 }
 
-.admin-reports-escrow-card {
+/* Tax Escrow Section */
+.admin-reports-tax-desktop {
   padding: 20px;
-  margin-bottom: 40px;
 }
 
-.admin-reports-escrow-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 0;
-  border-bottom: 2px solid var(--forest-green);
+.admin-reports-tax-header {
+  border-bottom: 2px solid #ddd;
+}
+
+.admin-reports-tax-header th {
+  padding: 12px;
+}
+
+.admin-reports-tax-header th:first-child {
+  text-align: left;
+}
+
+.admin-reports-tax-header th:not(:first-child) {
+  text-align: right;
+}
+
+.admin-reports-tax-value {
+  padding: 12px;
+  text-align: right;
+}
+
+.admin-reports-tax-collected {
+  padding: 12px;
+  text-align: right;
+  color: #10b981;
   font-weight: bold;
 }
 
-.admin-reports-escrow-row {
-  display: flex;
-  justify-content: space-between;
-  padding: 12px 0;
-  border-bottom: 1px solid #eee;
+.admin-reports-tax-paid {
+  padding: 12px;
+  text-align: right;
+  color: #dc3545;
+  font-weight: bold;
 }
 
-.admin-reports-escrow-property {
-  flex: 2;
-}
-
-.admin-reports-escrow-value {
-  flex: 1;
+.admin-reports-tax-balance {
+  padding: 12px;
   text-align: right;
   font-weight: bold;
 }
 
-.admin-reports-escrow-total {
-  border-top: 2px solid var(--forest-green);
-  padding-top: 15px;
-  font-weight: bold;
-}
-
-.admin-reports-escrow-total-amount {
-  font-size: 24px;
-  color: var(--forest-green);
-}
-
-.admin-reports-hoa-grid {
-  display: grid;
-  gap: 20px;
-  margin-bottom: 40px;
-}
-
-.admin-reports-hoa-property-card {
-  padding: 20px;
-  border: 2px solid #ddd;
-  border-radius: 8px;
-}
-
-.admin-reports-hoa-property-title {
-  font-size: 18px;
-  font-weight: bold;
-  color: var(--forest-green);
-  margin-bottom: 15px;
-}
-
-.admin-reports-hoa-details-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 15px;
-  margin-bottom: 15px;
-}
-
-.admin-reports-hoa-detail-item {
-  padding: 10px;
-  background-color: #f9f9f9;
-  border-radius: 4px;
-}
-
-.admin-reports-hoa-detail-label {
-  font-size: 12px;
+.admin-reports-tax-empty {
+  text-align: center;
   color: #666;
-  margin-bottom: 5px;
 }
 
-.admin-reports-hoa-detail-value {
+.admin-reports-tax-mobile-card {
+  padding: 15px;
+  margin-bottom: 15px;
+}
+
+.admin-reports-tax-mobile-title {
   font-weight: bold;
-  color: var(--text-dark);
+  font-size: 16px;
+  margin-bottom: 10px;
+  color: var(--forest-green);
 }
 
-.admin-reports-hoa-payment-grid {
+.admin-reports-tax-mobile-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr;
   gap: 10px;
-  margin-top: 15px;
-  padding-top: 15px;
-  border-top: 1px solid #ddd;
 }
 
-.admin-reports-hoa-payment-item {
-  text-align: center;
-  padding: 10px;
-  background-color: #f0f8f0;
-  border-radius: 4px;
-}
-
-.admin-reports-hoa-payment-label {
+.admin-reports-tax-mobile-label {
   font-size: 12px;
   color: #666;
-  margin-bottom: 5px;
 }
 
-.admin-reports-hoa-payment-value {
+.admin-reports-tax-mobile-value {
   font-weight: bold;
-  font-size: 16px;
+}
+
+.admin-reports-tax-mobile-collected {
+  font-weight: bold;
   color: var(--forest-green);
 }
 
-.admin-reports-outstanding-summary {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 20px;
-  margin-bottom: 30px;
+/* HOA Tracking Section */
+.admin-reports-hoa-desktop {
+  padding: 20px;
 }
 
-.admin-reports-outstanding-card {
-  padding: 20px;
+.admin-reports-hoa-header {
+  border-bottom: 2px solid #ddd;
+}
+
+.admin-reports-hoa-header th {
+  padding: 12px;
+}
+
+.admin-reports-hoa-header th:first-child {
+  text-align: left;
+}
+
+.admin-reports-hoa-header th:nth-child(2),
+.admin-reports-hoa-header th:nth-child(3) {
+  text-align: right;
+}
+
+.admin-reports-hoa-header th:last-child {
   text-align: center;
 }
 
-.admin-reports-outstanding-card h3 {
-  margin: 0 0 10px 0;
-  font-size: 16px;
+.admin-reports-hoa-table-value {
+  padding: 12px;
+  text-align: right;
+}
+
+.admin-reports-hoa-table-center {
+  padding: 12px;
+  text-align: center;
+}
+
+.admin-reports-hoa-empty {
+  text-align: center;
   color: #666;
 }
 
-.admin-reports-outstanding-card p {
-  margin: 0;
-  font-size: 32px;
+.admin-reports-hoa-mobile-card {
+  padding: 15px;
+  margin-bottom: 15px;
+}
+
+.admin-reports-hoa-mobile-title {
   font-weight: bold;
+  font-size: 16px;
+  margin-bottom: 10px;
   color: var(--forest-green);
 }
 
-.admin-reports-loans-card {
-  padding: 20px;
-  overflow-x: auto;
+.admin-reports-hoa-mobile-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
 }
 
-.admin-reports-loans-table {
-  width: 100%;
-  min-width: 800px;
-  border-collapse: collapse;
+.admin-reports-hoa-mobile-label {
+  font-size: 12px;
+  color: #666;
 }
 
-.admin-reports-loans-table thead {
-  background-color: var(--forest-green);
-  color: white;
+.admin-reports-hoa-mobile-value {
+  font-weight: bold;
 }
 
-.admin-reports-loans-table th {
-  padding: 12px;
+/* Outstanding Balances Section - Desktop */
+.admin-reports-outstanding-desktop {
+  padding: 15px;
+}
+
+.admin-reports-outstanding-header {
+  border-bottom: 2px solid #ddd;
+}
+
+.admin-reports-outstanding-header th {
+  padding: 15px;
+}
+
+.admin-reports-outstanding-header th:first-child {
   text-align: left;
+}
+
+.admin-reports-outstanding-header th:nth-child(2) {
+  text-align: left;
+}
+
+.admin-reports-outstanding-header th:nth-child(3) {
+  text-align: right;
+}
+
+.admin-reports-outstanding-header th:nth-child(4),
+.admin-reports-outstanding-header th:nth-child(5) {
+  text-align: center;
+}
+
+.admin-reports-outstanding-customer {
+  padding: 15px;
+}
+
+.admin-reports-outstanding-customer-name {
   font-weight: 600;
 }
 
-.admin-reports-loans-table tbody tr {
-  border-bottom: 1px solid #eee;
+.admin-reports-outstanding-customer-email {
+  font-size: 14px;
+  color: #666;
 }
 
-.admin-reports-loans-table tbody tr:hover {
-  background-color: #f9f9f9;
-}
-
-.admin-reports-loans-table td {
-  padding: 12px;
-}
-
-.admin-reports-loans-table-right {
+.admin-reports-outstanding-balance {
+  padding: 15px;
   text-align: right;
-}
-
-.admin-reports-loans-table-bold {
   font-weight: bold;
 }
 
-.admin-reports-loans-table-green {
+.admin-reports-outstanding-days {
+  padding: 15px;
+  text-align: center;
+}
+
+.admin-reports-outstanding-status {
+  padding: 15px;
+  text-align: center;
+}
+
+.admin-reports-outstanding-badge {
+  padding: 4px 12px;
+  border-radius: 12px;
+  color: white;
+  font-weight: bold;
+  display: inline-block;
+}
+
+.admin-reports-outstanding-status-default {
+  padding: 6px 12px;
+  border-radius: 4px;
+  background-color: #dc3545;
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+  display: inline-block;
+}
+
+.admin-reports-outstanding-status-overdue {
+  color: #ffc107;
+  font-weight: bold;
+}
+
+.admin-reports-outstanding-status-current {
   color: var(--forest-green);
+  font-weight: bold;
+}
+
+/* Outstanding Balances Section - Mobile */
+.admin-reports-outstanding-mobile-card {
+  padding: 15px;
+  margin-bottom: 15px;
+}
+
+.admin-reports-outstanding-mobile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.admin-reports-outstanding-mobile-name {
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.admin-reports-outstanding-mobile-email {
+  font-size: 14px;
+  color: #666;
+}
+
+.admin-reports-outstanding-mobile-status {
+  font-size: 14px;
+}
+
+.admin-reports-outstanding-mobile-property {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 10px;
+}
+
+.admin-reports-outstanding-mobile-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.admin-reports-outstanding-mobile-label {
+  font-size: 12px;
+  color: #666;
+}
+
+.admin-reports-outstanding-mobile-value {
+  font-weight: bold;
 }
 
 .admin-reports-export-modal-overlay {

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { formatCurrency } from '../api';
 
 function AdminLoans() {
   const navigate = useNavigate();
@@ -7,15 +8,26 @@ function AdminLoans() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [filter, setFilter] = useState('all');
+  const [searchTerm, setSearchTerm] = useState('');
   
   // Modal states
   const [showDefaultModal, setShowDefaultModal] = useState(false);
   const [loanToDefault, setLoanToDefault] = useState(null);
+  const [defaultData, setDefaultData] = useState({
+    recovery_costs: '',
+    notes: ''
+  });
+  
   const [showNoticeModal, setShowNoticeModal] = useState(false);
   const [noticeToSend, setNoticeToSend] = useState(null);
+  
   const [showManualPaymentModal, setShowManualPaymentModal] = useState(false);
   const [manualPaymentLoan, setManualPaymentLoan] = useState(null);
-  const [manualPaymentAmount, setManualPaymentAmount] = useState('');
+  const [manualPaymentData, setManualPaymentData] = useState({
+    amount: '',
+    payment_method: 'cash',
+    notes: ''
+  });
 
   useEffect(() => {
     loadLoans();
@@ -158,6 +170,10 @@ function AdminLoans() {
 
   const openDefaultModal = (loan) => {
     setLoanToDefault(loan);
+    setDefaultData({
+      recovery_costs: '',
+      notes: ''
+    });
     setShowDefaultModal(true);
   };
 
@@ -168,12 +184,30 @@ function AdminLoans() {
 
   const openManualPaymentModal = (loan) => {
     setManualPaymentLoan(loan);
-    setManualPaymentAmount('');
+    setManualPaymentData({
+      amount: '',
+      payment_method: 'cash',
+      notes: ''
+    });
     setShowManualPaymentModal(true);
   };
 
-  const handleDefaultLoan = async () => {
+  const handleDefaultLoan = async (e) => {
+    e.preventDefault();
+    
     if (!loanToDefault) return;
+
+    const recoveryCosts = parseFloat(defaultData.recovery_costs) || 0;
+
+    if (!window.confirm(
+      `Mark loan as defaulted?\n\n` +
+      `Balance: $${formatCurrency(loanToDefault.balance_remaining)}\n` +
+      `Recovery Costs: $${recoveryCosts.toFixed(2)}\n` +
+      `Net Recovery: $${(loanToDefault.balance_remaining - recoveryCosts).toFixed(2)}\n\n` +
+      `This action should only be taken after the cure period has passed.`
+    )) {
+      return;
+    }
 
     try {
       const token = localStorage.getItem('adminToken');
@@ -184,15 +218,22 @@ function AdminLoans() {
           headers: { 
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json'
-          }
+          },
+          body: JSON.stringify({
+            recovery_costs: recoveryCosts,
+            notes: defaultData.notes
+          })
         }
       );
 
       if (!response.ok) {
-        throw new Error('Failed to mark loan as defaulted');
+        const data = await response.json();
+        throw new Error(data.error || 'Failed to mark loan as defaulted');
       }
 
-      alert('Loan marked as defaulted successfully');
+      const result = await response.json();
+      
+      alert(`Loan marked as defaulted. Net recovery: $${result.netRecovery.toFixed(2)}`);
       setShowDefaultModal(false);
       setLoanToDefault(null);
       loadLoans();
@@ -236,7 +277,7 @@ function AdminLoans() {
     
     if (!manualPaymentLoan) return;
     
-    const amount = parseFloat(manualPaymentAmount);
+    const amount = parseFloat(manualPaymentData.amount);
     
     if (isNaN(amount) || amount <= 0) {
       alert('Please enter a valid payment amount');
@@ -244,9 +285,13 @@ function AdminLoans() {
     }
 
     if (amount > manualPaymentLoan.balance_remaining) {
-      if (!window.confirm(`Payment amount ($${amount.toFixed(2)}) exceeds balance ($${manualPaymentLoan.balance_remaining.toFixed(2)}). Continue?`)) {
+      if (!window.confirm(`Payment amount ($${amount.toFixed(2)}) exceeds balance ($${formatCurrency(manualPaymentLoan.balance_remaining)}). Continue?`)) {
         return;
       }
+    }
+
+    if (!window.confirm(`Record ${manualPaymentData.payment_method} payment of $${parseFloat(manualPaymentData.amount).toFixed(2)} for ${manualPaymentLoan.property_title}?`)) {
+      return;
     }
 
     try {
@@ -259,7 +304,11 @@ function AdminLoans() {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({ amount })
+          body: JSON.stringify({
+            amount: parseFloat(manualPaymentData.amount),
+            payment_method: manualPaymentData.payment_method,
+            notes: manualPaymentData.notes
+          })
         }
       );
 
@@ -291,7 +340,7 @@ function AdminLoans() {
 
   if (error) {
     return (
-    <div className="admin-loans-error-container">
+      <div className="admin-loans-error-container">
         <div className="error-message">{error}</div>
       </div>
     );
@@ -300,6 +349,30 @@ function AdminLoans() {
   const activeCount = loans.filter(l => l.status === 'active' && !isOverdue(l)).length;
   const overdueCount = loans.filter(l => isOverdue(l)).length;
   const paidOffCount = loans.filter(l => l.status === 'paid_off').length;
+
+  const filteredLoans = loans.filter(loan => {
+    // Apply status filter
+    let matchesFilter = false;
+    if (filter === 'all') matchesFilter = true;
+    else if (filter === 'active') matchesFilter = loan.status === 'active' && !isOverdue(loan);
+    else if (filter === 'overdue') matchesFilter = isOverdue(loan);
+    else if (filter === 'paid_off') matchesFilter = loan.status === 'paid_off';
+    else if (filter === 'defaulted') matchesFilter = loan.status === 'defaulted';
+    else if (filter === 'archived') matchesFilter = loan.status === 'archived';
+
+    if (!matchesFilter) return false;
+
+    // Apply search filter
+    if (!searchTerm) return true;
+
+    const search = searchTerm.toLowerCase();
+    return (
+      loan.customer_name?.toLowerCase().includes(search) ||
+      loan.customer_email?.toLowerCase().includes(search) ||
+      loan.property_title?.toLowerCase().includes(search) ||
+      loan.property_location?.toLowerCase().includes(search)
+    );
+  });
 
   return (
     <div className="admin-loans-container">
@@ -337,13 +410,13 @@ function AdminLoans() {
         </div>
       </div>
 
-      {/* Filters */}
+      {/* Filters & Search */}
       <div className="admin-loans-filters">
         <button
           onClick={() => setFilter('all')}
           className={`btn ${filter === 'all' ? 'btn-primary' : 'btn-secondary'}`}
         >
-          All Loans ({loans.length})
+          All ({loans.length})
         </button>
         <button
           onClick={() => setFilter('active')}
@@ -375,6 +448,19 @@ function AdminLoans() {
         >
           Archived
         </button>
+        <input
+          type="text"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          placeholder="Search by customer name, email, or property..."
+          style={{
+            flex: '1',
+            minWidth: '250px',
+            padding: '0.5rem',
+            border: '2px solid var(--border-color)',
+            borderRadius: '5px'
+          }}
+        />
       </div>
 
       {/* Desktop Table View */}
@@ -384,402 +470,522 @@ function AdminLoans() {
             <tr>
               <th>Customer</th>
               <th>Property</th>
-              <th>Original Amount</th>
               <th>Balance</th>
-              <th>Monthly Payment</th>
-              <th>Next Payment</th>
-              <th>Status</th>
-              <th>Actions</th>
+              <th>Cure Amount</th>
+              <th>Monthly</th>
+              <th>Due Date</th>
+              <th>ROI</th>
+              <th>Alerts</th>
             </tr>
           </thead>
           <tbody>
-            {loans
-              .filter(loan => {
-                if (filter === 'all') return true;
-                if (filter === 'active') return loan.status === 'active' && !isOverdue(loan);
-                if (filter === 'overdue') return isOverdue(loan);
-                if (filter === 'paid_off') return loan.status === 'paid_off';
-                if (filter === 'defaulted') return loan.status === 'defaulted';
-                if (filter === 'archived') return loan.status === 'archived';
-                return true;
-              })
-              .map((loan) => {
-                const overdue = isOverdue(loan);
-                const daysOverdue = getDaysOverdue(loan);
+            {filteredLoans.map((loan) => {
+              const overdueStatus = isOverdue(loan);
+              const daysOverdue = getDaysOverdue(loan);
 
-                return (
-                  <tr key={loan.id}>
-                    <td className="admin-loans-table-customer">
-                      <div className="admin-loans-table-customer-name">
-                        {loan.customer_name}
-                      </div>
-                      <div className="admin-loans-table-customer-email">
-                        {loan.customer_email}
-                      </div>
-                    </td>
-                    <td>{loan.property_title}</td>
-                    <td className="admin-loans-table-amount">
-                      ${loan.original_loan_amount?.toFixed(2)}
-                    </td>
-                    <td className="admin-loans-table-amount">
-                      ${loan.balance_remaining?.toFixed(2)}
-                    </td>
-                    <td className="admin-loans-table-value">
-                      ${loan.monthly_payment?.toFixed(2)}
-                    </td>
-                    <td className="admin-loans-table-date">
-                      {loan.next_payment_date
-                        ? new Date(loan.next_payment_date).toLocaleDateString()
-                        : 'N/A'}
-                      {overdue && (
-                        <div style={{ color: '#dc3545', fontWeight: 'bold', fontSize: '11px' }}>
-                          {daysOverdue} days overdue
-                        </div>
-                      )}
-                    </td>
-                    <td>
-                      <span className={`status-badge status-${loan.status}`}>
-                        {loan.status === 'paid_off' ? 'Paid Off' : 
-                         loan.status === 'defaulted' ? 'Defaulted' :
-                         loan.status === 'archived' ? 'Archived' :
-                         overdue ? 'Overdue' : 'Active'}
+              return (
+                <tr key={loan.id}>
+                  <td className="admin-loans-table-customer">
+                    <div className="admin-loans-table-customer-name">
+                      {loan.customer_name}
+                    </div>
+                    <div className="admin-loans-table-customer-email">
+                      {loan.customer_email}
+                    </div>
+                    <div style={{ fontSize: '12px', color: '#999', marginTop: '4px' }}>
+                      {loan.customer_phone}
+                    </div>
+                  </td>
+                  <td>
+                    <div style={{ fontWeight: '600' }}>{loan.property_title}</div>
+                    <div style={{ fontSize: '0.85rem', color: '#666' }}>{loan.property_location}</div>
+                  </td>
+                  <td style={{ fontWeight: '600', color: 'var(--forest-green)', textAlign: 'right' }}>
+                    ${formatCurrency(loan.balance_remaining)}
+                  </td>
+                  <td style={{ textAlign: 'right' }}>
+                    {overdueStatus ? (
+                      <span style={{ 
+                        fontWeight: 'bold',
+                        color: daysOverdue >= 30 ? '#dc3545' : daysOverdue >= 15 ? '#ff6b00' : '#ffc107',
+                        fontSize: '15px'
+                      }}>
+                        ${formatCurrency(loan.cure_amount || 0)}
                       </span>
-                    </td>
-                    <td className="admin-loans-table-actions">
-                      {loan.status === 'active' && (
-                        <>
-                          <button
-                            onClick={() => navigate(`/admin/loans/${loan.id}`)}
-                            className="btn btn-small"
-                          >
-                            View Details
-                          </button>
-                          <button
-                            onClick={() => openManualPaymentModal(loan)}
-                            className="btn btn-small"
-                            style={{ backgroundColor: '#10b981', color: 'white' }}
-                          >
-                            Record Payment
-                          </button>
-                          {overdue && !loan.notice_sent_date && (
+                    ) : (
+                      <span style={{ color: '#999' }}>—</span>
+                    )}
+                  </td>
+                  <td style={{ textAlign: 'right' }}>${formatCurrency(loan.monthly_payment)}</td>
+                  <td style={{ fontSize: '13px' }}>
+                    {loan.next_payment_date
+                      ? new Date(loan.next_payment_date).toLocaleDateString('en-US', {
+                          month: 'short',
+                          day: 'numeric'
+                        })
+                      : 'N/A'}
+                    {overdueStatus && (
+                      <div style={{ 
+                        color: daysOverdue >= 30 ? '#dc3545' : daysOverdue >= 15 ? '#ff6b00' : '#ffc107',
+                        fontWeight: 'bold', 
+                        fontSize: '11px',
+                        marginTop: '2px'
+                      }}>
+                        {daysOverdue}d late
+                      </div>
+                    )}
+                  </td>
+                  <td style={{ textAlign: 'center', fontSize: '14px', fontWeight: '600' }}>
+                    {loan.property_acquisition_cost && loan.property_price ? (
+                      <span style={{ 
+                        color: loan.property_price > loan.property_acquisition_cost ? 'var(--forest-green)' : '#dc3545'
+                      }}>
+                        {(((loan.property_price - loan.property_acquisition_cost) / loan.property_acquisition_cost) * 100).toFixed(1)}%
+                      </span>
+                    ) : (
+                      <span style={{ color: '#999' }}>—</span>
+                    )}
+                  </td>
+                  <td>
+                    <div style={{ 
+                      display: 'flex', 
+                      flexDirection: 'column', 
+                      alignItems: 'center',
+                      gap: '10px',
+                      minWidth: '280px'
+                    }}>
+                      {/* Buttons Section */}
+                      <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', justifyContent: 'center', width: '100%' }}>
+                        {(loan.status === 'active' || loan.status === 'defaulted') && (
+                          <>
                             <button
-                              onClick={() => openNoticeModal(loan)}
+                              onClick={() => navigate(`/admin/loans/${loan.id}`)}
                               className="btn btn-small"
-                              style={{ backgroundColor: '#ffc107', color: '#333' }}
+                              style={{ padding: '6px 14px', fontSize: '13px' }}
                             >
-                              Send Notice
+                              View
                             </button>
-                          )}
-                          {loan.notice_sent_date && (
-                            <>
-                              <div style={{ 
-                                fontSize: '11px', 
-                                color: '#dc3545', 
-                                fontWeight: 'bold',
-                                textAlign: 'center',
-                                padding: '4px',
-                                backgroundColor: '#ffebee',
-                                borderRadius: '4px'
-                              }}>
-                                Notice Sent: {new Date(loan.notice_sent_date).toLocaleDateString()}
-                              </div>
+                            <button
+                              onClick={() => openManualPaymentModal(loan)}
+                              className="btn btn-small"
+                              style={{ backgroundColor: '#10b981', color: 'white', padding: '6px 14px', fontSize: '13px' }}
+                            >
+                              💵 Pay
+                            </button>
+                            {loan.status === 'active' && overdueStatus && !loan.notice_sent_date && (
+                              <button
+                                onClick={() => openNoticeModal(loan)}
+                                className="btn btn-small"
+                                style={{ backgroundColor: '#ffc107', color: '#333', padding: '6px 14px', fontSize: '13px' }}
+                              >
+                                Notice
+                              </button>
+                            )}
+                            {loan.notice_sent_date && loan.status === 'active' && (
                               <button
                                 onClick={() => openDefaultModal(loan)}
                                 className="btn btn-small"
-                                style={{ backgroundColor: '#dc3545', color: 'white' }}
+                                style={{ backgroundColor: '#dc3545', color: 'white', padding: '6px 14px', fontSize: '13px' }}
                               >
-                                Mark as Defaulted
+                                ⚠️ Default
                               </button>
-                            </>
-                          )}
-                          <button
-                            onClick={() => handleArchiveLoan(loan.id)}
-                            className="btn btn-small"
-                            style={{ backgroundColor: '#6c757d', color: 'white' }}
-                          >
-                            Archive
-                          </button>
-                        </>
-                      )}
-                      {loan.status === 'paid_off' && (
-                        <>
-                          <button
-                            onClick={() => navigate(`/admin/loans/${loan.id}`)}
-                            className="btn btn-small"
-                          >
-                            View Details
-                          </button>
-                          <button
-                            onClick={() => handleArchiveLoan(loan.id)}
-                            className="btn btn-small"
-                            style={{ backgroundColor: '#6c757d', color: 'white' }}
-                          >
-                            Archive
-                          </button>
-                        </>
-                      )}
-                      {loan.status === 'defaulted' && (
-                        <>
-                          <button
-                            onClick={() => navigate(`/admin/loans/${loan.id}`)}
-                            className="btn btn-small"
-                          >
-                            View Details
-                          </button>
-                          <button
-                            onClick={() => openManualPaymentModal(loan)}
-                            className="btn btn-small"
-                            style={{ backgroundColor: '#10b981', color: 'white' }}
-                          >
-                            Record Payment
-                          </button>
+                            )}
+                          </>
+                        )}
+
+                        {loan.status === 'defaulted' && (
                           <button
                             onClick={() => handleReactivateLoan(loan.id)}
                             className="btn btn-small"
-                            style={{ backgroundColor: '#2196F3', color: 'white' }}
+                            style={{ backgroundColor: '#2196F3', color: 'white', padding: '6px 14px', fontSize: '13px' }}
                           >
                             Reactivate
                           </button>
-                          <button
-                            onClick={() => handleArchiveLoan(loan.id)}
-                            className="btn btn-small"
-                            style={{ backgroundColor: '#6c757d', color: 'white' }}
-                          >
-                            Archive
-                          </button>
-                        </>
-                      )}
-                      {loan.status === 'archived' && (
-                        <>
+                        )}
+
+                        {loan.status === 'paid_off' && (
                           <button
                             onClick={() => navigate(`/admin/loans/${loan.id}`)}
                             className="btn btn-small"
+                            style={{ padding: '6px 14px', fontSize: '13px' }}
                           >
-                            View Details
+                            View
                           </button>
-                          <button
-                            onClick={() => handleUnarchiveLoan(loan.id)}
-                            className="btn btn-small"
-                            style={{ backgroundColor: '#2196F3', color: 'white' }}
-                          >
-                            Unarchive
-                          </button>
-                        </>
+                        )}
+
+                        {loan.status === 'archived' && (
+                          <>
+                            <button
+                              onClick={() => navigate(`/admin/loans/${loan.id}`)}
+                              className="btn btn-small"
+                              style={{ padding: '6px 14px', fontSize: '13px' }}
+                            >
+                              View
+                            </button>
+                            <button
+                              onClick={() => handleUnarchiveLoan(loan.id)}
+                              className="btn btn-small"
+                              style={{ backgroundColor: '#2196F3', color: 'white', padding: '6px 14px', fontSize: '13px' }}
+                            >
+                              Unarchive
+                            </button>
+                          </>
+                        )}
+                      </div>
+
+                      {/* Contract Section */}
+                      {loan.status === 'active' && (
+                        <div style={{ width: '100%' }}>
+                          {loan.contract_signed_date ? (
+                            <>
+                              <select
+                                value={loan.deed_type || ''}
+                                onChange={(e) => {
+                                  // Handle deed type change
+                                }}
+                                style={{
+                                  width: '100%',
+                                  padding: '6px',
+                                  border: '1px solid #ddd',
+                                  borderRadius: '4px',
+                                  fontSize: '12px',
+                                  marginBottom: '6px'
+                                }}
+                              >
+                                <option value="">Select Deed Type</option>
+                                <option value="Special Warranty">Special Warranty</option>
+                                <option value="Quitclaim">Quitclaim</option>
+                                <option value="General Warranty">General Warranty</option>
+                              </select>
+                              {!loan.contract_fully_executed && (
+                                <>
+                                  <button
+                                    onClick={() => {
+                                      // Handle generate contract
+                                    }}
+                                    className="btn btn-small"
+                                    style={{ 
+                                      backgroundColor: 'var(--forest-green)', 
+                                      color: 'white',
+                                      width: '100%',
+                                      marginBottom: '6px',
+                                      padding: '6px',
+                                      fontSize: '12px'
+                                    }}
+                                  >
+                                    📄 Generate Contract
+                                  </button>
+                                  <button
+                                    onClick={() => {
+                                      // Handle mark executed
+                                    }}
+                                    className="btn btn-small"
+                                    style={{ 
+                                      backgroundColor: '#10b981', 
+                                      color: 'white',
+                                      width: '100%',
+                                      padding: '6px',
+                                      fontSize: '12px'
+                                    }}
+                                  >
+                                    ✅ Fully Executed
+                                  </button>
+                                </>
+                              )}
+                              {loan.contract_fully_executed && (
+                                <>
+                                  <div style={{
+                                    padding: '8px',
+                                    backgroundColor: '#d4edda',
+                                    borderRadius: '4px',
+                                    marginBottom: '6px',
+                                    fontSize: '11px',
+                                    textAlign: 'center',
+                                    color: '#155724',
+                                    fontWeight: 'bold'
+                                  }}>
+                                    ✅ Fully Executed
+                                  </div>
+                                  <button
+                                    onClick={() => {
+                                      // Handle download contract
+                                    }}
+                                    className="btn btn-small"
+                                    style={{ 
+                                      backgroundColor: '#6c757d', 
+                                      color: 'white',
+                                      width: '100%',
+                                      marginBottom: '6px',
+                                      padding: '6px',
+                                      fontSize: '12px'
+                                    }}
+                                  >
+                                    📥 Download Contract
+                                  </button>
+                                  <button
+                                    onClick={() => {
+                                      // Handle delete contract
+                                    }}
+                                    className="btn btn-small"
+                                    style={{ 
+                                      backgroundColor: '#dc3545', 
+                                      color: 'white',
+                                      width: '100%',
+                                      marginBottom: '6px',
+                                      padding: '6px',
+                                      fontSize: '12px'
+                                    }}
+                                  >
+                                    🗑️ Delete Contract
+                                  </button>
+                                </>
+                              )}
+                            </>
+                          ) : (
+                            <div style={{
+                              padding: '8px',
+                              backgroundColor: '#fff3cd',
+                              border: '1px solid #ffc107',
+                              borderRadius: '4px',
+                              fontSize: '11px',
+                              textAlign: 'center',
+                              color: '#856404'
+                            }}>
+                              Awaiting signature
+                            </div>
+                          )}
+                        </div>
                       )}
-                    </td>
-                  </tr>
-                );
-              })}
+
+                      {/* Notice Info */}
+                      {loan.notice_sent_date && loan.status === 'active' && (
+                        <div style={{
+                          fontSize: '11px',
+                          color: '#dc3545',
+                          fontWeight: 'bold',
+                          textAlign: 'center',
+                          padding: '6px',
+                          backgroundColor: '#ffebee',
+                          borderRadius: '4px',
+                          width: '100%'
+                        }}>
+                          Notice: {new Date(loan.notice_sent_date).toLocaleDateString()}
+                        </div>
+                      )}
+
+                      {/* Archive/Delete Buttons */}
+                      {loan.status !== 'archived' && (
+                        <button
+                          onClick={() => handleArchiveLoan(loan.id)}
+                          className="btn btn-small"
+                          style={{ 
+                            backgroundColor: '#6c757d', 
+                            color: 'white',
+                            width: '100%',
+                            padding: '6px',
+                            fontSize: '12px'
+                          }}
+                        >
+                          🗄️ Archive
+                        </button>
+                      )}
+                      {(loan.status === 'archived' || loan.status === 'paid_off' || loan.status === 'defaulted') && (
+                        <button
+                          onClick={() => {
+                            if (window.confirm('Are you sure you want to permanently delete this loan? This cannot be undone.')) {
+                              // Handle delete
+                            }
+                          }}
+                          className="btn btn-small"
+                          style={{ 
+                            backgroundColor: '#dc3545', 
+                            color: 'white',
+                            width: '100%',
+                            padding: '6px',
+                            fontSize: '12px'
+                          }}
+                        >
+                          🗑️ Delete Loan
+                        </button>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
 
       {/* Mobile Card View */}
       <div className="mobile-only admin-loans-mobile-cards">
-        {loans
-          .filter(loan => {
-            if (filter === 'all') return true;
-            if (filter === 'active') return loan.status === 'active' && !isOverdue(loan);
-            if (filter === 'overdue') return isOverdue(loan);
-            if (filter === 'paid_off') return loan.status === 'paid_off';
-            if (filter === 'defaulted') return loan.status === 'defaulted';
-            if (filter === 'archived') return loan.status === 'archived';
-            return true;
-          })
-          .map((loan) => {
-            const overdue = isOverdue(loan);
-            const daysOverdue = getDaysOverdue(loan);
+        {filteredLoans.map((loan) => {
+          const overdueStatus = isOverdue(loan);
+          const daysOverdue = getDaysOverdue(loan);
 
-            return (
-              <div key={loan.id} className="card admin-loans-mobile-card">
-                <div className="admin-loans-mobile-header">
-                  <div className="admin-loans-mobile-customer">
-                    <div className="admin-loans-mobile-customer-name">
-                      {loan.customer_name}
-                    </div>
-                    <div className="admin-loans-mobile-customer-email">
-                      {loan.customer_email}
-                    </div>
+          return (
+            <div key={loan.id} className="card admin-loans-mobile-card">
+              <div className="admin-loans-mobile-header">
+                <div className="admin-loans-mobile-customer">
+                  <div className="admin-loans-mobile-customer-name">
+                    {loan.customer_name}
                   </div>
-                  <div className="admin-loans-mobile-status">
-                    <span className={`status-badge status-${loan.status}`}>
-                      {loan.status === 'paid_off' ? 'Paid Off' : 
-                       loan.status === 'defaulted' ? 'Defaulted' :
-                       loan.status === 'archived' ? 'Archived' :
-                       overdue ? 'Overdue' : 'Active'}
-                    </span>
+                  <div className="admin-loans-mobile-customer-email">
+                    {loan.customer_email}
                   </div>
                 </div>
-
-                <div className="admin-loans-mobile-property">
-                  {loan.property_title}
-                </div>
-
-                <div className="admin-loans-mobile-grid">
-                  <div>
-                    <div className="admin-loans-mobile-item-label">Original Amount</div>
-                    <div className="admin-loans-mobile-item-value">${loan.original_loan_amount?.toFixed(2)}</div>
-                  </div>
-                  <div>
-                    <div className="admin-loans-mobile-item-label">Balance</div>
-                    <div className="admin-loans-mobile-item-value">${loan.balance_remaining?.toFixed(2)}</div>
-                  </div>
-                  <div>
-                    <div className="admin-loans-mobile-item-label">Monthly Payment</div>
-                    <div className="admin-loans-mobile-item-value">${loan.monthly_payment?.toFixed(2)}</div>
-                  </div>
-                  <div>
-                    <div className="admin-loans-mobile-item-label">Next Payment</div>
-                    <div className="admin-loans-mobile-item-value">
-                      {loan.next_payment_date
-                        ? new Date(loan.next_payment_date).toLocaleDateString()
-                        : 'N/A'}
-                      {overdue && (
-                        <div style={{ color: '#dc3545', fontWeight: 'bold', fontSize: '11px' }}>
-                          {daysOverdue} days overdue
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="admin-loans-mobile-actions">
-                  {loan.status === 'active' && (
-                    <>
-                      <button
-                        onClick={() => navigate(`/admin/loans/${loan.id}`)}
-                        className="btn btn-full-width"
-                      >
-                        View Details
-                      </button>
-                      <button
-                        onClick={() => openManualPaymentModal(loan)}
-                        className="btn btn-full-width"
-                        style={{ backgroundColor: '#10b981', color: 'white' }}
-                      >
-                        Record Payment
-                      </button>
-                      {overdue && !loan.notice_sent_date && (
-                        <button
-                          onClick={() => openNoticeModal(loan)}
-                          className="btn btn-full-width"
-                          style={{ backgroundColor: '#ffc107', color: '#333' }}
-                        >
-                          Send Notice
-                        </button>
-                      )}
-                      {loan.notice_sent_date && (
-                        <>
-                          <div style={{ 
-                            fontSize: '11px', 
-                            color: '#dc3545', 
-                            fontWeight: 'bold',
-                            textAlign: 'center',
-                            padding: '8px',
-                            backgroundColor: '#ffebee',
-                            borderRadius: '4px',
-                            marginTop: '8px'
-                          }}>
-                            Notice Sent: {new Date(loan.notice_sent_date).toLocaleDateString()}
-                          </div>
-                          <button
-                            onClick={() => openDefaultModal(loan)}
-                            className="btn btn-full-width"
-                            style={{ backgroundColor: '#dc3545', color: 'white' }}
-                          >
-                            Mark as Defaulted
-                          </button>
-                        </>
-                      )}
-                      <button
-                        onClick={() => handleArchiveLoan(loan.id)}
-                        className="btn btn-full-width"
-                        style={{ backgroundColor: '#6c757d', color: 'white' }}
-                      >
-                        Archive
-                      </button>
-                    </>
-                  )}
-                  {loan.status === 'paid_off' && (
-                    <>
-                      <button
-                        onClick={() => navigate(`/admin/loans/${loan.id}`)}
-                        className="btn btn-full-width"
-                      >
-                        View Details
-                      </button>
-                      <button
-                        onClick={() => handleArchiveLoan(loan.id)}
-                        className="btn btn-full-width"
-                        style={{ backgroundColor: '#6c757d', color: 'white' }}
-                      >
-                        Archive
-                      </button>
-                    </>
-                  )}
-                  {loan.status === 'defaulted' && (
-                    <>
-                      <button
-                        onClick={() => navigate(`/admin/loans/${loan.id}`)}
-                        className="btn btn-full-width"
-                      >
-                        View Details
-                      </button>
-                      <button
-                        onClick={() => openManualPaymentModal(loan)}
-                        className="btn btn-full-width"
-                        style={{ backgroundColor: '#10b981', color: 'white' }}
-                      >
-                        Record Payment
-                      </button>
-                      <button
-                        onClick={() => handleReactivateLoan(loan.id)}
-                        className="btn btn-full-width"
-                        style={{ backgroundColor: '#2196F3', color: 'white' }}
-                      >
-                        Reactivate
-                      </button>
-                      <button
-                        onClick={() => handleArchiveLoan(loan.id)}
-                        className="btn btn-full-width"
-                        style={{ backgroundColor: '#6c757d', color: 'white' }}
-                      >
-                        Archive
-                      </button>
-                    </>
-                  )}
-                  {loan.status === 'archived' && (
-                    <>
-                      <button
-                        onClick={() => navigate(`/admin/loans/${loan.id}`)}
-                        className="btn btn-full-width"
-                      >
-                        View Details
-                      </button>
-                      <button
-                        onClick={() => handleUnarchiveLoan(loan.id)}
-                        className="btn btn-full-width"
-                        style={{ backgroundColor: '#2196F3', color: 'white' }}
-                      >
-                        Unarchive
-                      </button>
-                    </>
-                  )}
+                <div className="admin-loans-mobile-status">
+                  <span className={`status-badge status-${loan.status}`}>
+                    {loan.status === 'paid_off' ? 'Paid Off' : 
+                     loan.status === 'defaulted' ? 'Defaulted' :
+                     loan.status === 'archived' ? 'Archived' :
+                     overdueStatus ? 'Overdue' : 'Active'}
+                  </span>
                 </div>
               </div>
-            );
-          })}
+
+              <div className="admin-loans-mobile-property">
+                {loan.property_title}
+              </div>
+
+              <div className="admin-loans-mobile-grid">
+                <div>
+                  <div className="admin-loans-mobile-item-label">Balance</div>
+                  <div className="admin-loans-mobile-item-value">${formatCurrency(loan.balance_remaining)}</div>
+                </div>
+                <div>
+                  <div className="admin-loans-mobile-item-label">Monthly</div>
+                  <div className="admin-loans-mobile-item-value">${formatCurrency(loan.monthly_payment)}</div>
+                </div>
+                <div>
+                  <div className="admin-loans-mobile-item-label">Next Payment</div>
+                  <div className="admin-loans-mobile-item-value">
+                    {loan.next_payment_date
+                      ? new Date(loan.next_payment_date).toLocaleDateString()
+                      : 'N/A'}
+                    {overdueStatus && (
+                      <div style={{ color: '#dc3545', fontWeight: 'bold', fontSize: '11px' }}>
+                        {daysOverdue} days overdue
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <div>
+                  <div className="admin-loans-mobile-item-label">ROI</div>
+                  <div className="admin-loans-mobile-item-value">
+                    {loan.property_acquisition_cost && loan.property_price ? (
+                      <span style={{ 
+                        color: loan.property_price > loan.property_acquisition_cost ? 'var(--forest-green)' : '#dc3545'
+                      }}>
+                        {(((loan.property_price - loan.property_acquisition_cost) / loan.property_acquisition_cost) * 100).toFixed(1)}%
+                      </span>
+                    ) : (
+                      <span style={{ color: '#999' }}>—</span>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <div className="admin-loans-mobile-actions">
+                {(loan.status === 'active' || loan.status === 'defaulted') && (
+                  <>
+                    <button
+                      onClick={() => navigate(`/admin/loans/${loan.id}`)}
+                      className="btn btn-full-width"
+                    >
+                      View Details
+                    </button>
+                    <button
+                      onClick={() => openManualPaymentModal(loan)}
+                      className="btn btn-full-width"
+                      style={{ backgroundColor: '#10b981', color: 'white' }}
+                    >
+                      Record Payment
+                    </button>
+                    {loan.status === 'active' && overdueStatus && !loan.notice_sent_date && (
+                      <button
+                        onClick={() => openNoticeModal(loan)}
+                        className="btn btn-full-width"
+                        style={{ backgroundColor: '#ffc107', color: '#333' }}
+                      >
+                        Send Notice
+                      </button>
+                    )}
+                    {loan.notice_sent_date && loan.status === 'active' && (
+                      <>
+                        <div style={{ 
+                          fontSize: '11px', 
+                          color: '#dc3545', 
+                          fontWeight: 'bold',
+                          textAlign: 'center',
+                          padding: '8px',
+                          backgroundColor: '#ffebee',
+                          borderRadius: '4px',
+                          marginTop: '8px'
+                        }}>
+                          Notice Sent: {new Date(loan.notice_sent_date).toLocaleDateString()}
+                        </div>
+                        <button
+                          onClick={() => openDefaultModal(loan)}
+                          className="btn btn-full-width"
+                          style={{ backgroundColor: '#dc3545', color: 'white' }}
+                        >
+                          Mark as Defaulted
+                        </button>
+                      </>
+                    )}
+                  </>
+                )}
+                {loan.status === 'defaulted' && (
+                  <button
+                    onClick={() => handleReactivateLoan(loan.id)}
+                    className="btn btn-full-width"
+                    style={{ backgroundColor: '#2196F3', color: 'white' }}
+                  >
+                    Reactivate
+                  </button>
+                )}
+                {loan.status === 'paid_off' && (
+                  <button
+                    onClick={() => navigate(`/admin/loans/${loan.id}`)}
+                    className="btn btn-full-width"
+                  >
+                    View Details
+                  </button>
+                )}
+                {loan.status === 'archived' && (
+                  <>
+                    <button
+                      onClick={() => navigate(`/admin/loans/${loan.id}`)}
+                      className="btn btn-full-width"
+                    >
+                      View Details
+                    </button>
+                    <button
+                      onClick={() => handleUnarchiveLoan(loan.id)}
+                      className="btn btn-full-width"
+                      style={{ backgroundColor: '#2196F3', color: 'white' }}
+                    >
+                      Unarchive
+                    </button>
+                  </>
+                )}
+                {loan.status !== 'archived' && (
+                  <button
+                    onClick={() => handleArchiveLoan(loan.id)}
+                    className="btn btn-full-width"
+                    style={{ backgroundColor: '#6c757d', color: 'white' }}
+                  >
+                    Archive
+                  </button>
+                )}
+              </div>
+            </div>
+          );
+        })}
       </div>
 
-      {loans.filter(loan => {
-        if (filter === 'all') return true;
-        if (filter === 'active') return loan.status === 'active' && !isOverdue(loan);
-        if (filter === 'overdue') return isOverdue(loan);
-        if (filter === 'paid_off') return loan.status === 'paid_off';
-        if (filter === 'defaulted') return loan.status === 'defaulted';
-        if (filter === 'archived') return loan.status === 'archived';
-        return true;
-      }).length === 0 && (
+      {filteredLoans.length === 0 && (
         <div className="empty-state">
           <p>No loans found for this filter</p>
         </div>
@@ -809,53 +1015,81 @@ function AdminLoans() {
               </p>
               <ul style={{ marginTop: '10px', paddingLeft: '20px' }}>
                 <li className="admin-loans-modal-warning-text">Change the loan status to "Defaulted"</li>
-                <li className="admin-loans-modal-warning-text">Keep the loan visible for tracking purposes</li>
-                <li className="admin-loans-modal-warning-text">Allow you to still record payments if customer resumes paying</li>
+                <li className="admin-loans-modal-warning-text">Record the property as recovered</li>
+                <li className="admin-loans-modal-warning-text">Track recovery costs and net recovery</li>
                 <li className="admin-loans-modal-warning-text">Be reported on your Defaulted Loans Report</li>
               </ul>
             </div>
 
-            <div className="admin-loans-modal-info">
-              <div className="admin-loans-modal-info-row">
-                <span className="admin-loans-modal-info-label">Customer:</span>
-                <span>{loanToDefault.customer_name}</span>
+            <form onSubmit={handleDefaultLoan}>
+              <div className="admin-loans-modal-info">
+                <div className="admin-loans-modal-info-row">
+                  <span className="admin-loans-modal-info-label">Customer:</span>
+                  <span>{loanToDefault.customer_name}</span>
+                </div>
+                <div className="admin-loans-modal-info-row">
+                  <span className="admin-loans-modal-info-label">Property:</span>
+                  <span>{loanToDefault.property_title}</span>
+                </div>
+                <div className="admin-loans-modal-info-row">
+                  <span className="admin-loans-modal-info-label">Balance:</span>
+                  <span>${formatCurrency(loanToDefault.balance_remaining)}</span>
+                </div>
+                <div className="admin-loans-modal-info-row">
+                  <span className="admin-loans-modal-info-label">Days Overdue:</span>
+                  <span>{getDaysOverdue(loanToDefault)}</span>
+                </div>
+                <div className="admin-loans-modal-info-row">
+                  <span className="admin-loans-modal-info-label">Notice Sent:</span>
+                  <span>
+                    {loanToDefault.notice_sent_date 
+                      ? new Date(loanToDefault.notice_sent_date).toLocaleDateString()
+                      : 'N/A'}
+                  </span>
+                </div>
               </div>
-              <div className="admin-loans-modal-info-row">
-                <span className="admin-loans-modal-info-label">Property:</span>
-                <span>{loanToDefault.property_title}</span>
-              </div>
-              <div className="admin-loans-modal-info-row">
-                <span className="admin-loans-modal-info-label">Balance:</span>
-                <span>${loanToDefault.balance_remaining?.toFixed(2)}</span>
-              </div>
-              <div className="admin-loans-modal-info-row">
-                <span className="admin-loans-modal-info-label">Days Overdue:</span>
-                <span>{getDaysOverdue(loanToDefault)}</span>
-              </div>
-              <div className="admin-loans-modal-info-row">
-                <span className="admin-loans-modal-info-label">Notice Sent:</span>
-                <span>
-                  {loanToDefault.notice_sent_date 
-                    ? new Date(loanToDefault.notice_sent_date).toLocaleDateString()
-                    : 'N/A'}
-                </span>
-              </div>
-            </div>
 
-            <div className="admin-loans-modal-buttons">
-              <button
-                onClick={() => setShowDefaultModal(false)}
-                className="btn btn-secondary"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleDefaultLoan}
-                className="btn admin-loans-modal-btn-confirm"
-              >
-                Mark as Defaulted
-              </button>
-            </div>
+              <div className="form-group">
+                <label>Recovery Costs</label>
+                <input
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  value={defaultData.recovery_costs}
+                  onChange={(e) => setDefaultData({ ...defaultData, recovery_costs: e.target.value })}
+                  placeholder="Legal, repo, cleanup costs"
+                />
+                <small style={{ display: 'block', marginTop: '5px', color: '#666' }}>
+                  Total costs incurred to recover the property
+                </small>
+              </div>
+
+              <div className="form-group">
+                <label>Notes (Optional)</label>
+                <textarea
+                  value={defaultData.notes}
+                  onChange={(e) => setDefaultData({ ...defaultData, notes: e.target.value })}
+                  placeholder="Additional notes about the default"
+                  rows="3"
+                />
+              </div>
+
+              <div className="admin-loans-modal-buttons">
+                <button
+                  type="button"
+                  onClick={() => setShowDefaultModal(false)}
+                  className="btn btn-secondary"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="btn admin-loans-modal-btn-confirm"
+                >
+                  Mark as Defaulted
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
@@ -904,7 +1138,7 @@ function AdminLoans() {
               </div>
               <div className="admin-loans-modal-info-row">
                 <span className="admin-loans-modal-info-label">Balance:</span>
-                <span>${noticeToSend.balance_remaining?.toFixed(2)}</span>
+                <span>${formatCurrency(noticeToSend.balance_remaining)}</span>
               </div>
               <div className="admin-loans-modal-info-row">
                 <span className="admin-loans-modal-info-label">Days Overdue:</span>
@@ -955,11 +1189,11 @@ function AdminLoans() {
               </div>
               <div className="admin-loans-modal-info-row">
                 <span className="admin-loans-modal-info-label">Current Balance:</span>
-                <span>${manualPaymentLoan.balance_remaining?.toFixed(2)}</span>
+                <span>${formatCurrency(manualPaymentLoan.balance_remaining)}</span>
               </div>
               <div className="admin-loans-modal-info-row">
                 <span className="admin-loans-modal-info-label">Regular Payment:</span>
-                <span>${manualPaymentLoan.monthly_payment?.toFixed(2)}</span>
+                <span>${formatCurrency(manualPaymentLoan.monthly_payment)}</span>
               </div>
             </div>
 
@@ -970,14 +1204,39 @@ function AdminLoans() {
                   type="number"
                   step="0.01"
                   min="0.01"
-                  value={manualPaymentAmount}
-                  onChange={(e) => setManualPaymentAmount(e.target.value)}
+                  value={manualPaymentData.amount}
+                  onChange={(e) => setManualPaymentData({ ...manualPaymentData, amount: e.target.value })}
                   placeholder="Enter payment amount"
                   required
                 />
                 <small style={{ display: 'block', marginTop: '5px', color: '#666' }}>
                   Enter the amount received from the customer
                 </small>
+              </div>
+
+              <div className="form-group">
+                <label>Payment Method *</label>
+                <select
+                  value={manualPaymentData.payment_method}
+                  onChange={(e) => setManualPaymentData({ ...manualPaymentData, payment_method: e.target.value })}
+                  required
+                >
+                  <option value="cash">Cash</option>
+                  <option value="check">Check</option>
+                  <option value="money_order">Money Order</option>
+                  <option value="bank_transfer">Bank Transfer</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label>Notes (Optional)</label>
+                <textarea
+                  value={manualPaymentData.notes}
+                  onChange={(e) => setManualPaymentData({ ...manualPaymentData, notes: e.target.value })}
+                  placeholder="Check number, transaction details, etc."
+                  rows="3"
+                />
               </div>
 
               <div className="admin-loans-modal-buttons">

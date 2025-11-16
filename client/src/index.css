@@ -2795,6 +2795,310 @@ label:has(.required-asterisk)::after {
 }
 
 /* ===================
+   ADMIN LOANS PAGE STYLES
+=================== */
+.admin-loans-container {
+  padding: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.admin-loans-error-container {
+  padding: 20px;
+  max-width: 95%;
+  margin: 0 auto;
+}
+
+.admin-loans-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.admin-loans-header-buttons {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.admin-loans-btn-create {
+  background-color: #2c5f2d;
+  color: white;
+}
+
+.admin-loans-btn-import {
+  background-color: #2e7d32;
+  color: white;
+}
+
+.admin-loans-btn-defaulted {
+  background-color: #dc3545;
+  color: white;
+}
+
+.admin-loans-summary {
+  margin-bottom: 2rem;
+}
+
+.admin-loans-filters {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.admin-loans-table-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.admin-loans-table {
+  width: 100%;
+  min-width: 1200px;
+}
+
+.admin-loans-table-customer {
+  padding: 15px;
+}
+
+.admin-loans-table-customer-name {
+  font-weight: 600;
+}
+
+.admin-loans-table-customer-email {
+  font-size: 12px;
+  color: #666;
+}
+
+.admin-loans-table-amount {
+  padding: 15px;
+  text-align: right;
+  font-weight: bold;
+}
+
+.admin-loans-table-value {
+  padding: 15px;
+  text-align: right;
+}
+
+.admin-loans-table-date {
+  padding: 15px;
+  font-size: 13px;
+}
+
+.admin-loans-table-actions {
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 120px;
+}
+
+.admin-loans-mobile-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.admin-loans-mobile-card {
+  padding: 15px;
+}
+
+.admin-loans-mobile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--forest-green);
+}
+
+.admin-loans-mobile-customer {
+  flex: 1;
+}
+
+.admin-loans-mobile-customer-name {
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--forest-green);
+}
+
+.admin-loans-mobile-customer-email {
+  font-size: 13px;
+  color: #666;
+}
+
+.admin-loans-mobile-status {
+  margin-left: 10px;
+}
+
+.admin-loans-mobile-property {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 10px;
+}
+
+.admin-loans-mobile-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.admin-loans-mobile-item-label {
+  font-size: 12px;
+  color: #666;
+}
+
+.admin-loans-mobile-item-value {
+  font-weight: 600;
+}
+
+.admin-loans-mobile-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+/* Admin Loans Modals */
+.admin-loans-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.admin-loans-modal-content {
+  background-color: white;
+  padding: 30px;
+  border-radius: 10px;
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.admin-loans-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.admin-loans-modal-header h2 {
+  margin: 0;
+  color: var(--forest-green);
+}
+
+.admin-loans-modal-close {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #666;
+}
+
+.admin-loans-modal-warning {
+  background-color: #fff3cd;
+  border: 2px solid #ffc107;
+  padding: 15px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+
+.admin-loans-modal-warning-title {
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #856404;
+}
+
+.admin-loans-modal-warning-text {
+  font-size: 14px;
+  color: #856404;
+}
+
+.admin-loans-modal-info {
+  background-color: #f9f9f9;
+  padding: 15px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+
+.admin-loans-modal-info-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.admin-loans-modal-info-row:last-child {
+  border-bottom: none;
+}
+
+.admin-loans-modal-info-label {
+  font-weight: 600;
+}
+
+.admin-loans-modal-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.admin-loans-modal-btn-confirm {
+  background-color: #dc3545;
+  color: white;
+}
+
+.admin-loans-modal-btn-send {
+  background-color: #2c5f2d;
+  color: white;
+}
+
+/* Mobile responsive for Admin Loans */
+@media (max-width: 768px) {
+  .admin-loans-container {
+    padding: 15px;
+  }
+  
+  .admin-loans-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .admin-loans-header-buttons {
+    width: 100%;
+    flex-direction: column;
+  }
+  
+  .admin-loans-header-buttons .btn {
+    width: 100%;
+  }
+  
+  .admin-loans-filters {
+    flex-direction: column;
+  }
+  
+  .admin-loans-filters .btn {
+    width: 100%;
+  }
+  
+  .admin-loans-mobile-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ===================
    ADMIN LOGIN PAGE STYLES
 =================== */
 .admin-login-container {

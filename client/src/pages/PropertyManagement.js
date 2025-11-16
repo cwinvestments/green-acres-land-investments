@@ -525,7 +525,7 @@ const loadTaxPayments = async (propertyId) => {
       {/* Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px', flexWrap: 'wrap', gap: '1rem' }}>
         <div>
-          <h1 style={{ margin: '0 0 5px 0' }}>🏘️ Property Management</h1>
+          <h1 className="admin-page-title" style={{ margin: '0 0 5px 0' }}>🏘️ Property Management</h1>
           <p style={{ margin: 0, color: '#666' }}>
             {properties.length} total properties
           </p>

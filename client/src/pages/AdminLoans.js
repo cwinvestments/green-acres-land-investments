@@ -332,7 +332,7 @@ function AdminLoans() {
   return (
     <div className="admin-loans-container">
       <div className="admin-loans-header">
-        <h1>Loan Management</h1>
+        <h1 className="admin-page-title">Loan Management</h1>
         <div className="admin-loans-header-buttons">
           <button onClick={() => navigate('/admin/loans/create-custom')} className="btn admin-loans-btn-create">
             ✨ Create Custom Loan

@@ -323,7 +323,7 @@ function ImportLoan() {
   return (
     <div style={{ padding: '20px', maxWidth: '1000px', margin: '0 auto' }}>
       <div style={{ marginBottom: '30px' }}>
-        <h1>📥 Import Existing Loan</h1>
+        <h1 className="admin-page-title">📥 Import Existing Loan</h1>
         <button onClick={() => navigate('/admin/loans')} className="btn btn-secondary" style={{ width: '100%' }}>
           ← Back to Loan Management
         </button>

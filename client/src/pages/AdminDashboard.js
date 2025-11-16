@@ -62,7 +62,7 @@ function AdminDashboard() {
       {/* Admin Header */}
       <div className="admin-dashboard-header">
         <div className="admin-dashboard-header-text">
-          <h1>🌿 Green Acres Admin</h1>
+          <h1 className="admin-page-title">🌿 Green Acres Admin</h1>
           <p>
             Welcome back, {admin.firstName} {admin.lastName}
           </p>

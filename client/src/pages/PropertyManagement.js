@@ -530,16 +530,18 @@ const loadTaxPayments = async (propertyId) => {
             {properties.length} total properties
           </p>
         </div>
-        <div style={{ display: 'flex', gap: '10px' }}>
+        <div>
           <button
             onClick={() => setShowAddForm(!showAddForm)}
             className="btn btn-primary"
+            style={{ width: '100%', marginBottom: '10px' }}
           >
             {showAddForm ? 'Cancel' : '+ Add Property'}
           </button>
           <button
             onClick={() => navigate('/admin/dashboard')}
             className="btn btn-secondary"
+            style={{ width: '100%' }}
           >
             ← Back to Dashboard
           </button>

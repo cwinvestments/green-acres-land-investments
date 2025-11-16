@@ -331,22 +331,20 @@ function AdminLoans() {
 
   return (
     <div className="admin-loans-container">
-      <div className="admin-loans-header">
+      <div style={{ marginBottom: '2rem' }}>
         <h1 className="admin-page-title">Loan Management</h1>
-        <div className="admin-loans-header-buttons">
-          <button onClick={() => navigate('/admin/loans/create-custom')} className="btn admin-loans-btn-create">
-            ✨ Create Custom Loan
-          </button>
-          <button onClick={() => navigate('/admin/loans/import')} className="btn admin-loans-btn-import">
-            📥 Import Existing Loan
-          </button>
-          <button onClick={() => navigate('/admin/loans/defaulted')} className="btn admin-loans-btn-defaulted">
-            📊 Defaulted Loans Report
-          </button>
-          <button onClick={() => navigate('/admin/dashboard')} className="btn btn-secondary">
-            ← Back to Dashboard
-          </button>
-        </div>
+        <button onClick={() => navigate('/admin/loans/create')} className="btn admin-loans-btn-create" style={{ width: '100%', marginBottom: '10px' }}>
+          ✨ Create Custom Loan
+        </button>
+        <button onClick={() => navigate('/admin/loans/import')} className="btn admin-loans-btn-import" style={{ width: '100%', marginBottom: '10px' }}>
+          📥 Import Existing Loan
+        </button>
+        <button onClick={() => navigate('/admin/loans/defaulted')} className="btn admin-loans-btn-defaulted" style={{ width: '100%', marginBottom: '10px' }}>
+          📊 Defaulted Loans Report
+        </button>
+        <button onClick={() => navigate('/admin/dashboard')} className="btn btn-secondary" style={{ width: '100%' }}>
+          ← Back to Dashboard
+        </button>
       </div>
 
       {/* Summary Cards */}

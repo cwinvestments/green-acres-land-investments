@@ -537,7 +537,7 @@ function AdminLoans() {
                             width: '100%'
                           }}
                         >
-                          {loan.alerts_disabled ? '🔕 Off' : '🔔 On'}
+                          {loan.alerts_disabled ? '🔕 Alerts Off - Click to Enable' : '🔔 Alerts On - Click to Disable'}
                         </button>
                         {daysOverdue >= 30 && !loan.notice_sent_date && (
                           <button

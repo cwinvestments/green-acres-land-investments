@@ -3084,6 +3084,468 @@ label:has(.required-asterisk)::after {
   flex-grow: 1;
 }
 
+/* Admin Reports Page */
+.admin-reports-container {
+  padding: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.admin-reports-loading {
+  padding: 40px;
+  text-align: center;
+}
+
+.admin-reports-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.admin-reports-header h1 {
+  margin: 0;
+}
+
+.admin-reports-header-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.admin-reports-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+}
+
+.admin-reports-revenue-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+.admin-reports-stat-card {
+  padding: 20px;
+}
+
+.admin-reports-stat-card h3 {
+  margin: 0 0 10px 0;
+  font-size: 16px;
+  color: #666;
+}
+
+.admin-reports-stat-card p {
+  margin: 0;
+  font-size: 32px;
+  font-weight: bold;
+}
+
+.admin-reports-stat-green {
+  color: var(--forest-green);
+}
+
+.admin-reports-stat-yellow {
+  color: #ffc107;
+}
+
+.admin-reports-stat-red {
+  color: #dc3545;
+}
+
+.admin-reports-breakdown-card {
+  padding: 20px;
+  margin-bottom: 40px;
+}
+
+.admin-reports-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.admin-reports-table tbody tr {
+  border-bottom: 1px solid #eee;
+}
+
+.admin-reports-table td {
+  padding: 12px 0;
+}
+
+.admin-reports-table td:first-child {
+  padding-left: 0;
+}
+
+.admin-reports-table td:last-child {
+  text-align: right;
+  font-weight: bold;
+  color: var(--forest-green);
+}
+
+.admin-reports-table-total {
+  border-top: 2px solid var(--forest-green);
+  font-weight: bold;
+}
+
+.admin-reports-table-total td {
+  padding-top: 15px;
+  font-size: 18px;
+}
+
+.admin-reports-trends-card {
+  padding: 20px;
+  margin-bottom: 40px;
+}
+
+.admin-reports-trends-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 15px;
+}
+
+.admin-reports-trend-item {
+  padding: 15px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  text-align: center;
+  border: 1px solid #eee;
+}
+
+.admin-reports-trend-month {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 8px;
+}
+
+.admin-reports-trend-amount {
+  font-size: 20px;
+  font-weight: bold;
+  color: var(--forest-green);
+}
+
+.admin-reports-escrow-card {
+  padding: 20px;
+  margin-bottom: 40px;
+}
+
+.admin-reports-escrow-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 2px solid var(--forest-green);
+  font-weight: bold;
+}
+
+.admin-reports-escrow-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.admin-reports-escrow-property {
+  flex: 2;
+}
+
+.admin-reports-escrow-value {
+  flex: 1;
+  text-align: right;
+  font-weight: bold;
+}
+
+.admin-reports-escrow-total {
+  border-top: 2px solid var(--forest-green);
+  padding-top: 15px;
+  font-weight: bold;
+}
+
+.admin-reports-escrow-total-amount {
+  font-size: 24px;
+  color: var(--forest-green);
+}
+
+.admin-reports-hoa-grid {
+  display: grid;
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+.admin-reports-hoa-property-card {
+  padding: 20px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+}
+
+.admin-reports-hoa-property-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: var(--forest-green);
+  margin-bottom: 15px;
+}
+
+.admin-reports-hoa-details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.admin-reports-hoa-detail-item {
+  padding: 10px;
+  background-color: #f9f9f9;
+  border-radius: 4px;
+}
+
+.admin-reports-hoa-detail-label {
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 5px;
+}
+
+.admin-reports-hoa-detail-value {
+  font-weight: bold;
+  color: var(--text-dark);
+}
+
+.admin-reports-hoa-payment-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #ddd;
+}
+
+.admin-reports-hoa-payment-item {
+  text-align: center;
+  padding: 10px;
+  background-color: #f0f8f0;
+  border-radius: 4px;
+}
+
+.admin-reports-hoa-payment-label {
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 5px;
+}
+
+.admin-reports-hoa-payment-value {
+  font-weight: bold;
+  font-size: 16px;
+  color: var(--forest-green);
+}
+
+.admin-reports-outstanding-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.admin-reports-outstanding-card {
+  padding: 20px;
+  text-align: center;
+}
+
+.admin-reports-outstanding-card h3 {
+  margin: 0 0 10px 0;
+  font-size: 16px;
+  color: #666;
+}
+
+.admin-reports-outstanding-card p {
+  margin: 0;
+  font-size: 32px;
+  font-weight: bold;
+  color: var(--forest-green);
+}
+
+.admin-reports-loans-card {
+  padding: 20px;
+  overflow-x: auto;
+}
+
+.admin-reports-loans-table {
+  width: 100%;
+  min-width: 800px;
+  border-collapse: collapse;
+}
+
+.admin-reports-loans-table thead {
+  background-color: var(--forest-green);
+  color: white;
+}
+
+.admin-reports-loans-table th {
+  padding: 12px;
+  text-align: left;
+  font-weight: 600;
+}
+
+.admin-reports-loans-table tbody tr {
+  border-bottom: 1px solid #eee;
+}
+
+.admin-reports-loans-table tbody tr:hover {
+  background-color: #f9f9f9;
+}
+
+.admin-reports-loans-table td {
+  padding: 12px;
+}
+
+.admin-reports-loans-table-right {
+  text-align: right;
+}
+
+.admin-reports-loans-table-bold {
+  font-weight: bold;
+}
+
+.admin-reports-loans-table-green {
+  color: var(--forest-green);
+}
+
+.admin-reports-export-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.admin-reports-export-modal-content {
+  background-color: white;
+  padding: 30px;
+  border-radius: 10px;
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh;
+  overflow: auto;
+}
+
+.admin-reports-export-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.admin-reports-export-modal-header h2 {
+  margin: 0;
+}
+
+.admin-reports-export-modal-close {
+  padding: 8px 20px;
+}
+
+.admin-reports-export-date-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.admin-reports-export-date-small {
+  color: #666;
+  font-size: 12px;
+}
+
+.admin-reports-export-input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+}
+
+.admin-reports-export-properties-list {
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 10px;
+  background-color: #f9f9f9;
+}
+
+.admin-reports-export-property-label {
+  display: block;
+  padding: 5px 0;
+  cursor: pointer;
+}
+
+.admin-reports-export-property-checkbox {
+  margin-right: 8px;
+}
+
+.admin-reports-export-error {
+  color: #dc3545;
+  font-size: 12px;
+}
+
+.admin-reports-export-submit {
+  width: 100%;
+  margin-top: 20px;
+}
+
+/* Mobile responsive for Admin Reports */
+@media (max-width: 768px) {
+  .admin-reports-container {
+    padding: 15px;
+  }
+  
+  .admin-reports-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .admin-reports-header-buttons {
+    width: 100%;
+    flex-direction: column;
+  }
+  
+  .admin-reports-header-buttons .btn {
+    width: 100%;
+  }
+  
+  .admin-reports-revenue-grid,
+  .admin-reports-outstanding-summary {
+    grid-template-columns: 1fr;
+  }
+  
+  .admin-reports-trends-grid {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  }
+  
+  .admin-reports-hoa-details-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .admin-reports-hoa-payment-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .admin-reports-export-date-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .admin-reports-loans-card {
+    padding: 10px;
+  }
+  
+  .admin-reports-escrow-header,
+  .admin-reports-escrow-row {
+    font-size: 14px;
+  }
+}
+
 /* Mobile responsive for Admin Dashboard */
 @media (max-width: 768px) {
   .admin-dashboard-container {

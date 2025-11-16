@@ -60,9 +60,9 @@ function DefaultedLoansReport() {
 
   return (
     <div style={{ padding: '20px', maxWidth: '95%', margin: '0 auto' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
+      <div style={{ marginBottom: '2rem' }}>
         <h1>📊 Defaulted Loans Report</h1>
-        <button onClick={() => navigate('/admin/loans')} className="btn btn-secondary">
+        <button onClick={() => navigate('/admin/loans')} className="btn btn-secondary" style={{ width: '100%' }}>
           ← Back to Loan Management
         </button>
       </div>

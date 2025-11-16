@@ -382,13 +382,13 @@ function AdminReports() {
                     <tr key={prop.property_id}>
                       <td>{prop.title}</td>
                       <td className="admin-reports-hoa-table-value">
-                        ${formatCurrency(prop.hoa_monthly_fee)}
+                        ${formatCurrency(prop.monthly_hoa_fee)}
                       </td>
                       <td className="admin-reports-hoa-table-value">
-                        ${formatCurrency(prop.total_collected)}
+                        ${formatCurrency(prop.hoa_collected)}
                       </td>
                       <td className="admin-reports-hoa-table-center">
-                        {prop.payment_count}
+                        {prop.payments_count}
                       </td>
                     </tr>
                   ))}
@@ -410,15 +410,15 @@ function AdminReports() {
                   <div className="admin-reports-hoa-mobile-grid">
                     <div>
                       <div className="admin-reports-hoa-mobile-label">Monthly Fee</div>
-                      <div className="admin-reports-hoa-mobile-value">${formatCurrency(prop.hoa_monthly_fee)}</div>
+                      <div className="admin-reports-hoa-mobile-value">${formatCurrency(prop.monthly_hoa_fee)}</div>
                     </div>
                     <div>
                       <div className="admin-reports-hoa-mobile-label">Total Collected</div>
-                      <div className="admin-reports-hoa-mobile-value">${formatCurrency(prop.total_collected)}</div>
+                      <div className="admin-reports-hoa-mobile-value">${formatCurrency(prop.hoa_collected)}</div>
                     </div>
                     <div>
                       <div className="admin-reports-hoa-mobile-label">Payments</div>
-                      <div className="admin-reports-hoa-mobile-value">{prop.payment_count}</div>
+                      <div className="admin-reports-hoa-mobile-value">{prop.payments_count}</div>
                     </div>
                   </div>
                 </div>

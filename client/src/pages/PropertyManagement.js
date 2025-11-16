@@ -517,7 +517,9 @@ const loadTaxPayments = async (propertyId) => {
         padding: '4px 12px',
         borderRadius: '12px',
         fontSize: '14px',
-        fontWeight: '500'
+        fontWeight: '500',
+        whiteSpace: 'nowrap',
+        display: 'inline-block'
       }}>
         {labels[status]}
       </span>

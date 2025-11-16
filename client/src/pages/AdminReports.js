@@ -81,7 +81,7 @@ function AdminReports() {
       {/* Header */}
       <div style={{ marginBottom: '30px' }}>
         <h1 className="admin-page-title">📊 Financial Reports</h1>
-        <button onClick={handleExportPDF} className="btn" style={{ backgroundColor: 'var(--forest-green)', color: 'white', width: '100%', marginBottom: '10px' }}>
+        <button onClick={() => setShowExportModal(true)} className="btn" style={{ backgroundColor: 'var(--forest-green)', color: 'white', width: '100%', marginBottom: '10px' }}>', marginBottom: '10px' }}>
           📄 Export PDF
         </button>
         <button onClick={() => navigate('/admin/dashboard')} className="btn btn-secondary" style={{ width: '100%' }}>

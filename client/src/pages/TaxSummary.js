@@ -109,11 +109,11 @@ useEffect(() => {
             marginBottom: '10px'
           }}
         >
-          {years.map(year => (
+          {Array.from({ length: 10 }, (_, i) => new Date().getFullYear() - i).map(year => (
             <option key={year} value={year}>{year}</option>
           ))}
         </select>
-        <button onClick={handlePrintReport} className="btn btn-primary" style={{ width: '100%', marginBottom: '10px' }}>
+        <button onClick={printReport} className="btn btn-primary" style={{ width: '100%', marginBottom: '10px' }}>
           🖨️ Print Report
         </button>
         <button onClick={() => navigate('/admin/dashboard')} className="btn btn-secondary" style={{ width: '100%' }}>

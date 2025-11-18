@@ -447,6 +447,8 @@ app.patch('/api/admin/tax-rate', authenticateAdmin, async (req, res) => {
 
 // ==================== EBAY ROUTES ====================
 app.use('/api/admin/ebay', authenticateAdmin, ebayRoutes);
+// Public eBay winner submission (no auth required)
+app.use('/api/ebay', ebayRoutes);
 
 // ==================== PROPERTY ROUTES ====================
 

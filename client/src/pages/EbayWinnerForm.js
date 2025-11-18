@@ -38,7 +38,7 @@ function EbayWinnerForm() {
     setError('');
 
     try {
-      const response = await axios.post(`${API_URL}/admin/ebay/winner-submission`, formData);
+      const response = await axios.post(`${API_URL}/ebay/winner-submission`, formData);
       
       if (response.data.success) {
         setSubmitted(true);

@@ -26,6 +26,7 @@ import AccountSettings from './pages/AccountSettings';
 import ImportLoan from './pages/ImportLoan';
 import CreateCustomLoan from './pages/CreateCustomLoan';
 import EbayListingGenerator from './pages/EbayListingGenerator';
+import EbayWinnerForm from './pages/EbayWinnerForm';
 import AboutUs from './pages/AboutUs';
 import ContactUs from './pages/ContactUs';
 import PrivacyPolicy from './pages/PrivacyPolicy';
@@ -66,6 +67,7 @@ function AppContent() {
             <Route path="/register" element={<Register />} />
 	    <Route path="/about" element={<AboutUs />} />
             <Route path="/contact" element={<ContactUs />} />
+            <Route path="/ebay-winner" element={<EbayWinnerForm />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="/terms" element={<TermsOfService />} /> 
             <Route 

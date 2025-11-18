@@ -436,4 +436,55 @@ router.get('/properties', async (req, res) => {
   }
 });
 
+// POST /api/admin/ebay/winner-submission
+// Public endpoint - no auth required
+router.post('/winner-submission', async (req, res) => {
+  try {
+    const {
+      firstName,
+      lastName,
+      email,
+      phone,
+      propertyTitle,
+      auctionUrl,
+      winningBid,
+      preferredDueDay,
+      mailingAddress,
+      mailingCity,
+      mailingState,
+      mailingZip,
+      notes
+    } = req.body;
+
+    // Validate required fields
+    if (!firstName || !lastName || !email || !phone || !propertyTitle || !winningBid) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
+
+    // Insert into ebay_winner_submissions table
+    const result = await pool.query(`
+      INSERT INTO ebay_winner_submissions (
+        first_name, last_name, email, phone, property_title, auction_url,
+        winning_bid, preferred_due_day, mailing_address, mailing_city,
+        mailing_state, mailing_zip, notes, status, submission_date
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, NOW())
+      RETURNING id
+    `, [
+      firstName, lastName, email, phone, propertyTitle, auctionUrl || null,
+      winningBid, preferredDueDay || '1', mailingAddress || null, mailingCity || null,
+      mailingState || null, mailingZip || null, notes || null, 'pending'
+    ]);
+
+    res.status(201).json({
+      success: true,
+      message: 'Submission received! We will contact you within 24 hours.',
+      submissionId: result.rows[0].id
+    });
+
+  } catch (error) {
+    console.error('eBay winner submission error:', error);
+    res.status(500).json({ error: 'Failed to submit information' });
+  }
+});
+
 module.exports = router;

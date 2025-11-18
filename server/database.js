@@ -200,6 +200,30 @@ const initDatabase = async () => {
       )
     `);
 
+    // eBay Winner Submissions Table
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS ebay_winner_submissions (
+        id SERIAL PRIMARY KEY,
+        first_name VARCHAR(100) NOT NULL,
+        last_name VARCHAR(100) NOT NULL,
+        email VARCHAR(255) NOT NULL,
+        phone VARCHAR(20) NOT NULL,
+        property_title TEXT NOT NULL,
+        auction_url TEXT,
+        winning_bid DECIMAL(10,2) NOT NULL,
+        preferred_due_day INTEGER DEFAULT 1,
+        mailing_address TEXT,
+        mailing_city VARCHAR(100),
+        mailing_state VARCHAR(50),
+        mailing_zip VARCHAR(20),
+        notes TEXT,
+        status VARCHAR(50) DEFAULT 'pending',
+        submission_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+    console.log('✅ eBay winner submissions table ready');
+
 // Admin users table
     await client.query(`
       CREATE TABLE IF NOT EXISTS admin_users (        id SERIAL PRIMARY KEY,

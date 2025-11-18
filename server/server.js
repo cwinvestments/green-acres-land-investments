@@ -9,6 +9,7 @@ const PDFDocument = require('pdfkit');
 require('dotenv').config();
 
 const db = require('./database');
+const ebayRoutes = require('./routes/ebay-listing-routes');
 
 // Configure Cloudinary - Railway uses different env var names
 cloudinary.config({
@@ -370,7 +371,7 @@ app.post('/api/login', async (req, res) => {
   }
 });
 
-// ==================== PROPERTY ROUTES ====================
+// ==================== ADMIN PROPERTY ROUTES ====================
 
 // Admin Login
 app.post('/api/admin/login', async (req, res) => {
@@ -443,6 +444,9 @@ app.patch('/api/admin/tax-rate', authenticateAdmin, async (req, res) => {
     res.status(500).json({ error: 'Failed to update tax rate' });
   }
 });
+
+// ==================== EBAY ROUTES ====================
+app.use('/api/admin/ebay', authenticateAdmin, ebayRoutes);
 
 // ==================== PROPERTY ROUTES ====================
 

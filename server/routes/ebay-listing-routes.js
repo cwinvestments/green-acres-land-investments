@@ -263,12 +263,12 @@ function buildEbayListing(propertyData, payments, customDescription) {
   </div>
   <div class="contact-info">
     <h3>📞 Questions? We're Here to Help!</h3>
-    <p><strong>Phone:</strong> (920) 716-6107</p>
-    <p><strong>Email:</strong> GreenAcresLandInvestments@gmail.com</p>
-    <p><strong>Website:</strong> www.GreenAcresLandInvestments.com</p>
+    <p style="font-size: 16px; line-height: 1.8;">
+      Have questions about this property or our financing options?<br>
+      <strong>Click "Ask a question" or "Contact seller"</strong> and we'll respond within 24 hours!
+    </p>
     <p style="margin-top: 15px; font-size: 14px; color: #666;">
-      Business Hours: Monday-Friday 9am-5pm Central Time<br>
-      We typically respond within 24 hours
+      Business Hours: Monday-Friday 9am-5pm Central Time
     </p>
   </div>
   <div class="footer">

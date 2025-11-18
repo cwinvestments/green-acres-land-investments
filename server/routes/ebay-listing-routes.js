@@ -137,6 +137,9 @@ function buildEbayListing(propertyData, payments, customDescription) {
       Win this auction to secure this property with owner financing.<br>
       Your winning bid becomes your down payment!
     </p>
+    <p style="font-size: 15px; margin: 15px 0; padding: 10px; background: #fff9e6; border-radius: 5px;">
+      <strong>🎁 eBay Special:</strong> $99 Documentation Fee WAIVED for auction winners!
+    </p>
   </div>
   <div class="content-section">
     <h2>📍 Property Overview</h2>
@@ -216,6 +219,24 @@ function buildEbayListing(propertyData, payments, customDescription) {
       *Example payments shown for 36-month terms. Terms available from 12-60 months. 
       Monthly payment includes principal, interest, and escrow for property taxes and POA fees.
     </p>
+    <h2>💎 Why Our Pricing Is Different (And Better!)</h2>
+    <div class="info-box" style="background: #fff9e6; border-left: 4px solid #f4a460;">
+      <h3 style="color: #2c5f2d; margin-top: 0;">🔍 Transparent Pricing vs. "No Interest" Claims</h3>
+      <p style="font-size: 15px; line-height: 1.8;">
+        <strong>What other sellers do:</strong> Claim "no interest" but inflate the property price by 50-100% above market value. 
+        You pay more overall, but they hide it in the inflated price.
+      </p>
+      <p style="font-size: 15px; line-height: 1.8;">
+        <strong>What we do:</strong> Show you the REAL property value, then add transparent financing costs based on your down payment. 
+        Lower down payment = higher rate. Higher down payment = lower rate. You see exactly what you're paying and why.
+      </p>
+      <p style="font-size: 15px; line-height: 1.8;">
+        <strong>The result:</strong> Our total cost is typically LOWER than "no interest" sellers, and you know exactly where every dollar goes.
+      </p>
+      <p style="font-size: 16px; font-weight: bold; color: #2c5f2d; margin-top: 15px;">
+        ✅ Plus for eBay buyers: We WAIVE the $99 documentation fee!
+      </p>
+    </div>
     <h2>🎯 Why Choose Owner Financing?</h2>
     <div class="two-column">
       <div class="column">

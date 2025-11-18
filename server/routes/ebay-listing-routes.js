@@ -129,8 +129,14 @@ function buildEbayListing(propertyData, payments, customDescription) {
   </div>
   <div class="highlight-box">
     <h2>${propertyData.acres} Acres in ${propertyData.location}</h2>
-    <div class="price-big">$${propertyData.price.toLocaleString()}</div>
-    <div class="financing-badge">💰 Owner Financing Available - As Low As $99 Down!</div>
+    <p style="font-size: 18px; margin: 10px 0; color: #666;">Property Value: $${propertyData.price.toLocaleString()}</p>
+    <div style="font-size: 22px; font-weight: bold; color: #2c5f2d; margin: 15px 0;">
+      🎯 Bid on Your Down Payment Amount!
+    </div>
+    <p style="font-size: 16px; margin: 10px 0;">
+      Win this auction to secure this property with owner financing.<br>
+      Your winning bid becomes your down payment!
+    </p>
   </div>
   <div class="content-section">
     <h2>📍 Property Overview</h2>
@@ -231,35 +237,54 @@ function buildEbayListing(propertyData, payments, customDescription) {
     </div>
     <h2>📋 How It Works</h2>
     <div class="info-box" style="font-size: 16px;">
-      <strong>Step 1:</strong> Win this auction!<br>
-      <strong>Step 2:</strong> Complete your registration on our website<br>
-      <strong>Step 3:</strong> Choose your financing terms<br>
-      <strong>Step 4:</strong> Make your down payment<br>
-      <strong>Step 5:</strong> Review and sign your Contract for Deed<br>
-      <strong>Step 6:</strong> Start enjoying your land!<br>
-      <strong>Step 7:</strong> Make monthly payments online<br>
-      <strong>Step 8:</strong> Receive your deed when paid off!
+      <strong>Step 1:</strong> DO YOUR DUE DILIGENCE - Research property, visit if possible, verify everything with county<br>
+      <strong>Step 2:</strong> Bid on your desired down payment amount (your winning bid = your down payment)<br>
+      <strong>Step 3:</strong> Win the auction and complete registration on our website<br>
+      <strong>Step 4:</strong> Choose your financing terms for the remaining balance<br>
+      <strong>Step 5:</strong> Pay your down payment (your winning bid amount)<br>
+      <strong>Step 6:</strong> Review and sign your Contract for Deed<br>
+      <strong>Step 7:</strong> Start enjoying your land!<br>
+      <strong>Step 8:</strong> Make monthly payments online<br>
+      <strong>Step 9:</strong> Receive your deed when paid off!
     </div>
   </div>
   <div class="cta-box">
-    <h2>🎉 Ready to Own Your Land?</h2>
-    <p>Place your bid now and start your journey to land ownership!</p>
-    <p style="font-size: 16px;">After winning, visit our website to complete your registration and choose your payment plan.</p>
-    <div style="margin-top: 20px;">
-      <strong style="font-size: 20px;">🌐 GreenAcresLandInvestments.com</strong>
-    </div>
+    <h2>🎉 Ready to Secure This Property?</h2>
+    <p style="font-size: 18px; font-weight: bold;">You are bidding on the DOWN PAYMENT AMOUNT for this property.</p>
+    <p style="font-size: 16px;">Your winning bid becomes your down payment. After winning, you'll complete registration and finalize your financing terms for the remaining balance.</p>
+    <p style="font-size: 14px; font-style: italic; margin-top: 15px;">
+      Property value: $${propertyData.price.toLocaleString()} | You pay: Your winning bid + monthly payments
+    </p>
   </div>
   <div class="warning-box">
-    <h3>⚠️ Important Information</h3>
-    <p><strong>Buyer Responsibilities:</strong></p>
-    <ul style="margin: 10px 0; padding-left: 20px;">
-      <li>This is a Contract for Deed - title transfers after full payment</li>
-      <li>Buyer is responsible for property taxes (escrowed in monthly payment)</li>
-      <li>Buyer should verify all property details, utilities, and zoning with county</li>
-      <li>No refunds after closing - please do your due diligence before bidding</li>
-      <li>Property sold "as-is" - buyer encouraged to visit property before bidding</li>
+    <h3>⚠️ CRITICAL - READ BEFORE BIDDING</h3>
+    <p style="font-size: 16px; font-weight: bold; color: #c62828; margin-bottom: 15px;">
+      🚨 YOU ARE BIDDING ON THE DOWN PAYMENT, NOT THE PROPERTY VALUE 🚨
+    </p>
+    <p style="font-size: 15px; margin-bottom: 15px;">
+      <strong>What You're Buying:</strong> Your winning bid purchases the right to buy this property with owner financing. 
+      Your bid amount becomes your down payment. You will then make monthly payments for the remaining balance.
+    </p>
+    <p><strong>⚠️ DUE DILIGENCE IS YOUR RESPONSIBILITY:</strong></p>
+    <ul style="margin: 10px 0; padding-left: 20px; font-size: 15px; line-height: 1.8;">
+      <li><strong>VISIT THE PROPERTY</strong> - We strongly encourage visiting before bidding</li>
+      <li><strong>VERIFY EVERYTHING</strong> - Contact ${propertyData.county} County to confirm: property boundaries, zoning, utilities, access, building permits, restrictions</li>
+      <li><strong>CHECK UTILITIES</strong> - Confirm availability of water, electric, septic, internet with local providers</li>
+      <li><strong>RESEARCH AREA</strong> - Visit the area, talk to neighbors, check local regulations</li>
+      <li><strong>NO REFUNDS</strong> - All sales are final after closing. Do your homework BEFORE bidding!</li>
     </ul>
-    <p><strong>Due Diligence:</strong> We encourage all buyers to research the property, visit if possible, and verify all information with ${propertyData.county} County before placing a bid.</p>
+    <p style="margin-top: 15px;"><strong>Contract for Deed Terms:</strong></p>
+    <ul style="margin: 10px 0; padding-left: 20px;">
+      <li>Title transfers to you AFTER full payment (not at closing)</li>
+      <li>You are responsible for property taxes (collected monthly in your payment)</li>
+      <li>You may use and improve the property during the payment period</li>
+      <li>Default may result in forfeiture of payments and property</li>
+      <li>Property sold "as-is" with no warranties</li>
+    </ul>
+    <p style="font-size: 14px; font-style: italic; margin-top: 15px; color: #666;">
+      We provide all available information, but ultimate verification is the buyer's responsibility. 
+      Bidding on this auction confirms you understand and accept these terms.
+    </p>
   </div>
   <div class="contact-info">
     <h3>📞 Questions? We're Here to Help!</h3>

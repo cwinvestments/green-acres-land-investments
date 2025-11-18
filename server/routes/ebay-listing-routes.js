@@ -149,8 +149,8 @@ function buildEbayListing(propertyData, payments, customDescription) {
         <div class="info-box">
           <h3>Annual Costs</h3>
           <div class="info-item"><strong>Property Tax:</strong> $${propertyData.annual_tax_amount || 0}/year</div>
-          <div class="info-item"><strong>POA Fee:</strong> $${(propertyData.monthly_poa_fee || 0) * 12}/year</div>
-          <div class="info-item"><strong>Total Annual:</strong> $${((propertyData.annual_tax_amount || 0) + ((propertyData.monthly_poa_fee || 0) * 12)).toFixed(2)}/year</div>
+          <div class="info-item"><strong>POA Fee:</strong> $${(propertyData.monthly_hoa_fee || 0) * 12}/year</div>
+          <div class="info-item"><strong>Total Annual:</strong> $${((propertyData.annual_tax_amount || 0) + ((propertyData.monthly_hoa_fee || 0) * 12)).toFixed(2)}/year</div>
         </div>
       </div>
     </div>
@@ -298,7 +298,7 @@ router.post('/generate-listing', async (req, res) => {
         SELECT 
           id, title, description, location, state, county, 
           price, acres, apn, annual_tax_amount, 
-          monthly_poa_fee
+          monthly_hoa_fee
         FROM properties 
         WHERE id = $1
       `;
@@ -326,7 +326,7 @@ router.post('/generate-listing', async (req, res) => {
         apn: manualData.apn || 'Available upon request',
         zoning: manualData.zoning || 'Residential/Agricultural',
         annual_tax_amount: parseFloat(manualData.annual_tax_amount || 0),
-        monthly_poa_fee: parseFloat(manualData.monthly_poa_fee || 0)
+        monthly_hoa_fee: parseFloat(manualData.monthly_hoa_fee || 0)
       };
     } else {
       return res.status(400).json({ error: 'Either propertyId or manualData is required' });
@@ -336,7 +336,7 @@ router.post('/generate-listing', async (req, res) => {
     const payments = calculateMonthlyPayments(
       propertyData.price,
       propertyData.annual_tax_amount || 0,
-      (propertyData.monthly_poa_fee || 0) * 12
+      (propertyData.monthly_hoa_fee || 0) * 12
     );
     
     // Generate eBay title and subtitle

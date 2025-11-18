@@ -269,6 +269,14 @@ function AdminDashboard() {
           </p>
           <button className="btn btn-primary">Manage States</button>
         </div>
+
+        <div className="card admin-menu-card" onClick={() => navigate('/admin/ebay-listing-generator')}>
+          <h2>📦 eBay Listing Generator</h2>
+          <p>
+            Generate professional eBay listings with payment calculations
+          </p>
+          <button className="btn btn-primary">Generate Listing</button>
+        </div>
       </div>      
     </div>
   );

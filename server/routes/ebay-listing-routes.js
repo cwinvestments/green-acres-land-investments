@@ -51,11 +51,11 @@ function generateEbayTitle(property) {
   const state = property.state;
   const city = property.location.split(',')[0].trim();
   
-  let title = `${acres} Acres ${state} Land Near ${city} - Owner Financing - $99 Down!`;
+  let title = `${acres} Acres ${state} Land Near ${city} - Owner Financing Available`;
   
   // Truncate if over 80 chars
   if (title.length > 80) {
-    title = `${acres} Acres ${state} - Owner Financed - $99 Down - Near ${city}`;
+    title = `${acres} Acres ${state} Land - Owner Financed - Near ${city}`;
   }
   
   if (title.length > 80) {
@@ -67,7 +67,7 @@ function generateEbayTitle(property) {
 
 // Generate eBay Subtitle (max 55 characters)
 function generateEbaySubtitle() {
-  return "Owner Financing - As Low As $99 Down!";
+  return "Flexible Terms - Bid Your Down Payment!";
 }
 
 // Build HTML from template

@@ -234,8 +234,8 @@ function buildEbayListing(propertyData, payments, customDescription) {
       <strong>Step 1:</strong> Win this auction!<br>
       <strong>Step 2:</strong> Complete your registration on our website<br>
       <strong>Step 3:</strong> Choose your financing terms<br>
-      <strong>Step 4:</strong> Review and sign your Contract for Deed<br>
-      <strong>Step 5:</strong> Make your down payment<br>
+      <strong>Step 4:</strong> Make your down payment<br>
+      <strong>Step 5:</strong> Review and sign your Contract for Deed<br>
       <strong>Step 6:</strong> Start enjoying your land!<br>
       <strong>Step 7:</strong> Make monthly payments online<br>
       <strong>Step 8:</strong> Receive your deed when paid off!

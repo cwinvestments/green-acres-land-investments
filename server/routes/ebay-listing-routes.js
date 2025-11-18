@@ -148,9 +148,9 @@ function buildEbayListing(propertyData, payments, customDescription) {
       <div class="column">
         <div class="info-box">
           <h3>Annual Costs</h3>
-          <div class="info-item"><strong>Property Tax:</strong> $${propertyData.annual_tax_amount || 0}/year</div>
-          <div class="info-item"><strong>POA Fee:</strong> $${(propertyData.monthly_hoa_fee || 0) * 12}/year</div>
-          <div class="info-item"><strong>Total Annual:</strong> $${((propertyData.annual_tax_amount || 0) + ((propertyData.monthly_hoa_fee || 0) * 12)).toFixed(2)}/year</div>
+          <div class="info-item"><strong>Property Tax:</strong> $${parseFloat(propertyData.annual_tax_amount || 0).toFixed(2)}/year</div>
+          <div class="info-item"><strong>POA Fee:</strong> $${(parseFloat(propertyData.monthly_hoa_fee || 0) * 12).toFixed(2)}/year</div>
+          <div class="info-item"><strong>Total Annual:</strong> $${(parseFloat(propertyData.annual_tax_amount || 0) + (parseFloat(propertyData.monthly_hoa_fee || 0) * 12)).toFixed(2)}/year</div>
         </div>
       </div>
     </div>

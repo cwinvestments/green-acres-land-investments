@@ -113,7 +113,7 @@ function AppContent() {
             <Route path="/admin/tax-summary" element={<TaxSummary />} />
             <Route path="/admin/states" element={<StateManagement />} />
             <Route path="/admin/loans/import" element={<ImportLoan />} />
-            <Route path="/admin/loans/create-custom" element={<CreateCustomLoan />} />
+            <Route path="/admin/loans/create" element={<CreateCustomLoan />} />
             <Route path="/admin/ebay-listing-generator" element={<EbayListingGenerator />} />
           </Routes>
 	  <Footer />

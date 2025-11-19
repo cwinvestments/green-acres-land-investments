@@ -210,6 +210,7 @@ const initDatabase = async () => {
         phone VARCHAR(20) NOT NULL,
         property_title TEXT NOT NULL,
         auction_url TEXT,
+        ebay_username VARCHAR(100),
         winning_bid DECIMAL(10,2) NOT NULL,
         preferred_due_day INTEGER DEFAULT 1,
         mailing_address TEXT,
@@ -221,6 +222,16 @@ const initDatabase = async () => {
         submission_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
+    `);
+
+    // Add ebay_username column if it doesn't exist (for existing tables)
+    await client.query(`
+      DO $$ 
+      BEGIN
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='ebay_winner_submissions' AND column_name='ebay_username') THEN
+          ALTER TABLE ebay_winner_submissions ADD COLUMN ebay_username VARCHAR(100);
+        END IF;
+      END $$;
     `);
     console.log('✅ eBay winner submissions table ready');
 

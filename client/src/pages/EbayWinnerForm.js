@@ -15,6 +15,7 @@ function EbayWinnerForm() {
     phone: '',
     propertyTitle: '',
     auctionUrl: '',
+    ebayUsername: '',
     winningBid: '',
     preferredDueDay: '1',
     mailingAddress: '',
@@ -324,6 +325,33 @@ function EbayWinnerForm() {
               />
               <small style={{ color: '#666', fontSize: '14px' }}>
                 Must include https:// (example: https://www.ebay.com/itm/...)
+              </small>
+            </div>
+
+            <div style={{ marginBottom: '20px' }}>
+              <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#333' }}>
+                eBay Username *
+              </label>
+              <input
+                type="text"
+                name="ebayUsername"
+                value={formData.ebayUsername}
+                onChange={handleChange}
+                required
+                placeholder="your_ebay_username"
+                style={{
+                  width: '100%',
+                  padding: '12px',
+                  fontSize: '16px',
+                  border: '2px solid #ddd',
+                  borderRadius: '8px',
+                  transition: 'border-color 0.3s ease'
+                }}
+                onFocus={(e) => e.target.style.borderColor = '#2c5f2d'}
+                onBlur={(e) => e.target.style.borderColor = '#ddd'}
+              />
+              <small style={{ color: '#666', fontSize: '14px' }}>
+                Your eBay username so we can verify the winning bid
               </small>
             </div>
 

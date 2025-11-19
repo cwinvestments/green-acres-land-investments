@@ -484,4 +484,71 @@ router.post('/winner-submission', async (req, res) => {
   }
 });
 
+// GET /api/admin/ebay/submissions
+// Get all eBay winner submissions (admin only)
+router.get('/submissions', async (req, res) => {
+  try {
+    const result = await pool.query(`
+      SELECT * FROM ebay_winner_submissions
+      ORDER BY submission_date DESC
+    `);
+
+    res.json({
+      success: true,
+      submissions: result.rows
+    });
+
+  } catch (error) {
+    console.error('Error fetching submissions:', error);
+    res.status(500).json({ error: 'Failed to fetch submissions' });
+  }
+});
+
+// PATCH /api/admin/ebay/submissions/:id/status
+// Update submission status (admin only)
+router.patch('/submissions/:id/status', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    // Validate status
+    if (!['pending', 'contacted', 'completed'].includes(status)) {
+      return res.status(400).json({ error: 'Invalid status' });
+    }
+
+    await pool.query(`
+      UPDATE ebay_winner_submissions
+      SET status = $1
+      WHERE id = $2
+    `, [status, id]);
+
+    res.json({ success: true, message: 'Status updated' });
+
+  } catch (error) {
+    console.error('Error updating status:', error);
+    res.status(500).json({ error: 'Failed to update status' });
+  }
+});
+
+// PATCH /api/admin/ebay/submissions/:id/notes
+// Update admin notes for submission (admin only)
+router.patch('/submissions/:id/notes', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { notes } = req.body;
+
+    await pool.query(`
+      UPDATE ebay_winner_submissions
+      SET notes = $1
+      WHERE id = $2
+    `, [notes, id]);
+
+    res.json({ success: true, message: 'Notes updated' });
+
+  } catch (error) {
+    console.error('Error updating notes:', error);
+    res.status(500).json({ error: 'Failed to update notes' });
+  }
+});
+
 module.exports = router;

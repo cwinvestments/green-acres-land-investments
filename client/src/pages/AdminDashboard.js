@@ -277,6 +277,14 @@ function AdminDashboard() {
           </p>
           <button className="btn btn-primary">Generate Listing</button>
         </div>
+
+        <div className="card admin-menu-card" onClick={() => navigate('/admin/ebay-submissions')}>
+          <h2>🏆 eBay Auction Winners</h2>
+          <p>
+            Manage auction winner submissions and convert to customers
+          </p>
+          <button className="btn btn-primary">View Submissions</button>
+        </div>
       </div>      
     </div>
   );

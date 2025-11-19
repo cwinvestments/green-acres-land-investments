@@ -27,6 +27,7 @@ import ImportLoan from './pages/ImportLoan';
 import CreateCustomLoan from './pages/CreateCustomLoan';
 import EbayListingGenerator from './pages/EbayListingGenerator';
 import EbayWinnerForm from './pages/EbayWinnerForm';
+import EbaySubmissions from './pages/EbaySubmissions';
 import AboutUs from './pages/AboutUs';
 import ContactUs from './pages/ContactUs';
 import PrivacyPolicy from './pages/PrivacyPolicy';
@@ -117,6 +118,7 @@ function AppContent() {
             <Route path="/admin/loans/import" element={<ImportLoan />} />
             <Route path="/admin/loans/create" element={<CreateCustomLoan />} />
             <Route path="/admin/ebay-listing-generator" element={<EbayListingGenerator />} />
+            <Route path="/admin/ebay-submissions" element={<EbaySubmissions />} />
           </Routes>
 	  <Footer />
         </div>

@@ -322,6 +322,9 @@ function EbayWinnerForm() {
                 onFocus={(e) => e.target.style.borderColor = '#2c5f2d'}
                 onBlur={(e) => e.target.style.borderColor = '#ddd'}
               />
+              <small style={{ color: '#666', fontSize: '14px' }}>
+                Must include https:// (example: https://www.ebay.com/itm/...)
+              </small>
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>

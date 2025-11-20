@@ -120,7 +120,7 @@ function AppContent() {
             <Route path="/admin/ebay-listing-generator" element={<EbayListingGenerator />} />
             <Route path="/admin/ebay-submissions" element={<EbaySubmissions />} />
           </Routes>
-	  <Footer />
+	  {!isAdminRoute && <Footer />}
         </div>
   );
 }

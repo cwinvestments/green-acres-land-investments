@@ -367,7 +367,7 @@ function EbaySubmissions() {
           <div className="modal" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
               <h2>Submission Details</h2>
-              <button className="modal-close" onClick={() => setShowDetailsModal(false)}>×</button>
+              <button className="modal-close" onClick={() => setShowDetailsModal(false)}>✕</button>
             </div>
             <div className="modal-body">
               <div style={{ marginBottom: '20px' }}>
@@ -462,7 +462,7 @@ function EbaySubmissions() {
           <div className="modal" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
               <h2>Admin Notes</h2>
-              <button className="modal-close" onClick={() => setShowNotesModal(false)}>×</button>
+              <button className="modal-close" onClick={() => setShowNotesModal(false)}>✕</button>
             </div>
             <div className="modal-body">
               <p style={{ marginBottom: '15px', color: '#666' }}>

@@ -1071,6 +1071,24 @@ label:has(.required-asterisk)::after {
   font-weight: 600;
 }
 
+.modal-close {
+  background: var(--forest-green);
+  color: white;
+  border: none;
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 5px 15px;
+  border-radius: 5px;
+  transition: all 0.3s ease;
+  font-weight: bold;
+}
+
+.modal-close:hover {
+  background: var(--dark-forest);
+  transform: scale(1.1);
+}
+
 /* Mobile responsive for Dashboard alerts */
 @media (max-width: 768px) {
   .alert-tier3 {

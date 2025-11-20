@@ -170,7 +170,7 @@ function EbaySubmissions() {
       </div>
 
       {/* Desktop Table */}
-      <div className="desktop-view">
+      <div className="desktop-only">
         <div className="card">
           <table className="admin-table">
             <thead>
@@ -265,7 +265,7 @@ function EbaySubmissions() {
       </div>
 
       {/* Mobile Cards */}
-      <div className="mobile-view">
+      <div className="mobile-only">
         {filteredSubmissions.map(sub => {
           const badge = getStatusBadge(sub.status);
           return (

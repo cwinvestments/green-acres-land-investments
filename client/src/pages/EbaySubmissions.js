@@ -122,15 +122,15 @@ function EbaySubmissions() {
 
   return (
     <div className="admin-dashboard-container">
-      {/* Header */}
-      <div className="admin-dashboard-header">
-        <div className="admin-dashboard-header-text">
-          <h1 className="admin-page-title">🏆 eBay Auction Winners</h1>
-          <p>Manage auction winner submissions and convert to customers</p>
-        </div>
-        <button
-          onClick={() => window.location.href = '/admin/dashboard'}
-          className="btn btn-secondary"
+      <div style={{ marginBottom: '2rem' }}>
+        <h1 className="admin-page-title">🏆 eBay Auction Winners</h1>
+        <p style={{ textAlign: 'center', color: '#666', marginBottom: '20px' }}>
+          Manage auction winner submissions and convert to customers
+        </p>
+        <button 
+          onClick={() => navigate('/admin/dashboard')} 
+          className="btn btn-secondary" 
+          style={{ width: '100%' }}
         >
           ← Back to Dashboard
         </button>

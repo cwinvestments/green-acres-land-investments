@@ -128,6 +128,12 @@ function EbaySubmissions() {
           <h1 className="admin-page-title">🏆 eBay Auction Winners</h1>
           <p>Manage auction winner submissions and convert to customers</p>
         </div>
+        <button
+          onClick={() => window.location.href = '/admin/dashboard'}
+          className="btn btn-secondary"
+        >
+          ← Back to Dashboard
+        </button>
       </div>
 
       {/* Filters and Search */}

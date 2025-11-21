@@ -280,10 +280,23 @@ function AdminDashboard() {
 
         <div className="card admin-menu-card" onClick={() => navigate('/admin/ebay-submissions')}>
           <h2>🏆 eBay Auction Winners</h2>
-          <p>
-            Manage auction winner submissions and convert to customers
-          </p>
+          <p>Manage auction winner submissions and convert to customers</p>
           <button className="btn btn-primary">View Submissions</button>
+        </div>
+        <div className="card admin-menu-card" onClick={() => navigate('/admin/property-sources')}>
+          <h2>🗂️ Property Sources</h2>
+          <p>Track auction sites, login credentials, and acquisition sources</p>
+          <button className="btn btn-primary">Manage Sources</button>
+        </div>
+        <div className="card admin-menu-card" onClick={() => navigate('/admin/auction-calendar')}>
+          <h2>📅 Auction Calendar</h2>
+          <p>Track upcoming auction dates and property opportunities</p>
+          <button className="btn btn-primary">View Calendar</button>
+        </div>
+        <div className="card admin-menu-card" style={{ opacity: 0.6, cursor: 'not-allowed' }}>
+          <h2>🔧 Future Feature</h2>
+          <p>Additional tools and features coming soon</p>
+          <button className="btn btn-secondary" disabled>Coming Soon</button>
         </div>
       </div>      
     </div>

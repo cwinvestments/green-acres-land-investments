@@ -11,6 +11,8 @@ require('dotenv').config();
 
 const db = require('./database');
 const ebayRoutes = require('./routes/ebay-listing-routes');
+const propertySourcesRoutes = require('./routes/propertySourcesRoutes');
+const auctionCalendarRoutes = require('./routes/auctionCalendarRoutes');
 
 // Configure Cloudinary - Railway uses different env var names
 cloudinary.config({
@@ -451,8 +453,11 @@ app.use('/api/admin/ebay', authenticateAdmin, ebayRoutes);
 // Public eBay winner submission (no auth required)
 app.use('/api/ebay', ebayRoutes);
 
-// ==================== PROPERTY ROUTES ====================
+// ==================== PROPERTY SOURCES & AUCTION CALENDAR ROUTES ====================
+app.use('/api/admin/property-sources', authenticateAdmin, propertySourcesRoutes);
+app.use('/api/admin/auction-calendar', authenticateAdmin, auctionCalendarRoutes);
 
+// ==================== PROPERTY ROUTES ====================
 // Get all properties (available and coming soon)
 app.get('/api/properties', async (req, res) => {
   try {

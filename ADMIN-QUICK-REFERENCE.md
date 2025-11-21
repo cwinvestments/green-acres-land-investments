@@ -1,7 +1,8 @@
-# 🌿 Green Acres Admin - Quick Reference Guide
+\# ⚡ Admin Quick Reference - Green Acres
 
-**Last Updated:** November 14, 2025 (Updated with Mobile Responsiveness)  
-**For:** Admin Dashboard v2.2
+
+
+\*\*One-page cheat sheet for daily operations\*\*
 
 
 
@@ -11,38 +12,11 @@
 
 \## 🔐 Login
 
-
-
-\*\*URL:\*\* https://greenacreslandinvestments.com/admin/login  
-
-\*\*Credentials:\*\* Stored in `.env` file (admin username/password)
+\*\*URL:\*\* https://greenacreslandinvestments.com/admin/login
 
 
 
----
-
-
-
-## 📊 Dashboard Overview
-
-**Main Sections:**
-1. **Property Management** - Add/edit/manage listings (mobile responsive)
-2. **Customer Management** - View customer accounts & loans
-3. **Loan Management** - Track payments, send notices, mark defaults
-4. **Payment Tracking** - View all payment history
-5. **Financial Reports** - Revenue, tax, HOA, analytics with PDF export
-6. **Income Tax Summary** - Annual tax report for CPA
-7. **State Management** - Control which states appear on public site
-
-**Dashboard Metrics:**
-- Total Properties, Active Loans, Total Customers
-- Revenue Last 30 Days (with trend indicators 📈📉➡️)
-- Collection Rate (color-coded performance)
-- Overdue Loans (yellow alert if any)
-- In Default (red alert if any)
-- Upcoming Tax Deadlines (next 60 days with direct links)
-
-**Mobile Responsive:** ✅ All admin pages now fully optimized for mobile devices - no horizontal scrolling, proper button layouts, and card-based views for tables.
+\*\*Session expired?\*\* Just log out and back in (tokens expire after 24 hours)
 
 
 
@@ -50,45 +24,19 @@
 
 
 
-\## 🏘️ Property Management - Quick Actions
+\## 📋 Daily Checklist
 
 
 
-\### Add New Property
+\- \[ ] Check dashboard for overdue loans (red alerts)
 
-1\. Click "Add New Property"
+\- \[ ] Review eBay winner submissions (new pending?)
 
-2\. Fill required fields (title, location, price, acres)
+\- \[ ] Check auction calendar (any TODAY?)
 
-3\. Optional: Add tax amount, HOA fee, acquisition cost
+\- \[ ] Follow up on contacted customers
 
-4\. Add 5 GPS coordinates (NE, SE, SW, NW, Center)
-
-5\. Set status: Available / Coming Soon / Pending / Sold
-
-6\. Save
-
-
-
-\### Edit Property
-
-\- Find property → Click "Edit"
-
-\- Update any fields
-
-\- \*\*Change status\*\* when sold to prevent double-selling
-
-
-
-\### Property Statuses
-
-\- \*\*Available\*\* - Shows on public site
-
-\- \*\*Coming Soon\*\* - Purple badge, hides financing calculator
-
-\- \*\*Pending\*\* - Hidden from public (under contract)
-
-\- \*\*Sold\*\* - Hidden from public, shows in Recent Sales
+\- \[ ] Record any manual payments received
 
 
 
@@ -96,56 +44,19 @@
 
 
 
-\## 👥 Customer Management - Quick Actions
+\## 🏠 Property Management
 
 
 
-\### View Customer Details
+\*\*Add Property:\*\* Property Management → Add New Property  
 
-1\. Search by name/email/phone
+\*\*Upload Images:\*\* Open property → Upload Image (up to 10)  
 
-2\. Click customer row
+\*\*Change Status:\*\* Use dropdown (Available, Pending, Sold)  
 
-3\. Modal shows: Contact info, all loans, balances
+\*\*Track Expenses:\*\* Property → Selling Expenses → Add Expense  
 
-
-
-\### Key Metrics Displayed
-
-\- Active/Total loan count per customer
-
-\- Monthly payment amount
-
-\- Total outstanding balance
-
-\- Contact information (email + phone)
-
-
-
-
-### Reset Customer Password
-
-1. Open customer detail modal
-
-2. Click "Reset Password" button
-
-3. Copy the 12-character temporary password shown
-
-4. Share with customer (email/phone)
-
-5. Customer updates password in Account Settings
-
-
-
-### Delete Customer
-
-1. Open customer detail modal
-
-2. Click "Delete Customer" button
-
-3. Confirm deletion
-
-4. **Note:** Cannot delete if customer has loans
+\*\*Record Tax Payment:\*\* Property → Tax Payments → Record Payment
 
 
 
@@ -153,160 +64,15 @@
 
 
 
-\## 💰 Loan Management - Quick Actions
-
-
-### Create Custom Loan ✨
-**Purpose:** Create special financing for loyal customers, eBay auction winners, or flexible deals
-
-**Steps:**
-1. Click "✨ Create Custom Loan" button
-2. Select existing customer
-3. Select available property
-4. Customize terms:
-   - Down payment (including $0)
-   - Processing fee (including $0 to waive)
-   - Interest rate (any %)
-   - Term length (months)
-   - Monthly payment (min $50)
-   - Payment due day (1st or 15th)
-   - Internal notes
-5. Click "Create Custom Loan"
-
-**Notes:**
-- No Square payment required (for testing or deferred payment)
-- Property automatically set to "pending"
-- Customer can make payments through normal dashboard
-- Use for eBay auctions where bidder bids on down payment amount
-- Good for testing without charging real money
-
-**Known Issues:**
-- Mobile design needs polish (works but not pretty)
-- No Square payment collection yet (coming soon)
-- Add tax/HOA by editing property after creation
-
-### Import Existing Loan 📥
-**Purpose:** Import loans from previous systems with complete payment history
-
-**Steps:**
-1. Click "Import Existing Loan" button
-2. Select existing customer
-3. Select property
-4. Enter loan details:
-   - Original purchase price
-   - Down payment made
-   - Interest rate, term, monthly payment
-   - Current balance remaining
-   - Next payment date
-   - Original contract/purchase date
-5. Enter payment history (each payment):
-   - Date, principal, interest, tax, HOA
-6. Enter tax payment history (if applicable)
-7. Click "Import Loan"
-
-**Notes:**
-- System automatically populates loan_payment_amount field
-- **Contract generation uses AMENDED template automatically**
-- Shows original contract date, payments made, total paid
-- Customer can make payments immediately
-- Property set to "Sold"
-
-**Amended Contracts:**
-When generating contracts for imported loans:
-- System detects payment history automatically
-- Generates "Amended and Restated Contract for Deed"
-- Shows: Original date, payments made, amount paid, remaining balance
-- No manual selection needed - completely automatic
-
-\### Filter Loans
-
-\- \*\*All\*\* - Every loan
-
-\- \*\*Active\*\* - Currently paying
-
-\- \*\*Overdue\*\* - Past due date
-
-\- \*\*Paid Off\*\* - Completed
-
-\- \*\*Defaulted\*\* - Marked as default
+\## 👥 Customer Management
 
 
 
-\### Send Default Notice (30+ Days Overdue)
+\*\*View All:\*\* Customer Management card  
 
-1\. Click "📨 Send Notice" button
+\*\*Reset Password:\*\* Find customer → Reset Password → Give them temp password  
 
-2\. Fill in:
-
-&nbsp;  - Notice Date
-
-&nbsp;  - Postal Method (Certified Mail recommended)
-
-&nbsp;  - Postal Cost (actual amount)
-
-&nbsp;  - Tracking Number
-
-&nbsp;  - Notes
-
-3\. System automatically:
-
-&nbsp;  - Sets cure deadline (7 days from notice)
-
-&nbsp;  - Adds $75 notice fee
-
-&nbsp;  - Adds postal cost to next payment
-
-&nbsp;  - Shows countdown to customer
-
-
-
-\### Waive Late Fee (7+ Days Overdue)
-
-1\. Click "Waive Late Fee"
-
-2\. Confirm
-
-3\. \*\*Remember:\*\* Inform customer on next call
-
-
-
-\### Mark Loan as Defaulted
-
-1\. Click "⚠️ Default" button
-
-2\. Fill in:
-
-&nbsp;  - Default Date
-
-&nbsp;  - Recovery Costs (legal, repo, cleanup)
-
-&nbsp;  - Notes
-
-3\. System automatically:
-
-&nbsp;  - Sets loan to "Defaulted" status
-
-&nbsp;  - Sets property back to "Available"
-
-&nbsp;  - Calculates net recovery
-
-&nbsp;  - Tracks in Defaulted Loans Report
-
-
-
-\### Change Payment Due Day
-
-\- Select 1st or 15th from dropdown
-
-\- Applies to next payment cycle
-
-
-
-\### Toggle Alerts
-
-\- 🔔 On - Customer sees overdue banners
-
-\- 🔕 Off - Alerts disabled (use for special arrangements)
+\*\*View Details:\*\* Click customer name → See all loans \& payments
 
 
 
@@ -314,33 +80,21 @@ When generating contracts for imported loans:
 
 
 
-\## 💳 Payment Tracking - Quick Actions
+\## 📋 Loan Management
 
 
 
-\### View Payment History
+\*\*View All Loans:\*\* Active Loans card  
 
-\- See all transactions
+\*\*Create Custom Loan:\*\* Active Loans → Create Custom Loan  
 
-\- Filter by: All / Completed / Failed / Refunded
+\*\*Import Loan:\*\* Active Loans → Import Loan (for existing portfolios)  
 
-\- Search by customer name/email
+\*\*Record Manual Payment:\*\* Find loan → Record Payment  
 
-\- Export data (coming soon)
+\*\*Change Due Day:\*\* Find loan → Edit Payment Due Day (1st or 15th)  
 
-
-
-\### Payment Details Shown
-
-\- Customer name \& property
-
-\- Payment amounts (loan, tax, HOA, fees)
-
-\- Processing fees (Square + convenience)
-
-\- Payment method \& date
-
-\- Transaction status
+\*\*Generate Contract:\*\* Find loan → Generate Contract → Sign as Admin
 
 
 
@@ -348,96 +102,31 @@ When generating contracts for imported loans:
 
 
 
-## 📊 Financial Reports - Quick Actions
-
-### Export PDF Reports 📄
-1. Click "📄 Export PDF" button (top right)
-2. Select Report Type:
-   - Overview (portfolio + revenue breakdown)
-   - Tax Escrow (detailed tax tracking)
-   - HOA Tracking (fee collection details)
-   - Outstanding Balances (loan details)
-3. Optional Filters:
-   - Date Range (start/end dates)
-   - Properties (all or select specific)
-4. Click "Generate & Download PDF"
-5. Professional PDF downloads automatically
-
-**PDF Reports Include:**
-- Comprehensive property information
-- Detailed financial breakdowns
-- Transaction history
-- Performance metrics
-- Ready for record-keeping or CPA
-
-### Overview Tab
-**Revenue Summary Cards:**
-- Total Revenue
-- Loan Payments
-- Late Fees Collected
-- Notice Fees Collected
-
-**Fee Breakdown:**
-- Tax Collected (escrow)
-- HOA Fees Collected
-- Convenience Fees (your income)
-- Postal Fees Reimbursed
-- Square Processing Fees (your expense)
-
-**Monthly Trends:**
-- Last 12 months of revenue
-- Loan payments vs fees
-- Number of payments per month
+\## 💳 Payment Processing
 
 
 
-\### Tax Escrow Tab
+\*\*Manual Payment Entry:\*\*
 
-\- Shows each property with annual tax
+1\. Active Loans → Find loan → Record Payment
 
-\- How much collected so far
+2\. Enter: Amount, Date, Method (Cash/Check/Venmo), Transaction ID
 
-\- Balance remaining to collect
+3\. System auto-calculates: Loan/Tax/HOA breakdown
 
-\- Use to ensure you have funds for tax payments
-
-
-
-\### HOA Tracking Tab
-
-\- Shows properties with HOA fees
-
-\- Total collected per property
-
-\- Number of payments made
-
-\- Use to track HOA payments owed to associations
+4\. Click Record Payment
 
 
 
-\### Outstanding Balances Tab
+\*\*Payment Breakdown:\*\*
 
-\*\*Summary Cards:\*\*
+\- \*\*Loan Payment\*\* = Goes to principal + interest
 
-\- Total Outstanding (all active loans)
+\- \*\*Tax Amount\*\* = Annual tax ÷ 12 (held in escrow)
 
-\- Total Loans (count)
+\- \*\*HOA Amount\*\* = Monthly HOA fee (pass-through)
 
-\- Overdue Loans (count)
-
-\- In Default (count)
-
-
-
-\*\*Loan Details:\*\*
-
-\- Each customer's balance
-
-\- Days overdue (if applicable)
-
-\- Default status
-
-\- Current/Overdue/Default badge
+\- \*\*Late Fee\*\* = $75 (after 7-day grace period)
 
 
 
@@ -445,93 +134,43 @@ When generating contracts for imported loans:
 
 
 
-\## ⚠️ Default Process - Step by Step
+\## ⚠️ Late Payment Process
 
 
 
-\### When Customer is 8-14 Days Late
+\*\*7 Days Late:\*\* Yellow warning (courtesy reminder)  
 
-\*\*System automatically:\*\*
+\*\*14 Days Late:\*\* Orange warning (personal outreach)  
 
-\- Applies $35 late fee
+\*\*30 Days Late:\*\* Red alert (send default notice)  
 
-\- Shows yellow warning banner to customer
-
-\- Customer sees: "Payment Overdue - Please pay ASAP"
+\*\*37+ Days:\*\* Cure period expired (mark as defaulted)
 
 
 
-\### When Customer is 15-29 Days Late
+\*\*Sending Default Notice:\*\*
 
-\*\*System automatically:\*\*
+1\. Find overdue loan → Send Notice
 
-\- Shows orange warning banner to customer
+2\. Enter: Notice Date, Postal Method, Cost, Tracking #
 
-\- Customer sees: "URGENT: Payment Seriously Overdue"
+3\. System adds: $75 notice fee + postal cost
 
-\- Mentions potential default notice coming
+4\. System sets: 7-day cure deadline
 
-
-
-\### When Customer is 30+ Days Late
-
-\*\*You should:\*\*
-
-1\. Attempt contact (phone/email)
-
-2\. Document attempts
-
-3\. Send Default/Cure Notice:
-
-&nbsp;  - Click "📨 Send Notice"
-
-&nbsp;  - Mail certified letter
-
-&nbsp;  - Enter tracking info
+5\. Mail certified letter to customer
 
 
 
-\*\*System automatically:\*\*
+\*\*Marking as Defaulted:\*\*
 
-\- Adds $75 notice fee
+1\. Find loan with expired cure deadline
 
-\- Adds postal costs
+2\. Click Mark as Defaulted
 
-\- Sets 7-day cure deadline
+3\. Enter: Default Date, Recovery Costs, Notes
 
-\- Shows RED warning to customer:
-
-&nbsp; - "DEFAULT NOTICE - IMMEDIATE ACTION REQUIRED"
-
-&nbsp; - Countdown to cure deadline
-
-&nbsp; - List of consequences (forfeit payments, lose property)
-
-&nbsp; - Your contact information
-
-
-
-\### If Customer Doesn't Pay by Cure Deadline
-
-\*\*You should:\*\*
-
-1\. Click "⚠️ Default" button
-
-2\. Enter:
-
-&nbsp;  - Default date
-
-&nbsp;  - Recovery costs (legal, repo, cleanup)
-
-&nbsp;  - Notes about attempts to collect
-
-3\. System sets:
-
-&nbsp;  - Loan status to "Defaulted"
-
-&nbsp;  - Property status to "Available"
-
-&nbsp;  - Tracks net recovery amount
+4\. Property returns to Available status
 
 
 
@@ -539,39 +178,31 @@ When generating contracts for imported loans:
 
 
 
-## 🎯 Daily Admin Workflow
-
-### Morning Routine (5 minutes)
-1. Check Dashboard - Review performance indicators:
-   - Revenue trend (up/down/flat)
-   - Collection rate percentage
-   - Overdue/default alerts
-   - Upcoming tax deadlines
-2. Check Loan Management - Filter "Overdue"
-3. Review any loans approaching 30 days
-4. Plan contact attempts for seriously overdue
-5. Click tax deadline alerts to record payments
+\## 📦 eBay System
 
 
 
-### Weekly Routine (15 minutes)
-1. Review Financial Reports - Check revenue
-2. Export PDF reports for records (weekly backup)
-3. Review Tax Escrow - Ensure adequate reserves
-4. Review HOA Tracking - Plan payments to associations
-5. Review Defaulted Loans Report - Track recoveries
-6. Check dashboard collection rate trends
+\*\*Generate Listing:\*\*
+
+1\. eBay Listing Generator → Select Property
+
+2\. Choose financing options to show (up to 3)
+
+3\. Generate → Copy to Clipboard → Paste in eBay
 
 
 
-### Monthly Routine (30 minutes)
-1. Review Monthly Trends - Analyze patterns
-2. Export comprehensive PDF reports for month-end
-3. Review Outstanding Balances - Total exposure
-4. Check 30-day revenue trend on dashboard
-5. Plan property acquisitions based on cash flow
-6. Review defaulted properties for resale
-7. Share financial PDFs with accountant/CPA
+\*\*Process Winner:\*\*
+
+1\. eBay Auction Winners → View Pending
+
+2\. Review submission details
+
+3\. Contact Customer (update status)
+
+4\. If proceeding: Convert to Customer → Create Loan
+
+5\. If not: Add notes → Reject
 
 
 
@@ -579,61 +210,19 @@ When generating contracts for imported loans:
 
 
 
-## 💡 Pro Tips
-
-### Dashboard
-- Green indicators = healthy performance
-- Yellow/Red alerts = immediate attention needed
-- Click tax deadline links to go directly to payment page
-- Monitor collection rate to identify payment trends
-- Revenue trends help predict cash flow
-
-### Property Management
-- Always set acquisition cost for ROI tracking
-- Use "Coming Soon" for redemption period properties
-- Update GPS coordinates for accurate mapping
-- Change status promptly when sold
-- Mobile-friendly interface works on phone/tablet
-- Upload property images directly via Cloudinary
-- Drag-and-drop to reorder images
+\## 🗂️ Property Sources
 
 
 
-\### Customer Management
+\*\*Quick Access:\*\* Property Sources → Click "🌐 Open" button  
 
-\- Search by phone number for quick lookup during calls
+\*\*Tracks:\*\* Last accessed timestamp  
 
-\- Use customer detail modal for full payment history
-
-\- Note customers with multiple properties
+\*\*Stores:\*\* Login credentials, states covered, notes
 
 
 
-\### Loan Management
-
-\- Send notices exactly at 30 days (legal requirement)
-
-\- Document all contact attempts in notice notes
-
-\- Use "Waive Late Fee" sparingly but when appropriate
-
-\- Always get tracking numbers for certified mail
-
-\- Imported loans automatically get amended contracts (no action needed)
-
-\- Verify customer mailing address before generating any contract
-
-
-
-### Financial Reports
-- Export PDFs monthly for permanent records
-- Use date filters to create quarterly reports
-- Select specific properties for individual analysis
-- Review tax escrow monthly to ensure adequate reserves
-- Track HOA fees to avoid late payments to associations
-- Monitor Square fees to understand true profit margins
-- Use Outstanding Balances to assess risk exposure
-- Share PDF exports with CPA for tax preparation
+\*\*Add Source:\*\* Add New Source → Name, URL, Username, Password, Notes
 
 
 
@@ -641,45 +230,19 @@ When generating contracts for imported loans:
 
 
 
-\## 🚨 Emergency Procedures
+\## 📅 Auction Calendar
 
 
 
-\### Customer Claims They Paid But System Shows Unpaid
+\*\*Add Auction:\*\* Auction Calendar → Add Auction  
 
-1\. Check Payment Tracking for transaction
+\*\*Enter:\*\* Date/Time, Name, URL, Location, Description  
 
-2\. Verify Square dashboard shows payment
+\*\*View:\*\* Filter by Upcoming/Past/Completed  
 
-3\. Check if payment failed (rare)
+\*\*Color Codes:\*\* Green (8+ days) → Yellow (3-7) → Orange (1-2) → Red (TODAY)  
 
-4\. Contact Square support if needed
-
-5\. Manually update if verified payment exists
-
-
-
-\### Property Shows As Available But Customer Owns It
-
-1\. Check loan status in Loan Management
-
-2\. Verify property status in Property Management
-
-3\. Update property status to "Pending" or "Sold"
-
-4\. Should prevent double-selling
-
-
-
-\### Customer Past Cure Deadline But Hasn't Defaulted
-
-1\. Verify cure deadline date in Loan Management
-
-2\. Check if payment was made after deadline
-
-3\. Contact customer for immediate payment
-
-4\. If no response, proceed with default process
+\*\*After Auction:\*\* Mark as Complete
 
 
 
@@ -687,37 +250,27 @@ When generating contracts for imported loans:
 
 
 
-\## 📞 Support Contacts
+\## 📊 Financial Reports
 
 
 
-\*\*Square Payment Issues:\*\*  
+\*\*Overview:\*\* Financial Reports card → View revenue, tax escrow, HOA  
 
-\- Square Dashboard: https://squareup.com/dashboard
+\*\*Tax Summary:\*\* Income Tax Summary → Select Year → Export PDF  
 
-\- Square Support: 1-855-700-6000
+\*\*Payment History:\*\* Payment Tracking → See all transactions  
 
-
-
-\*\*Technical Issues:\*\*  
-
-\- Netlify Status: https://www.netlifystatus.com
-
-\- Railway Status: https://status.railway.app
-
-\- Supabase Status: https://status.supabase.com
+\*\*Export:\*\* Select report → Export to PDF → Download
 
 
 
-\*\*Customer Service Email:\*\*  
+\*\*Revenue Sources:\*\*
 
-greenacreslandinvestments@gmail.com
+\- Down payments, processing fees, loan payments
 
+\- Late fees, notice fees, convenience fees
 
-
-\*\*Customer Service Phone:\*\*  
-
-(920) 716-6107
+\- \*\*NOT revenue:\*\* Tax and HOA (pass-through)
 
 
 
@@ -725,19 +278,51 @@ greenacreslandinvestments@gmail.com
 
 
 
-\## 🔗 Quick Links
+\## 🔧 Common Tasks
 
 
 
-\- \*\*Customer Site:\*\* https://greenacreslandinvestments.com
+\### Process a New Sale
 
-\- \*\*Admin Login:\*\* https://greenacreslandinvestments.com/admin/login
+1\. Add Property (with images)
 
-\- \*\*Square Dashboard:\*\* https://squareup.com/dashboard
+2\. Customer registers and purchases (or eBay winner form)
 
-\- \*\*Database (Supabase):\*\* https://supabase.com/dashboard
+3\. Loan creates automatically (or create custom)
 
-\- \*\*API Status (Railway):\*\* https://railway.app
+4\. Generate Contract → Sign as Admin
+
+5\. Customer signs online
+
+6\. First payment received (auto or manual entry)
+
+7\. Property status: Available → Pending → Sold
+
+
+
+\### Month-End Review
+
+1\. Financial Reports → Check revenue breakdown
+
+2\. Review tax escrow (any underfunded?)
+
+3\. Review HOA tracking (all current?)
+
+4\. Check outstanding balances report
+
+5\. Export reports for records
+
+
+
+\### Year-End Tax Prep
+
+1\. Income Tax Summary → Select year
+
+2\. Review quarterly breakdown
+
+3\. Export PDF
+
+4\. Send to accountant
 
 
 
@@ -745,25 +330,81 @@ greenacreslandinvestments@gmail.com
 
 
 
-\*\*Need detailed documentation?\*\* See ADMIN-GUIDE.md for comprehensive instructions.
+\## 💡 Pro Tips
 
 
 
-**Questions?** Check PROJECT-SUMMARY.md for complete system documentation.
+✅ \*\*Upload good photos\*\* - First impression matters  
+
+✅ \*\*Track acquisition costs\*\* - Know your real profit  
+
+✅ \*\*Reconcile tax escrow monthly\*\* - Avoid surprises  
+
+✅ \*\*Pay taxes before deadline\*\* - Avoid penalties  
+
+✅ \*\*Document everything\*\* - Use notes fields liberally  
+
+✅ \*\*Be consistent with notices\*\* - Don't play favorites  
+
+✅ \*\*Record manual payments immediately\*\* - Don't forget!  
+
+✅ \*\*Update property sources\*\* - Keep credentials current  
+
+✅ \*\*Review auction calendar weekly\*\* - Never miss an auction  
+
+✅ \*\*Respond to eBay winners fast\*\* - Strike while hot  
+
+
 
 ---
 
-## 📱 Mobile Access
 
-**All admin pages are now fully mobile-responsive:**
-- ✅ CustomerManagement - Cards replace table on mobile
-- ✅ PropertyManagement - Mobile-friendly property cards
-- ✅ AdminLoans - Responsive loan management
-- ✅ PaymentTracking - Mobile payment history
-- ✅ AdminReports - Responsive charts and breakdowns
-- ✅ TaxSummary - Mobile-friendly quarterly cards
-- ✅ CreateCustomLoan - Mobile form support
-- ✅ ImportLoan - Stack layout on mobile
 
-**No horizontal scrolling anywhere!** Admin dashboard works seamlessly on phones and tablets.
+\## 🆘 Quick Fixes
+
+
+
+\*\*Session Expired:\*\* Log out → Log back in  
+
+\*\*Can't Upload Image:\*\* Check size (<10MB) and format (JPG/PNG/WEBP)  
+
+\*\*Payment Missing:\*\* Hard refresh (Ctrl+Shift+R), check Square dashboard  
+
+\*\*Customer Login Issue:\*\* Reset password in Customer Management  
+
+\*\*Mobile Layout Broken:\*\* Hard refresh (Ctrl+Shift+R)  
+
+
+
+---
+
+
+
+\## 📞 Full Documentation
+
+
+
+\*\*Detailed Instructions:\*\* See ADMIN-GUIDE.md  
+
+\*\*Technical Details:\*\* See GREEN-ACRES-PROJECT-GUIDE.md  
+
+\*\*Business Overview:\*\* See PROJECT-SUMMARY.md
+
+
+
+---
+
+
+
+\*\*Green Acres Land Investments, LLC\*\*
+
+
+
+\*Quick reference for efficient operations\* 🌿
+
+
+
+\*Last Updated: November 21, 2025\*
+
+```
 

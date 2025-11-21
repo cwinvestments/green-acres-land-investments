@@ -1,3691 +1,872 @@
-\# 🌿 Green Acres Land Investments - Complete Admin Guide
+# 📘 Green Acres Admin User Guide
 
-**Version:** 2.2  
-**Last Updated:** November 14, 2025
-**System Status:** Fully Operational - Mobile Responsive with PDF Export
-
-
+**Last Updated:** November 21, 2025  
+**Version:** 2.1.0  
+**For:** Admin Users
 
 ---
 
+## 📋 Table of Contents
 
-
-\## Table of Contents
-
-
-
-1\. \[Getting Started](#getting-started)
-
-2\. \[Dashboard Overview](#dashboard-overview)
-
-3\. \[Property Management](#property-management)
-
-4\. \[Customer Management](#customer-management)
-
-5\. \[Loan Management](#loan-management)
-
-6\. \[Payment Tracking](#payment-tracking)
-
-7\. \[Financial Reports](#financial-reports)
-
-8\. \[Default Management Process](#default-management-process)
-
-9\. \[Business Operations](#business-operations)
-
-10\. \[Troubleshooting](#troubleshooting)
-
-11\. \[Best Practices](#best-practices)
-
-
+1. [Getting Started](#getting-started)
+2. [Admin Dashboard Overview](#admin-dashboard-overview)
+3. [Property Management](#property-management)
+4. [Customer Management](#customer-management)
+5. [Loan Management](#loan-management)
+6. [Payment Tracking](#payment-tracking)
+7. [Financial Reports](#financial-reports)
+8. [eBay System](#ebay-system)
+9. [Property Sources](#property-sources)
+10. [Auction Calendar](#auction-calendar)
+11. [Common Tasks](#common-tasks)
 
 ---
 
-## What's New
+## 🚀 Getting Started
 
-### November 14, 2025 - Mobile Responsiveness Complete ✅
-- **All admin pages fully responsive** - CustomerManagement, PropertyManagement, AdminLoans, PaymentTracking, AdminReports, TaxSummary, CreateCustomLoan, ImportLoan, AccountSettings
-- **No horizontal scrolling** - Desktop tables convert to mobile cards automatically
-- **Consistent layouts** - Standardized header wrapping and button layouts
-- **Professional mobile experience** - Admin dashboard now works seamlessly on phones and tablets
-- **Pages updated:** 8 files modified with responsive patterns
+### Logging In
 
----
+1. Go to: `https://greenacreslandinvestments.com/admin/login`
+2. Enter your admin email and password
+3. Click "Login to Admin Panel"
+4. You'll be redirected to the Admin Dashboard
 
+**Note:** If you see "Session expired" errors after being idle, simply log out and log back in.
 
+### Admin Dashboard Layout
 
-\### Accessing the Admin Panel
+The dashboard shows 12 cards organized in 4 rows:
 
+**Row 1 - Core Management:**
+- Property Management
+- Customer Management  
+- Active Loans
 
-
-\*\*Production URL:\*\* https://greenacreslandinvestments.com/admin/login
-
-
-
-\*\*Login Credentials:\*\*
-
-\- Username and password are stored in environment variables
-
-\- Credentials are set in Netlify environment configuration
-
-\- Contact system administrator if you need credentials reset
-
-
-
-\*\*Security Features:\*\*
-
-\- JWT token authentication with 24-hour expiry
-
-\- Separate admin authentication system from customer login
-
-\- All admin routes are protected and invisible to customers
-
-\- Admin sessions are independent from customer sessions
-
-
-
-\### Initial Login Process
-
-
-
-1\. Navigate to admin login URL
-
-2\. Enter admin username
-
-3\. Enter admin password
-
-4\. System generates 24-hour admin token
-
-5\. Redirects to Admin Dashboard
-
-
-
-\*\*Note:\*\* If you're inactive for 24 hours, you'll need to log in again.
-
-
-
----
-
-
-
-\## Dashboard Overview
-
-
-
-\### Main Dashboard Components
-
-
-
-\*\*Quick Stats (Top Section):\*\*
-
-\- \*\*Total Properties\*\* - All properties in system (available, pending, sold)
-
-\- \*\*Active Loans\*\* - Loans currently being paid
-
-\- \*\*Total Customers\*\* - Registered customer accounts
-
-
-
-\*\*Navigation Cards:\*\*
-
-1\. \*\*Property Management\*\* - Manage property listings
-
-2\. \*\*Customer Management\*\* - View customer accounts and loans
-
-3\. \*\*Loan Management\*\* - Track loans, payments, defaults
-
-4\. \*\*Payment Tracking\*\* - View payment history
-
-5\. \*\*Financial Reports\*\* - Analytics and revenue tracking
-
-
-
-\### Navigation Tips
-
-
-
-\- Click any card to navigate to that section
-
-\- Use browser back button or section's "Back to Dashboard" button
-
-\- Dashboard refreshes stats on each visit
-
-\- All sections are mobile-responsive
-
-
-
----
-
-
-
-\## Property Management
-
-
-
-\### Property Management Overview
-
-
-
-The Property Management system handles all aspects of your property inventory, from initial listing through sale and beyond.
-
-
-
-\### Adding a New Property
-
-
-
-\*\*Step-by-Step Process:\*\*
-
-
-
-1\. \*\*Click "Add New Property"\*\* button (top right)
-
-
-
-2\. \*\*Fill Required Fields:\*\*
-
-&nbsp;  - \*\*Title\*\* - Property name (e.g., "Peaceful 5 Acre Retreat")
-
-&nbsp;  - \*\*Description\*\* - Detailed property description
-
-&nbsp;  - \*\*Location\*\* - Full address or area description
-
-&nbsp;  - \*\*State\*\* - Select from dropdown
-
-&nbsp;  - \*\*County\*\* - County name
-
-&nbsp;  - \*\*Acres\*\* - Property size (decimal allowed)
-
-&nbsp;  - \*\*Price\*\* - Selling price (full amount)
-
-
-
-3\. \*\*Fill Optional Fields:\*\*
-
-&nbsp;  - \*\*Acquisition Cost\*\* - What you paid for property (admin-only, for ROI tracking)
-
-&nbsp;  - \*\*Annual Tax Amount\*\* - Yearly property tax (system calculates monthly)
-
-&nbsp;  - \*\*Monthly HOA Fee\*\* - If property has HOA
-
-&nbsp;  - \*\*HOA Name\*\* - Name of HOA association
-
-
-
-4\. \*\*Add GPS Coordinates (5 Points):\*\*
-
-&nbsp;  - \*\*NE Corner\*\* - Northeast boundary point
-
-&nbsp;  - \*\*SE Corner\*\* - Southeast boundary point
-
-&nbsp;  - \*\*SW Corner\*\* - Southwest boundary point
-
-&nbsp;  - \*\*NW Corner\*\* - Northwest boundary point
-
-&nbsp;  - \*\*Center Point\*\* - Center of property
-
-&nbsp;  
-
-&nbsp;  \*\*Format:\*\* Latitude, Longitude (e.g., 44.2619, -88.4154)
-
-&nbsp;  
-
-&nbsp;  \*\*How to Get Coordinates:\*\*
-
-&nbsp;  - Use Google Maps
-
-&nbsp;  - Right-click location → "What's here?"
-
-&nbsp;  - Copy coordinates
-
-&nbsp;  - Paste in format: latitude, longitude
-
-
-
-5\. \*\*Set Property Status:\*\*
-
-&nbsp;  - \*\*Available\*\* - Shows on public site with full details
-
-&nbsp;  - \*\*Coming Soon\*\* - Shows on public site but no financing calculator
-
-&nbsp;  - \*\*Pending\*\* - Hidden from public (under contract)
-
-&nbsp;  - \*\*Sold\*\* - Hidden from public, shows in "Recent Sales"
-
-
-
-6\. \*\*Click "Add Property"\*\*
-
-
-
-\*\*System Actions:\*\*
-
-\- Property is immediately available based on status
-
-\- GPS coordinates stored as JSON
-
-\- Tax/HOA amounts auto-calculate monthly portions
-
-\- ROI tracking starts if acquisition cost provided
-
-
-
-\### Editing Existing Properties
-
-
-
-\*\*Process:\*\*
-
-
-
-1\. Find property in list
-
-2\. Click "Edit" button
-
-3\. Modify any fields
-
-4\. Click "Update Property"
-
-
-
-\*\*Common Edit Scenarios:\*\*
-
-
-
-\*\*Property Sold:\*\*
-
-\- Change status to "Sold"
-
-\- System automatically hides from public listings
-
-\- Appears in "Recent Sales" page
-
-
-
-\*\*Property Under Contract:\*\*
-
-\- Change status to "Pending"
-
-\- Hides from public site
-
-\- Prevents additional inquiries
-
-
-
-\*\*Price Adjustment:\*\*
-
-\- Update price field
-
-\- Existing loans are NOT affected
-
-\- Only new purchases use new price
-
-
-
-\*\*Tax Amount Changed:\*\*
-
-\- Update annual tax amount
-
-\- Affects future loan calculations only
-
-\- Existing loans keep original tax amount
-
-
-
-\### Property Status Management
-
-
-
-\*\*Status Definitions:\*\*
-
-
-
-\*\*Available:\*\*
-
-\- Visible on public Properties page
-
-\- Full property details shown
-
-\- Financing calculator active
-
-\- "Purchase This Property" button enabled
-
-\- Can be sold to customers
-
-
-
-\*\*Coming Soon:\*\*
-
-\- Visible on public Properties page
-
-\- Full property details shown
-
-\- Purple "Coming Soon" badge
-
-\- Financing calculator HIDDEN
-
-\- Purchase button HIDDEN
-
-\- Message: "Finalizing deed transfer - Available soon"
-
-\- Use for: Properties in redemption period
-
-
-
-\*\*Pending:\*\*
-
-\- HIDDEN from public Properties page
-
-\- Not searchable by customers
-
-\- Use when: Under contract but not yet finalized
-
-\- Prevents double-selling
-
-
-
-\*\*Sold:\*\*
-
-\- HIDDEN from public Properties page
-
-\- Appears on "Recent Sales" page
-
-\- Shows as "Recently Sold"
-
-\- Use when: Sale complete and loan active
-
-
-
-\### Understanding Property ROI Tracking
-
-
-
-\*\*Acquisition Cost Field:\*\*
-
-\- Admin-only (customers never see this)
-
-\- Enter what you paid for the property
-
-\- System auto-calculates:
-
-&nbsp; - \*\*Profit:\*\* Sale Price - Acquisition Cost
-
-&nbsp; - \*\*ROI %:\*\* (Profit / Acquisition Cost) × 100
-
-
-
-\*\*Where ROI Shows:\*\*
-
-\- Admin Loan Management table
-
-\- Each loan row shows property profit and ROI
-
-\- Helps track most profitable properties
-
-
-
-\*\*Example:\*\*
-
-\- Acquisition Cost: $3,500
-
-\- Sale Price: $5,000
-
-\- Profit: $1,500
-
-\- ROI: 42.9%
-
-
-
-\### GPS Coordinate System
-
-
-
-\*\*Why 5 Points:\*\*
-
-Raw land parcels have irregular boundaries. The 5-point system provides:
-
-\- Accurate boundary representation
-
-\- Multiple access points for Google Maps
-
-\- Clear property visualization for customers
-
-
-
-\*\*Customer Display:\*\*
-
-Each coordinate shows as a clickable Google Maps link:
-
-\- "View NE Corner on Map"
-
-\- "View SE Corner on Map"
-
-\- etc.
-
-
-
-\*\*Tips:\*\*
-
-\- Use satellite view in Google Maps
-
-\- Zoom in for accuracy
-
-\- Double-check coordinates before saving
-
-\- Coordinates can be edited anytime
-
-
-
-\### Deleting Properties
-
-
-
-\*\*Important:\*\* There is currently no delete function by design.
-
-
-
-\*\*Why:\*\*
-
-\- Prevents accidental deletion
-
-\- Maintains historical records
-
-\- Preserves data integrity for sold properties
-
-
-
-\*\*Alternative:\*\*
-
-\- Change status to "Pending" or "Sold" to hide
-
-\- Edit details if information wrong
-
-\- Properties with active loans should NEVER be deleted
-
-
-
----
-
-
-
-\## Customer Management
-
-
-
-\### Customer Management Overview
-
-
-
-View and manage all customer accounts, their loans, and payment history.
-
-
-
-\### Customer Dashboard
-
-
-
-\*\*Summary Statistics (Top):\*\*
-
-\- \*\*Total Customers\*\* - All registered users
-
-\- \*\*Total Outstanding Balance\*\* - Sum of all active loan balances
-
-\- \*\*Total Monthly Payments Expected\*\* - Sum of all monthly payments due
-
-
-
-\*\*Customer Table Columns:\*\*
-
-\- Customer Name
-
-\- Email Address
-
-\- Phone Number
-
-\- Active Loans / Total Loans
-
-\- Monthly Payment (total across all loans)
-
-\- Total Balance (total across all loans)
-
-
-
-\### Viewing Customer Details
-
-
-
-\*\*Process:\*\*
-
-1\. Search for customer (by name, email, or phone)
-
-2\. Click anywhere on customer row
-
-3\. Modal opens with full details
-
-
-
-\*\*Customer Detail Modal Shows:\*\*
-
-
-
-\*\*Contact Information:\*\*
-
-\- Full name
-
-\- Email address
-
-\- Phone number
-
-\- Registration date
-
-
-
-\*\*All Customer Loans:\*\*
-
-For each loan:
-
-\- Property title and location
-
-\- Loan amount and balance
-
-\- Monthly payment
-
-\- Next payment due date
-
-\- Loan status (Active/Paid Off/Defaulted)
-
-\- Progress bar showing percentage paid
-
-
-
-\*\*Use Cases:\*\*
-
-\- Quick lookup during customer calls
-
-\- Verify payment history
-
-\- Check multiple property ownership
-
-\- Confirm contact information
-
-
-
-\### Customer Search
-
-
-
-\*\*Search Functionality:\*\*
-
-\- Real-time search (starts as you type)
-
-\- Searches across:
-
-&nbsp; - First name
-
-&nbsp; - Last name
-
-&nbsp; - Email address
-
-&nbsp; - Phone number
-
-
-
-\*\*Tips:\*\*
-
-\- Use partial matches (e.g., "john" finds "Johnson")
-
-\- Phone search works with or without formatting
-
-\- Case-insensitive
-
-\- Clear search to see all customers
-
-
-
-\### Understanding Customer Metrics
-
-
-
-\*\*Active vs Total Loans:\*\*
-
-\- \*\*Active\*\* - Loans currently being paid
-
-\- \*\*Total\*\* - All loans (active + paid off)
-
-\- Example: "2/3" means 2 active out of 3 total loans
-
-
-
-\*\*Monthly Payment Column:\*\*
-
-\- Sum of ALL active loans for that customer
-
-\- If customer has 2 properties: $200 + $150 = $350
-
-\- This is total they should pay monthly
-
-
-
-\*\*Total Balance Column:\*\*
-
-\- Sum of remaining balances across ALL active loans
-
-\- Total amount customer still owes you
-
-\- Used to calculate total outstanding portfolio
-
-
-
----
-
-\### Loan Management Dashboard
-
-\## Loan Management
-The most important admin section for day-to-day operations. Track all loans, send default notices, manage late fees, and monitor payment status.
-
-### Creating Custom Loans ✨
-
-**Purpose:**  
-Create flexible financing for special situations: loyal customers, eBay auction winners, negotiated deals, or testing without real payments.
-
-**When to Use:**
-- eBay auctions where winner bids on down payment amount
-- Loyal customer deserves special terms
-- Negotiated deal outside standard financing tiers
-- Testing system without charging real money
-- Zero down payment promotions
-
-**Step-by-Step Process:**
-
-1. **Navigate to Custom Loan Creator**
-
-   - Admin Dashboard → Loan Management
-   - Click "✨ Create Custom Loan" button (top right)
-
-2. **Select Customer**
-   - Dropdown shows all registered customers
-   - Search by typing name
-   - Customer must have account already
-
-3. **Select Property**
-   - Dropdown shows only Available properties
-   - Search by typing property title
-   - Property will be set to "Pending" when loan created
-
-4. **Set Purchase Price**
-   - Usually matches property price
-   - Can customize for special deals
-   - Must be greater than $0
-
-5. **Set Down Payment**
-   - Any amount from $0 to full price
-   - Can set to $0 for zero-down deals
-   - For eBay auctions: Use bid amount
-
-6. **Set Processing Fee (Doc Fee)**
-   - Standard is $99
-   - Can set to $0 to waive fee
-   - Or any custom amount
-
-7. **Set Interest Rate**
-   - Any percentage (e.g., 18, 12, 8)
-   - Not restricted to standard tiers
-   - Use for special arrangements
-
-8. **Set Term (Months)**
-   - How many months to pay off loan
-   - Common: 12, 24, 36, 48, 60
-   - Can be any number
-
-9. **Set Monthly Payment**
-   - Minimum $50 required
-   - System enforces minimum
-   - Customer pays this amount monthly
-
-10. **Set Payment Due Day**
-    - 1st of month
-    - 15th of month
-    - Choose based on customer preference
-
-11. **Add Internal Notes**
-    - Document reason for custom terms
-    - Record special arrangements
-    - Example: "eBay auction winner - down payment was bid amount of $247"
-
-12. **Click "Create Custom Loan"**
-
-**System Actions:**
-- Creates loan with custom terms
-- Records down payment (if > $0) with payment_method = 'custom_loan'
-- Records processing fee (if > $0) with payment_method = 'custom_loan'
-- Sets property status to "Pending"
-- Customer can now make monthly payments through normal dashboard
-- **Does NOT charge Square** (no real payment processed)
-
-**Important Notes:**
-- ✅ Great for testing without real money
-- ✅ Perfect for eBay auction workflows
-- ✅ Customer makes monthly payments normally via Square
-- ⚠️ Currently cannot collect down payment via Square at creation time
-- ⚠️ Workaround: Create loan, then customer pays manually, or collect payment separately
-- ⚠️ Mobile design needs polish (works but not as pretty as other pages)
-
-**Tax and HOA:**
-- Custom Loan Creator does NOT set tax/HOA amounts
-- After creating loan, edit the property to add:
-  - Annual Tax Amount
-  - Monthly HOA Fee
-- These will be included in customer's monthly payment breakdown
-
-**Example Use Case - eBay Auction:**
-1. List property on eBay: "Bid on Your Down Payment!"
-2. Winner bids $500 (down payment amount)
-3. After auction ends:
-   - Customer registers on website
-   - You create custom loan:
-     - Down Payment: $500 (bid amount)
-     - Processing Fee: $0 (waived for auction)
-     - Interest Rate: 15% (special rate)
-     - Term: 48 months
-     - Monthly Payment: $75
-     - Notes: "eBay auction winner - Bid #123456789"
-4. Customer makes monthly payments normally
-
-**Known Limitations:**
-- Cannot auto-calculate term based on payment amount (coming soon)
-- Cannot collect Square payment at creation (coming soon)
-- Mobile UI needs improvement (works but not polished)
-
-### Importing Existing Loans with Payment History
-
-**Purpose:**  
-Import loans from previous systems, portfolio acquisitions, or when taking over existing financing from another seller.
-
-**When to Use:**
-- Acquiring properties with existing financing
-- Portfolio purchases with payment history
-- Consolidating loans from previous systems
-- Taking over seller financing from another party
-
-**What Gets Imported:**
-- Loan details (amount, rate, term, payment)
-- Complete payment history (principal, interest, tax, HOA breakdown)
-- Property tax payment history
-- Current balance and next payment date
-- Original contract date
-
-**Important: Amended Contracts**
-
-When you import a loan with payment history, the system automatically generates an "Amended and Restated Contract for Deed" instead of a standard contract.
-
-**Amended Contract Features:**
-- References original contract date
-- Shows number of payments made
-- Displays total principal paid to date
-- Shows current remaining balance
-- Uses legal language acknowledging the original agreement
-
-**Example Amended Contract Language:**
-```
-AMENDED AND RESTATED CONTRACT FOR DEED
-
-This Amended and Restated Contract for Deed amends and restates the 
-original Contract for Deed dated June 15, 2021. The Purchaser has made 
-42 payment(s) toward the original balance, totaling $4,378.34 in 
-principal payments. The remaining balance of Three Thousand Five Hundred 
-Twenty and 66/100 dollars ($3,520.66) is due and payable...
-```
-
-**How It Works:**
-1. System checks if loan has existing payment history
-2. If payments exist → Generates amended contract automatically
-3. If no payments → Generates standard contract
-4. You don't have to do anything - it's automatic
-
-**Importing Process:**
-
-1. **Navigate to Import Tool**
-   - Admin Dashboard → Loan Management
-   - Click "Import Existing Loan" button
-
-2. **Enter Loan Details**
-   - Select customer (must be registered)
-   - Select property
-   - Purchase price
-   - Down payment amount
-   - Processing fee paid
-   - Interest rate
-   - Term in months
-   - Monthly payment
-   - Current balance remaining
-   - Next payment date
-   - Payment due day (1st or 15th)
-   - Original purchase/contract date
-
-3. **Enter Payment History**
-   - For each payment made:
-     - Payment date
-     - Principal amount
-     - Interest amount
-     - Tax amount (if collected)
-     - HOA amount (if collected)
-     - Late fee (if any)
-   - System calculates total payment automatically
-
-4. **Enter Tax Payment History** (if applicable)
-   - For each tax payment made to county:
-     - Payment date
-     - Amount paid
-     - Tax year
-     - Payment method (check, wire, etc.)
-     - Notes
-
-5. **Click "Import Loan"**
-
-**System Actions:**
-- Creates loan with all details
-- Imports all payment history with proper breakdowns
-- **Automatically populates `loan_payment_amount` field** (principal + interest)
-- Imports tax payment history
-- Sets property status to "Sold"
-- Customer can immediately make payments
-- **Contract generation will automatically use amended template**
-
-**Critical Technical Note:**
-The system automatically calculates and stores `loan_payment_amount = principal + interest` for each imported payment. This ensures accurate revenue reporting across all financial reports.
-
-**Contract Generation After Import:**
-1. Import the loan (as described above)
-2. Navigate to Loan Management
-3. Find the imported loan
-4. Click "Generate Contract"
-5. **System automatically detects payment history**
-6. **Generates Amended and Restated Contract** with:
-   - Original contract date from import
-   - Number of payments made
-   - Total principal paid
-   - Current balance
-7. Review the contract
-8. Sign as admin when ready
-9. Customer can view and sign
-
-**Customer Mailing Address Requirement:**
-- Customer MUST update their mailing address in Account Settings
-- If address is missing, contract shows placeholder text
-- Delete and regenerate contract after customer updates address
-
-**Best Practices:**
-- Import all historical payments for accurate records
-- Include tax payments for escrow reconciliation
-- Verify customer has updated their mailing address before generating contract
-- Document source of imported data in loan notes
-- Double-check current balance calculation
-- Test payment processing after import
-
-**Example Use Case:**
-
-You purchase a portfolio of 5 properties from another seller. Each property has an existing loan with 2 years of payment history.
-
-1. Register each customer on your system
-2. Import each property into Property Management
-3. For each loan:
-   - Import loan details and payment history
-   - Import tax payment records
-   - Verify current balance
-4. Ask customers to update mailing addresses in Account Settings
-5. Generate amended contracts for each loan
-6. Customers sign new contracts
-7. Customers continue making payments to you
-
-**Revenue Reporting:**
-All imported payments appear correctly in:
-- Financial Reports → Overview
-- Tax Summary Reports
+**Row 2 - Financial:**
 - Payment Tracking
-- Monthly revenue breakdowns
-
-The `loan_payment_amount` field is automatically populated, so imported revenue shows accurately alongside new payments.
-
-\### Loan Management Dashboard
-
-
-
-\*\*Summary Cards (Top):\*\*
-
-\- \*\*Active Loans\*\* - Currently being paid
-
-\- \*\*Overdue\*\* - Past due date (red indicator)
-
-\- \*\*Paid Off\*\* - Completed loans
-
-
-
-\*\*Filter Buttons:\*\*
-
-\- \*\*All\*\* - Every loan in system
-
-\- \*\*Active\*\* - Currently paying, not overdue
-
-\- \*\*Overdue\*\* - Past due date
-
-\- \*\*Paid Off\*\* - Balance = $0
-
-\- \*\*Defaulted\*\* - Marked as default
-
-
-
-\*\*Search Bar:\*\*
-
-\- Search by customer name, email, or property title
-
-\- Real-time filtering
-
-
-
-\### Understanding the Loan Table
-
-
-
-\*\*Desktop View Columns:\*\*
-
-
-
-1\. \*\*Customer\*\*
-
-&nbsp;  - Name
-
-&nbsp;  - Email
-
-&nbsp;  - Phone number
-
-
-
-2\. \*\*Property\*\*
-
-&nbsp;  - Property title
-
-&nbsp;  - Location
-
-
-
-3\. \*\*Balance\*\*
-
-&nbsp;  - Remaining amount owed
-
-&nbsp;  - In green (forest green color)
-
-
-
-4\. \*\*Monthly\*\*
-
-&nbsp;  - Regular monthly payment amount
-
-
-
-5\. \*\*Due Date\*\*
-
-&nbsp;  - Next payment due date
-
-&nbsp;  - If overdue: Shows "X days late" in red
-
-
-
-6\. \*\*Profit\*\* (if acquisition cost tracked)
-
-&nbsp;  - Sale price minus acquisition cost
-
-&nbsp;  - Green if positive, red if negative
-
-
-
-7\. \*\*ROI\*\* (if acquisition cost tracked)
-
-&nbsp;  - Return on investment percentage
-
-&nbsp;  - In gold color
-
-
-
-8\. \*\*Alerts\*\*
-
-&nbsp;  - Payment due day selector (1st or 15th)
-
-&nbsp;  - Alert toggle (🔔 On / 🔕 Off)
-
-&nbsp;  - Send Notice button (30+ days overdue)
-
-&nbsp;  - Waive Late Fee button (7+ days overdue)
-
-&nbsp;  - Default button
-
-
-
-\### Loan Status Indicators
-
-
-
-\*\*Visual Indicators:\*\*
-
-
-
-\*\*Active, Current:\*\*
-
-\- White background
-
-\- Next payment date shown
-
-\- No special badges
-
-
-
-\*\*Overdue:\*\*
-
-\- Light red background (#fff5f5)
-
-\- "X days late" in red text
-
-\- Shows days overdue count
-
-
-
-\*\*Notice Sent:\*\*
-
-\- "Notice Sent \[date]" badge (gray)
-
-\- Indicates default notice was mailed
-
-
-
-\*\*Defaulted:\*\*
-
-\- Red "Defaulted" badge
-
-\- Shows default date
-
-\- Property automatically returned to Available
-
-
-
-\### Payment Due Day Management
-
-
-
-\*\*Feature:\*\*
-
-Each loan can have payments due on either:
-
-\- \*\*1st of month\*\*
-
-\- \*\*15th of month\*\*
-
-
-
-\*\*How to Change:\*\*
-
-1\. Find loan in Loan Management
-
-2\. Look in "Alerts" column
-
-3\. Select "1st" or "15th" from dropdown
-
-4\. Confirm change
-
-5\. Next payment will be calculated from new due day
-
-
-
-\*\*Use Cases:\*\*
-
-\- Customer gets paid on 15th, wants payments due on 15th
-
-\- Aligning with customer's payday
-
-\- Splitting customers across two due dates for cash flow management
-
-
-
-\*\*System Behavior:\*\*
-
-\- Changes apply to NEXT payment only
-
-\- Does NOT change current overdue status
-
-\- Customer's dashboard updates immediately
-
-
-
-\### Alert Management
-
-
-
-\*\*Alert Toggle:\*\*
-
-\- \*\*🔔 Alerts On\*\* (green button) - Customer sees overdue warnings
-
-\- \*\*🔕 Alerts Off\*\* (yellow button) - Customer does NOT see warnings
-
-
-
-\*\*When to Disable Alerts:\*\*
-
-\- Customer has special payment arrangement
-
-\- You've agreed to extension
-
-\- Customer is in active communication about payment plan
-
-\- Temporary financial hardship with agreement
-
-
-
-\*\*Important:\*\*
-
-\- System still tracks payment dates
-
-\- Late fees still apply (you can waive them separately)
-
-\- Only disables customer-facing warning banners
-
-\- Does NOT prevent you from sending default notice
-
-
-
-\*\*Re-enabling Alerts:\*\*
-
-\- Click button again
-
-\- Toggles back to "🔔 Alerts On"
-
-\- Customer immediately sees warnings if overdue
-
-
+- Financial Reports
+- Income Tax Summary
+
+**Row 3 - Configuration:**
+- State Management
+- eBay Listing Generator
+- eBay Auction Winners
+
+**Row 4 - Tools:**
+- Property Sources
+- Auction Calendar
+- Future Feature (placeholder)
 
 ---
 
-
-
-\## Sending Default Notices
-
-
-
-\### When to Send a Notice
-
-
-
-\*\*Legal/Business Trigger:\*\*
-
-\- Customer is 30+ days past due
-
-\- You've attempted contact (phone/email)
-
-\- No response or no payment arrangement made
-
-
-
-\*\*System Shows:\*\*
-
-\- "📨 Send Notice" button appears when 30+ days late
-
-\- Button only visible for qualifying loans
-
-
-
-\### Notice Sending Process
-
-
-
-\*\*Step-by-Step:\*\*
-
-
-
-1\. \*\*Click "📨 Send Notice"\*\* on overdue loan
-
-
-
-2\. \*\*Fill Notice Form:\*\*
-
-
-
-&nbsp;  \*\*Notice Date:\*\*
-
-&nbsp;  - Date you're sending the letter
-
-&nbsp;  - Typically today's date
-
-&nbsp;  - Used to calculate cure deadline
-
-
-
-&nbsp;  \*\*Postal Method:\*\*
-
-&nbsp;  - Certified Mail
-
-&nbsp;  - Certified Mail with Return Receipt (recommended)
-
-&nbsp;  - Priority Mail
-
-&nbsp;  - Overnight
-
-&nbsp;  
-
-&nbsp;  \*\*Why Certified Mail with Return Receipt:\*\*
-
-&nbsp;  - Legal proof of delivery
-
-&nbsp;  - Customer must sign for it
-
-&nbsp;  - You get return receipt
-
-&nbsp;  - Best protection if legal action needed
-
-
-
-&nbsp;  \*\*Postal Cost:\*\*
-
-&nbsp;  - Enter ACTUAL cost you paid
-
-&nbsp;  - Include tracking and return receipt costs
-
-&nbsp;  - Example: $10.50 for certified mail
-
-&nbsp;  - Customer will be charged this exact amount
-
-
-
-&nbsp;  \*\*Tracking Number:\*\*
-
-&nbsp;  - USPS tracking number from receipt
-
-&nbsp;  - Required field
-
-&nbsp;  - Keep for your records
-
-&nbsp;  - Customer can't see this (admin only)
-
-
-
-&nbsp;  \*\*Notes:\*\*
-
-&nbsp;  - Record contact attempts
-
-&nbsp;  - Document customer communication
-
-&nbsp;  - Add relevant details
-
-&nbsp;  - Example: "Called 3 times, left voicemails on 10/1, 10/5, 10/8. No response. Sent email 10/10. No reply."
-
-
-
-3\. \*\*Review Warning Box:\*\*
-
-&nbsp;  - Shows fees that will be added:
-
-&nbsp;    - Default/Cure Notice Fee: $75.00
-
-&nbsp;    - Postal/Certified Mail Fee: $X.XX
-
-&nbsp;  - Shows cure deadline date (7 days from notice date)
-
-&nbsp;  - Shows message customer will see
-
-
-
-4\. \*\*Click "Record Notice Sent"\*\*
-
-
-
-\*\*System Actions:\*\*
-
-1\. Records notice sent date
-
-2\. Calculates cure deadline (notice date + 7 days)
-
-3\. Adds $75 notice fee to customer's next payment
-
-4\. Adds postal cost to customer's next payment
-
-5\. Changes button to show "Notice Sent \[date]"
-
-6\. Customer immediately sees RED default warning on dashboard
-
-
-
-\### What Customer Sees After Notice Sent
-
-
-
-\*\*On Their Dashboard:\*\*
-
-
-
-Large red warning box at top of loan card:
-
-```
-
-⚠️ DEFAULT NOTICE - IMMEDIATE ACTION REQUIRED
-
-
-
-Your loan is officially in DEFAULT.
-
-
-
-YOU HAVE X DAYS TO CURE THE DEFAULT
-
-
-
-Cure Deadline: Thursday, November 14, 2025
-
-
-
-FAILURE TO PAY WILL RESULT IN:
-
-\- Forfeiture of all payments made to date
-
-\- Loss of all rights to the property
-
-\- Immediate repossession proceedings
-
-\- Property will be resold
-
-
-
-Contact us IMMEDIATELY:
-
-(920) 716-6107
-
-greenacreslandinvestments@gmail.com
-
-```
-
-
-
-\*\*On Their Payment Page:\*\*
-
-
-
-Payment breakdown shows:
-
-\- Monthly Loan Payment: $201.70
-
-\- Late Fee: $35.00
-
-\- Default/Cure Notice Fee: $75.00
-
-\- Postal/Certified Mail Fee: $10.50
-
-\- Total Due: $\[calculated total]
-
-
-
-\### Cure Deadline Management
-
-
-
-\*\*What is Cure Deadline:\*\*
-
-\- 7 days from notice date
-
-\- Customer has exactly 7 days to pay
-
-\- After deadline passes, you can repo property
-
-
-
-\*\*System Countdown:\*\*
-
-\- Shows "YOU HAVE X DAYS" to customer
-
-\- Updates daily automatically
-
-\- When deadline passes: "CURE DEADLINE HAS PASSED"
-
-
-
-\*\*Legal Importance:\*\*
-
-\- Different states have different requirements
-
-\- 7 days is conservative (check your state)
-
-\- Document everything
-
-\- Keep all tracking receipts
-
-
-
-\### After Notice is Sent
-
-
-
-\*\*If Customer Pays:\*\*
-
-\- Late fee, notice fee, and postal fee clear automatically
-
-\- Next payment includes only regular loan payment
-
-\- Loan returns to "Active" status
-
-\- Notice tracking clears from system
-
-\- Customer no longer sees default warning
-
-
-
-\*\*If Customer Doesn't Pay by Deadline:\*\*
-
-\- You can proceed with default process
-
-\- Click "⚠️ Default" button (see Default Management section)
-
-\- Or extend more time at your discretion
-
-
+## 🏠 Property Management
+
+### Adding a New Property
+
+1. Click **"Property Management"** card
+2. Click **"➕ Add New Property"** button
+3. Fill in required fields:
+   - **Title** (e.g., "5 Acres in Maricopa County")
+   - **Location** (e.g., "Maricopa County, Arizona")
+   - **State** (select from dropdown)
+   - **County**
+   - **Acres**
+   - **Price**
+
+4. Optional fields:
+   - **Description** - Property highlights
+   - **Acquisition Cost** - What you paid (for profit tracking)
+   - **APN** - Assessor's Parcel Number
+   - **Coordinates** - GPS coordinates
+   - **Legal Description** - From deed
+
+5. Tax Information (if applicable):
+   - **Annual Tax Amount**
+   - **Tax Payment 1 Date & Amount**
+   - **Tax Payment 2 Date & Amount**
+   - **Tax Notes**
+
+6. HOA Information (if applicable):
+   - **Monthly HOA Fee**
+   - **HOA Name**
+   - **HOA Contact**
+   - **HOA Notes**
+
+7. **Property Covenants** - Any restrictions
+
+8. Click **"Create Property"**
+
+### Uploading Property Images
+
+1. Open the property in Property Management
+2. Scroll to **"Property Images"** section
+3. Click **"Upload Image"** button
+4. Select image file (JPG, PNG, WEBP)
+5. Add optional caption
+6. Image uploads to Cloudinary automatically
+7. Repeat for up to 10 images per property
+
+**Tips:**
+- First image becomes the featured image automatically
+- Drag images to reorder
+- Set captions for SEO and accessibility
+- Delete unwanted images with trash icon
+
+### Editing Property Details
+
+1. Find property in Property Management list
+2. Click **"Edit"** button
+3. Update any fields needed
+4. Click **"Update Property"**
+
+### Changing Property Status
+
+Properties can have these statuses:
+- **Available** - Shows on public site
+- **Coming Soon** - Shows with "Coming Soon" badge
+- **Pending** - Customer in contract process
+- **Under Contract** - Contract signed, awaiting close
+- **Sold** - Property sold, shows in showcase
+
+**To Change Status:**
+1. Find property in list
+2. Use status dropdown
+3. Status updates immediately
+
+### Tracking Selling Expenses
+
+Record expenses associated with selling a property:
+
+1. Open property details
+2. Scroll to **"Selling Expenses"** section
+3. Click **"Add Expense"**
+4. Enter:
+   - **Date**
+   - **Category** (Marketing, Repairs, Legal, etc.)
+   - **Description**
+   - **Amount**
+5. Click **"Add Expense"**
+
+**Common Expense Categories:**
+- Marketing (eBay fees, ads)
+- Repairs/Improvements
+- Legal fees
+- Survey costs
+- Title work
+- Other
+
+### Recording Tax Payments
+
+When you pay property taxes to the county:
+
+1. Open property details
+2. Scroll to **"Tax Payments"** section
+3. Click **"Record Tax Payment"**
+4. Enter:
+   - **Payment Date**
+   - **Amount**
+   - **Tax Year**
+   - **Payment Method** (Check, ACH, etc.)
+   - **Check Number** (if applicable)
+   - **Notes**
+5. Click **"Record Payment"**
+
+**System tracks:**
+- Tax collected from customer (in escrow)
+- Tax paid to county
+- Balance remaining in escrow
 
 ---
 
+## 👥 Customer Management
 
+### Viewing All Customers
 
-\## Waiving Late Fees
+1. Click **"Customer Management"** card
+2. View list showing:
+   - Name, email, phone
+   - Number of active loans
+   - Total balance owed
+   - Total monthly payment
 
+### Viewing Customer Details
 
+1. Find customer in list
+2. Click **"View Details"**
+3. See:
+   - Contact information
+   - All loans (active and paid off)
+   - Payment history
+   - Contract status
 
-\### When to Waive
+### Resetting Customer Password
 
+If a customer forgets their password:
 
+1. Find customer in Customer Management
+2. Click **"Reset Password"**
+3. Enter temporary password (at least 6 characters)
+4. Click **"Reset Password"**
+5. **IMPORTANT:** Call or email customer with temp password
+6. Instruct them to log in and change password in Account Settings
 
-\*\*Common Scenarios:\*\*
+### Deleting a Customer
 
-\- First-time late payment with good history
+**⚠️ WARNING:** Can only delete customers with NO loans
 
-\- Customer communication was proactive
-
-\- Valid emergency situation
-
-\- You want to maintain good customer relationship
-
-\- Payment made immediately after reminder
-
-
-
-\*\*Business Considerations:\*\*
-
-\- One-time courtesy for good customers
-
-\- Bank error delayed payment
-
-\- Natural disaster or emergency
-
-\- Customer called ahead about delay
-
-
-
-\### How to Waive Late Fee
-
-
-
-1\. Find loan in Loan Management
-
-2\. Look for "Waive Late Fee" button (appears when 7+ days overdue)
-
-3\. Click button
-
-4\. Confirm action
-
-5\. System removes late fee from next payment
-
-
-
-\*\*Important:\*\*
-
-\- Waiving is permanent (can't undo)
-
-\- Waive BEFORE customer pays
-
-\- Customer won't see the fee in next payment
-
-\- \*\*You must tell customer\*\* - they won't know otherwise
-
-\- Document why you waived it
-
-
-
-\*\*System Actions:\*\*
-
-\- Late fee amount set to $0
-
-\- Customer's payment breakdown updates
-
-\- Total due decreases by $35
-
-\- No notification sent to customer (you must tell them)
-
-
+1. Find customer with 0 loans
+2. Click **"Delete"**
+3. Confirm deletion
+4. Customer account permanently removed
 
 ---
 
-
-
-\## Default Management Process
-
-
-
-\### When to Default a Loan
-
-
-
-\*\*Criteria:\*\*
-
-1\. Customer is 30+ days overdue
-
-2\. Default notice has been sent
-
-3\. Cure deadline has passed (7 days after notice)
-
-4\. Customer has not paid or contacted you
-
-5\. All contact attempts exhausted
-
-
-
-\### Marking Loan as Defaulted
-
-
-
-\*\*Step-by-Step Process:\*\*
-
-
-
-1\. \*\*Click "⚠️ Default" button\*\* on loan
-
-
-
-2\. \*\*Fill Default Form:\*\*
-
-
-
-&nbsp;  \*\*Default Date:\*\*
-
-&nbsp;  - Date loan officially defaulted
-
-&nbsp;  - Usually cure deadline + 1 day
-
-&nbsp;  - Or today's date if processing late
-
-
-
-&nbsp;  \*\*Recovery Costs:\*\*
-
-&nbsp;  - Legal fees (attorney, court costs)
-
-&nbsp;  - Repossession costs (travel, time)
-
-&nbsp;  - Property cleanup/maintenance
-
-&nbsp;  - Any costs to resell property
-
-&nbsp;  - Example: $450.00
-
-&nbsp;  
-
-&nbsp;  \*\*Why Track This:\*\*
-
-&nbsp;  - Shows true profitability
-
-&nbsp;  - Calculates net recovery
-
-&nbsp;  - Helps make future lending decisions
-
-
-
-&nbsp;  \*\*Default Notes:\*\*
-
-&nbsp;  - Document reason for default
-
-&nbsp;  - Record all contact attempts
-
-&nbsp;  - Include timeline of events
-
-&nbsp;  - Add any customer communication
-
-&nbsp;  - Example: "Customer called 11/1 saying would pay by 11/5. No payment received. No further contact. Certified mail delivered 11/8, cure deadline 11/15. No payment by deadline."
-
-
-
-3\. \*\*Review Confirmation:\*\*
-
-&nbsp;  - Shows property title
-
-&nbsp;  - Shows customer name
-
-&nbsp;  - Lists actions that will happen:
-
-&nbsp;    - Loan status → "Defaulted"
-
-&nbsp;    - Property status → "Available"
-
-&nbsp;    - Net recovery calculated
-
-
-
-4\. \*\*Click "Mark as Defaulted"\*\*
-
-
-
-\*\*System Actions:\*\*
-
-1\. Sets loan status to "Defaulted"
-
-2\. Sets property status to "Available" (ready to resell)
-
-3\. Calculates net recovery:
-
-&nbsp;  - Total collected (down payment + all payments)
-
-&nbsp;  - Minus recovery costs
-
-&nbsp;  - Shows profit/loss on default
-
-4\. Records all default information
-
-5\. Adds to Defaulted Loans Report
-
-
-
-\### After Defaulting a Loan
-
-
-
-\*\*Property:\*\*
-
-\- Automatically returned to "Available" status
-
-\- Shows on public website immediately
-
-\- Ready to be purchased by new customer
-
-\- GPS coordinates and details unchanged
-
-
-
-\*\*Customer:\*\*
-
-\- Sees "Loan Defaulted" in their dashboard
-
-\- Can no longer make payments on that loan
-
-\- Other active loans (if any) unaffected
-
-\- Account remains active for other properties
-
-
-
-\*\*Reporting:\*\*
-
-\- Appears in Defaulted Loans Report
-
-\- Shows:
-
-&nbsp; - Customer information
-
-&nbsp; - Property details
-
-&nbsp; - Default date
-
-&nbsp; - Total collected before default
-
-&nbsp; - Recovery costs
-
-&nbsp; - Net recovery (profit or loss)
-
-
-
-\### Defaulted Loans Report
-
-
-
-\*\*Access:\*\*
-
-\- From Loan Management → "📊 Defaulted Loans Report" button
-
-\- Or direct link from admin dashboard
-
-
-
-\*\*Report Shows:\*\*
-
-\- All defaulted loans
-
-\- Total defaults count
-
-\- Total amount lost
-
-\- Total recovery costs
-
-\- Net recovery/loss
-
-\- Average loss per default
-
-
-
-\*\*Use For:\*\*
-
-\- Business analysis
-
-\- Tax reporting
-
-\- Lending criteria refinement
-
-\- Identifying risk patterns
-
-
+## 📋 Loan Management
+
+### Viewing All Loans
+
+1. Click **"Active Loans"** card
+2. View comprehensive table with:
+   - Customer name and contact
+   - Property title and location
+   - Loan details (balance, monthly payment, rate)
+   - Payment status (current, overdue, in default)
+   - Next payment due date
+   - Contract status
+
+**Desktop:** Full table with all columns  
+**Mobile:** Cards with key information
+
+### Loan Details & Actions
+
+For each loan, you can:
+- **View Details** - Complete loan information
+- **Edit Payment Due Day** - Change to 1st or 15th
+- **Record Manual Payment** - Cash, check, Venmo
+- **Send Default Notice** - 30-day cure notice
+- **Mark as Defaulted** - After cure period expires
+- **Toggle Alerts** - Disable overdue alerts for this loan
+- **Update Deed Type** - Special Warranty or Quitclaim
+- **Generate Contract** - Create e-signature contract
+- **Delete Loan** - Permanently remove (use carefully!)
+
+### Creating a Custom Loan
+
+For loyal customers or special deals:
+
+1. Click **"Active Loans"** card
+2. Click **"Create Custom Loan"** button
+3. Select:
+   - **Customer** (from dropdown)
+   - **Property** (from available properties)
+4. Enter loan terms:
+   - **Purchase Price**
+   - **Down Payment Amount**
+   - **Processing Fee** (usually $99, can be $0)
+   - **Interest Rate** (as decimal, e.g., 12.5)
+   - **Monthly Payment**
+5. Select **Payment Due Day** (1st or 15th)
+6. Add **Notes** explaining special terms
+7. Click **"Create Loan"**
+
+**System auto-calculates:**
+- Loan amount (price - down + processing fee)
+- Term length (from monthly payment and interest rate)
+- First payment date (based on due day)
+
+### Importing Existing Loans
+
+When you have loans from before the system:
+
+1. Click **"Active Loans"** card
+2. Click **"Import Loan"** button
+3. Enter loan details:
+   - Customer, property, original terms
+   - **Current Balance** (not original balance)
+   - **Next Payment Date**
+4. Add payment history:
+   - Click **"Add Payment"** for each past payment
+   - Enter date, amount, principal, interest breakdown
+5. Add tax payment history if collected
+6. Click **"Import Loan"**
+
+**System will:**
+- Create loan with current balance
+- Record all past payments
+- Calculate correct next payment date
+- Track tax payments separately
+
+### Recording Manual Payments
+
+When customers pay by cash, check, or Venmo:
+
+1. Find loan in Active Loans
+2. Click **"Record Payment"**
+3. Enter:
+   - **Amount** (total payment including tax/HOA)
+   - **Payment Date**
+   - **Payment Method** (Cash, Check, Venmo, etc.)
+   - **Transaction ID** (check number, Venmo ID)
+   - **Notes** (optional)
+4. Click **"Record Payment"**
+
+**System calculates:**
+- Loan payment portion
+- Tax portion (based on property tax)
+- HOA portion (based on property HOA fee)
+- Principal vs interest breakdown
+- New balance
+
+### Sending Default/Cure Notices
+
+When a loan is 30+ days overdue:
+
+1. Find loan in Active Loans (shows in red if overdue)
+2. Click **"Send Notice"**
+3. Enter:
+   - **Notice Date** (date you mailed it)
+   - **Postal Method** (Certified, Priority, etc.)
+   - **Postal Cost** (tracking fees)
+   - **Tracking Number**
+   - **Notes**
+4. Click **"Send Notice"**
+
+**System automatically:**
+- Calculates 7-day cure deadline
+- Adds $75 notice fee to balance
+- Adds postal cost to balance
+- Marks loan as "In Default"
+
+### Marking Loan as Defaulted
+
+After cure period expires without payment:
+
+1. Find loan with expired cure deadline
+2. Click **"Mark as Defaulted"**
+3. Enter:
+   - **Default Date**
+   - **Recovery Costs** (repossession, legal fees)
+   - **Notes** on outcome
+4. Click **"Mark as Defaulted"**
+
+**System calculates:**
+- Total paid by customer
+- Net recovery (total paid - recovery costs)
+- Sets property back to "Available"
+- Disables overdue alerts
+- Moves loan to defaulted report
+
+### Generating Contracts
+
+1. Find loan in Active Loans
+2. Click loan to view details
+3. Click **"Generate Contract"**
+4. System creates contract with:
+   - Property legal description
+   - Customer information
+   - Loan terms and payment schedule
+   - Current balance (for imported loans)
+5. Review contract text
+6. Click **"Sign as Admin"**
+7. Enter your signature (typed name)
+8. Contract moves to "Pending Customer Signature"
+9. Customer signs via their dashboard
+10. Contract becomes "Fully Executed"
+
+**For Imported Loans:**
+Contract uses "Amended and Restated" language showing:
+- Original purchase details
+- Payments already made
+- Remaining balance and terms
 
 ---
 
-
-
-\## Payment Tracking
-
-
-
-\### Payment Tracking Overview
-
-
-
-View complete history of all payment transactions processed through Square.
-
-
-
-\### Payment Table Columns
-
-
-
-\*\*Customer Information:\*\*
-
-\- Customer name
-
-\- Email address
-
-
-
-\*\*Payment Details:\*\*
-
-\- Property title
-
-\- Payment date/time
-
-\- Payment method (Credit Card via Square)
-
-
-
-\*\*Amount Breakdown:\*\*
-
-\- Total amount charged
-
-\- Loan payment portion
-
-\- Tax amount (if applicable)
-
-\- HOA amount (if applicable)
-
-\- Late fee (if applicable)
-
-\- Notice fee (if applicable)
-
-\- Convenience fee ($5)
-
-\- Square processing fee
-
-
-
-\*\*Transaction Info:\*\*
-
-\- Transaction ID (Square)
-
-\- Status (Completed/Failed/Refunded)
-
-
-
-\### Filtering Payments
-
-
-
-\*\*Status Filters:\*\*
-
-\- \*\*All\*\* - Every transaction
-
-\- \*\*Completed\*\* - Successfully processed
-
-\- \*\*Failed\*\* - Payment declined or error
-
-\- \*\*Refunded\*\* - Payment reversed
-
-
-
-\*\*Search:\*\*
-
-\- Customer name
-
-\- Email
-
-\- Property title
-
-
-
-\### Understanding Payment Status
-
-
-
-\*\*Completed:\*\*
-
-\- Green badge
-
-\- Payment successfully processed
-
-\- Funds deposited to your Square account
-
-\- Loan balance reduced
-
-\- Customer payment history updated
-
-
-
-\*\*Failed:\*\*
-
-\- Red badge
-
-\- Payment declined by card issuer
-
-\- Customer needs to retry
-
-\- No balance change
-
-\- Customer should be notified
-
-
-
-\*\*Refunded:\*\*
-
-\- Yellow badge
-
-\- Payment was reversed
-
-\- Typically only by manual action in Square dashboard
-
-\- Balance restored to loan
-
-\- Rare occurrence
-
-
-
-\### Payment Breakdown Details
-
-
-
-\*\*Loan Payment Amount:\*\*
-
-\- Portion applied to principal and interest
-
-\- Main payment that reduces balance
-
-
-
-\*\*Tax Amount:\*\*
-
-\- Monthly property tax collection
-
-\- Goes to escrow
-
-\- Tracked separately for tax payments
-
-
-
-\*\*HOA Amount:\*\*
-
-\- Monthly HOA fee
-
-\- Tracked separately
-
-\- Used to pay HOA association
-
-
-
-\*\*Late Fee:\*\*
-
-\- $35 if payment overdue
-
-\- Your income
-
-\- Applied when payment late
-
-
-
-\*\*Notice Fee:\*\*
-
-\- $75 if default notice sent
-
-\- Covers administrative costs
-
-\- One-time fee per default notice
-
-
-
-\*\*Postal Fee:\*\*
-
-\- Actual postal/certified mail cost
-
-\- Reimbursement for mailing notice
-
-\- Variable amount based on postal service
-
-
-
-\*\*Convenience Fee:\*\*
-
-\- $5 credit card processing fee
-
-\- Your income to offset Square fees
-
-\- Charged on all payments
-
-
-
-\*\*Square Processing Fee:\*\*
-
-\- 2.9% + $0.30
-
-\- Square's fee (your expense)
-
-\- Automatically deducted by Square
-
-
-
-\### Exporting Payment Data
-
-
-
-\*\*Coming Soon Feature:\*\*
-
-\- Export to CSV
-
-\- Excel format export
-
-\- Custom date ranges
-
-\- Filtered exports
-
-
-
-\*\*Current Workaround:\*\*
-
-\- Access Square Dashboard directly
-
-\- Download reports from Square
-
-\- Use Square reporting tools
-
-
+## 💳 Payment Tracking
+
+### Viewing All Payments
+
+1. Click **"Payment Tracking"** card
+2. View table with all payments:
+   - Customer name and contact
+   - Property title
+   - Payment amount and breakdown
+   - Date and method
+   - Transaction ID
+
+**Payment Types:**
+- Down Payment
+- Processing Fee
+- Monthly Payment
+- Late Fee
+- Notice Fee
+
+**Breakdown columns show:**
+- Loan payment amount
+- Principal portion
+- Interest portion
+- Tax portion
+- HOA portion
+- Late fees
+- Notice fees
+- Convenience fee
+- Square processing fee
+
+### Exporting Payment Data
+
+1. View payments in Payment Tracking
+2. Use browser tools to save as CSV (future feature: export button)
 
 ---
 
+## 📊 Financial Reports
 
+### Overview Report
 
-\## Financial Reports
+1. Click **"Financial Reports"** card
+2. View dashboard showing:
+   - **Total Revenue** breakdown
+   - **Tax Escrow** status by property
+   - **HOA Tracking** by property
+   - **Monthly Trends** (last 12 months)
 
+### Tax Escrow Reconciliation
 
+Shows for each property with tax:
+- Annual tax amount
+- Tax collected from customers
+- Tax paid to county
+- Balance held in escrow
+- Status: FUNDED or COLLECTING
 
-\### Reports Overview
+**Red flags:**
+- Balance less than annual tax amount
+- No tax payments recorded but tax collected
+- Upcoming tax deadline without funding
 
+### HOA Fee Tracking
 
+Shows for each property with HOA:
+- Monthly HOA fee
+- Total collected from customers
+- Number of months collected
+- Last payment date
 
-Comprehensive financial analytics and tracking across four main categories:
+### Revenue Breakdown
 
-1\. Revenue Summary
+Shows all revenue by category:
+- Down payments
+- Processing fees
+- Loan payments (principal + interest)
+- Late fees
+- Notice fees
+- Convenience fees
+- Postal fee reimbursements
 
-2\. Tax Escrow Tracking
+**Note:** Tax and HOA are NOT revenue (pass-through)
 
-3\. HOA Fee Tracking
+### Exporting to PDF
 
-4\. Outstanding Balances
+1. Select report type (Overview, Tax, HOA, Outstanding)
+2. Select date range (optional)
+3. Click **"Export to PDF"**
+4. PDF generates with professional formatting
+5. Download opens automatically
 
-
-
-\### Accessing Reports
-
-
-
-\*\*URL:\*\* Admin Dashboard → Financial Reports  
-
-\*\*Navigation Tabs:\*\* Overview / Tax Escrow / HOA Tracking / Outstanding Balances
-
-
+**PDF includes:**
+- Report title and date range
+- Summary statistics
+- Detailed breakdown by property
+- Totals and balances
 
 ---
 
-
-
-\### Overview Tab
-
-
-
-\*\*Revenue Summary Cards:\*\*
-
-
-
-\*\*Total Revenue:\*\*
-
-\- All money collected through system
-
-\- Includes: loans, fees, taxes, HOA
-
-\- Gross revenue (before Square fees)
-
-
-
-\*\*Loan Payments:\*\*
-
-\- Only principal + interest portions
-
-\- Excludes fees, taxes, HOA
-
-\- True lending income
-
-
-
-\*\*Late Fees:\*\*
-
-\- Total late fees collected
-
-\- $35 per late payment
-
-\- Additional income from overdue loans
-
-
-
-\*\*Notice Fees:\*\*
-
-\- Total default notice fees
-
-\- $75 per notice sent
-
-\- Administrative cost recovery
-
-
-
-\*\*Fee Breakdown Table:\*\*
-
-
-
-Shows detailed breakdown of all money types:
-
-
-
-| Category | Purpose | Type |
-
-|----------|---------|------|
-
-| Tax Collected (Escrow) | Property taxes | Held for payment |
-
-| HOA Fees Collected | HOA dues | Held for payment |
-
-| Convenience Fees | CC processing | Your income |
-
-| Postal Fees (Reimbursed) | Mailing costs | Cost recovery |
-
-| Square Processing Fees | Payment processing | Your expense |
-
-
-
-\*\*Monthly Trends (Last 12 Months):\*\*
-
-
-
-Table showing:
-
-\- Month and year
-
-\- Total revenue
-
-\- Loan payments
-
-\- Total fees
-
-\- Number of payments
-
-
-
-\*\*Use Cases:\*\*
-
-\- Track revenue growth month-over-month
-
-\- Identify seasonal patterns
-
-\- Forecast cash flow
-
-\- Analyze payment frequency
-
-
+## 📦 eBay System
+
+### Generating eBay Listings
+
+1. Click **"eBay Listing Generator"** card
+2. Select property from dropdown
+3. Choose financing options to show (check up to 3):
+   - $99 Down
+   - 20% Down
+   - 50% Down
+4. Click **"Generate Listing"**
+5. System creates:
+   - Compelling title (under 80 characters)
+   - Detailed description with property features
+   - Payment options table with calculations
+   - Call-to-action
+6. Click **"Copy to Clipboard"**
+7. Paste into eBay listing editor
+
+**Tips:**
+- Include good property photos
+- Use "Buy It Now" or "Auction" format
+- Set realistic reserve price
+- Mention owner financing prominently
+
+### Managing Auction Winner Submissions
+
+When customers complete the public eBay Winner Form:
+
+1. Click **"eBay Auction Winners"** card
+2. View all submissions showing:
+   - eBay username and contact info
+   - Item purchased and price
+   - Submission date
+   - Status
+
+**Statuses:**
+- **Pending** - New submission, needs review
+- **Contacted** - You've reached out
+- **Converted** - Now a registered customer
+- **Rejected** - Decided not to proceed
+
+### Processing a Winner Submission
+
+1. Find pending submission
+2. Review details:
+   - Contact information complete?
+   - Purchase price matches auction?
+   - Item number correct?
+3. Click **"Contact Customer"** - update to "Contacted"
+4. Call or email customer:
+   - Congratulate on winning
+   - Explain next steps
+   - Confirm they want to proceed
+5. If proceeding:
+   - Click **"Convert to Customer"**
+   - System creates user account
+   - Link opens to create their loan
+   - Complete loan creation as custom loan
+   - Customer receives email with login info
+
+### Rejecting a Submission
+
+If customer doesn't respond or changes mind:
+
+1. Find submission
+2. Add notes explaining why
+3. Click **"Reject"**
+4. Status changes to "Rejected"
+5. Keeps record but removes from active list
 
 ---
 
-
-
-\### Tax Escrow Tab
-
-
-
-\*\*Purpose:\*\*
-
-Track property tax collections to ensure you have adequate funds to pay annual property taxes.
-
-
-
-\*\*How Property Tax Works:\*\*
-
-
-
-1\. Customer pays monthly tax amount with their loan payment
-
-2\. You collect and hold in escrow (separate account recommended)
-
-3\. When annual tax bill comes due, you pay it from escrow
-
-4\. Should always have enough collected
-
-
-
-\*\*Tax Escrow Table Columns:\*\*
-
-
-
-\*\*Property:\*\*
-
-\- Property title
-
-\- Which property this tracking applies to
-
-
-
-\*\*Annual Tax:\*\*
-
-\- Full yearly property tax amount
-
-\- Set when adding/editing property
-
-
-
-\*\*Collected:\*\*
-
-\- How much collected so far from customer
-
-\- Sum of all tax payments made to date
-
-\- In green
-
-
-
-\*\*Balance:\*\*
-
-\- Annual tax minus collected
-
-\- How much more needs to be collected
-
-\- If negative: collected more than annual (customer paying ahead)
-
-\- If positive: still need to collect this much
-
-
-
-\*\*Example:\*\*
-
-
-
-| Property | Annual Tax | Collected | Balance |
-
-|----------|------------|-----------|---------|
-
-| 5 Acre Retreat | $150.00 | $75.00 | $75.00 |
-
-
-
-\*\*Interpretation:\*\*
-
-\- Annual tax = $150
-
-\- Customer has made 6 payments of $12.50 each = $75
-
-\- Still need $75 more to cover full year
-
-\- After 12 months, collected = annual tax
-
-
-
-\*\*Best Practices:\*\*
-
-\- Review monthly
-
-\- Ensure collected amount grows
-
-\- Plan for annual tax payments
-
-\- Keep escrow in separate account
-
-\- Pay taxes on time to avoid penalties
-
-
+## 🗂️ Property Sources
+
+### What Are Property Sources?
+
+Track websites where you find properties:
+- Auction sites (Hudson & Marshall, etc.)
+- Government surplus sites
+- Land sales platforms
+
+**Benefits:**
+- Store login credentials securely
+- Track last access date
+- Note which states/counties each covers
+- Quick-open links with tracking
+
+### Adding a Property Source
+
+1. Click **"Property Sources"** card
+2. Click **"➕ Add New Source"**
+3. Enter:
+   - **Source Name** (e.g., "Hudson & Marshall")
+   - **Website URL** (full URL with https://)
+   - **Username** (for login)
+   - **Password** (stored for your reference)
+   - **States** (which states they cover)
+   - **Counties** (specific counties)
+   - **Contact Info** (rep name, phone, email)
+   - **Notes** (auction schedule, best property types)
+4. Check **"Active"** if currently using
+5. Click **"Add Source"**
+
+### Using Property Sources
+
+1. View list of all sources
+2. See last accessed date
+3. Click **"🌐 Open"** button:
+   - Opens website in new tab
+   - Updates "Last Accessed" timestamp
+   - Helps track which sites you check regularly
+
+### Editing Source Information
+
+1. Find source in list
+2. Click **"Edit"**
+3. Update any fields
+4. Click **"Update Source"**
+
+**Common updates:**
+- Updated passwords
+- New contact person
+- Schedule changes in notes
+- Mark inactive if no longer using
 
 ---
 
-
-
-\### HOA Tracking Tab
-
-
-
-\*\*Purpose:\*\*
-
-Track HOA fee collections to ensure you can pay HOA associations on customer's behalf.
-
-
-
-\*\*How HOA Fees Work:\*\*
-
-
-
-1\. Customer pays monthly HOA fee with their loan payment
-
-2\. You collect these fees
-
-3\. You pay HOA association monthly/quarterly (per their schedule)
-
-4\. You're responsible for timely HOA payments
-
-
-
-\*\*HOA Tracking Table Columns:\*\*
-
-
-
-\*\*Property:\*\*
-
-\- Property title
-
-\- Which property has HOA
-
-
-
-\*\*Monthly Fee:\*\*
-
-\- Customer's monthly HOA amount
-
-\- Set when adding/editing property
-
-
-
-\*\*Total Collected:\*\*
-
-\- All HOA fees collected to date
-
-\- Sum of all payments
-
-\- Your available balance to pay HOA
-
-
-
-\*\*Payments:\*\*
-
-\- Number of payments made by customer
-
-\- Helps verify expected collection
-
-
-
-\*\*Example:\*\*
-
-
-
-| Property | Monthly Fee | Collected | Payments |
-
-|----------|-------------|-----------|----------|
-
-| Lake View Lot | $25.00 | $150.00 | 6 |
-
-
-
-\*\*Interpretation:\*\*
-
-\- Monthly fee = $25
-
-\- 6 payments made × $25 = $150 collected
-
-\- You have $150 to pay HOA
-
-\- If HOA bills quarterly: $75 per quarter
-
-
-
-\*\*Best Practices:\*\*
-
-\- Know HOA payment schedule (monthly/quarterly/annual)
-
-\- Pay HOA on time to avoid fines
-
-\- Keep collected HOA separate from other income
-
-\- Verify collection matches expected (payments × monthly fee)
-
-\- Communicate with HOA about customer's account
-
-
+## 📅 Auction Calendar
+
+### What Is the Auction Calendar?
+
+Track upcoming auction dates with countdown and reminders:
+- Land auctions
+- Tax lien sales
+- Government surplus auctions
+
+**Benefits:**
+- Never miss an auction
+- Color-coded urgency (green → yellow → red)
+- Store property details and links
+- Mark completed when done
+
+### Adding an Auction
+
+1. Click **"Auction Calendar"** card
+2. Click **"➕ Add Auction"**
+3. Enter:
+   - **Auction Date & Time** (includes time)
+   - **Auction Name** (e.g., "H&M December Land Auction")
+   - **Auction URL** (link to listing)
+   - **Property Address/Location** (where properties are)
+   - **Description** (what's being auctioned)
+   - **Notes** (internal reminders)
+4. Click **"Add Auction"**
+
+### Viewing Auctions
+
+**Filter Tabs:**
+- **Upcoming** - Not yet happened
+- **Past** - Happened but not marked complete
+- **Completed** - Finished and marked complete
+- **All** - Everything
+
+**Color Coding (Days Until):**
+- 🟢 Green: 8+ days away
+- 🟡 Yellow: 3-7 days away
+- 🟠 Orange: 1-2 days away
+- 🔴 Red: TODAY (highlighted background)
+- ⚫ Gray: Past auctions
+
+### Completing an Auction
+
+After attending or reviewing results:
+
+1. Find auction in list
+2. Click **"✓ Complete"**
+3. Auction moves to "Completed" filter
+4. Optional: Add notes about outcome
 
 ---
 
-
-
-\### Outstanding Balances Tab
-
-
-
-\*\*Purpose:\*\*
-
-Track total outstanding loan portfolio and identify risk exposure.
-
-
-
-\*\*Summary Cards:\*\*
-
-
-
-\*\*Total Outstanding:\*\*
-
-\- Sum of all active loan balances
-
-\- Total amount customers owe you
-
-\- Key metric for portfolio value
-
-
-
-\*\*Total Loans:\*\*
-
-\- Number of active loans
-
-\- Count of current customers paying
-
-
-
-\*\*Overdue:\*\*
-
-\- Number of loans past due date
-
-\- Risk indicator
-
-\- Needs attention
-
-
-
-\*\*In Default:\*\*
-
-\- Loans with default notice sent
-
-\- Highest risk category
-
-\- May lead to defaults
-
-
-
-\*\*Outstanding Loans Table:\*\*
-
-
-
-Shows each active loan with:
-
-\- Customer name and contact
-
-\- Property title
-
-\- Remaining balance
-
-\- Days overdue (if applicable)
-
-\- Status badge (Current/Overdue/In Default)
-
-
-
-\*\*Status Indicators:\*\*
-
-
-
-\*\*CURRENT (green):\*\*
-
-\- Payment not yet due
-
-\- Or paid on time
-
-\- No action needed
-
-
-
-\*\*OVERDUE (yellow/orange):\*\*
-
-\- Past due date
-
-\- Before 30 days or no notice sent
-
-\- Needs contact
-
-
-
-\*\*IN DEFAULT (red badge):\*\*
-
-\- Default notice has been sent
-
-\- Cure deadline active or passed
-
-\- High risk of defaulting
-
-
-
-\*\*Use Cases:\*\*
-
-\- Calculate total portfolio value
-
-\- Assess risk exposure
-
-\- Identify problem loans quickly
-
-\- Plan cash flow based on expected payments
-
-\- Monitor default risk
-
-
-
-\*\*Example Analysis:\*\*
-
-
-
-If report shows:
-
-\- Total Outstanding: $125,000
-
-\- Overdue Loans: 3
-
-\- In Default: 1
-
-
-
-\*\*Interpretation:\*\*
-
-\- Healthy portfolio of $125K
-
-\- 3 loans need attention (call customers)
-
-\- 1 loan may default (prepare for loss/recovery)
-
-
+## 🔧 Common Tasks
+
+### Starting Your Day
+
+1. **Check Dashboard** - Review key metrics
+2. **Check Active Loans** - Any payments due today?
+3. **Check Overdue** - Follow up on late payments
+4. **Check Auction Calendar** - Any auctions today/soon?
+5. **Check eBay Submissions** - New winner forms?
+
+### Processing a Property Sale
+
+**Full workflow:**
+
+1. **Add Property** (Property Management)
+   - Upload images
+   - Set tax/HOA if applicable
+   - Set status to "Available"
+
+2. **Optional: Generate eBay Listing**
+   - Create professional listing copy
+   - Post on eBay
+
+3. **Customer Purchases or Wins Auction**
+   - If eBay: Process winner submission
+   - If direct: They register and purchase online
+
+4. **Loan Created Automatically** (or you create custom loan)
+   - Property changes to "Pending"
+
+5. **Generate & Sign Contract**
+   - Review contract
+   - Sign as admin
+   - Customer signs online
+
+6. **Property Changes to "Under Contract"**
+   - Contract fully executed
+
+7. **First Payment Received**
+   - Recorded automatically if online
+   - Record manually if cash/check
+
+8. **Property Changes to "Sold"**
+   - Loan becomes "Active"
+
+### Handling Late Payments
+
+**7 Days Late:**
+- System shows yellow warning
+- Customer sees late fee on payment screen
+- You can call/email as courtesy reminder
+
+**14 Days Late:**
+- System shows orange warning
+- Consider personal outreach
+
+**30 Days Late:**
+- System shows red alert
+- Send default/cure notice:
+  - Mail certified letter
+  - Record in system with tracking #
+  - Gives customer 7 days to cure
+  - Adds $75 notice fee + postal costs
+
+**37+ Days (Cure Period Expired):**
+- If no payment, mark as defaulted
+- Property returns to available
+- Record recovery costs
+- System calculates net recovery
+
+### Month-End Financial Review
+
+1. **Run Financial Reports**
+   - Revenue breakdown
+   - Tax escrow status
+   - HOA tracking
+
+2. **Review Tax Escrow**
+   - Any properties underfunded?
+   - Any tax payments due soon?
+   - Pay taxes before deadline
+
+3. **Review Outstanding Balances**
+   - Total receivables
+   - Average loan balance
+   - Collection rate
+
+4. **Export Reports**
+   - PDF for records
+   - Share with accountant if needed
+
+### Preparing Tax Summary for CPA
+
+1. Click **"Income Tax Summary"** card
+2. Select tax year
+3. Review:
+   - **Annual totals** (revenue and expenses)
+   - **Quarterly breakdown**
+   - **Monthly detail**
+4. Export to PDF
+5. Send to accountant
+
+**Revenue Included:**
+- Down payments
+- Processing fees
+- Loan payments (principal + interest)
+- Late fees
+- Notice fees
+- Convenience fees
+- Postal reimbursements
+
+**Expenses Included:**
+- Property acquisition costs
+- Square processing fees
+- Selling expenses
+- Recovery costs (defaulted loans)
+
+**NOT Included (Pass-Through):**
+- Property taxes
+- HOA fees
 
 ---
 
-
-
-\## Business Operations
-
-
-
-\### Daily Operations Workflow
-
-
-
-\*\*Morning Routine (5-10 minutes):\*\*
-
-
-
-1\. \*\*Check Admin Dashboard\*\*
-
-&nbsp;  - Review quick stats
-
-&nbsp;  - Note any changes from yesterday
-
-
-
-2\. \*\*Review Loan Management\*\*
-
-&nbsp;  - Click "Overdue" filter
-
-&nbsp;  - Note loans approaching 30 days
-
-&nbsp;  - Plan contact attempts for day
-
-
-
-3\. \*\*Check Email\*\*
-
-&nbsp;  - Customer payment inquiries
-
-&nbsp;  - Square payment notifications
-
-&nbsp;  - Any customer questions
-
-
-
-\*\*As Customers Call (Throughout Day):\*\*
-
-
-
-1\. \*\*Pull Up Customer Record\*\*
-
-&nbsp;  - Admin → Customer Management
-
-&nbsp;  - Search by name or phone
-
-&nbsp;  - Click to see full details
-
-
-
-2\. \*\*Discuss Payment\*\*
-
-&nbsp;  - Confirm balance from Loan Management
-
-&nbsp;  - Explain payment breakdown if needed
-
-&nbsp;  - Discuss payment arrangements if struggling
-
-
-
-3\. \*\*Take Notes\*\*
-
-&nbsp;  - Document in loan notes
-
-&nbsp;  - Record promises to pay
-
-&nbsp;  - Note special circumstances
-
-
-
-\*\*End of Day (5 minutes):\*\*
-
-
-
-1\. \*\*Review Payment Tracking\*\*
-
-&nbsp;  - Check completed payments for day
-
-&nbsp;  - Note any failed payments
-
-&nbsp;  - Follow up on failures tomorrow
-
-
-
-2\. \*\*Review Any New Defaults\*\*
-
-&nbsp;  - Check if any cure deadlines passed
-
-&nbsp;  - Decide on default actions
-
-&nbsp;  - Plan next steps
-
-
-
-\### Weekly Operations Workflow
-
-
-
-\*\*Monday Morning (15 minutes):\*\*
-
-
-
-1\. \*\*Review Financial Reports - Overview\*\*
-
-&nbsp;  - Check last week's revenue
-
-&nbsp;  - Compare to previous weeks
-
-&nbsp;  - Note trends
-
-
-
-2\. \*\*Review All Overdue Loans\*\*
-
-&nbsp;  - Filter: Overdue
-
-&nbsp;  - Prioritize by days overdue
-
-&nbsp;  - Plan week's collection calls
-
-
-
-3\. \*\*Check Properties\*\*
-
-&nbsp;  - Any new Coming Soon ready to activate?
-
-&nbsp;  - Any pending sales to finalize?
-
-&nbsp;  - Update statuses as needed
-
-
-
-\*\*Mid-Week (10 minutes):\*\*
-
-
-
-1\. \*\*Follow Up Collection Calls\*\*
-
-&nbsp;  - Seriously overdue (15-29 days)
-
-&nbsp;  - Document contact attempts
-
-&nbsp;  - Send emails if no phone answer
-
-
-
-2\. \*\*Check Tax Escrow Report\*\*
-
-&nbsp;  - Ensure adequate reserves
-
-&nbsp;  - Plan for upcoming tax payments
-
-&nbsp;  - Note any shortfalls
-
-
-
-\*\*Friday Afternoon (15 minutes):\*\*
-
-
-
-1\. \*\*Review Week's Activity\*\*
-
-&nbsp;  - Payments received
-
-&nbsp;  - Defaults avoided
-
-&nbsp;  - Successful collections
-
-
-
-2\. \*\*Plan Next Week\*\*
-
-&nbsp;  - Upcoming payment due dates
-
-&nbsp;  - Potential default notices to send
-
-&nbsp;  - Properties to list
-
-
-
-3\. \*\*Check HOA Tracking\*\*
-
-&nbsp;  - Upcoming HOA payments due
-
-&nbsp;  - Verify adequate collected fees
-
-&nbsp;  - Schedule HOA payments
-
-
-
-\### Monthly Operations Workflow
-
-
-
-\*\*First Week of Month (30 minutes):\*\*
-
-
-
-1\. \*\*Comprehensive Financial Review\*\*
-
-&nbsp;  - Review all four report tabs
-
-&nbsp;  - Download data from Square
-
-&nbsp;  - Calculate true profit (revenue - Square fees - expenses)
-
-
-
-2\. \*\*Tax Escrow Analysis\*\*
-
-&nbsp;  - Properties with annual taxes due this month
-
-&nbsp;  - Verify escrow adequate
-
-&nbsp;  - Pay property taxes on time
-
-
-
-3\. \*\*HOA Payment Review\*\*
-
-&nbsp;  - Which HOAs bill this month
-
-&nbsp;  - Total HOA fees to pay
-
-&nbsp;  - Schedule HOA payments
-
-
-
-4\. \*\*Outstanding Balances Analysis\*\*
-
-&nbsp;  - Total portfolio value
-
-&nbsp;  - Default risk assessment
-
-&nbsp;  - Collection priorities
-
-
-
-\*\*Mid-Month (20 minutes):\*\*
-
-
-
-1\. \*\*Customer Service Check\*\*
-
-&nbsp;  - Any recurring issues?
-
-&nbsp;  - Common questions?
-
-&nbsp;  - Improvement opportunities?
-
-
-
-2\. \*\*Property Portfolio Review\*\*
-
-&nbsp;  - Properties selling fast vs slow
-
-&nbsp;  - Price adjustments needed?
-
-&nbsp;  - New acquisition opportunities?
-
-
-
-3\. \*\*Default Review\*\*
-
-&nbsp;  - Defaulted Loans Report
-
-&nbsp;  - Total losses month to date
-
-&nbsp;  - Patterns in defaults (pricing? customer selection?)
-
-
-
-\*\*End of Month (30 minutes):\*\*
-
-
-
-1\. \*\*Month-End Close\*\*
-
-&nbsp;  - Reconcile Square deposits
-
-&nbsp;  - Match payments to loans
-
-&nbsp;  - Verify balance calculations
-
-
-
-2\. \*\*Performance Metrics\*\*
-
-&nbsp;  - Total revenue for month
-
-&nbsp;  - Number of sales
-
-&nbsp;  - Number of defaults
-
-&nbsp;  - Net profit
-
-
-
-3\. \*\*Planning Next Month\*\*
-
-&nbsp;  - Properties to acquire
-
-&nbsp;  - Cash flow projections
-
-&nbsp;  - Marketing initiatives
-
-
+## 💡 Tips & Best Practices
+
+### Property Management
+- ✅ Upload at least 3-5 good photos per property
+- ✅ Include GPS coordinates for rural land
+- ✅ Be honest about property access/utilities
+- ✅ Update acquisition cost for profit tracking
+- ✅ Set accurate tax amounts to avoid escrow shortfalls
+
+### Customer Communication
+- ✅ Respond to eBay winners within 24 hours
+- ✅ Call customers before sending default notice
+- ✅ Document all communication in loan notes
+- ✅ Be friendly but firm on payment deadlines
+- ✅ Celebrate when customers pay off loans!
+
+### Financial Tracking
+- ✅ Reconcile tax escrow monthly
+- ✅ Pay property taxes before deadline (avoid penalties)
+- ✅ Track all selling expenses for accurate profit
+- ✅ Export monthly reports for records
+- ✅ Review defaulted loans for lessons learned
+
+### Loan Management
+- ✅ Generate contracts early in loan lifecycle
+- ✅ Record manual payments immediately
+- ✅ Send default notices consistently (don't play favorites)
+- ✅ Update deed information when customer requests
+- ✅ Import old loans to have complete portfolio view
+
+### System Maintenance
+- ✅ Update property sources passwords when changed
+- ✅ Mark completed auctions to keep calendar clean
+- ✅ Review and reject old eBay submissions
+- ✅ Keep property images organized and captioned
+- ✅ Back up important reports to your computer
 
 ---
 
+## 🆘 Troubleshooting
 
+### "Session Expired" Error
+**Solution:** Log out and log back in. JWT tokens expire after 24 hours.
 
-\## Troubleshooting
+### Can't Upload Images
+**Solution:** Check image file size (under 10MB) and format (JPG, PNG, WEBP only).
 
+### Payment Not Showing
+**Solution:** Hard refresh page (Ctrl+Shift+R). Check if payment was actually completed in Square dashboard.
 
+### Customer Can't Login
+**Solution:** Reset their password in Customer Management. Call/email them the temporary password.
 
-\### Common Issues and Solutions
+### Wrong Property Tax Amount
+**Solution:** Edit property in Property Management. Update annual tax amount and payment schedule.
 
+### Loan Balance Incorrect
+**Solution:** Review payment history. If manual payment was entered wrong, contact developer (cannot edit payments directly).
 
-
-\*\*Issue: Customer Says They Paid But System Shows Unpaid\*\*
-
-
-
-\*\*Check:\*\*
-
-1\. Payment Tracking - Search customer name
-
-2\. Look for payment date they claim
-
-3\. Check status (Completed/Failed)
-
-
-
-\*\*If Payment Shows Completed:\*\*
-
-\- Payment processed successfully
-
-\- Loan balance should be updated
-
-\- Check loan detail in Loan Management
-
-\- If balance didn't update: Contact technical support
-
-
-
-\*\*If Payment Shows Failed:\*\*
-
-\- Explain to customer card was declined
-
-\- They need to retry payment
-
-\- Check if correct amount
-
-\- Verify card details
-
-
-
-\*\*If Payment Doesn't Exist:\*\*
-
-\- Customer may not have completed transaction
-
-\- Ask if they received confirmation email
-
-\- Check Square dashboard for transaction
-
-\- Customer needs to make payment
-
-
+### Mobile Layout Issues
+**Solution:** Hard refresh (Ctrl+Shift+R). Clear browser cache. Try different browser.
 
 ---
 
+## 📞 Support
 
+### For Technical Issues
+- Review this guide first
+- Check GREEN-ACRES-PROJECT-GUIDE.md for detailed technical info
+- Check Railway logs for backend errors
+- Check Netlify logs for frontend errors
 
-\*\*Issue: Property Shows as Available But Customer Owns It\*\*
-
-
-
-\*\*Cause:\*\*
-
-\- Property status not updated after sale
-
-\- Loan created but property status unchanged
-
-
-
-\*\*Solution:\*\*
-
-1\. Go to Property Management
-
-2\. Find the property
-
-3\. Click Edit
-
-4\. Change status to "Sold"
-
-5\. Save changes
-
-
-
-\*\*Prevention:\*\*
-
-\- System should auto-update when loan created
-
-\- If doesn't happen, manually update immediately after sale
-
-
+### For Business Questions
+- Review financial reports for data
+- Check payment tracking for transaction history
+- Export PDF reports for detailed records
 
 ---
 
+**Green Acres Land Investments, LLC - Admin Guide**
 
+*Making land ownership simple through professional tools!* 🌿
 
-\*\*Issue: Customer Past Cure Deadline But Still Wants to Pay\*\*
-
-
-
-\*\*Your Decision Points:\*\*
-
-
-
-\*\*Option 1: Allow Payment (Recommended for first-time):\*\*
-
-\- Customer shows good faith
-
-\- Extenuating circumstances
-
-\- Long payment history
-
-\- Let them pay (including all fees)
-
-\- Clear default status
-
-\- Continue loan as normal
-
-
-
-\*\*Option 2: Proceed with Default:\*\*
-
-\- Multiple defaults before
-
-\- No communication
-
-\- No valid excuse
-
-\- Click "⚠️ Default" button
-
-\- Repo property
-
-\- Resell to new customer
-
-
-
-\*\*Document Decision:\*\*
-
-\- Add notes to loan
-
-\- Explain reasoning
-
-\- For future reference
-
-\- Consistency important
-
-
-
----
-
-
-
-\*\*Issue: Customer Calls About Fees They Don't Understand\*\*
-
-
-
-\*\*Late Fee ($35):\*\*
-
-\- Applied when payment past due date
-
-\- $35 per late payment
-
-\- Shows in payment breakdown
-
-\- Can be waived at your discretion
-
-
-
-\*\*Notice Fee ($75):\*\*
-
-\- Applied when default notice sent
-
-\- Covers administrative cost
-
-\- Required after 30 days late
-
-\- Cannot be waived (already incurred cost)
-
-
-
-\*\*Postal Fee ($X.XX):\*\*
-
-\- Actual cost of certified mail
-
-\- Exact amount you paid USPS
-
-\- Reimbursement for mailing notice
-
-\- Cannot be waived (already incurred cost)
-
-
-
-\*\*Convenience Fee ($5):\*\*
-
-\- Credit card processing fee
-
-\- Covers payment processing costs
-
-\- Standard for all payments
-
-\- Cannot be waived
-
-
-
-\*\*Explain Clearly:\*\*
-
-\- Show payment breakdown
-
-\- Explain each line item
-
-\- Refer to loan agreement
-
-\- Most customers understand when explained
-
-
-
----
-
-
-
-\*\*Issue: GPS Coordinates Not Working\*\*
-
-
-
-\*\*Common Causes:\*\*
-
-\- Wrong format (needs: latitude, longitude)
-
-\- Switched latitude/longitude
-
-\- Missing comma
-
-\- Extra spaces
-
-
-
-\*\*Correct Format:\*\*
-
-```
-
-44.2619, -88.4154
-
-```
-
-
-
-\*\*Wrong Formats:\*\*
-
-```
-
-44.2619,-88.4154  (space needed after comma)
-
--88.4154, 44.2619  (longitude first - wrong)
-
-44.2619  (missing longitude)
-
-```
-
-
-
-\*\*Solution:\*\*
-
-1\. Edit property
-
-2\. Re-enter coordinates correctly
-
-3\. Test by clicking GPS coordinate in property detail
-
-4\. Should open Google Maps at correct location
-
-
-
----
-
-
-
-\*\*Issue: Customer Can't Make Payment\*\*
-
-
-
-\*\*Checklist:\*\*
-
-1\. Is loan status "Active"? (Paid Off or Defaulted can't pay)
-
-2\. Is Square payment form loading?
-
-3\. Is customer entering valid card?
-
-4\. Is payment amount correct?
-
-
-
-\*\*If Form Not Loading:\*\*
-
-\- Check browser console for errors
-
-\- Try different browser
-
-\- Clear cache
-
-\- Check internet connection
-
-
-
-\*\*If Card Declining:\*\*
-
-\- Ask customer to verify card details
-
-\- Sufficient funds?
-
-\- Card not expired?
-
-\- Try different card
-
-\- Contact Square support if persistent
-
-
-
-\*\*If Payment Too Small:\*\*
-
-\- Minimum payment = monthly payment amount
-
-\- Cannot pay less than minimum
-
-\- Explain minimum required
-
-\- Can pay more to catch up
-
-
-
----
-
-
-
-\*\*Issue: Admin Can't Login\*\*
-
-
-
-\*\*Check:\*\*
-
-1\. Correct admin URL? (.../admin/login)
-
-2\. Correct credentials?
-
-3\. Token expired? (24 hours)
-
-
-
-\*\*Solution:\*\*
-
-\- Re-enter credentials carefully
-
-\- Check caps lock
-
-\- Verify password correct
-
-\- Contact system admin if persistent
-
-
-
----
-
-
-
-\*\*Issue: Reports Showing $0 or Empty\*\*
-
-
-
-\*\*Causes:\*\*
-
-\- No data in system yet
-
-\- No completed payments
-
-\- Date filter issue (future feature)
-
-
-
-\*\*Check:\*\*
-
-1\. Do you have active loans?
-
-2\. Have customers made payments?
-
-3\. Check Payment Tracking for completed payments
-
-
-
-\*\*If Completed Payments Exist But Reports Empty:\*\*
-
-\- Technical issue
-
-\- Contact system support
-
-\- May need database query
-
-
-
----
-
-
-
-\## Best Practices
-
-
-
-\### Property Management Best Practices
-
-
-
-\*\*Always Set Acquisition Cost:\*\*
-
-\- Even rough estimate better than nothing
-
-\- Critical for ROI tracking
-
-\- Helps pricing decisions
-
-\- Documents business performance
-
-
-
-\*\*Use Status System Correctly:\*\*
-
-\- Coming Soon = Can't purchase yet
-
-\- Pending = Under contract
-
-\- Sold = Loan active, hide from public
-
-\- Don't leave Available after sale
-
-
-
-\*\*GPS Coordinates Matter:\*\*
-
-\- Customers use them heavily
-
-\- Take time to be accurate
-
-\- Test after entering
-
-\- Update if wrong
-
-
-
-\*\*Property Descriptions:\*\*
-
-\- Be accurate and honest
-
-\- Highlight positive features
-
-\- Mention any issues
-
-\- Sets proper expectations
-
-
-
-\### Customer Management Best Practices
-
-
-
-\*\*Document Everything:\*\*
-
-\- Every phone call
-
-\- Every payment arrangement
-
-\- Every broken promise
-
-\- Helps with defaults
-
-
-
-\*\*Be Consistent:\*\*
-
-\- Treat all customers same way
-
-\- Same policies for everyone
-
-\- Document exceptions
-
-\- Build reputation for fairness
-
-
-
-\*\*Communicate Proactively:\*\*
-
-\- Call before they're too late
-
-\- Friendly reminder at 7 days
-
-\- More serious at 15 days
-
-\- Saves relationships
-
-
-
-\### Loan Management Best Practices
-
-
-
-\*\*Send Notices on Time:\*\*
-
-\- Exactly at 30 days
-
-\- Don't wait longer
-
-\- Legal protection
-
-\- Clear consequences
-
-
-
-\*\*Keep Tracking Numbers:\*\*
-
-\- File all USPS receipts
-
-\- Photograph return receipts
-
-\- Store securely
-
-\- May need for legal action
-
-
-
-\*\*Waive Fees Strategically:\*\*
-
-\- First-time lates with good history
-
-\- Valid emergency circumstances
-
-\- Maintains customer goodwill
-
-\- But don't be a pushover
-
-
-
-\*\*Document Contact Attempts:\*\*
-
-\- Date and time of calls
-
-\- Who you spoke with
-
-\- What was said
-
-\- Email copies filed
-
-
-
-\### Financial Management Best Practices
-
-
-
-\*\*Separate Accounts:\*\*
-
-\- Operating account (general)
-
-\- Tax escrow account (property taxes only)
-
-\- HOA holding account (HOA fees only)
-
-\- Prevents commingling
-
-
-
-\*\*Monthly Reconciliation:\*\*
-
-\- Square deposits vs system
-
-\- Match every payment
-
-\- Investigate discrepancies
-
-\- Keep accurate books
-
-
-
-\*\*Plan for Defaults:\*\*
-
-\- Expect 5-10% default rate
-
-\- Build into pricing
-
-\- Don't overextend
-
-\- Reserve fund for losses
-
-
-
-\*\*Track All Expenses:\*\*
-
-\- Recovery costs
-
-\- Property maintenance
-
-\- Acquisition costs
-
-\- Business overhead
-
-
-
-\### Legal Compliance Best Practices
-
-
-
-\*\*Consult Local Attorney:\*\*
-
-\- Different states different rules
-
-\- Foreclosure procedures vary
-
-\- Redemption periods vary
-
-\- Get proper legal advice
-
-
-
-\*\*Keep All Records:\*\*
-
-\- All contracts
-
-\- All payment records
-
-\- All correspondence
-
-\- All notices sent
-
-
-
-\*\*Follow Fair Lending:\*\*
-
-\- Don't discriminate
-
-\- Same terms for everyone
-
-\- Document business reasons
-
-\- Transparent practices
-
-
-
-\*\*Maintain Insurance:\*\*
-
-\- Business liability
-
-\- Property insurance
-
-\- E\&O insurance
-
-\- Consult insurance agent
-
-
-
----
-
-
-
-\## Keyboard Shortcuts \& Tips
-
-
-
-\*\*Admin Dashboard:\*\*
-
-\- No shortcuts currently
-
-\- Click navigation cards
-
-\- Use browser back button
-
-
-
-\*\*Search Functions:\*\*
-
-\- Start typing to search
-
-\- Real-time filtering
-
-\- Case-insensitive
-
-\- Partial matches work
-
-
-
-\*\*Date Entry:\*\*
-
-\- Click calendar icon
-
-\- Or type: YYYY-MM-DD
-
-\- Today's date pre-filled
-
-
-
-\*\*Number Entry:\*\*
-
-\- Decimals allowed
-
-\- Don't include $ or commas
-
-\- System formats automatically
-
-
-
----
-
-
-
-\## Mobile Admin Access
-
-
-
-\*\*Fully Responsive:\*\*
-
-\- All admin sections work on mobile
-
-\- Tables convert to cards
-
-\- Touch-friendly buttons
-
-\- Test on phone/tablet
-
-
-
-\*\*Best Practices Mobile:\*\*
-
-\- Portrait mode for most sections
-
-\- Landscape for large tables
-
-\- Zoom if needed
-
-\- External keyboard helpful for lot of typing
-
-
-
----
-
-
-
-\## System Architecture Notes
-
-
-
-\*\*Security:\*\*
-
-\- All admin routes protected
-
-\- 24-hour JWT token expiry
-
-\- Separate from customer auth
-
-\- HTTPS only
-
-
-
-\*\*Data Storage:\*\*
-
-\- PostgreSQL via Supabase
-
-\- Real-time updates
-
-\- Automatic backups
-
-\- Scalable architecture
-
-
-
-\*\*Payment Processing:\*\*
-
-\- Square Web SDK
-
-\- PCI compliant
-
-\- Sandbox mode for testing
-
-\- Production mode for real payments
-
-
-
----
-
-
-
-\## Support \& Resources
-
-
-
-\*\*Documentation Files:\*\*
-
-\- ADMIN-QUICK-REFERENCE.md (this file's companion)
-
-\- PROJECT-SUMMARY.md (technical documentation)
-
-\- README.md (setup instructions)
-
-
-
-\*\*System Status:\*\*
-
-\- Frontend: https://www.netlifystatus.com
-
-\- Backend: https://status.railway.app
-
-\- Database: https://status.supabase.com
-
-\- Payments: https://www.issquareup.com/status
-
-
-
-\*\*Technical Support:\*\*
-
-Contact system developer with:
-
-\- Specific issue description
-
-\- Screenshots if possible
-
-\- Steps to reproduce
-
-\- User account affected
-
-
-
----
-
-
-
-\*\*Document Version:\*\* 2.0  
-
-\*\*Last Updated:\*\* November 7, 2025  
-
-\*\*Next Review:\*\* December 2025
-
-
-
----
-
-
-
-\*This guide is maintained alongside system updates. If you notice anything outdated or have suggestions for improvement, please document them for the next revision.\*
-
+*Last Updated: November 21, 2025*  
+*Version: 2.1.0*
